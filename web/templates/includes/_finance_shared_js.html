@@ -1,0 +1,1171 @@
+// NOTE: Including page must define `const FINANCE_MODE = 'bond';` or `'normal';` before this include.
+
+    // ==================== 工具函数 ====================
+    function getProjectId() {
+        const pathParts = window.location.pathname.split('/');
+        const idx = pathParts.indexOf('project');
+        if (idx >= 0 && pathParts[idx + 1] && /^\d+$/.test(pathParts[idx + 1])) return pathParts[idx + 1];
+        const match = window.location.pathname.match(/\/(\d+)/);
+        if (match) return match[1];
+        alert('无法获取项目ID，请从项目详情页进入此页面');
+        return null;
+    }
+    function val(id) {
+        const el = document.getElementById(id);
+        if (!el) return 0;
+        const v = parseFloat(el.value);
+        return isNaN(v) ? 0 : v;
+    }
+    function round2(n) { return Math.round(n * 100) / 100; }
+    function fmt(n) { return round2(n).toFixed(2); }
+
+    function getYearRange() {
+        const start = val('constructionStartYear');
+        const end = val('operationEndYear');
+        const years = [];
+        for (let y = start; y <= end; y++) years.push(y);
+        return years;
+    }
+
+    var _extraFundPlanYears = [];
+
+    function getFundPlanYears() {
+        const start = val('constructionStartYear');
+        const end = val('operationStartYear');
+        const years = [];
+        for (let y = start; y <= end; y++) years.push(y);
+        for (let i = 0; i < _extraFundPlanYears.length; i++) {
+            years.push(_extraFundPlanYears[i]);
+        }
+        years.sort(function(a, b) { return a - b; });
+        return years;
+    }
+
+    function updateCycleYears() {
+        const start = val('constructionStartYear');
+        const end = val('operationEndYear');
+        const cycle = end - start + 1;
+        document.getElementById('totalCycleYears').value = cycle > 0 ? cycle + ' 年' : '';
+    }
+
+    // ==================== 从资金使用计划读取债券发行额 ====================
+    function getBondIssuanceByYear() {
+        const result = {};
+        const rows = document.querySelectorAll('#fundPlanTable tbody tr');
+        for (const row of rows) {
+            const label = row.querySelector('td')?.textContent.trim();
+            if (label && label.includes('债务资金')) {
+                row.querySelectorAll('input[type="number"]').forEach(inp => {
+                    const y = parseInt(inp.dataset.year);
+                    if (!isNaN(y)) result[y] = parseFloat(inp.value) || 0;
+                });
+                break;
+            }
+        }
+        return result;
+    }
+
+    // ==================== 从还本付息表读取每年数据 ====================
+    function getRepayData() {
+        const data = [];
+        document.querySelectorAll('#repaymentBody tr').forEach(tr => {
+            const cells = tr.querySelectorAll('td');
+            const year = parseInt(cells[1]?.textContent);
+            if (isNaN(year)) return; // 跳过合计行
+            data.push({
+                year: year,
+                beginPrincipal: parseFloat(cells[2]?.textContent) || 0,
+                issue: parseFloat(cells[3]?.textContent) || 0,
+                repayment: parseFloat(cells[4]?.textContent) || 0,
+                endPrincipal: parseFloat(cells[5]?.textContent) || 0,
+                interest: parseFloat(cells[7]?.textContent) || 0,
+                totalPayment: parseFloat(cells[8]?.textContent) || 0
+            });
+        });
+        return data;
+    }
+
+    // 按年份汇总所有债务的还本付息（多笔债务合并）
+    function getYearlyRepaySummary() {
+        var summary = {};
+        document.querySelectorAll('#repaymentBody tr').forEach(function(tr) {
+            var cells = tr.querySelectorAll('td');
+            var y = parseInt(cells[1]?.textContent);
+            if (isNaN(y)) return;
+            if (!summary[y]) summary[y] = { repayment: 0, interest: 0, totalPayment: 0 };
+            summary[y].repayment += parseFloat(cells[4]?.textContent) || 0;
+            summary[y].interest += parseFloat(cells[7]?.textContent) || 0;
+            summary[y].totalPayment += parseFloat(cells[8]?.textContent) || 0;
+        });
+        return summary;
+    }
+
+
+    // ==================== 单年税费计算（Excel 口径） ====================
+    let _vatDeductionRemaining = 0;
+    let _cachedTaxResults = {};
+    let _deductionRemainingByYear = {};
+
+    function getTaxRates() {
+        return {
+            outputRate: val('taxRateOutput') / 100,
+            inputRate: val('taxRateInput') / 100,
+            cityRate: val('taxRateCity') / 100,
+            eduRate: val('taxRateEdu') / 100,
+            localEduRate: val('taxRateLocalEdu') / 100
+        };
+    }
+
+    function calcTaxForYear(y) {
+        var opStart = val('operationStartYear');
+        var empty = { outputTax: 0, inputTax: 0, vat: 0, vatDeducted: 0, vatPayable: 0, cityTax: 0, eduTax: 0, localEduTax: 0, surcharge: 0 };
+        if (y < opStart) return empty;
+        var rev = getRevenueForYear(y);
+        var ci = getCostItems();
+        var rates = getTaxRates();
+        var outputTax = rev * rates.outputRate / (1 + rates.outputRate);
+        var inputTax = (ci.material + ci.fuel) * rates.inputRate / (1 + rates.inputRate);
+        var vat = outputTax - inputTax;
+        var vatDeducted = 0, vatPayable = 0;
+        if (vat > 0 && _vatDeductionRemaining > 0) {
+            vatDeducted = Math.min(vat, _vatDeductionRemaining);
+            _vatDeductionRemaining = round2(_vatDeductionRemaining - vatDeducted);
+        }
+        vatPayable = Math.max(0, vat - vatDeducted);
+        var cityTax = vatPayable * rates.cityRate;
+        var eduTax = vatPayable * rates.eduRate;
+        var localEduTax = vatPayable * rates.localEduRate;
+        var surcharge = cityTax + eduTax + localEduTax;
+        return { outputTax, inputTax, vat, vatDeducted, vatPayable, cityTax, eduTax, localEduTax, surcharge };
+    }
+
+    // ==================== TAB 1: 资金使用计划 ====================
+    let _cachedInvestmentData = [];
+    let _cachedConstructionInvestment = 0;
+    let _cachedOtherCost = 0;
+
+    function initFundPlan() {
+        buildFundPlanTable();
+        ['constructionStartYear','constructionEndYear','operationStartYear','operationEndYear'].forEach(id => {
+            document.getElementById(id)?.addEventListener('change', function() {
+                buildFundPlanTable();
+            });
+        });
+        ['totalInvestment','ownCapital','selfFund','debtFund','bondFund','bankLoan'].forEach(id => {
+            document.getElementById(id)?.addEventListener('input', function() {
+                updateFundingPct(); calcSelfFund(); recalcDownstream();
+            });
+        });
+        updateFundingPct();
+    }
+
+    function loadInvestmentData() {
+        const pid = getProjectId();
+        if (!pid) return Promise.resolve();
+        return fetch(`/api/project/${pid}/investment/load`)
+            .then(r => r.json())
+            .then(r => {
+                if (r.success && r.data && r.data.length > 0) {
+                    _cachedInvestmentData = r.data;
+                    applyInvestmentTotals(r.data);
+                }
+            })
+            .catch(() => {});
+    }
+
+    function applyInvestmentTotals(data) {
+        // 总投资取序号四的 total 值
+        const totalRow = data.find(function(item) { return item.serial_number === '四'; });
+        const totalInv = totalRow ? (totalRow.total || 0) : 0;
+        // 建设投资取序号一（用于增值税抵扣基数）
+        const conRow = data.find(function(item) { return item.serial_number === '一'; });
+        _cachedConstructionInvestment = conRow ? (conRow.total || 0) : 0;
+        var vatBaseInput = document.getElementById('vatDeductionBase');
+        if (vatBaseInput && !vatBaseInput.value) vatBaseInput.value = _cachedConstructionInvestment;
+        // 工程建设其他费取序号2（用于摊销基数）
+        const otherRow = data.find(function(item) { return item.serial_number === '2'; });
+        _cachedOtherCost = otherRow ? (otherRow.total || 0) : 0;
+        const totalInput = document.getElementById('totalInvestment');
+        if (totalInput) {
+            totalInput.value = totalInv;
+            calcSelfFund();
+            updateFundingPct();
+        }
+        populateInvestmentDetail(data);
+    }
+
+    function populateInvestmentDetail(data) {
+        const tbody = document.getElementById('investmentDetailBody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        // 只显示固定行：一、1、2、3、二、三、四，且跳过值为0的行
+        var targetSerials = ['一', '1', '2', '3', '二', '三', '四'];
+        targetSerials.forEach(function(serial) {
+            var item = data.find(function(d) { return d.serial_number === serial; });
+            if (!item) return;
+            var total = item.total || (item.building_cost || 0) + (item.installation_cost || 0) + (item.equipment_cost || 0) + (item.other_cost || 0);
+            if (total <= 0) return;
+            var totalInv = val('totalInvestment');
+            var pct = totalInv > 0 ? (total / totalInv * 100).toFixed(2) + '%' : '0%';
+            var tr = document.createElement('tr');
+            if (item.is_total_row) tr.className = 'total-row';
+            else if (item.is_subtotal_row) tr.className = 'subtotal-row';
+            tr.innerHTML = '<td>' + serial + '</td><td class="text-start">' + (item.item_name || '') + '</td><td class="text-end">' + fmt(total) + '</td><td class="text-end">' + pct + '</td>';
+            tbody.appendChild(tr);
+        });
+    }
+
+    function calcSelfFund() {
+        const total = val('totalInvestment'), bond = val('bondFund'), bank = val('bankLoan');
+        const sf = Math.max(0, round2(total - bond - bank));
+        document.getElementById('selfFund').value = sf;
+        document.getElementById('ownCapital').value = sf;
+        document.getElementById('debtFund').value = round2(bond + bank);
+        updateFundingPct();
+    }
+
+    function updateFundingPct() {
+        const totalInv = val('totalInvestment');
+        const rows = document.querySelectorAll('#fundingSourceTable tbody tr');
+        rows.forEach(row => {
+            const input = row.querySelector('input[type="number"]');
+            const pctCell = row.querySelector('.pct-cell');
+            if (input && pctCell) {
+                const v = parseFloat(input.value) || 0;
+                pctCell.textContent = totalInv > 0 ? (v / totalInv * 100).toFixed(2) + '%' : '0%';
+            }
+        });
+    }
+
+    function buildFundPlanTable() {
+        const start = val('constructionStartYear'), end = val('operationStartYear');
+        if (start > end) {
+            console.error('年份范围错误：建设期起始年大于运营期起始年');
+            return;
+        }
+        const years = getFundPlanYears();
+        const saved = {};
+        document.querySelectorAll('#fundPlanTable tbody tr').forEach(row => {
+            const label = row.querySelector('td')?.textContent.trim();
+            if (label) {
+                const vals = {};
+                row.querySelectorAll('input[type="number"]').forEach(inp => {
+                    const y = parseInt(inp.dataset.year);
+                    if (!isNaN(y)) vals[y] = inp.value;
+                });
+                saved[label] = vals;
+            }
+        });
+        const header = document.getElementById('fundPlanHeader');
+        const row = header.parentElement;
+        while (row.children.length > 1) row.removeChild(row.lastChild);
+        years.forEach(function(y) {
+            const th = document.createElement('th');
+            th.textContent = y + '年';
+            if (_extraFundPlanYears.indexOf(y) !== -1) {
+                var rmBtn = document.createElement('span');
+                rmBtn.textContent = ' ×';
+                rmBtn.style.cssText = 'cursor:pointer;color:#dc3545;font-size:0.75rem;margin-left:2px;';
+                rmBtn.title = '删除此年份列';
+                rmBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    removeFundPlanYear(y);
+                });
+                th.appendChild(rmBtn);
+            }
+            row.appendChild(th);
+        });
+        const thT = document.createElement('th'); thT.textContent = '合计'; row.appendChild(thT);
+        const tbody = document.querySelector('#fundPlanTable tbody');
+        tbody.querySelectorAll('tr').forEach(row => {
+            const label = row.querySelector('td')?.textContent.trim();
+            const rowData = saved[label] || {};
+            while (row.children.length > 1) row.removeChild(row.lastChild);
+            years.forEach(function(y) {
+                const td = document.createElement('td');
+                if (row.classList.contains('total-row') || row.classList.contains('subtotal-row')) {
+                    td.className = 'text-end';
+                    td.textContent = '0';
+                } else {
+                    const inp = document.createElement('input');
+                    inp.type = 'number';
+                    inp.className = 'form-control form-control-sm text-end';
+                    inp.value = rowData[y] || '0';
+                    inp.step = '0.01';
+                    inp.dataset.year = y;
+                    inp.addEventListener('input', function() { updateFundPlanTotals(); recalcDownstream(); });
+                    td.appendChild(inp);
+                }
+                row.appendChild(td);
+            });
+            const tdT = document.createElement('td'); tdT.className = 'text-end'; tdT.textContent = '0'; row.appendChild(tdT);
+        });
+        updateFundPlanTotals();
+    }
+
+    function updateFundPlanTotals() {
+        const tbody = document.querySelector('#fundPlanTable tbody');
+        const rows = tbody.querySelectorAll('tr');
+        const years = getFundPlanYears(), cc = years.length;
+        rows.forEach(row => {
+            if (row.classList.contains('total-row')) {
+                for (let c=0;c<cc;c++) { let s=0,p=row.previousElementSibling; while(p&&!p.classList.contains('subtotal-row')&&!p.classList.contains('total-row')){const inp=p.querySelectorAll('input[type="number"]')[c];if(inp)s+=parseFloat(inp.value)||0;p=p.previousElementSibling;} row.children[c+1].textContent=fmt(s); }
+                let ts=0; for(let c=0;c<cc;c++) ts+=parseFloat(row.children[c+1].textContent)||0; row.lastChild.textContent=fmt(ts);
+            } else if (!row.classList.contains('subtotal-row')) {
+                let ts=0; row.querySelectorAll('input[type="number"]').forEach(inp=>{ts+=parseFloat(inp.value)||0;}); row.lastChild.textContent=fmt(ts);
+            }
+        });
+    }
+
+    function addFundPlanYear(year) {
+        var y = parseInt(year);
+        if (isNaN(y) || y <= 0) {
+            alert('请输入有效的年份');
+            return;
+        }
+        var existing = getFundPlanYears();
+        if (existing.indexOf(y) !== -1) {
+            alert('年份 ' + y + ' 已存在，请勿重复添加');
+            return;
+        }
+        _extraFundPlanYears.push(y);
+        buildFundPlanTable();
+        recalcDownstream();
+    }
+
+    function removeFundPlanYear(year) {
+        if (!confirm('确定删除 ' + year + ' 年的数据列？该列所有已录入数据将丢失。')) return;
+        _extraFundPlanYears = _extraFundPlanYears.filter(function(y) { return y !== year; });
+        buildFundPlanTable();
+        recalcDownstream();
+    }
+
+    // ==================== 还本付息 ====================
+    let debtList = [];
+    let _debtIdCounter = 1;
+
+    function addDebt(debt) {
+        debt.id = _debtIdCounter++;
+        debtList.push(debt);
+        renderDebtSummary();
+        buildRepaymentTable();
+        recalcDownstream();
+    }
+
+    function removeDebt(id) {
+        debtList = debtList.filter(d => d.id !== id);
+        renderDebtSummary();
+        buildRepaymentTable();
+        recalcDownstream();
+    }
+
+    function renderDebtSummary() {
+        const container = document.getElementById('debtSummary');
+        if (!container) return;
+        container.innerHTML = '';
+        debtList.forEach(d => {
+            const card = document.createElement('div');
+            card.className = 'debt-card';
+            const methodMap = { 'equal-principal': '等额本金', 'equal-installment': '等额本息', 'lump-sum': '到期一次性还本' };
+            card.innerHTML = `<span class="debt-name">${d.name}</span><span class="debt-info">${fmt(d.amount)}万元 | ${d.rate}% | ${methodMap[d.method] || d.method}</span><button class="btn-close-sm" onclick="removeDebt(${d.id})">×</button>`;
+            container.appendChild(card);
+        });
+    }
+
+    function buildRepaymentTable() {
+        const tbody = document.getElementById('repaymentBody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        const years = getYearRange();
+        const bondIssuance = getBondIssuanceByYear();
+
+        var yearData = {};
+        years.forEach(function(y) {
+            yearData[y] = { beginPrincipal: 0, issue: 0, repayment: 0, endPrincipal: 0, interest: 0, totalPayment: 0, principalForInterest: 0 };
+        });
+
+        debtList.forEach(function(debt) {
+            const startYear = debt.startYear || val('operationStartYear');
+            const duration = debt.duration || 10;
+            const endYear = startYear + duration - 1;
+            const method = debt.method || 'equal-principal';
+            const rate = (debt.rate || 0) / 100;
+            const repayYears = debt.repayYears || duration;
+            const repayStartYear = endYear - repayYears + 1;
+            const repayEndYear = endYear;
+            let remainingPrincipal = 0;
+            let annualRepay = 0;
+            if (method === 'equal-principal') {
+                annualRepay = debt.amount / repayYears;
+            } else if (method === 'equal-installment') {
+                if (rate > 0) {
+                    annualRepay = debt.amount * rate * Math.pow(1 + rate, repayYears) / (Math.pow(1 + rate, repayYears) - 1);
+                } else {
+                    annualRepay = debt.amount / repayYears;
+                }
+            }
+
+            years.forEach(function(y) {
+                if (y < startYear || y > endYear) return;
+                const beginPrincipal = remainingPrincipal;
+                const issue = y === startYear ? debt.amount : 0;
+                const principalForInterest = beginPrincipal + issue;
+                let repayment = 0;
+                let interest = principalForInterest * rate;
+                if (y >= repayStartYear && y <= repayEndYear) {
+                    if (method === 'equal-principal') {
+                        repayment = annualRepay;
+                    } else if (method === 'equal-installment') {
+                        interest = principalForInterest * rate;
+                        repayment = annualRepay - interest;
+                    } else if (method === 'lump-sum') {
+                        repayment = y === repayEndYear ? debt.amount : 0;
+                    }
+                }
+                if (debt.firstHalf && y === startYear) interest *= 0.5;
+                if (debt.lastHalf && y === endYear) interest *= 0.5;
+                const endPrincipal = round2(beginPrincipal + issue - repayment);
+                const totalPayment = round2(repayment + interest);
+                remainingPrincipal = endPrincipal;
+
+                yearData[y].beginPrincipal += beginPrincipal;
+                yearData[y].issue += issue;
+                yearData[y].repayment += repayment;
+                yearData[y].endPrincipal += endPrincipal;
+                yearData[y].interest += interest;
+                yearData[y].totalPayment += totalPayment;
+                yearData[y].principalForInterest += principalForInterest;
+            });
+        });
+
+        var seq = 0;
+        years.forEach(function(y) {
+            var d = yearData[y];
+            if (d.beginPrincipal === 0 && d.issue === 0 && d.repayment === 0 && d.endPrincipal === 0 && d.interest === 0 && d.totalPayment === 0) return;
+            seq++;
+            var effectiveRate = d.principalForInterest > 0 ? d.interest / d.principalForInterest * 100 : 0;
+            var tr = document.createElement('tr');
+            tr.innerHTML = '<td>' + seq + '</td><td>' + y + '</td><td class="text-end">' + fmt(d.beginPrincipal) + '</td><td class="text-end">' + fmt(d.issue) + '</td><td class="text-end">' + fmt(d.repayment) + '</td><td class="text-end">' + fmt(d.endPrincipal) + '</td><td class="text-end">' + effectiveRate.toFixed(2) + '</td><td class="text-end">' + fmt(d.interest) + '</td><td class="text-end">' + fmt(d.totalPayment) + '</td>';
+            tbody.appendChild(tr);
+        });
+
+        var totalIssue = 0, totalRepay = 0, totalInterest = 0, totalPayment = 0;
+        tbody.querySelectorAll('tr').forEach(function(tr) {
+            var cells = tr.querySelectorAll('td');
+            totalIssue += parseFloat(cells[3]?.textContent) || 0;
+            totalRepay += parseFloat(cells[4]?.textContent) || 0;
+            totalInterest += parseFloat(cells[7]?.textContent) || 0;
+            totalPayment += parseFloat(cells[8]?.textContent) || 0;
+        });
+        var sumRow = document.createElement('tr');
+        sumRow.className = 'total-row';
+        sumRow.innerHTML = '<td></td><td>合计</td><td class="text-end"></td><td class="text-end">' + fmt(totalIssue) + '</td><td class="text-end">' + fmt(totalRepay) + '</td><td class="text-end"></td><td></td><td class="text-end">' + fmt(totalInterest) + '</td><td class="text-end">' + fmt(totalPayment) + '</td>';
+        tbody.appendChild(sumRow);
+    }
+
+    // ==================== 收入成本 ====================
+    let revenueItems = [];
+    let costItems = [];
+    let yearlyLoadFactors = {};
+
+    function getRevenueForYear(y) {
+        const opStart = val('operationStartYear');
+        if (y < opStart) return 0;
+        let total = 0;
+        revenueItems.forEach(item => {
+            const base = (item.qty || 0) * (item.price || 0) * (item.rate || 100) / 100;
+            const yearsSinceStart = y - opStart;
+            const growth = item.growth || 0;
+            total += base * Math.pow(1 + growth / 100, yearsSinceStart);
+        });
+        const lf = yearlyLoadFactors[y];
+        if (lf !== undefined && lf >= 0) total *= lf / 100;
+        return round2(total);
+    }
+
+    function getYearlyLF(y) {
+        if (yearlyLoadFactors[y] !== undefined) return yearlyLoadFactors[y];
+        return 100;
+    }
+
+    function getCostForYear(y) {
+        const opStart = val('operationStartYear');
+        if (y < opStart) return 0;
+        let total = 0;
+        costItems.forEach(item => {
+            const yearsSinceStart = y - opStart;
+            total += (item.amount || 0) * Math.pow(1 + (item.growth || 0) / 100, yearsSinceStart);
+        });
+        return round2(total);
+    }
+
+    // 成本分类：可变成本关键词
+    var _variableKeywords = ['原材料','原料','燃料','动力','水电','电费','水费','辅料','包装','运输','计件工资'];
+    // 成本分类：固定成本关键词
+    var _fixedKeywords = ['工资','福利','折旧','摊销','修理','维修','保险','租赁','管理','办公','差旅','咨询','审计','法律','研发','广告','销售佣金','税金'];
+
+    function classifyCostItem(item) {
+        var ct = item.costType || 'auto';
+        if (ct !== 'auto') return ct;
+        var name = (item.name || '').replace(/\s/g, '');
+        for (var i = 0; i < _variableKeywords.length; i++) {
+            if (name.indexOf(_variableKeywords[i]) >= 0) return 'variable';
+        }
+        for (var i = 0; i < _fixedKeywords.length; i++) {
+            if (name.indexOf(_fixedKeywords[i]) >= 0) return 'fixed';
+        }
+        return 'fixed';
+    }
+
+    function getFixedCostForYear(y) {
+        const opStart = val('operationStartYear');
+        if (y < opStart) return 0;
+        let total = 0;
+        costItems.forEach(item => {
+            var ct = classifyCostItem(item);
+            if (ct === 'fixed' || ct === 'semi') {
+                const yearsSinceStart = y - opStart;
+                var cost = (item.amount || 0) * Math.pow(1 + (item.growth || 0) / 100, yearsSinceStart);
+                total += ct === 'semi' ? cost * 0.5 : cost;
+            }
+        });
+        return round2(total);
+    }
+
+    function getVariableCostForYear(y) {
+        const opStart = val('operationStartYear');
+        if (y < opStart) return 0;
+        let total = 0;
+        costItems.forEach(item => {
+            var ct = classifyCostItem(item);
+            if (ct === 'variable' || ct === 'semi') {
+                const yearsSinceStart = y - opStart;
+                var cost = (item.amount || 0) * Math.pow(1 + (item.growth || 0) / 100, yearsSinceStart);
+                total += ct === 'semi' ? cost * 0.5 : cost;
+            }
+        });
+        return round2(total);
+    }
+
+    function renderRevenueTable() {
+        const years = getYearRange();
+        const opStart = val('operationStartYear');
+        const thead = document.getElementById('revenueHead');
+        const tbody = document.getElementById('revenueBody');
+        let htr = '<tr><th>序号</th><th>收入项目</th><th>数量</th><th>单价(万元/年)</th>';
+        years.forEach(y => htr += '<th>' + y + '年</th>');
+        htr += '<th>合计</th><th>操作</th></tr>';
+        thead.innerHTML = htr;
+        tbody.innerHTML = '';
+
+        revenueItems.forEach(function(item, i) {
+            const tr = document.createElement('tr');
+            let html = '<td>' + (i + 1) + '</td><td>' + item.name + '</td><td class="text-end">' + item.qty + '</td><td class="text-end">' + fmt(item.price) + '</td>';
+            let rowTotal = 0;
+            years.forEach(function(y) {
+                let amount = 0;
+                if (y >= opStart) {
+                    var yr = y - opStart;
+                    var lf = getYearlyLF(y) / 100;
+                    amount = item.qty * item.price * (item.rate / 100) * Math.pow(1 + item.growth / 100, yr) * lf;
+                }
+                rowTotal += amount;
+                html += '<td class="text-end">' + fmt(amount) + '</td>';
+            });
+            html += '<td class="text-end">' + fmt(rowTotal) + '</td>';
+            html += '<td><button type="button" class="btn btn-sm btn-primary btn-edit-rev" data-idx="' + i + '"><i class="bi bi-pencil"></i></button> <button type="button" class="btn btn-sm btn-danger btn-remove-rev" data-idx="' + i + '"><i class="bi bi-trash"></i></button></td>';
+            tr.innerHTML = html;
+            tbody.appendChild(tr);
+        });
+
+        var subTotalRow = document.createElement('tr');
+        subTotalRow.className = 'total-row';
+        var stHtml = '<td colspan="4">收入小计</td>';
+        var stTotal = 0;
+        years.forEach(function(y) {
+            var colTotal = 0;
+            revenueItems.forEach(function(item) {
+                if (y >= opStart) {
+                    var yr = y - opStart;
+                    colTotal += item.qty * item.price * (item.rate / 100) * Math.pow(1 + item.growth / 100, yr);
+                }
+            });
+            stTotal += colTotal;
+            stHtml += '<td class="text-end">' + fmt(colTotal) + '</td>';
+        });
+        stHtml += '<td class="text-end">' + fmt(stTotal) + '</td><td></td>';
+        subTotalRow.innerHTML = stHtml;
+        tbody.appendChild(subTotalRow);
+
+        var lfRow = document.createElement('tr');
+        lfRow.className = 'total-row';
+        var lfHtml = '<td colspan="4">负荷率(%)</td>';
+        years.forEach(function(y) {
+            var lfVal = getYearlyLF(y);
+            lfHtml += '<td><input type="number" class="form-control form-control-sm text-end lf-input" data-year="' + y + '" value="' + lfVal + '" step="1"></td>';
+        });
+        lfHtml += '<td></td><td></td>';
+        lfRow.innerHTML = lfHtml;
+        tbody.appendChild(lfRow);
+
+        var totalRow = document.createElement('tr');
+        totalRow.className = 'total-row';
+        var tHtml = '<td colspan="4">收入合计</td>';
+        var gTotal = 0;
+        years.forEach(function(y) {
+            var colTotal = 0;
+            var lf = getYearlyLF(y) / 100;
+            revenueItems.forEach(function(item) {
+                if (y >= opStart) {
+                    var yr = y - opStart;
+                    colTotal += item.qty * item.price * (item.rate / 100) * Math.pow(1 + item.growth / 100, yr);
+                }
+            });
+            var v = colTotal * lf;
+            gTotal += v;
+            tHtml += '<td class="text-end">' + fmt(v) + '</td>';
+        });
+        tHtml += '<td class="text-end">' + fmt(gTotal) + '</td><td></td>';
+        totalRow.innerHTML = tHtml;
+        tbody.appendChild(totalRow);
+    }
+
+    function renderCostTable() {
+        const years = getYearRange();
+        const opStart = val('operationStartYear');
+        const thead = document.getElementById('costHead');
+        const tbody = document.getElementById('costBody');
+        var _ctLabels = { fixed: '固定', variable: '可变', semi: '半可变', auto: '自动' };
+        let htr = '<tr><th>序号</th><th>成本项目</th><th>类型</th>';
+        years.forEach(y => htr += '<th>' + y + '年</th>');
+        htr += '<th>合计</th><th>操作</th></tr>';
+        thead.innerHTML = htr;
+        tbody.innerHTML = '';
+
+        costItems.forEach(function(item, i) {
+            const tr = document.createElement('tr');
+            var ct = classifyCostItem(item);
+            let html = '<td>' + (i + 1) + '</td><td>' + item.name + '</td><td>' + (_ctLabels[ct] || ct) + '</td>';
+            let rowTotal = 0;
+            years.forEach(function(y) {
+                var amount = 0;
+                if (y >= opStart) {
+                    var yr = y - opStart;
+                    amount = item.amount * Math.pow(1 + item.growth / 100, yr);
+                }
+                rowTotal += amount;
+                html += '<td class="text-end">' + fmt(amount) + '</td>';
+            });
+            html += '<td class="text-end">' + fmt(rowTotal) + '</td>';
+            html += '<td><button type="button" class="btn btn-sm btn-primary btn-edit-cost" data-idx="' + i + '"><i class="bi bi-pencil"></i></button> <button type="button" class="btn btn-sm btn-danger btn-remove-cost" data-idx="' + i + '"><i class="bi bi-trash"></i></button></td>';
+            tr.innerHTML = html;
+            tbody.appendChild(tr);
+        });
+
+        // 利息支出行（从还本付息表自动抓取）
+        var interestRow = document.createElement('tr');
+        var repayData = getRepayData();
+        var iHtml = '<td>' + (costItems.length + 1) + '</td><td>利息支出</td><td></td>';
+        var iTotal = 0;
+        years.forEach(function(y) {
+            var rd = repayData.find(function(r) { return r.year === y; });
+            var interest = (rd && y >= opStart) ? rd.interest : 0;
+            iTotal += interest;
+            iHtml += '<td class="text-end">' + fmt(interest) + '</td>';
+        });
+        iHtml += '<td class="text-end">' + fmt(iTotal) + '</td><td></td>';
+        interestRow.innerHTML = iHtml;
+        tbody.appendChild(interestRow);
+
+        var totalRow = document.createElement('tr');
+        totalRow.className = 'total-row';
+        var tHtml = '<td colspan="3">成本合计</td>';
+        var gTotal = 0;
+        years.forEach(function(y) {
+            var colTotal = 0;
+            costItems.forEach(function(item) {
+                if (y >= opStart) {
+                    var yr = y - opStart;
+                    colTotal += item.amount * Math.pow(1 + item.growth / 100, yr);
+                }
+            });
+            var rd = repayData.find(function(r) { return r.year === y; });
+            colTotal += (rd && y >= opStart) ? rd.interest : 0;
+            gTotal += colTotal;
+            tHtml += '<td class="text-end">' + fmt(colTotal) + '</td>';
+        });
+        tHtml += '<td class="text-end">' + fmt(gTotal) + '</td><td></td>';
+        totalRow.innerHTML = tHtml;
+        tbody.appendChild(totalRow);
+    }
+
+    function calcDepreciation() {
+        const totalInv = val('totalInvestment');
+        const rate = val('residualRate') / 100;
+        const years = val('depreciationYears');
+        const base = totalInv * (1 - rate);
+        const annual = years > 0 ? round2(base / years) : 0;
+        const el1 = document.getElementById('annualDepreciation');
+        const el2 = document.getElementById('depreciationBase');
+        if (el1) el1.value = fmt(annual);
+        if (el2) el2.value = fmt(base);
+        return annual;
+    }
+
+    function calcAmortization() {
+        const otherCost = _cachedOtherCost || (val('totalInvestment') * 0.1);
+        const years = val('amortizationYears');
+        const annual = years > 0 ? round2(otherCost / years) : 0;
+        const el1 = document.getElementById('annualAmortization');
+        const el2 = document.getElementById('amortizationBase');
+        if (el1) el1.value = fmt(annual);
+        if (el2) el2.value = fmt(otherCost);
+        return annual;
+    }
+
+    function getCostItems() {
+        var fuel = 0, material = 0;
+        costItems.forEach(function(item) {
+            if (item.name.includes('燃料') || item.name.includes('动力')) fuel += item.amount;
+            if (item.name.includes('原材料') || item.name.includes('原料')) material += item.amount;
+        });
+        return { fuel: fuel, material: material };
+    }
+
+    // ==================== 核心：自上而下重算所有联动表 ====================
+    function recalcDownstream() {
+        updateFundPlanTotals();
+        buildRepaymentTable();
+        renderRevenueTable(); renderCostTable(); calcDepreciation(); calcAmortization();
+        generateTaxTable();
+        recalcModeSpecific();
+    }
+
+    // 空函数，由各页面覆盖
+    function recalcModeSpecific() {}
+
+    // ==================== TAB 4: 税费估算表（Excel 口径） ====================
+    function generateTaxTable() {
+        const years=getYearRange(), opStart=val('operationStartYear');
+        const useDeduction = document.getElementById('vatDeduction').checked;
+        var deductionBase = parseFloat(document.getElementById('vatDeductionBase')?.value) || 0;
+        if (useDeduction && deductionBase > 0) {
+            var rates = getTaxRates();
+            _vatDeductionRemaining = round2(deductionBase / (1 + rates.inputRate) * rates.inputRate);
+        } else {
+            _vatDeductionRemaining = 0;
+        }
+        const thead=document.querySelector('#taxTable thead'), tbody=document.getElementById('taxBody');
+        thead.innerHTML='<tr><th>序号</th><th>税费科目</th>'+years.map(y=>'<th>'+y+'</th>').join('')+'<th>合计</th></tr>';
+        const taxResults = {};
+        const deductionRemainingByYear = {};
+        years.forEach(y => { taxResults[y] = calcTaxForYear(y); deductionRemainingByYear[y] = _vatDeductionRemaining; });
+        _cachedTaxResults = taxResults;
+        _deductionRemainingByYear = deductionRemainingByYear;
+        const rows=[
+            {seq:'1',   name:'增值税',             calc:y=>taxResults[y].vatPayable},
+            {seq:'1.1', name:'　销项税',           calc:y=>taxResults[y].outputTax},
+            {seq:'1.2', name:'　进项税',           calc:y=>taxResults[y].inputTax},
+            {seq:'1.3', name:'　应纳增值税',       calc:y=>taxResults[y].vatPayable},
+            {seq:'1.4', name:'　建设期增值税抵扣', calc:y=>taxResults[y].vatDeducted},
+            {seq:'1.5', name:'　剩余可抵扣金额',   calc:y=>y>=opStart?deductionRemainingByYear[y]:0},
+            {seq:'2',   name:'税金及附加',         calc:y=>taxResults[y].surcharge},
+            {seq:'2.1', name:'　城建税',           calc:y=>taxResults[y].cityTax},
+            {seq:'2.2', name:'　教育费附加',       calc:y=>taxResults[y].eduTax},
+            {seq:'2.3', name:'　地方教育费附加',   calc:y=>taxResults[y].localEduTax},
+            {seq:'3',   name:'税金及附加合计',     calc:y=>taxResults[y].vatPayable+taxResults[y].surcharge, cls:'total-row'}
+        ];
+        tbody.innerHTML='';
+        rows.forEach((r,i)=>{
+            const tr=document.createElement('tr'); if(r.cls)tr.className=r.cls; let total=0;
+            let cells=`<td>${r.seq}</td><td class="text-start">${r.name}</td>`;
+            years.forEach(y=>{ const v=r.calc(y); total+=v; cells+=`<td class="text-end">${fmt(v)}</td>`; });
+            cells+=`<td class="text-end">${fmt(total)}</td>`; tr.innerHTML=cells; tbody.appendChild(tr);
+        });
+    }
+
+    // ==================== IRR / NPV / 回收期 ====================
+    function calcNPV(rate, cashFlows) {
+        var npv = 0;
+        for (var t = 0; t < cashFlows.length; t++) {
+            npv += cashFlows[t] / Math.pow(1 + rate, t);
+        }
+        return npv;
+    }
+
+    function calcIRR(cashFlows) {
+        var lo = -0.5, hi = 5.0;
+        for (var iter = 0; iter < 200; iter++) {
+            var mid = (lo + hi) / 2;
+            var npv = calcNPV(mid, cashFlows);
+            if (npv > 0) lo = mid; else hi = mid;
+            if (Math.abs(hi - lo) < 1e-8) break;
+        }
+        var irr = (lo + hi) / 2;
+        return irr < -0.5 || irr > 10 ? null : round2(irr * 100);
+    }
+
+    function calcPaybackPeriod(cashFlows) {
+        var cum = 0;
+        for (var t = 0; t < cashFlows.length; t++) {
+            var prev = cum;
+            cum += cashFlows[t];
+            if (cum >= 0 && prev < 0) {
+                return round2(t + (-prev) / cashFlows[t]);
+            }
+        }
+        return null;
+    }
+
+    // ==================== 保存/加载/导出 ====================
+    function collectAllData(){
+        var data={
+            _finance_mode: FINANCE_MODE,
+            fund:{projectName:document.getElementById('projectName').value,constructionStartYear:val('constructionStartYear'),constructionEndYear:val('constructionEndYear'),operationStartYear:val('operationStartYear'),operationEndYear:val('operationEndYear'),totalInvestment:val('totalInvestment'),ownCapital:val('ownCapital'),selfFund:val('selfFund'),debtFund:val('debtFund'),bondFund:val('bondFund'),bankLoan:val('bankLoan'),fundPlan:collectFundPlan(),extraFundPlanYears:_extraFundPlanYears.slice()},
+            repay:{debtList:debtList},
+            revcost:{yearlyLoadFactors:yearlyLoadFactors,depreciationYears:val('depreciationYears'),residualRate:val('residualRate'),amortizationYears:val('amortizationYears'),revenueItems:revenueItems,costItems:costItems},
+            tax:{taxRateOutput:val('taxRateOutput'),taxRateInput:val('taxRateInput'),taxRateCity:val('taxRateCity'),taxRateEdu:val('taxRateEdu'),taxRateLocalEdu:val('taxRateLocalEdu'),vatDeduction:document.getElementById('vatDeduction').checked,vatDeductionBase:val('vatDeductionBase')}
+        };
+        if (FINANCE_MODE === 'normal') {
+            data.nb = {
+                nbDepItems: typeof nbDepItems !== 'undefined' ? nbDepItems : [],
+                nbAmortItems: typeof nbAmortItems !== 'undefined' ? nbAmortItems : [],
+                nbDiscountRate: val('nbDiscountRate'),
+                nbProfitOverrides: typeof nbProfitOverrides !== 'undefined' ? nbProfitOverrides : {},
+                nbCFAllOverrides: typeof nbCFAllOverrides !== 'undefined' ? nbCFAllOverrides : {},
+                nbCFEquityOverrides: typeof nbCFEquityOverrides !== 'undefined' ? nbCFEquityOverrides : {}
+            };
+        }
+        return data;
+    }
+    function collectFundPlan(){
+        const data=[];
+        document.querySelectorAll('#fundPlanTable tbody tr').forEach(row=>{
+            const label=row.querySelector('td')?.textContent.trim(); const vals=[];
+            row.querySelectorAll('input[type="number"]').forEach(inp=>vals.push(parseFloat(inp.value)||0));
+            data.push({label,values:vals});
+        });
+        return data;
+    }
+    function validateFundPlan(){
+        const warnings=[], rows=document.querySelectorAll('#fundPlanTable tbody tr');
+        function getRowSum(kw){for(const row of rows){const t=row.querySelector('td')?.textContent||'';if(t.includes(kw)){let s=0;row.querySelectorAll('input[type="number"]').forEach(inp=>{s+=parseFloat(inp.value)||0;});return round2(s);}}return 0;}
+        const ad=getRowSum('债务资金'),as=getRowSum('自有资金'),sd=val('debtFund'),ss=val('selfFund');
+        if(round2(ad)!==round2(sd))warnings.push(`债务资金：分年合计 ${fmt(ad)} ≠ 资金来源 ${fmt(sd)}`);
+        if(round2(as)!==round2(ss))warnings.push(`自有资金：分年合计 ${fmt(as)} ≠ 资金来源 ${fmt(ss)}`);
+        return warnings;
+    }
+    function saveData(){
+        const pid = getProjectId();
+        if (!pid) return;
+        const w=validateFundPlan();
+        if(w.length>0&&!confirm('数据校验提示：\n\n'+w.join('\n')+'\n\n是否继续保存？'))return;
+        fetch(`/api/project/${pid}/finance/save`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(collectAllData())}).then(r=>r.json()).then(r=>{if(r.success)showToast('保存成功');else showToast('保存失败：'+r.message,true);}).catch(()=>showToast('保存失败',true));
+    }
+    function loadData(){
+        const pid = getProjectId();
+        if (!pid) { recalcDownstream(); return; }
+        fetch(`/api/project/${pid}/finance/load?mode=${FINANCE_MODE}`).then(r=>r.json()).then(r=>{if(r.success&&r.data){applyLoadedData(r.data);showToast('数据加载完成');}else{recalcDownstream();}}).catch(()=>{recalcDownstream();});
+    }
+    function applyLoadedData(data){
+        if(!data)return;
+        if(data.fund){
+            ['ownCapital','selfFund','debtFund','bondFund','bankLoan'].forEach(id=>{if(data.fund[id]!==undefined)document.getElementById(id).value=data.fund[id];});
+            if(!_cachedInvestmentData&&data.fund.totalInvestment!==undefined)document.getElementById('totalInvestment').value=data.fund.totalInvestment;
+            ['constructionStartYear','constructionEndYear','operationStartYear','operationEndYear'].forEach(id=>{if(data.fund[id]!==undefined)document.getElementById(id).value=data.fund[id];});
+            updateFundingPct(); calcSelfFund();
+            if (data.fund.extraFundPlanYears) { _extraFundPlanYears = data.fund.extraFundPlanYears.slice(); }
+            buildFundPlanTable(); updateCycleYears();
+            if(data.fund.fundPlan&&data.fund.fundPlan.length>0){
+                const rows=document.querySelectorAll('#fundPlanTable tbody tr');
+                data.fund.fundPlan.forEach((rd,idx)=>{if(rows[idx]&&rd.values){const inps=rows[idx].querySelectorAll('input[type="number"]');rd.values.forEach((v,ci)=>{if(inps[ci])inps[ci].value=v;});}});
+                updateFundPlanTotals();
+            }
+        }
+        if(data.repay&&data.repay.debtList){debtList=data.repay.debtList;_debtIdCounter=debtList.reduce((m,d)=>Math.max(m,d.id||0),0)+1;renderDebtSummary();buildRepaymentTable();}
+        if(data.revcost){['depreciationYears','residualRate','amortizationYears'].forEach(id=>{var el=document.getElementById(id);if(el&&data.revcost[id]!==undefined)el.value=data.revcost[id];});
+            if(data.revcost.yearlyLoadFactors)yearlyLoadFactors=data.revcost.yearlyLoadFactors;
+            if(data.revcost.revenueItems)revenueItems=data.revcost.revenueItems;
+            if(data.revcost.costItems){costItems=data.revcost.costItems;costItems.forEach(function(c){if(!c.costType)c.costType='auto';});}
+            if(data.revcost.revenues&&!data.revcost.revenueItems){revenueItems=data.revcost.revenues.map(function(r){return{name:r.name||r.type,qty:r.spaces||r.qty||0,price:r.price||r.amount||0,rate:r.rate||100,growth:0};});}
+            if(data.revcost.costs&&!data.revcost.costItems){costItems=data.revcost.costs.map(function(c){return{name:c.name,amount:c.amount||0,growth:0};});}
+        }
+        if(data.tax){
+            ['taxRateOutput','taxRateInput','taxRateCity','taxRateEdu','taxRateLocalEdu'].forEach(id=>{if(data.tax[id]!==undefined)document.getElementById(id).value=data.tax[id];});
+            if(data.tax.vatDeduction!==undefined)document.getElementById('vatDeduction').checked=data.tax.vatDeduction;
+            if(data.tax.vatDeductionBase!==undefined&&document.getElementById('vatDeductionBase'))document.getElementById('vatDeductionBase').value=data.tax.vatDeductionBase;
+        }
+        if(data.nb){
+            if(data.nb.nbDepItems&&typeof nbDepItems!=='undefined')nbDepItems=data.nb.nbDepItems;
+            if(data.nb.nbAmortItems&&typeof nbAmortItems!=='undefined')nbAmortItems=data.nb.nbAmortItems;
+            if(data.nb.nbDiscountRate!==undefined&&document.getElementById('nbDiscountRate'))document.getElementById('nbDiscountRate').value=data.nb.nbDiscountRate;
+            if(data.nb.nbProfitOverrides&&typeof nbProfitOverrides!=='undefined')nbProfitOverrides=data.nb.nbProfitOverrides;
+            if(data.nb.nbCFAllOverrides&&typeof nbCFAllOverrides!=='undefined')nbCFAllOverrides=data.nb.nbCFAllOverrides;
+            if(data.nb.nbCFEquityOverrides&&typeof nbCFEquityOverrides!=='undefined')nbCFEquityOverrides=data.nb.nbCFEquityOverrides;
+        }
+        if(!_cachedInvestmentData||_cachedInvestmentData.length===0){calcSelfFund();updateFundingPct();}
+        recalcDownstream();
+    }
+    function showToast(msg,isError){var t=document.createElement('div');t.className='alert alert-'+(isError?'danger':'success')+' position-fixed start-50 translate-middle-x mt-3';t.style.cssText='z-index:9999;top:0;min-width:280px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.15);';t.textContent=msg;document.body.appendChild(t);setTimeout(function(){t.remove();},3000);}
+
+    // ==================== Excel 导出（收集各tab表格数据） ====================
+    function collectTableData(table) {
+        if (!table) return null;
+        var data = { headers: [], rows: [] };
+        var headerRow = table.querySelector('thead tr');
+        if (headerRow) {
+            headerRow.querySelectorAll('th').forEach(function(th) {
+                data.headers.push(th.textContent.trim());
+            });
+        }
+        var tbody = table.querySelector('tbody');
+        if (tbody) {
+            tbody.querySelectorAll('tr').forEach(function(tr) {
+                var row = [];
+                tr.querySelectorAll('td').forEach(function(td) {
+                    var input = td.querySelector('input');
+                    var colspan = parseInt(td.getAttribute('colspan')) || 1;
+                    row.push(input ? input.value : td.textContent.trim());
+                    for (var c = 1; c < colspan; c++) {
+                        row.push('');
+                    }
+                });
+                if (row.length > 0) data.rows.push(row);
+            });
+        }
+        return data;
+    }
+    function exportAllData() {
+        var pid = getProjectId();
+        if (!pid) return;
+        recalcDownstream();
+        var tabConfigs = getTabConfigs() || [];
+        var sheets = [];
+
+        tabConfigs.forEach(function(config) {
+            var tables = [];
+            config.tables.forEach(function(selector) {
+                var table = document.querySelector(selector);
+                var data = collectTableData(table);
+                if (data && data.headers.length > 0) {
+                    tables.push(data);
+                }
+            });
+
+            var summary = [];
+            config.summary.forEach(function(item) {
+                var val;
+                if (item.valueId === 'vatDeduction') {
+                    val = document.getElementById('vatDeduction')?.checked ? '是' : '否';
+                } else {
+                    var el = document.getElementById(item.valueId);
+                    val = el ? (el.value || el.textContent || '') : '';
+                }
+                summary.push([item.label, val]);
+            });
+
+            if (tables.length > 0 || summary.length > 0) {
+                sheets.push({
+                    name: config.name,
+                    tables: tables,
+                    summary: summary
+                });
+            }
+        });
+
+        if (sheets.length === 0) { showToast('没有可导出的数据', true); return; }
+        fetch('/api/project/' + pid + '/finance/export-all', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mode: FINANCE_MODE, sheets: sheets })
+        })
+        .then(function(r) { if (!r.ok) throw new Error('导出失败'); return r.blob(); })
+        .then(function(blob) {
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = '财务测算_' + (FINANCE_MODE === 'bond' ? '专项债' : '一般项目') + '.xlsx';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('导出成功');
+        })
+        .catch(function() { showToast('导出失败', true); });
+    }
+    function getTabConfigs() { return []; }
+
+    // ==================== 共享事件绑定 ====================
+    document.getElementById('btnSave')?.addEventListener('click',saveData);
+    document.getElementById('btnExport')?.addEventListener('click',exportAllData);
+    document.getElementById('btnResetVatBase')?.addEventListener('click',function(){
+        var el=document.getElementById('vatDeductionBase');
+        if(el){el.value=_cachedConstructionInvestment;recalcDownstream();}
+    });
+    document.getElementById('btnAddFundPlanYear')?.addEventListener('click',function(){
+        var nextYear = val('operationStartYear');
+        var existing = getFundPlanYears();
+        if (existing.length > 0) { nextYear = existing[existing.length - 1] + 1; }
+        var input = prompt('请输入要添加的年份：', nextYear);
+        if (input !== null && input.trim() !== '') {
+            addFundPlanYear(parseInt(input.trim()));
+        }
+    });
+    ['constructionStartYear','constructionEndYear','operationStartYear','operationEndYear'].forEach(id=>{document.getElementById(id)?.addEventListener('change',function(){updateCycleYears();buildFundPlanTable();recalcDownstream();});});
+    document.getElementById('btnAddDebt')?.addEventListener('click',function(){
+        document.getElementById('debtName').value='债务'+(debtList.length+1);
+        document.getElementById('debtStartYear').value=val('operationStartYear')||'';
+        document.getElementById('debtDuration').value=10;
+        document.getElementById('debtAmount').value='';
+        document.getElementById('debtRate').value=4.0;
+        document.getElementById('debtMethod').value='equal-principal';
+        document.getElementById('debtRepayYears').value='';
+        document.getElementById('debtRepayYearsWrap').style.display='';
+        document.getElementById('debtFirstHalf').checked=false;
+        document.getElementById('debtLastHalf').checked=false;
+        new bootstrap.Modal(document.getElementById('debtModal')).show();
+    });
+    document.getElementById('debtMethod')?.addEventListener('change',function(){
+        document.getElementById('debtRepayYearsWrap').style.display=this.value==='lump-sum'?'none':'';
+    });
+    document.getElementById('btnConfirmDebt')?.addEventListener('click',function(){
+        const amount=parseFloat(document.getElementById('debtAmount').value);
+        if(!amount||amount<=0){alert('请输入有效的债务金额');return;}
+        const method=document.getElementById('debtMethod').value;
+        const rYrs=parseInt(document.getElementById('debtRepayYears').value);
+        addDebt({
+            name:document.getElementById('debtName').value||'债务',
+            startYear:parseInt(document.getElementById('debtStartYear').value)||val('operationStartYear'),
+            duration:parseInt(document.getElementById('debtDuration').value)||10,
+            amount:amount,
+            rate:parseFloat(document.getElementById('debtRate').value)||4.0,
+            method:method,
+            repayYears:method!=='lump-sum'&&rYrs>0?rYrs:(parseInt(document.getElementById('debtDuration').value)||10),
+            firstHalf:document.getElementById('debtFirstHalf').checked,
+            lastHalf:document.getElementById('debtLastHalf').checked
+        });
+        bootstrap.Modal.getInstance(document.getElementById('debtModal')).hide();
+    });
+    document.getElementById('btnClearDebts')?.addEventListener('click',function(){
+        if(debtList.length===0)return;
+        if(!confirm('确定清空所有债务数据？'))return;
+        debtList=[];
+        renderDebtSummary();
+        buildRepaymentTable();
+        recalcDownstream();
+    });
+    ['depreciationYears','residualRate','amortizationYears','totalInvestment'].forEach(function(id){
+        document.getElementById(id)?.addEventListener('input',recalcDownstream);
+    });
+    ['taxRateOutput','taxRateInput','taxRateCity','taxRateEdu','taxRateLocalEdu'].forEach(function(id){
+        document.getElementById(id)?.addEventListener('input',recalcDownstream);
+    });
+    document.getElementById('vatDeduction')?.addEventListener('change',recalcDownstream);
+    document.getElementById('vatDeductionBase')?.addEventListener('input',recalcDownstream);
+    document.getElementById('btnAddRevenueRow')?.addEventListener('click',function(){
+        document.getElementById('revItemEditIdx').value=-1;
+        document.getElementById('revItemModalTitle').textContent='添加收入项';
+        document.getElementById('revItemName').value='';
+        document.getElementById('revItemQty').value='';
+        document.getElementById('revItemPrice').value='';
+        document.getElementById('revItemRate').value=85;
+        document.getElementById('revItemGrowth').value=0;
+        new bootstrap.Modal(document.getElementById('revItemModal')).show();
+    });
+    document.getElementById('btnAddCostRow')?.addEventListener('click',function(){
+        document.getElementById('costItemEditIdx').value=-1;
+        document.getElementById('costItemModalTitle').textContent='添加成本项';
+        document.getElementById('costItemName').value='';
+        document.getElementById('costItemAmount').value='';
+        document.getElementById('costItemGrowth').value=0;
+        document.getElementById('costItemType').value='auto';
+        document.getElementById('costPresetSelect').value='';
+        new bootstrap.Modal(document.getElementById('costItemModal')).show();
+    });
+    document.getElementById('btnConfirmRevItem')?.addEventListener('click',function(){
+        var name=document.getElementById('revItemName').value||'收入项';
+        var qty=parseFloat(document.getElementById('revItemQty').value)||0;
+        var price=parseFloat(document.getElementById('revItemPrice').value)||0;
+        var rate=parseFloat(document.getElementById('revItemRate').value)||0;
+        var growth=parseFloat(document.getElementById('revItemGrowth').value)||0;
+        var editIdx=parseInt(document.getElementById('revItemEditIdx').value);
+        var item={name:name,qty:qty,price:price,rate:rate,growth:growth};
+        if(editIdx>=0) revenueItems[editIdx]=item; else revenueItems.push(item);
+        bootstrap.Modal.getInstance(document.getElementById('revItemModal')).hide();
+        recalcDownstream();
+    });
+    document.getElementById('btnConfirmCostItem')?.addEventListener('click',function(){
+        var name=document.getElementById('costItemName').value||'成本项';
+        var amount=parseFloat(document.getElementById('costItemAmount').value)||0;
+        var growth=parseFloat(document.getElementById('costItemGrowth').value)||0;
+        var costType=document.getElementById('costItemType').value||'auto';
+        var editIdx=parseInt(document.getElementById('costItemEditIdx').value);
+        var item={name:name,amount:amount,growth:growth,costType:costType};
+        if(editIdx>=0) costItems[editIdx]=item; else costItems.push(item);
+        bootstrap.Modal.getInstance(document.getElementById('costItemModal')).hide();
+        recalcDownstream();
+    });
+    document.addEventListener('input',function(e){
+        if(e.target.closest('.lf-input')){
+            var inp=e.target.closest('.lf-input');
+            var y=parseInt(inp.dataset.year);
+            if(!isNaN(y)){yearlyLoadFactors[y]=parseFloat(inp.value)||100;}
+            recalcDownstream();
+        }
+    });
+    document.addEventListener('click',function(e){
+        if(e.target.closest('.btn-edit-rev')){
+            var idx=parseInt(e.target.closest('.btn-edit-rev').dataset.idx);
+            var item=revenueItems[idx]; if(!item)return;
+            document.getElementById('revItemEditIdx').value=idx;
+            document.getElementById('revItemModalTitle').textContent='编辑收入项';
+            document.getElementById('revItemName').value=item.name;
+            document.getElementById('revItemQty').value=item.qty;
+            document.getElementById('revItemPrice').value=item.price;
+            document.getElementById('revItemRate').value=item.rate;
+            document.getElementById('revItemGrowth').value=item.growth||0;
+            new bootstrap.Modal(document.getElementById('revItemModal')).show();
+        }
+        if(e.target.closest('.btn-remove-rev')){
+            var idx=parseInt(e.target.closest('.btn-remove-rev').dataset.idx);
+            revenueItems.splice(idx,1); recalcDownstream();
+        }
+        if(e.target.closest('.btn-edit-cost')){
+            var idx=parseInt(e.target.closest('.btn-edit-cost').dataset.idx);
+            var item=costItems[idx]; if(!item)return;
+            document.getElementById('costItemEditIdx').value=idx;
+            document.getElementById('costItemModalTitle').textContent='编辑成本项';
+            document.getElementById('costItemName').value=item.name;
+            document.getElementById('costItemAmount').value=item.amount;
+            document.getElementById('costItemGrowth').value=item.growth||0;
+            document.getElementById('costItemType').value=item.costType||'auto';
+            document.getElementById('costPresetSelect').value='';
+            new bootstrap.Modal(document.getElementById('costItemModal')).show();
+        }
+        if(e.target.closest('.btn-remove-cost')){
+            var idx=parseInt(e.target.closest('.btn-remove-cost').dataset.idx);
+            costItems.splice(idx,1); recalcDownstream();
+        }
+    });
+
+    // 成本预设下拉联动
+    var _costPresets = {
+        '外购原材料': { name: '外购原材料', costType: 'variable' },
+        '外购燃料动力': { name: '外购燃料动力', costType: 'variable' },
+        '工资及福利费': { name: '工资及福利费', costType: 'fixed' },
+        '修理费': { name: '修理费', costType: 'fixed' },
+        '其他管理费用': { name: '其他管理费用', costType: 'fixed' },
+        '销售费用': { name: '销售费用', costType: 'semi' },
+        '其他制造费用': { name: '其他制造费用', costType: 'fixed' }
+    };
+    document.getElementById('costPresetSelect')?.addEventListener('change', function() {
+        var preset = _costPresets[this.value];
+        if (preset) {
+            document.getElementById('costItemName').value = preset.name;
+            document.getElementById('costItemType').value = preset.costType;
+        }
+    });
+
+    // ==================== 共享初始化 ====================
+    initFundPlan();
+    renderRevenueTable(); renderCostTable(); calcDepreciation(); calcAmortization();
+    updateCycleYears();
+    loadInvestmentData().finally(()=>{ loadData(); });

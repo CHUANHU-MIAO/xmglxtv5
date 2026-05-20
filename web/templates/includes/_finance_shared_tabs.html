@@ -1,0 +1,152 @@
+                <!-- ==================== TAB 1: 资金使用计划 ==================== -->
+                <div class="tab-pane fade show active" id="tab-fund" role="tabpanel">
+                    <div class="guide-tip"><i class="bi bi-lightbulb"></i> 请录入项目总投资、资金来源及分年资金使用计划。修改数据后点击"保存"按钮。</div>
+
+                    <!-- 项目基本信息 -->
+                    <div class="row mb-3">
+                        <div class="col-md-3"><label class="form-label">项目名称</label><input type="text" class="form-control form-control-sm" id="projectName" value="{{ project.name }}" readonly></div>
+                        <div class="col-md-2"><label class="form-label">建设期起始年</label><input type="number" class="form-control form-control-sm" id="constructionStartYear" value="2023"></div>
+                        <div class="col-md-2"><label class="form-label">建设期结束年</label><input type="number" class="form-control form-control-sm" id="constructionEndYear" value="2026"></div>
+                        <div class="col-md-2"><label class="form-label">运营期起始年</label><input type="number" class="form-control form-control-sm" id="operationStartYear" value="2026"></div>
+                        <div class="col-md-2"><label class="form-label">运营期结束年</label><input type="number" class="form-control form-control-sm" id="operationEndYear" value="2045"></div>
+                        <div class="col-md-2"><label class="form-label">计算周期</label><input type="text" class="form-control form-control-sm" id="totalCycleYears" readonly></div>
+                    </div>
+
+                    <!-- 资金来源 -->
+                    <h6 class="mb-2"><i class="bi bi-bank"></i> 资金来源（万元）</h6>
+                    <div class="overflow-x-auto mb-3">
+                        <table class="finance-table" id="fundingSourceTable">
+                            <thead><tr><th>资金来源</th><th>金额（万元）</th><th>占比</th><th>备注</th></tr></thead>
+                            <tbody>
+                                <tr><td class="text-start">估算总投资</td><td><input type="number" class="form-control form-control-sm text-end" id="totalInvestment" value="0" step="0.01"></td><td class="pct-cell">100%</td><td></td></tr>
+                                <tr><td class="text-start">一、资本金</td><td><input type="number" class="form-control form-control-sm text-end" id="ownCapital" value="0" step="0.01" readonly></td><td class="pct-cell">0%</td><td></td></tr>
+                                <tr><td class="text-start">&nbsp;&nbsp;自有资金</td><td><input type="number" class="form-control form-control-sm text-end" id="selfFund" value="0" step="0.01" readonly></td><td class="pct-cell">0%</td><td></td></tr>
+                                <tr><td class="text-start">二、债务资金</td><td><input type="number" class="form-control form-control-sm text-end" id="debtFund" value="0" step="0.01" readonly></td><td class="pct-cell">0%</td><td></td></tr>
+                                <tr {% if finance_mode == 'normal' %}style="display:none"{% endif %}><td class="text-start">&nbsp;&nbsp;专项债券</td><td><input type="number" class="form-control form-control-sm text-end" id="bondFund" value="0" step="0.01"></td><td class="pct-cell">0%</td><td></td></tr>
+                                <tr><td class="text-start">&nbsp;&nbsp;银行融资</td><td><input type="number" class="form-control form-control-sm text-end" id="bankLoan" value="0" step="0.01"></td><td class="pct-cell">0%</td><td></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 投资估算明细 -->
+                    <h6 class="mb-2"><i class="bi bi-list-check"></i> 投资估算明细（万元）</h6>
+                    <div class="overflow-x-auto mb-3">
+                        <table class="finance-table" id="investmentDetailTable">
+                            <thead><tr><th>序号</th><th>项目名称</th><th>金额（万元）</th><th>占比</th></tr></thead>
+                            <tbody id="investmentDetailBody">
+                                <tr><td>一</td><td>项目总投资</td><td class="text-end">0</td><td class="text-end">0%</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 分年资金使用计划 -->
+                    <h6 class="mb-2"><i class="bi bi-calendar-range"></i> 分年资金使用计划（万元）</h6>
+                    <div class="overflow-x-auto">
+                        <table class="finance-table" id="fundPlanTable">
+                            <thead><tr><th id="fundPlanHeader">项目</th><!-- 动态生成年份列 --></tr></thead>
+                            <tbody>
+                                <tr class="subtotal-row"><td class="text-start">一、资金流入</td></tr>
+                                <tr><td class="text-start">&nbsp;&nbsp;债务资金</td></tr>
+                                <tr><td class="text-start">&nbsp;&nbsp;自有资金</td></tr>
+                                <tr class="total-row"><td class="text-start">流入合计</td></tr>
+                                <tr class="subtotal-row"><td class="text-start">二、资金流出</td></tr>
+                                <tr><td class="text-start">&nbsp;&nbsp;工程费</td></tr>
+                                <tr><td class="text-start">&nbsp;&nbsp;工程建设其他费</td></tr>
+                                <tr><td class="text-start">&nbsp;&nbsp;预备费</td></tr>
+                                <tr><td class="text-start">&nbsp;&nbsp;建设期利息</td></tr>
+                                <tr><td class="text-start">&nbsp;&nbsp;流动资金</td></tr>
+                                <tr class="total-row"><td class="text-start">流出合计</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-primary mt-2" id="btnAddFundPlanYear"><i class="bi bi-plus-circle"></i> 添加年份列</button>
+                </div>
+
+                <!-- ==================== TAB 2: 还本付息 ==================== -->
+                <div class="tab-pane fade" id="tab-repay" role="tabpanel">
+                    <div class="guide-tip"><i class="bi bi-lightbulb"></i> 点击"添加债务"录入每笔债务的金额、利率、还款方式等信息，系统将自动合并计算还本付息计划表。</div>
+
+                    <div class="tab-toolbar mb-3">
+                        <button type="button" class="btn btn-primary btn-sm" id="btnAddDebt"><i class="bi bi-plus-circle"></i> 添加债务</button>
+                        <button type="button" class="btn btn-outline-danger btn-sm ms-2" id="btnClearDebts"><i class="bi bi-trash"></i> 清空所有债务</button>
+                    </div>
+
+                    <div id="debtSummary" class="mb-3"></div>
+
+                    <div class="overflow-x-auto">
+                        <table class="finance-table" id="repaymentTable">
+                            <thead><tr><th>序号</th><th>年份</th><th>期初本金</th><th>本期发行</th><th>本期偿还</th><th>期末本金</th><th>利率(%)</th><th>应付利息</th><th>应付本息</th></tr></thead>
+                            <tbody id="repaymentBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ==================== TAB 3: 收入成本 ==================== -->
+                <div class="tab-pane fade" id="tab-revcost" role="tabpanel">
+                    <div class="guide-tip"><i class="bi bi-lightbulb"></i> 请录入各项收入和成本数据。系统将自动计算合计及净收益。</div>
+
+                    <!-- 收入部分 -->
+                    <h6 class="mb-2"><i class="bi bi-graph-up-arrow"></i> 运营收入（万元）</h6>
+                    <div class="overflow-x-auto mb-3">
+                        <table class="finance-table" id="revenueTable">
+                            <thead id="revenueHead"></thead>
+                            <tbody id="revenueBody"></tbody>
+                        </table>
+                        <button type="button" class="btn btn-sm btn-success mt-2" id="btnAddRevenueRow"><i class="bi bi-plus"></i> 添加收入项</button>
+                    </div>
+
+                    <h6 class="mb-2"><i class="bi bi-graph-down-arrow"></i> 运营成本（万元）</h6>
+                    <div class="overflow-x-auto mb-3">
+                        <table class="finance-table" id="costTable">
+                            <thead id="costHead"></thead>
+                            <tbody id="costBody"></tbody>
+                        </table>
+                        <button type="button" class="btn btn-sm btn-success mt-2" id="btnAddCostRow"><i class="bi bi-plus"></i> 添加成本项</button>
+                    </div>
+
+                    {% if finance_mode == 'bond' %}
+                    <!-- 折旧摊销 -->
+                    <h6 class="mb-2"><i class="bi bi-arrow-down-up"></i> 折旧摊销</h6>
+                    <div class="row mb-2">
+                        <div class="col-md-3"><label class="form-label">折旧年限（年）</label><input type="number" class="form-control form-control-sm" id="depreciationYears" value="20"></div>
+                        <div class="col-md-3"><label class="form-label">残值率(%)</label><input type="number" class="form-control form-control-sm" id="residualRate" value="5" step="0.1"></div>
+                        <div class="col-md-3"><label class="form-label">年折旧额（万元）</label><input type="text" class="form-control form-control-sm" id="annualDepreciation" readonly></div>
+                        <div class="col-md-3"><label class="form-label">折旧基数（万元）</label><input type="text" class="form-control form-control-sm" id="depreciationBase" readonly></div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-3"><label class="form-label">摊销年限（年）</label><input type="number" class="form-control form-control-sm" id="amortizationYears" value="20"></div>
+                        <div class="col-md-3"></div>
+                        <div class="col-md-3"><label class="form-label">年摊销额（万元）</label><input type="text" class="form-control form-control-sm" id="annualAmortization" readonly></div>
+                        <div class="col-md-3"><label class="form-label">摊销基数（万元）</label><input type="text" class="form-control form-control-sm" id="amortizationBase" readonly></div>
+                    </div>
+                    {% endif %}
+
+                </div>
+
+                <!-- ==================== TAB 4: 税费估算 ==================== -->
+                <div class="tab-pane fade" id="tab-tax" role="tabpanel">
+                    <div class="guide-tip"><i class="bi bi-info-circle"></i> 此表根据收入成本数据自动计算。请先填写"收入成本"表。</div>
+                    <div class="tab-toolbar">
+                        <div class="d-flex align-items-center gap-1 flex-wrap">
+                            <span class="small text-nowrap">销项税</span><input type="number" class="form-control form-control-sm" id="taxRateOutput" value="13" step="0.1" style="width:75px"><span class="small">%</span>
+                            <span class="small text-nowrap">进项税</span><input type="number" class="form-control form-control-sm" id="taxRateInput" value="9" step="0.1" style="width:75px"><span class="small">%</span>
+                            <span class="small text-nowrap">城建税</span><input type="number" class="form-control form-control-sm" id="taxRateCity" value="5" step="0.1" style="width:75px"><span class="small">%</span>
+                            <span class="small text-nowrap">教育费附加</span><input type="number" class="form-control form-control-sm" id="taxRateEdu" value="3" step="0.1" style="width:75px"><span class="small">%</span>
+                            <span class="small text-nowrap">地方教育费附加</span><input type="number" class="form-control form-control-sm" id="taxRateLocalEdu" value="2" step="0.1" style="width:75px"><span class="small">%</span>
+                        </div>
+                        <div class="ms-auto d-flex align-items-center gap-2">
+                            <div class="form-check form-check-inline mb-0">
+                                <input class="form-check-input" type="checkbox" id="vatDeduction">
+                                <label class="form-check-label small" for="vatDeduction">建设期增值税抵扣</label>
+                            </div>
+                            <span class="small text-nowrap">抵扣计费基数</span><input type="number" class="form-control form-control-sm" id="vatDeductionBase" step="0.01" style="width:110px"><span class="small">万元</span>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" id="btnResetVatBase" title="重置为默认值"><i class="bi bi-arrow-counterclockwise"></i></button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="finance-table" id="taxTable">
+                            <thead><tr><th>序号</th><th>税费科目</th><!-- 动态年份列 --><th>合计</th></tr></thead>
+                            <tbody id="taxBody"></tbody>
+                        </table>
+                    </div>
+                </div>

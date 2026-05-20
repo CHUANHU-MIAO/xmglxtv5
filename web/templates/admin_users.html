@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}用户管理 - 河北鑫奥项目管理系统{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-people text-primary"></i> 添加新用户</h5>
+        </div>
+        <div class="card-body">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert {% if '成功' in message %}alert-success{% elif '密码' in message %}alert-info{% else %}alert-warning{% endif %}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="post" action="/admin/users">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="name" class="form-label">用户名</label>
+                        <input type="text" name="name" id="name" class="form-control" placeholder="请输入用户名（支持中文）" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="role" class="form-label">身份</label>
+                        <select name="role" id="role" class="form-select">
+                            <option value="engineer">工程师</option>
+                            <option value="admin">管理员</option>
+                            <option value="visitor">访客</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="password" class="form-label">密码</label>
+                        <input type="password" name="password" id="password" class="form-control" placeholder="不设置则使用默认密码123456">
+                        <small class="text-muted">密码不设限制，可为空（默认：123456）</small>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-center">
+                        <button type="submit" class="btn btn-primary w-100"><i class="bi bi-person-plus"></i> 添加用户</button>
+                    </div>
+                </div>
+                <div id="visitorProjectSection" class="row mt-3" style="display:none;">
+                    <div class="col-12">
+                        <label class="form-label fw-bold">匹配项目（访客可查看以下项目）</label>
+                        <div class="mb-2">
+                            <input type="text" id="projectSearch" class="form-control" placeholder="搜索项目名称..." style="font-size:0.9rem;">
+                        </div>
+                        <div class="row" id="projectCheckboxList" style="max-height:200px;overflow-y:auto;border:1px solid var(--border-color);border-radius:6px;padding:10px;">
+                            {% for p in projects %}
+                            <div class="col-md-4 col-sm-6 mb-1 project-item" data-name="{{ p.name }}" data-owner="{{ p.owner|default('') }}" data-location="{{ p.location|default('') }}">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="visitor_projects" value="{{ p.id }}" id="vp_{{ p.id }}">
+                                    <label class="form-check-label" for="vp_{{ p.id }}" style="font-size:0.9rem;">
+                                        {{ p.name }}
+                                    </label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="table-responsive mt-4">
+                <table class="table table-hover">
+                    <thead>
+                        <tr><th>ID</th><th>用户名</th><th>角色</th><th>密码</th><th width="120">操作</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for u in users %}
+                        <tr>
+                            <td>{{ u.id }}</td>
+                            <td>{{ u.name }}</td>
+                            <td><span class="badge {% if u.role == 'admin' %}bg-primary{% elif u.role == 'visitor' %}bg-info{% else %}bg-secondary{% endif %}">{{ {'admin':'管理员','engineer':'工程师','visitor':'访客'}.get(u.role, u.role) }}</span></td>
+                            <td><code style="color:var(--text-muted);font-family:var(--font-mono);font-size:0.82rem;">{{ u.password }}</code></td>
+                            <td>
+                                {% if u.name != 'admin' %}
+                                <form method="post" action="/admin/user/delete/{{ u.id }}" style="display:inline;" onsubmit="return confirm('确定删除用户【{{ u.name }}】吗？删除后该账号将无法登录！');">
+                                    <button type="submit" class="delete-btn"><i class="bi bi-trash"></i> 删除</button>
+                                </form>
+                                {% else %}
+                                <span class="text-muted" style="font-size:0.8rem;">系统管理员</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top:20px;padding:16px 20px;background:rgba(0,0,0,0.02);border:1px solid var(--border-color);border-radius:8px;">
+        <h6 style="margin-bottom:10px;color:var(--text-secondary);"><i class="bi bi-question-circle"></i> 使用说明：</h6>
+        <ul style="color:var(--text-muted);line-height:1.8;margin:0;padding-left:20px;">
+            <li>用户名支持中文、英文、数字，不能重复</li>
+            <li>密码可以为空，为空时使用默认密码：123456</li>
+            <li>新添加的用户可以选择身份为"工程师"、"管理员"或"访客"</li>
+            <li>访客用户需要匹配项目，登录后只能查看被匹配的项目</li>
+            <li>无法删除系统管理员（admin）账户</li>
+            <li>无法删除当前登录的用户账户</li>
+            <li>如果用户有项目，则无法删除该用户</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const nameInput = document.getElementById('name');
+        const passwordInput = document.getElementById('password');
+        if (!nameInput.value.trim()) {
+            e.preventDefault();
+            alert('用户名不能为空');
+            nameInput.focus();
+            return false;
+        }
+        if (!passwordInput.value.trim()) {
+            passwordInput.value = '123456';
+        }
+        return true;
+    });
+
+    document.getElementById('role').addEventListener('change', function() {
+        const section = document.getElementById('visitorProjectSection');
+        section.style.display = this.value === 'visitor' ? '' : 'none';
+    });
+
+    document.getElementById('projectSearch').addEventListener('input', function() {
+        const keyword = this.value.trim().toLowerCase();
+        const items = document.querySelectorAll('.project-item');
+        items.forEach(function(item) {
+            const name = (item.dataset.name || '').toLowerCase();
+            const owner = (item.dataset.owner || '').toLowerCase();
+            const location = (item.dataset.location || '').toLowerCase();
+            const match = !keyword || name.includes(keyword) || owner.includes(keyword) || location.includes(keyword);
+            item.style.display = match ? '' : 'none';
+        });
+    });
+</script>
+{% endblock %}

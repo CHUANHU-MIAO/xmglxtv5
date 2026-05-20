@@ -35,3 +35,7 @@ desktop/config.json
 
 # Subscription server database
 subscription_server/database/
+
+# Keys
+private_key.pem
+*.key

@@ -1,0 +1,385 @@
+{% extends "base.html" %}
+
+{% block title %}财务测算 - 专项债{% endblock %}
+
+{% block extra_head %}
+<style>
+    .finance-tabs .nav-link { font-size: 0.85rem; padding: 6px 12px; }
+    .finance-tabs .nav-link.active { font-weight: 600; border-bottom: 2px solid var(--accent-primary); }
+    .tab-toolbar { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+    .tab-toolbar .btn { font-size: 0.82rem; }
+    .guide-tip { background: #e8f5e9; border-left: 3px solid var(--accent-primary); padding: 10px 14px; margin-bottom: 12px; border-radius: 6px; font-size: 0.85rem; color: #2e7d32; }
+    .generated-badge { display: inline-block; background: var(--accent-blue); color: #fff; font-size: 0.7rem; padding: 1px 6px; border-radius: 8px; margin-left: 6px; vertical-align: middle; }
+    .finance-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .finance-table th, .finance-table td { padding: 5px 8px; border: 1px solid #dee2e6; text-align: center; vertical-align: middle; white-space: nowrap; }
+    .finance-table th { background: #f0f4f8; font-weight: 600; position: sticky; top: 0; z-index: 1; }
+    .finance-table .subtotal-row { background: #f3e5f5; font-weight: 600; }
+    .finance-table .total-row { background: #e8f5e9; font-weight: 700; }
+    .finance-table tbody tr:hover { background: rgba(0, 184, 148, 0.025); }
+    .finance-table input[type="number"] { width: 100%; min-width: 80px; text-align: center; padding: 3px 6px; font-size: 0.82rem; border: 1px solid #ccc; border-radius: 4px; }
+    .finance-table input[type="number"]:focus { border-color: var(--accent-primary); outline: none; box-shadow: 0 0 0 2px rgba(0,184,148,0.15); }
+    .finance-table .text-end,
+    .finance-table .text-start { text-align: center !important; }
+    .sensitivity-table .positive { color: #2e7d32; }
+    .sensitivity-table .negative { color: #c62828; }
+    .sensitivity-table .base { font-weight: 700; color: var(--accent-blue); }
+    .debt-card { display: inline-flex; align-items: center; gap: 8px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 6px 12px; margin: 0 8px 8px 0; font-size: 0.82rem; }
+    .debt-card .debt-name { font-weight: 600; color: #1565c0; }
+    .debt-card .debt-info { color: #555; }
+    .debt-card .btn-close-sm { padding: 0; margin-left: 4px; font-size: 0.7rem; cursor: pointer; border: none; background: none; color: #c62828; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4 py-3">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-info alert-dismissible fade show" role="alert">{{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="info-card">
+        <div class="info-header">
+            <i class="bi bi-calculator"></i> 财务测算（专项债）
+            <small class="text-muted ms-2">{{ project.name }}</small>
+            <div class="float-end">
+                {% if role != 'visitor' %}
+                <button type="button" class="btn btn-primary btn-sm" id="btnSave"><i class="bi bi-save"></i> 保存</button>
+                {% endif %}
+                <button type="button" class="btn btn-success btn-sm" id="btnExport"><i class="bi bi-file-excel"></i> 导出Excel</button>
+                <a href="/project/{{ project.id }}/finance" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> 返回选择</a>
+            </div>
+        </div>
+        <div class="info-body">
+            <!-- 选项卡导航 -->
+            <ul class="nav nav-tabs finance-tabs mb-3" id="financeTab" role="tablist">
+                <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tab-fund">资金使用计划</a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-repay">还本付息</a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-revcost">收入成本</a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-tax">税费估算<span class="generated-badge">自动</span></a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-profit">损益表<span class="generated-badge">自动</span></a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-netincome">净收益<span class="generated-badge">自动</span></a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-cashflow">现金流量<span class="generated-badge">自动</span></a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-sensitivity">敏感性分析<span class="generated-badge">自动</span></a></li>
+            </ul>
+
+            <div class="tab-content">
+                {% include "includes/_finance_shared_tabs.html" %}
+
+                <!-- ==================== TAB 5: 损益表 ==================== -->
+                <div class="tab-pane fade" id="tab-profit" role="tabpanel">
+                    <div class="guide-tip"><i class="bi bi-info-circle"></i> 此表根据收入、成本、税费数据自动计算。</div>
+                    <div class="tab-toolbar">
+                        <button type="button" class="btn btn-primary btn-sm" id="btnGenProfit"><i class="bi bi-gear"></i> 生成损益表</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="finance-table" id="profitTable">
+                            <thead><tr><th>序号</th><th>项目</th><!-- 动态年份列 --><th>合计</th></tr></thead>
+                            <tbody id="profitBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ==================== TAB 6: 净收益测算 ==================== -->
+                <div class="tab-pane fade" id="tab-netincome" role="tabpanel">
+                    <div class="guide-tip"><i class="bi bi-info-circle"></i> 此表综合还本付息与运营净收益，计算本息覆盖倍数。</div>
+                    <div class="tab-toolbar">
+                        <button type="button" class="btn btn-primary btn-sm" id="btnGenNetIncome"><i class="bi bi-gear"></i> 生成净收益表</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="finance-table" id="netIncomeTable">
+                            <thead><tr><th>序号</th><th>年份</th><th>偿还本金</th><th>本息合计</th><th>运营收入</th><th>运营成本</th><th>相关税费</th><th>净收益</th><th>覆盖率</th></tr></thead>
+                            <tbody id="netIncomeBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-4"><label class="form-label">偿债资金合计（万元）</label><input type="text" class="form-control form-control-sm" id="totalDebtServiceFund" readonly></div>
+                        <div class="col-md-4"><label class="form-label">债券本息合计（万元）</label><input type="text" class="form-control form-control-sm" id="totalBondPayment" readonly></div>
+                        <div class="col-md-4"><label class="form-label">本息覆盖倍数</label><input type="text" class="form-control form-control-sm" id="coverageRatio" readonly></div>
+                    </div>
+                </div>
+
+                <!-- ==================== TAB 7: 现金流量 ==================== -->
+                <div class="tab-pane fade" id="tab-cashflow" role="tabpanel">
+                    <div class="guide-tip"><i class="bi bi-info-circle"></i> 此表综合资金计划、还本付息、收入成本数据自动计算。</div>
+                    <div class="tab-toolbar">
+                        <button type="button" class="btn btn-primary btn-sm" id="btnGenCashFlow"><i class="bi bi-gear"></i> 生成现金流量表</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="finance-table" id="cashFlowTable">
+                            <thead><tr><th>序号</th><th>项目</th><!-- 动态年份列 --><th>合计</th></tr></thead>
+                            <tbody id="cashFlowBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ==================== TAB 8: 敏感性分析 ==================== -->
+                <div class="tab-pane fade" id="tab-sensitivity" role="tabpanel">
+                    <div class="guide-tip"><i class="bi bi-info-circle"></i> 此表分析收入变化对本息覆盖倍数的影响。</div>
+                    <div class="tab-toolbar">
+                        <button type="button" class="btn btn-primary btn-sm" id="btnGenSensitivity"><i class="bi bi-gear"></i> 生成敏感性分析</button>
+                        <span class="ms-2 text-muted">变化范围：</span>
+                        <select class="form-select form-select-sm" style="width:auto" id="sensitivityRange">
+                            <option value="15">±15%</option>
+                            <option value="10">±10%</option>
+                            <option value="20">±20%</option>
+                        </select>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="finance-table sensitivity-table" id="sensitivityTable">
+                            <thead><tr><th>指标</th><!-- 动态变化率列 --></tr></thead>
+                            <tbody id="sensitivityBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include "includes/_finance_shared_modals.html" %}
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const FINANCE_MODE = 'bond';
+
+{% include "includes/_finance_shared_js.html" %}
+
+// ==================== TAB 5: 损益表（Excel 口径） ====================
+function generateProfitTable() {
+    const years=getYearRange(), opStart=val('operationStartYear');
+    const dep=calcDepreciation(), amt=calcAmortization();
+    const repayData=getRepayData();
+    const thead=document.querySelector('#profitTable thead tr'), tbody=document.getElementById('profitBody');
+    thead.innerHTML='<th>序号</th><th>项目</th>'+years.map(y=>'<th>'+y+'</th>').join('')+'<th>合计</th>';
+    function gd(y){
+        const tx=_cachedTaxResults[y]||{vatPayable:0,surcharge:0};
+        const rd=repayData.find(r=>r.year===y)||{interest:0};
+        if(y<opStart) return {rev:0,cost:0,vt:0,sc:0,dep:0,amt:0,ebit:0,ebitda:0,pretax:0,itax:0,np:0,interest:rd.interest};
+        var rev=getRevenueForYear(y), cost=getCostForYear(y);
+        const vt=tx.vatPayable, sc=tx.surcharge, totalTax=vt+sc;
+        const da=dep+amt;
+        const ebitda=rev-cost-totalTax;
+        const ebit=ebitda-da;
+        const pretax=ebit-rd.interest;
+        const itax=Math.max(0,pretax*0.25);
+        const np=rev-cost-totalTax-da-rd.interest-itax;
+        return {rev,cost,vt,sc,totalTax,dep,amt,da,ebit,ebitda,pretax,itax,np,interest:rd.interest};
+    }
+    const profitRows=[
+        {name:'运营收入',cls:'subtotal-row',calc:y=>gd(y).rev},
+        {name:'营业成本',cls:'subtotal-row',calc:y=>gd(y).cost},
+        {name:'税金及附加',cls:'',calc:y=>gd(y).vt+gd(y).sc},
+        {name:'折旧',cls:'',calc:y=>y>=opStart?dep:0},
+        {name:'摊销',cls:'',calc:y=>y>=opStart?amt:0},
+        {name:'息税前利润(EBIT)',cls:'subtotal-row',calc:y=>gd(y).ebit},
+        {name:'利息支出',cls:'',calc:y=>gd(y).interest},
+        {name:'税前利润',cls:'subtotal-row',calc:y=>gd(y).pretax},
+        {name:'所得税',cls:'',calc:y=>gd(y).itax},
+        {name:'净利润',cls:'total-row',calc:y=>gd(y).np}
+    ];
+    const chineseNums=['一','二','三','四','五','六','七','八','九','十'];
+    tbody.innerHTML='';
+    profitRows.forEach((r,i)=>{
+        const tr=document.createElement('tr'); if(r.cls)tr.className=r.cls; let total=0;
+        let cells=`<td>${chineseNums[i]||i+1}</td><td class="text-start">${r.name}</td>`;
+        years.forEach(y=>{ const v=r.calc(y); total+=v; cells+=`<td class="text-end">${fmt(v)}</td>`; });
+        cells+=`<td class="text-end">${fmt(total)}</td>`; tr.innerHTML=cells; tbody.appendChild(tr);
+    });
+}
+
+// ==================== TAB 6: 净收益测算表 ====================
+function generateNetIncomeTable() {
+    const years=getYearRange(), opStart=val('operationStartYear');
+    const dep=calcDepreciation(), amt=calcAmortization();
+    const repayData=getRepayData();
+    const tbody=document.getElementById('netIncomeBody'); tbody.innerHTML='';
+    let totalRepay=0, totalBP=0, totalNI=0, totalRev=0, totalCost=0;
+    years.forEach((y,i)=>{
+        const rd=repayData.find(r=>r.year===y)||{repayment:0,interest:0,totalPayment:0};
+        let rev=0,cost=0,allTax=0;
+        if(y>=opStart){
+            rev=getRevenueForYear(y); cost=getCostForYear(y);
+            const tx=_cachedTaxResults[y]||{vatPayable:0,surcharge:0};
+            allTax=tx.vatPayable+tx.surcharge;
+        }
+        const ni=rev-cost-allTax;
+        const cov=rd.totalPayment>0?ni/rd.totalPayment:0;
+        totalRepay+=rd.repayment; totalBP+=rd.totalPayment; totalNI+=ni; totalRev+=rev; totalCost+=cost;
+        const tr=document.createElement('tr');
+        tr.innerHTML=`<td>${i+1}</td><td>${y}年</td><td class="text-end">${fmt(rd.repayment)}</td><td class="text-end">${fmt(rd.totalPayment)}</td><td class="text-end">${fmt(rev)}</td><td class="text-end">${fmt(cost)}</td><td class="text-end">${fmt(allTax)}</td><td class="text-end">${fmt(ni)}</td><td class="text-end">${cov>0?cov.toFixed(4):'-'}</td>`;
+        tbody.appendChild(tr);
+    });
+    const tr=document.createElement('tr'); tr.className='total-row';
+    tr.innerHTML=`<td colspan="2">合计</td><td class="text-end">${fmt(totalRepay)}</td><td class="text-end">${fmt(totalBP)}</td><td class="text-end">${fmt(totalRev)}</td><td class="text-end">${fmt(totalCost)}</td><td class="text-end">-</td><td class="text-end">${fmt(totalNI)}</td><td class="text-end">${totalBP>0?(totalNI/totalBP).toFixed(4):'-'}</td>`;
+    tbody.appendChild(tr);
+    document.getElementById('totalDebtServiceFund').value=fmt(totalNI);
+    document.getElementById('totalBondPayment').value=fmt(totalBP);
+    document.getElementById('coverageRatio').value=totalBP>0?(totalNI/totalBP).toFixed(4):'-';
+}
+
+// ==================== TAB 7: 现金流量表 ====================
+function generateCashFlowTable() {
+    const years=getYearRange(), opStart=val('operationStartYear');
+    const repayData=getRepayData();
+    const thead=document.querySelector('#cashFlowTable thead tr'), tbody=document.getElementById('cashFlowBody');
+    thead.innerHTML='<th>序号</th><th>项目</th>'+years.map(y=>'<th>'+y+'</th>').join('')+'<th>合计</th>';
+    const fpYears=getFundPlanYears();
+    const fd={}; document.querySelectorAll('#fundPlanTable tbody tr').forEach(row=>{
+        const label=row.querySelector('td')?.textContent.trim();
+        const byYear={};
+        row.querySelectorAll('input[type="number"]').forEach(inp=>{
+            const y=parseInt(inp.dataset.year); if(!isNaN(y))byYear[y]=parseFloat(inp.value)||0;
+        });
+        if(Object.keys(byYear).length>0){fd[label]=byYear;}else{
+            const cells=row.querySelectorAll('td'); const cv={}; cells.forEach((c,idx)=>{if(idx>0&&idx-1<fpYears.length)cv[fpYears[idx-1]]=parseFloat(c.textContent)||0;});fd[label]=cv;
+        }
+    });
+    function getFD(label,y){return fd[label]?.[y]||0;}
+    function opCF(y){return y>=opStart?(getRevenueForYear(y)-getCostForYear(y)):0;}
+    function invCF(y){return -getFD('流出合计',y);}
+    function finCF(y){return getFD('流入合计',y)-(repayData.find(r=>r.year===y)?.totalPayment||0);}
+    const cashRows=[
+        {name:'经营活动现金',cls:'subtotal-row',calc:()=>0},
+        {name:'经营现金流入',cls:'',calc:y=>y>=opStart?getRevenueForYear(y):0},
+        {name:'经营现金流出',cls:'',calc:y=>y>=opStart?getCostForYear(y):0},
+        {name:'经营净现金流',cls:'total-row',calc:y=>opCF(y)},
+        {name:'投资活动现金',cls:'subtotal-row',calc:()=>0},
+        {name:'投资现金流出',cls:'',calc:y=>invCF(y)},
+        {name:'融资活动现金',cls:'subtotal-row',calc:()=>0},
+        {name:'融资现金流入',cls:'',calc:y=>getFD('流入合计',y)},
+        {name:'偿还本金',cls:'',calc:y=>{const rd=repayData.find(r=>r.year===y);return rd?-rd.repayment:0;}},
+        {name:'支付利息',cls:'',calc:y=>{const rd=repayData.find(r=>r.year===y);return rd?-rd.interest:0;}},
+        {name:'融资净现金流',cls:'total-row',calc:y=>getFD('流入合计',y)-(repayData.find(r=>r.year===y)?.totalPayment||0)},
+        {name:'现金净变动',cls:'subtotal-row',calc:y=>opCF(y)+invCF(y)+finCF(y)},
+        {name:'累计盈余资金',cls:'total-row',calc:(y,i)=>{let c=0;for(let j=0;j<=i;j++){c+=opCF(years[j])+invCF(years[j])+finCF(years[j]);}return c;}}
+    ];
+    const chineseNums=['一','二','三','四','五','六','七','八','九','十'];
+    let parentIdx=0,subIdx=0;
+    tbody.innerHTML='';
+    cashRows.forEach((r,i)=>{
+        const tr=document.createElement('tr'); if(r.cls)tr.className=r.cls; let total=0;
+        let seq;
+        if(r.cls==='subtotal-row'){parentIdx++;subIdx=0;seq=chineseNums[parentIdx-1]||parentIdx;}else{subIdx++;seq=parentIdx+'.'+subIdx;}
+        let cells=`<td>${seq}</td><td class="text-start">${r.name}</td>`;
+        years.forEach((y,idx)=>{const v=r.calc(y,idx);if(!r.cls||r.cls==='total-row')total+=v;cells+=`<td class="text-end">${fmt(v)}</td>`;});
+        cells+=`<td class="text-end">${fmt(total)}</td>`; tr.innerHTML=cells; tbody.appendChild(tr);
+    });
+}
+
+// ==================== TAB 8: 敏感性分析 ====================
+function generateSensitivityTable() {
+    const repayData=getRepayData(), opStart=val('operationStartYear');
+    const range=parseInt(document.getElementById('sensitivityRange')?.value)||15;
+    const steps=[];
+    for(var s=-range;s<=range;s+=5){steps.push(round2(s/100));}
+    const thead=document.querySelector('#sensitivityTable thead tr'), tbody=document.getElementById('sensitivityBody');
+    while(thead.children.length>1) thead.removeChild(thead.lastChild);
+    steps.forEach(s=>{const th=document.createElement('th');th.textContent=(s>=0?'+':'')+(s*100).toFixed(0)+'%';if(s===0)th.className='base';thead.appendChild(th);});
+    const tBP=repayData.reduce((s,r)=>s+r.totalPayment,0), tBI=repayData.reduce((s,r)=>s+r.interest,0), tBPr=repayData.reduce((s,r)=>s+r.repayment,0);
+    function calcDebtFund(s){
+        var mul=1+s;var t=0;
+        getYearRange().filter(y2=>y2>=opStart).forEach(function(y){
+            var rev=getRevenueForYear(y)*mul,cost=getCostForYear(y);
+            var tx=_cachedTaxResults[y]||{vatPayable:0,surcharge:0};
+            var allTax=(tx.vatPayable+tx.surcharge)*mul;
+            t+=rev-cost-allTax;
+        });
+        return t;
+    }
+    const rows=[
+        {name:'偿债资金合计',calc:s=>calcDebtFund(s)},
+        {name:'债券还本付息额',calc:()=>tBP},
+        {name:'债券利息总额',calc:()=>tBI},
+        {name:'债券本金',calc:()=>tBPr},
+        {name:'本息覆盖率',calc:s=>tBP>0?calcDebtFund(s)/tBP:0}
+    ];
+    tbody.innerHTML='';
+    rows.forEach(r=>{
+        const tr=document.createElement('tr'); let cells=`<td class="text-start">${r.name}</td>`;
+        steps.forEach(s=>{
+            const v=r.calc(s);
+            const cls=r.name==='本息覆盖率'?(v>=1?'positive':'negative'):'';
+            const base=s===0?' base':'';
+            cells+=`<td class="text-end ${cls}${base}">${r.name==='本息覆盖率'?v.toFixed(4):fmt(v)}</td>`;
+        });
+        tr.innerHTML=cells; tbody.appendChild(tr);
+    });
+}
+
+// ==================== Tab 导出配置 ====================
+function getTabConfigs() {
+    return [
+        {
+            name: '资金使用计划',
+            tables: ['#fundingSourceTable', '#investmentDetailTable', '#fundPlanTable'],
+            summary: [
+                { label: '项目名称', valueId: 'projectName' },
+                { label: '建设期起始年', valueId: 'constructionStartYear' },
+                { label: '建设期结束年', valueId: 'constructionEndYear' },
+                { label: '运营期起始年', valueId: 'operationStartYear' },
+                { label: '运营期结束年', valueId: 'operationEndYear' },
+                { label: '计算周期', valueId: 'totalCycleYears' }
+            ]
+        },
+        { name: '还本付息', tables: ['#repaymentTable'], summary: [] },
+        {
+            name: '收入成本',
+            tables: ['#revenueTable', '#costTable'],
+            summary: [
+                { label: '折旧年限（年）', valueId: 'depreciationYears' },
+                { label: '残值率(%)', valueId: 'residualRate' },
+                { label: '年折旧额（万元）', valueId: 'annualDepreciation' },
+                { label: '折旧基数（万元）', valueId: 'depreciationBase' },
+                { label: '摊销年限（年）', valueId: 'amortizationYears' },
+                { label: '年摊销额（万元）', valueId: 'annualAmortization' },
+                { label: '摊销基数（万元）', valueId: 'amortizationBase' }
+            ]
+        },
+        {
+            name: '税费估算',
+            tables: ['#taxTable'],
+            summary: [
+                { label: '销项税率(%)', valueId: 'taxRateOutput' },
+                { label: '进项税率(%)', valueId: 'taxRateInput' },
+                { label: '城建税税率(%)', valueId: 'taxRateCity' },
+                { label: '教育费附加税率(%)', valueId: 'taxRateEdu' },
+                { label: '地方教育费附加税率(%)', valueId: 'taxRateLocalEdu' },
+                { label: '建设期增值税抵扣', valueId: 'vatDeduction' }
+            ]
+        },
+        { name: '损益表', tables: ['#profitTable'], summary: [] },
+        {
+            name: '净收益测算',
+            tables: ['#netIncomeTable'],
+            summary: [
+                { label: '偿债资金合计（万元）', valueId: 'totalDebtServiceFund' },
+                { label: '债券本息合计（万元）', valueId: 'totalBondPayment' },
+                { label: '本息覆盖倍数', valueId: 'coverageRatio' }
+            ]
+        },
+        { name: '现金流量', tables: ['#cashFlowTable'], summary: [] },
+        { name: '敏感性分析', tables: ['#sensitivityTable'], summary: [] }
+    ];
+}
+
+// ==================== 模式特定重算 ====================
+function recalcModeSpecific() {
+    generateProfitTable();
+    generateNetIncomeTable();
+    generateCashFlowTable();
+    generateSensitivityTable();
+}
+
+// ==================== 事件绑定 ====================
+document.getElementById('btnGenProfit')?.addEventListener('click', function() { generateProfitTable(); recalcDownstream(); });
+document.getElementById('btnGenNetIncome')?.addEventListener('click', function() { generateNetIncomeTable(); recalcDownstream(); });
+document.getElementById('btnGenCashFlow')?.addEventListener('click', function() { generateCashFlowTable(); recalcDownstream(); });
+document.getElementById('btnGenSensitivity')?.addEventListener('click', function() { generateSensitivityTable(); recalcDownstream(); });
+document.getElementById('sensitivityRange')?.addEventListener('change', generateSensitivityTable);
+
+</script>
+{% endblock %}

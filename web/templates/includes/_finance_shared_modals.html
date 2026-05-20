@@ -1,0 +1,138 @@
+<div class="modal fade" id="debtModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">添加债务</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-2"><label class="form-label">债务名称</label><input type="text" class="form-control form-control-sm" id="debtName" value="债务1"></div>
+                <div class="row mb-2">
+                    <div class="col-6"><label class="form-label">债务起始年</label><input type="number" class="form-control form-control-sm" id="debtStartYear"></div>
+                    <div class="col-6"><label class="form-label">债务期限（年）</label><input type="number" class="form-control form-control-sm" id="debtDuration" value="10"></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-6"><label class="form-label">债务金额（万元）</label><input type="number" class="form-control form-control-sm" id="debtAmount" step="0.01"></div>
+                    <div class="col-6"><label class="form-label">年利率（%）</label><input type="number" class="form-control form-control-sm" id="debtRate" value="4.0" step="0.01"></div>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">还本方式</label>
+                    <select class="form-select form-select-sm" id="debtMethod">
+                        <option value="equal-principal">等额本金</option>
+                        <option value="equal-installment">等额本息</option>
+                        <option value="lump-sum">到期一次性还本</option>
+                    </select>
+                </div>
+                <div class="mb-2" id="debtRepayYearsWrap">
+                    <label class="form-label">还本年数</label>
+                    <input type="number" class="form-control form-control-sm" id="debtRepayYears" placeholder="留空则等于债务期限">
+                </div>
+                <div class="mb-2 d-flex gap-4">
+                    <div class="form-check"><input type="checkbox" class="form-check-input" id="debtFirstHalf"><label class="form-check-label" for="debtFirstHalf">首年计半息</label></div>
+                    <div class="form-check"><input type="checkbox" class="form-check-input" id="debtLastHalf"><label class="form-check-label" for="debtLastHalf">末年计半息</label></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary btn-sm" id="btnConfirmDebt">确定添加</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="revItemModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header py-2"><h6 class="modal-title" id="revItemModalTitle">添加收入项</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body">
+                <input type="hidden" id="revItemEditIdx" value="-1">
+                <div class="mb-2"><label class="form-label">收入项名称</label><input type="text" class="form-control form-control-sm" id="revItemName"></div>
+                <div class="mb-2"><label class="form-label">数量</label><input type="number" class="form-control form-control-sm" id="revItemQty" step="1"></div>
+                <div class="mb-2"><label class="form-label">单价（万元/年）</label><input type="number" class="form-control form-control-sm" id="revItemPrice" step="0.01"></div>
+                <div class="mb-2"><label class="form-label">使用率(%)</label><input type="number" class="form-control form-control-sm" id="revItemRate" value="85" step="1"></div>
+                <div class="mb-2"><label class="form-label">增长率(%)</label><input type="number" class="form-control form-control-sm" id="revItemGrowth" value="0" step="0.1"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary btn-sm" id="btnConfirmRevItem">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="costItemModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header py-2"><h6 class="modal-title" id="costItemModalTitle">添加成本项</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body">
+                <input type="hidden" id="costItemEditIdx" value="-1">
+                <div class="mb-2">
+                    <label class="form-label">快速选择标准成本项</label>
+                    <select class="form-select form-select-sm" id="costPresetSelect">
+                        <option value="">自定义...</option>
+                        <option value="外购原材料">外购原材料（可变）</option>
+                        <option value="外购燃料动力">外购燃料动力（可变）</option>
+                        <option value="工资及福利费">工资及福利费（固定）</option>
+                        <option value="修理费">修理费（固定）</option>
+                        <option value="其他管理费用">其他管理费用（固定）</option>
+                        <option value="销售费用">销售费用（半可变）</option>
+                        <option value="其他制造费用">其他制造费用（固定）</option>
+                    </select>
+                </div>
+                <div class="mb-2"><label class="form-label">成本项名称</label><input type="text" class="form-control form-control-sm" id="costItemName"></div>
+                <div class="mb-2"><label class="form-label">年金额（万元/年）</label><input type="number" class="form-control form-control-sm" id="costItemAmount" step="0.01"></div>
+                <div class="mb-2"><label class="form-label">增长率(%)</label><input type="number" class="form-control form-control-sm" id="costItemGrowth" value="0" step="0.1"></div>
+                <div class="mb-2">
+                    <label class="form-label">成本类型</label>
+                    <select class="form-select form-select-sm" id="costItemType">
+                        <option value="auto">自动判定</option>
+                        <option value="fixed">固定成本</option>
+                        <option value="variable">可变成本</option>
+                        <option value="semi">半可变成本</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary btn-sm" id="btnConfirmCostItem">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="nbDepItemModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header py-2"><h6 class="modal-title" id="nbDepItemModalTitle">添加折旧项</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body">
+                <input type="hidden" id="nbDepItemEditIdx" value="-1">
+                <div class="mb-2"><label class="form-label">项目名称</label><input type="text" class="form-control form-control-sm" id="nbDepItemName"></div>
+                <div class="mb-2"><label class="form-label">原值（万元）</label><input type="number" class="form-control form-control-sm" id="nbDepItemBase" step="0.01"></div>
+                <div class="mb-2"><label class="form-label">折旧年限（年）</label><input type="number" class="form-control form-control-sm" id="nbDepItemYears" step="1"></div>
+                <div class="mb-2"><label class="form-label">残值率(%)</label><input type="number" class="form-control form-control-sm" id="nbDepItemRate" value="5" step="0.1"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary btn-sm" id="btnConfirmNbDepItem">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="nbAmortItemModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header py-2"><h6 class="modal-title" id="nbAmortItemModalTitle">添加摊销项</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body">
+                <input type="hidden" id="nbAmortItemEditIdx" value="-1">
+                <div class="mb-2"><label class="form-label">项目名称</label><input type="text" class="form-control form-control-sm" id="nbAmortItemName"></div>
+                <div class="mb-2"><label class="form-label">原值（万元）</label><input type="number" class="form-control form-control-sm" id="nbAmortItemBase" step="0.01"></div>
+                <div class="mb-2"><label class="form-label">摊销年限（年）</label><input type="number" class="form-control form-control-sm" id="nbAmortItemYears" step="1"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary btn-sm" id="btnConfirmNbAmortItem">确定</button>
+            </div>
+        </div>
+    </div>
+</div>

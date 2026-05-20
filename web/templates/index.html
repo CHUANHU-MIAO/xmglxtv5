@@ -1,0 +1,468 @@
+{% extends "base.html" %}
+
+{% block title %}河北鑫奥项目管理系统 - 首页{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- 统计概览 -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card">
+                <div class="stat-number">{{ year_total|default(0) }}</div>
+                <div class="stat-label">项目总数</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card">
+                <div class="stat-number" id="recent-month-count">0</div>
+                <div class="stat-label">最近一个月</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card">
+                <div class="stat-number">{{ eng_dict|length }}</div>
+                <div class="stat-label">编制人员数</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card">
+                <div class="stat-number">{{ area_dict|length }}</div>
+                <div class="stat-label">地区分布数</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 统计图表区域 -->
+    <div class="row g-4 mb-5">
+        <div class="col-lg-4 col-md-12">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-bar-chart"></i> 最近12个月项目统计</h6>
+                    <small class="text-muted">按项目开始时间统计，从本月开始向前统计12个月</small>
+                </div>
+                <div class="card-body chart-container" id="monthChart"></div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-12">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-globe"></i> 地区分布</h6>
+                </div>
+                <div class="card-body chart-container" id="areaChart"></div>
+                <div class="card-footer" id="areaLegend"></div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-12">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-person-workspace"></i> 编制人分布</h6>
+                </div>
+                <div class="card-body chart-container" id="engChart"></div>
+                <div class="card-footer" id="engLegend"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 项目列表卡片 -->
+    <div class="card">
+        <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <h5 class="mb-0"><i class="bi bi-clipboard-data text-primary"></i> 项目列表</h5>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="d-flex align-items-center gap-2 px-3 py-2" style="background:#f8f9fa;border-bottom:1px solid #dee2e6;">
+                <div class="input-group" style="width:280px;">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" id="searchKeyword" class="form-control py-1" placeholder="搜索项目..." value="{{ keyword|default('') }}">
+                    <button class="btn btn-outline-secondary" type="button" id="searchBtn">搜索</button>
+                </div>
+                <button type="button" class="btn btn-outline-secondary" id="resetBtn">
+                    <i class="bi bi-arrow-counterclockwise"></i> 重置
+                </button>
+                <div class="d-flex align-items-center gap-2 ms-auto">
+                    <a href="/export_projects?keyword={{ keyword|urlencode }}" target="_blank" class="btn btn-primary" id="exportBtn">
+                        <i class="bi bi-download"></i> 导出Excel
+                    </a>
+                    <span class="badge bg-info" id="totalBadge">总数: {{ year_total|default(0) }}</span>
+                    <small class="text-muted text-nowrap">时间: <span id="current-time"></span></small>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th width="8%">项目ID</th>
+                            <th width="20%">项目名称</th>
+                            <th width="15%">业主单位</th>
+                            <th width="10%">总投资(万元)</th>
+                            <th width="10%">合同金额(万元)</th>
+                            <th width="12%">合同情况</th>
+                            <th width="15%">编制人</th>
+                            <th width="10%">开始时间</th>
+                        </tr>
+                    </thead>
+                    <tbody id="projectTbody">
+                        {% if projects and projects.items %}
+                        {% for project in projects.items %}
+                        <tr>
+                            <td><span class="badge bg-primary">{{ project.id }}</span></td>
+                            <td>
+                                <a href="/project/detail/{{ project.id }}" class="project-name-link" title="点击查看项目详情">
+                                    <i class="bi bi-eye me-1"></i>{{ project.name|default('-')|truncate(20) }}
+                                </a>
+                            </td>
+                            <td>{{ project.owner|default('-')|truncate(15) }}</td>
+                            <td><strong>{{ project.total_investment|default('-') }}</strong></td>
+                            <td><strong>{{ project.contract_amount|default('-') }}</strong></td>
+                            <td>
+                                {% if project.contract_status %}
+                                <span class="badge {% if project.contract_status == '已签订' %}bg-success{% elif project.contract_status == '未签订' %}bg-warning{% else %}bg-secondary{% endif %}">
+                                    {{ project.contract_status }}
+                                </span>
+                                {% else %}
+                                <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ project.engineer.name|default('未知') }}</td>
+                            <td>
+                                {% if project.start_date %}
+                                <span class="text-primary fw-bold">{{ project.start_date.strftime('%m-%d') }}</span>
+                                {% else %}
+                                <span class="text-warning">未设置</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center py-5 text-muted">
+                                <i class="bi bi-folder-x fs-1 d-block mb-3"></i>
+                                暂无项目数据
+                                {% if keyword %}
+                                <br><small class="text-danger">未找到 "{{ keyword }}" 相关项目</small>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 分页控件 -->
+        <div id="paginationContainer">
+        {% if projects and projects.total > 0 %}
+        <div class="card-footer">
+            <nav aria-label="Page navigation" class="d-flex justify-content-center">
+                <ul class="pagination mb-0">
+                    <li class="page-item {% if not projects.has_prev %}disabled{% endif %}">
+                        <a class="page-link" href="?page={{ projects.prev_num }}&keyword={{ keyword|urlencode }}">上一页</a>
+                    </li>
+                    <li class="page-item active"><span class="page-link">{{ projects.page }}</span></li>
+                    <li class="page-item {% if not projects.has_next %}disabled{% endif %}">
+                        <a class="page-link" href="?page={{ projects.next_num }}&keyword={{ keyword|urlencode }}">下一页</a>
+                    </li>
+                    <li class="page-item disabled"><span class="page-link">共 {{ projects.pages }} 页</span></li>
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    var currentPage = {{ page|default(1) }};
+    var currentKeyword = '{{ keyword|default('') }}';
+
+    function resetSearch() {
+        document.getElementById('searchKeyword').value = '';
+        doSearch(1);
+    }
+
+    function doSearch(page) {
+        var kw = document.getElementById('searchKeyword').value.trim();
+        var params = new URLSearchParams({ context: 'index', page: page, per_page: 20, keyword: kw });
+        currentKeyword = kw;
+        currentPage = page;
+
+        var btn = document.getElementById('searchBtn');
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
+        btn.disabled = true;
+
+        fetch('/api/projects/search?' + params.toString())
+            .then(function(r) { return r.json(); })
+            .then(function(d) {
+                if (!d.success) return;
+                renderIndexRows(d.rows);
+                renderPagination(d.pagination);
+                document.getElementById('totalBadge').textContent = '总数: ' + d.pagination.total;
+                document.getElementById('exportBtn').href = '/export_projects?keyword=' + encodeURIComponent(kw);
+                if (history.pushState) {
+                    var url = '/' + (kw ? '?keyword=' + encodeURIComponent(kw) + (page > 1 ? '&page=' + page : '') : (page > 1 ? '?page=' + page : ''));
+                    history.pushState({page: page, keyword: kw}, '', url);
+                }
+            })
+            .catch(function(e) { console.error(e); })
+            .finally(function() {
+                btn.innerHTML = '搜索';
+                btn.disabled = false;
+            });
+    }
+
+    function renderIndexRows(rows) {
+        var tbody = document.getElementById('projectTbody');
+        if (rows.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" class="text-center py-5 text-muted"><i class="bi bi-folder-x fs-1 d-block mb-3"></i>暂无项目数据' + (currentKeyword ? '<br><small class="text-danger">未找到 "' + currentKeyword + '" 相关项目</small>' : '') + '</td></tr>';
+            return;
+        }
+        var html = '';
+        for (var i = 0; i < rows.length; i++) {
+            var r = rows[i];
+            var statusClass = 'bg-secondary';
+            if (r.contract_status === '已签订') statusClass = 'bg-success';
+            else if (r.contract_status === '未签订') statusClass = 'bg-warning';
+            html += '<tr>' +
+                '<td><span class="badge bg-primary">' + r.id + '</span></td>' +
+                '<td><a href="/project/detail/' + r.id + '" class="project-name-link" title="点击查看项目详情"><i class="bi bi-eye me-1"></i>' + escapeHtml(r.name).substring(0, 20) + '</a></td>' +
+                '<td>' + escapeHtml(r.owner).substring(0, 15) + '</td>' +
+                '<td><strong>' + escapeHtml(r.total_investment) + '</strong></td>' +
+                '<td><strong>' + escapeHtml(r.contract_amount) + '</strong></td>' +
+                '<td><span class="badge ' + statusClass + '">' + (r.contract_status || '<span class="text-muted">-</span>') + '</span></td>' +
+                '<td>' + escapeHtml(r.engineer_name) + '</td>' +
+                '<td><span class="text-primary fw-bold">' + (r.start_date || '<span class="text-warning">未设置</span>') + '</span></td>' +
+                '</tr>';
+        }
+        tbody.innerHTML = html;
+    }
+
+    function renderPagination(pg) {
+        var container = document.getElementById('paginationContainer');
+        if (pg.total_pages <= 1) { container.innerHTML = ''; return; }
+        var params = currentKeyword ? '&keyword=' + encodeURIComponent(currentKeyword) : '';
+        var html = '<div class="card-footer"><nav class="d-flex justify-content-center"><ul class="pagination mb-0">';
+        html += '<li class="page-item' + (!pg.has_prev ? ' disabled' : '') + '">';
+        html += '<a class="page-link" href="javascript:void(0)" onclick="doSearch(' + pg.prev_num + ')">上一页</a></li>';
+        html += '<li class="page-item active"><span class="page-link">' + pg.current_page + '</span></li>';
+        html += '<li class="page-item' + (!pg.has_next ? ' disabled' : '') + '">';
+        html += '<a class="page-link" href="javascript:void(0)" onclick="doSearch(' + pg.next_num + ')">下一页</a></li>';
+        html += '<li class="page-item disabled"><span class="page-link">共 ' + pg.total_pages + ' 页</span></li>';
+        html += '</ul></nav></div>';
+        container.innerHTML = html;
+    }
+
+    function escapeHtml(str) {
+        var div = document.createElement('div');
+        div.textContent = str || '-';
+        return div.innerHTML;
+    }
+
+    document.getElementById('searchBtn').addEventListener('click', function() { doSearch(1); });
+    document.getElementById('resetBtn').addEventListener('click', resetSearch);
+    document.getElementById('searchKeyword').addEventListener('keydown', function(e) { if (e.key === 'Enter') doSearch(1); });
+
+    window.addEventListener('popstate', function(e) {
+        if (e.state) {
+            document.getElementById('searchKeyword').value = e.state.keyword || '';
+            doSearch(e.state.page || 1);
+        }
+    });
+
+    function updateCurrentTime() {
+        const now = new Date();
+        const el = document.getElementById('current-time');
+        if (el) el.textContent = now.toLocaleTimeString();
+    }
+    setInterval(updateCurrentTime, 1000);
+
+    // 计算最近一个月的项目数量
+    function calculateRecentMonthCount() {
+        const monthData = {{ month_data|tojson }};
+        if (monthData.length > 0) {
+            const recentMonthCount = monthData[monthData.length - 1];
+            document.getElementById('recent-month-count').textContent = recentMonthCount;
+        }
+    }
+
+    // ECharts 图表初始化
+    document.addEventListener('DOMContentLoaded', function() {
+        // Chart theme colors
+        const textColor = '#5a6b7a';
+        const splitLineColor = 'rgba(0,0,0,0.06)';
+
+        const monthChart = echarts.init(document.getElementById('monthChart'));
+        const areaChart = echarts.init(document.getElementById('areaChart'));
+        const engChart = echarts.init(document.getElementById('engChart'));
+
+        // 月度柱状图
+        const monthLabels = {{ month_labels|tojson }};
+        const monthData = {{ month_data|tojson }};
+
+        monthChart.setOption({
+            tooltip: {
+                trigger: 'axis',
+                backgroundColor: 'rgba(255,255,255,0.95)',
+                borderColor: 'rgba(0,184,148,0.3)',
+                textStyle: { color: '#1a2332' },
+                formatter: function(params) {
+                    return params[0].name + '<br/>项目数量: <strong style="color:#00b894">' + params[0].value + '</strong>';
+                }
+            },
+            xAxis: {
+                type: 'category',
+                data: monthLabels,
+                axisLabel: { rotate: 45, fontSize: 10, interval: 0, color: textColor },
+                axisLine: { lineStyle: { color: splitLineColor } },
+                axisTick: { alignWithLabel: true }
+            },
+            yAxis: {
+                type: 'value',
+                min: 0,
+                name: '项目数量',
+                nameTextStyle: { fontSize: 12, color: textColor },
+                axisLabel: { color: textColor },
+                splitLine: { lineStyle: { color: splitLineColor } }
+            },
+            series: [{
+                name: '项目数量',
+                type: 'bar',
+                data: monthData,
+                itemStyle: {
+                    color: function(params) {
+                        var colorList = [
+                            '#00b894', '#009d7a', '#00a884', '#009874',
+                            '#008864', '#007854', '#006844', '#005834',
+                            '#00b894', '#009d7a', '#00a884', '#009874'
+                        ];
+                        return colorList[params.dataIndex] || '#00b894';
+                    },
+                    borderRadius: [4, 4, 0, 0]
+                },
+                emphasis: {
+                    itemStyle: {
+                        color: '#00eabb',
+                        shadowBlur: 10,
+                        shadowColor: 'rgba(0, 184, 148, 0.4)'
+                    }
+                },
+                label: { show: true, position: 'top', fontSize: 10, color: textColor }
+            }],
+            grid: { left: '10%', right: '5%', bottom: '20%', top: '15%', containLabel: true },
+            title: {
+                text: '最近12个月项目统计',
+                subtext: '按项目开始时间统计',
+                left: 'center',
+                textStyle: { fontSize: 14, fontWeight: 'bold', color: '#1a2332' },
+                subtextStyle: { color: textColor }
+            },
+            toolbox: {
+                feature: { saveAsImage: { title: '保存图片', pixelRatio: 2 } },
+                iconStyle: { borderColor: textColor }
+            }
+        });
+
+        // 地区分布 (圆环)
+        const areaData = [];
+        {% for area, count in area_dict.items() %}
+        areaData.push({ name: '{{ area }}', value: {{ count }} });
+        {% endfor %}
+
+        const areaTotal = areaData.reduce((sum, item) => sum + item.value, 0);
+        const areaLegend = document.getElementById('areaLegend');
+        areaLegend.innerHTML = '';
+        areaLegend.style.display = 'flex';
+        areaLegend.style.flexWrap = 'wrap';
+        areaLegend.style.gap = '8px';
+        const areaColors = ['#00d4aa', '#3b82f6', '#a78bfa', '#f0a500', '#ff6b6b'];
+        areaData.forEach((item, index) => {
+            const percentage = areaTotal > 0 ? (item.value / areaTotal * 100).toFixed(1) : 0;
+            const legendItem = document.createElement('div');
+            legendItem.style.cssText = 'display:flex;align-items:center;gap:6px;font-size:12px;color:#5a6b7a;';
+            const colorBox = document.createElement('div');
+            colorBox.style.cssText = `width:10px;height:10px;background:${areaColors[index % areaColors.length]};border-radius:2px;`;
+            legendItem.appendChild(colorBox);
+            legendItem.appendChild(document.createTextNode(`${item.name} ${item.value}个 (${percentage}%)`));
+            areaLegend.appendChild(legendItem);
+        });
+
+        areaChart.setOption({
+            tooltip: {
+                trigger: 'item',
+                backgroundColor: 'rgba(255,255,255,0.95)',
+                borderColor: 'rgba(0,184,148,0.3)',
+                textStyle: { color: '#1a2332' },
+                formatter: '{a} <br/>{b}: {c} ({d}%)'
+            },
+            series: [{
+                name: '地区分布',
+                type: 'pie',
+                radius: ['40%', '70%'],
+                avoidLabelOverlap: false,
+                label: { show: false },
+                emphasis: { label: { show: true, fontSize: '14', color: '#1a2332' } },
+                data: areaData
+            }],
+            color: areaColors
+        });
+
+        // 编制人分布 (圆环)
+        const engData = [];
+        {% for eng, count in eng_dict.items() %}
+        engData.push({ name: '{{ eng }}', value: {{ count }} });
+        {% endfor %}
+
+        const engTotal = engData.reduce((sum, item) => sum + item.value, 0);
+        const engLegend = document.getElementById('engLegend');
+        engLegend.innerHTML = '';
+        engLegend.style.display = 'flex';
+        engLegend.style.flexWrap = 'wrap';
+        engLegend.style.gap = '8px';
+        const engColors = ['#f0a500', '#ff9800', '#e65100', '#ff6b6b', '#a78bfa'];
+        engData.forEach((item, index) => {
+            const percentage = engTotal > 0 ? (item.value / engTotal * 100).toFixed(1) : 0;
+            const legendItem = document.createElement('div');
+            legendItem.style.cssText = 'display:flex;align-items:center;gap:6px;font-size:12px;color:#5a6b7a;';
+            const colorBox = document.createElement('div');
+            colorBox.style.cssText = `width:10px;height:10px;background:${engColors[index % engColors.length]};border-radius:2px;`;
+            legendItem.appendChild(colorBox);
+            legendItem.appendChild(document.createTextNode(`${item.name} ${item.value}个 (${percentage}%)`));
+            engLegend.appendChild(legendItem);
+        });
+
+        engChart.setOption({
+            tooltip: {
+                trigger: 'item',
+                backgroundColor: 'rgba(255,255,255,0.95)',
+                borderColor: 'rgba(212,148,0,0.3)',
+                textStyle: { color: '#1a2332' },
+                formatter: '{a} <br/>{b}: {c} ({d}%)'
+            },
+            series: [{
+                name: '编制人分布',
+                type: 'pie',
+                radius: ['40%', '70%'],
+                avoidLabelOverlap: false,
+                label: { show: false },
+                emphasis: { label: { show: true, fontSize: '14', color: '#1a2332' } },
+                data: engData
+            }],
+            color: engColors
+        });
+
+        calculateRecentMonthCount();
+        updateCurrentTime();
+
+        window.addEventListener('resize', function() {
+            monthChart.resize();
+            areaChart.resize();
+            engChart.resize();
+        });
+    });
+</script>
+{% endblock %}

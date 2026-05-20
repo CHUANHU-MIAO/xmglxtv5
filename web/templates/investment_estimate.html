@@ -1,0 +1,2586 @@
+{% extends "base.html" %}
+
+{% block title %}投资估算{% endblock %}
+
+{% block extra_head %}
+<style>
+    .input-unit-wrapper {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        white-space: nowrap;
+    }
+
+    .estimate-table th,
+    .estimate-table td {
+        padding: 4px 6px;
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <!-- 主体内容 -->
+    <div class="container mt-5 py-4">
+        <!-- 隐藏的项目信息 -->
+        <input type="hidden" id="projectLocation" value="{{ project.location or '' }}">
+        <!-- 显示消息提示 -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- 投资估算表格 -->
+        <div class="info-card">
+            <div class="info-header">
+                <i class="bi bi-currency-dollar"></i> 投资估算
+                <small class="text-muted">{{ project.name }}</small>
+                <div class="float-end">
+                    {% if role != 'visitor' %}
+                    <button type="button" class="btn btn-primary btn-sm" id="saveInvestment">
+                        <i class="bi bi-save"></i> 保存
+                    </button>
+                    {% endif %}
+                    <button type="button" class="btn btn-success btn-sm" id="exportExcel">
+                        <i class="bi bi-file-excel"></i> 导出Excel
+                    </button>
+                </div>
+            </div>
+            <div class="info-body">
+                <div class="overflow-x-auto">
+                    <table class="estimate-table">
+                        <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>工程或费用名称</th>
+                                <th>建筑工程费</th>
+                                <th>安装工程费</th>
+                                <th>设备购置与安装费</th>
+                                <th>其他费用</th>
+                                <th>合计</th>
+                                <th>单位</th>
+                                <th>数量</th>
+                                <th>单价</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- 建设投资 -->
+                            <tr class="subtotal-row">
+                                <td>一</td>
+                                <td>建设投资</td>
+                                <td>0.00</td>
+                                <td>0.00</td>
+                                <td>0.00</td>
+                                <td>0.00</td>
+                                <td>0.00</td>
+                                <td></td>
+                                <td></td>
+                                <td>1+2+3</td>
+                                <td></td>
+                            </tr>
+
+                            <!-- 工程费用 -->
+                            <tr class="subtotal-row">
+                                <td>1</td>
+                                <td>工程费用</td>
+                                <td>0.00</td>
+                                <td>0.00</td>
+                                <td>0.00</td>
+                                <td>0.00</td>
+                                <td>0.00</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-success add-row" data-level="1">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- 工程建设其他费用 -->
+                            <tr class="subtotal-row">
+                                <td>2</td>
+                                <td>工程建设其他费用</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>0.00</td>
+                                <td>0.00</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-success add-row" data-level="2">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- 预备费用 -->
+                            <tr class="subtotal-row">
+                                <td>3</td>
+                                <td>预备费用</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>0.00</td>
+                                <td>0.00</td>
+                                <td></td>
+                                <td></td>
+                                <td>1+2 6.00%</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-success add-row" data-level="3">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- 建设期利息 -->
+                            <tr class="subtotal-row">
+                                <td>二</td>
+                                <td>建设期利息</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><input type="number" class="form-control form-control-sm cost-input" value="0" step="0.01"></td>
+                                <td class="total-cell">0.00</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+
+                            <!-- 流动资金 -->
+                            <tr class="subtotal-row">
+                                <td>三</td>
+                                <td>流动资金</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><input type="number" class="form-control form-control-sm cost-input" value="0" step="0.01"></td>
+                                <td class="total-cell">0.00</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+
+                            <!-- 总投资 -->
+                            <tr class="total-row">
+                                <td>四</td>
+                                <td>项目总投资</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>0.00</td>
+                                <td></td>
+                                <td></td>
+                                <td>一+二+三</td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="d-flex justify-content-center mt-4">
+            <a href="/project/detail/{{ project.id }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> 返回项目详情
+            </a>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+    <script>
+        function showToast(msg, isError) {
+            var t = document.createElement('div');
+            t.className = 'alert alert-' + (isError ? 'danger' : 'success') + ' position-fixed start-50 translate-middle-x mt-3';
+            t.style.cssText = 'z-index:9999;top:0;min-width:280px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.15);';
+            t.textContent = msg;
+            document.body.appendChild(t);
+            setTimeout(function() { t.remove(); }, 3000);
+        }
+
+        // 自动关闭警告消息
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                const bsAlert = new bootstrap.Alert(alert);
+                setTimeout(() => bsAlert.close(), 5000);
+            });
+        }, 3000);
+
+        // 添加行功能
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为添加按钮添加点击事件
+            document.querySelectorAll('.add-row').forEach(button => {
+                button.addEventListener('click', function() {
+                    const level = this.getAttribute('data-level');
+                    showAddRowModal(level);
+                });
+            });
+
+            // 初始化自动计算
+            initAutoCalculate();
+            
+            // 初始计算一次汇总数据
+            updateTotals();
+            
+            // 加载已保存的数据
+            loadSavedData();
+            
+            // 保存按钮事件
+            document.getElementById('saveInvestment').addEventListener('click', function() {
+                saveInvestmentData();
+            });
+            
+            // 导出Excel按钮事件
+            document.getElementById('exportExcel').addEventListener('click', function() {
+                exportToExcel();
+            });
+        });
+
+        // 显示添加行模态框
+        function showAddRowModal(level) {
+            // 创建模态框
+            const modal = document.createElement('div');
+            modal.className = 'modal fade';
+            modal.id = 'addRowModal';
+            modal.tabIndex = -1;
+            modal.setAttribute('aria-labelledby', 'addRowModalLabel');
+            modal.setAttribute('aria-hidden', 'true');
+
+            if (level === '2') {
+                // 自动生成序号
+                const nextSerial = getNextSerialForLevel2();
+                showLevel2Modal(modal, level, nextSerial);
+            } else if (level === '3') {
+                showLevel3Modal(modal, level);
+            } else {
+                showLevel1Modal(modal, level);
+            }
+        }
+
+        // 获取序号2的下一个可用序号
+        function getNextSerialForLevel2() {
+            const rows = document.querySelectorAll('.estimate-table tbody tr');
+            let maxNum = 0;
+            rows.forEach(row => {
+                const serial = row.querySelector('td:first-child').textContent;
+                if (serial.startsWith('2.')) {
+                    const num = parseInt(serial.split('.')[1]) || 0;
+                    if (num > maxNum) maxNum = num;
+                }
+            });
+            return `2.${maxNum + 1}`;
+        }
+
+        // 序号1、3的添加模态框（原始表单）
+        function showLevel1Modal(modal, level) {
+            modal.innerHTML = `
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addRowModalLabel">添加费用项</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="addRowForm">
+                                <input type="hidden" name="level" value="${level}">
+                                <div class="mb-3">
+                                    <label for="itemName" class="form-label">费用名称</label>
+                                    <input type="text" class="form-control" id="itemName" name="itemName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="serialNumber" class="form-label">序号</label>
+                                    <input type="text" class="form-control" id="serialNumber" name="serialNumber" required placeholder="例如：1.1, 1.1.1等">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="costType" class="form-label">费用类型</label>
+                                    <select class="form-select" id="costType" name="costType" required>
+                                        <option value="building">建筑工程费</option>
+                                        <option value="installation">安装工程费</option>
+                                        <option value="equipment">设备购置与安装费</option>
+                                        <option value="other">其他费用</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="useIndex" name="useIndex">
+                                        <label class="form-check-label" for="useIndex">启用技术经济指标</label>
+                                    </div>
+                                </div>
+                                <div class="mb-3 cost-field" data-cost-type="building">
+                                    <label for="buildingCost" class="form-label">建筑工程费</label>
+                                    <input type="number" class="form-control" id="buildingCost" name="buildingCost" step="0.01" value="0">
+                                </div>
+                                <div class="mb-3 cost-field" data-cost-type="installation" style="display:none;">
+                                    <label for="installationCost" class="form-label">安装工程费</label>
+                                    <input type="number" class="form-control" id="installationCost" name="installationCost" step="0.01" value="0">
+                                </div>
+                                <div class="mb-3 cost-field" data-cost-type="equipment" style="display:none;">
+                                    <label for="equipmentCost" class="form-label">设备购置与安装费</label>
+                                    <input type="number" class="form-control" id="equipmentCost" name="equipmentCost" step="0.01" value="0">
+                                </div>
+                                <div class="mb-3 cost-field" data-cost-type="other" style="display:none;">
+                                    <label for="otherCost" class="form-label">其他费用</label>
+                                    <input type="number" class="form-control" id="otherCost" name="otherCost" step="0.01" value="0">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="unit" class="form-label">单位</label>
+                                    <input type="text" class="form-control" id="unit" name="unit">
+                                </div>
+                                <div class="mb-3 index-fields" style="display:none;">
+                                    <label for="quantity" class="form-label">数量</label>
+                                    <input type="number" class="form-control" id="quantity" name="quantity" step="0.01">
+                                </div>
+                                <div class="mb-3 index-fields" style="display:none;">
+                                    <label for="index" class="form-label">技术经济指标 (元/单位)</label>
+                                    <input type="number" class="form-control" id="index" name="index" step="0.01">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                            <button type="button" class="btn btn-primary" id="confirmAddRow">确定添加</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+
+            const bootstrapModal = new bootstrap.Modal(modal);
+            bootstrapModal.show();
+
+            // 费用类型切换时显示/隐藏对应的输入框
+            document.getElementById('costType').addEventListener('change', function() {
+                const selected = this.value;
+                document.querySelectorAll('.cost-field').forEach(function(el) {
+                    el.style.display = el.dataset.costType === selected ? '' : 'none';
+                });
+            });
+
+            // 启用技术经济指标时显示/隐藏数量和技术经济指标输入框
+            document.getElementById('useIndex').addEventListener('change', function() {
+                const show = this.checked;
+                document.querySelectorAll('.index-fields').forEach(function(el) {
+                    el.style.display = show ? '' : 'none';
+                });
+            });
+
+            document.getElementById('confirmAddRow').addEventListener('click', function() {
+                const form = document.getElementById('addRowForm');
+                const formData = new FormData(form);
+                const level = formData.get('level');
+                const serialNumber = formData.get('serialNumber');
+                const itemName = formData.get('itemName');
+                const costType = formData.get('costType');
+                const useIndex = formData.get('useIndex') === 'on';
+                const buildingCost = parseFloat(formData.get('buildingCost')) || 0;
+                const installationCost = parseFloat(formData.get('installationCost')) || 0;
+                const equipmentCost = parseFloat(formData.get('equipmentCost')) || 0;
+                const otherCost = parseFloat(formData.get('otherCost')) || 0;
+                const unit = formData.get('unit');
+                const quantity = parseFloat(formData.get('quantity')) || 0;
+                const index = parseFloat(formData.get('index')) || 0;
+
+                let finalBuildingCost = 0, finalInstallationCost = 0, finalEquipmentCost = 0, finalOtherCost = 0;
+
+                if (useIndex && quantity > 0 && index > 0) {
+                    const calculatedCost = (quantity * index) / 10000;
+                    switch (costType) {
+                        case 'building': finalBuildingCost = calculatedCost; break;
+                        case 'installation': finalInstallationCost = calculatedCost; break;
+                        case 'equipment': finalEquipmentCost = calculatedCost; break;
+                        case 'other': finalOtherCost = calculatedCost; break;
+                    }
+                } else {
+                    switch (costType) {
+                        case 'building': finalBuildingCost = buildingCost; break;
+                        case 'installation': finalInstallationCost = installationCost; break;
+                        case 'equipment': finalEquipmentCost = equipmentCost; break;
+                        case 'other': finalOtherCost = otherCost; break;
+                    }
+                }
+
+                const total = finalBuildingCost + finalInstallationCost + finalEquipmentCost + finalOtherCost;
+                addNewRow(level, serialNumber, itemName, finalBuildingCost, finalInstallationCost, finalEquipmentCost, finalOtherCost, total, unit, quantity, index, useIndex, costType, '', 0, 0);
+
+                bootstrapModal.hide();
+                setTimeout(() => document.body.removeChild(modal), 500);
+            });
+
+            modal.addEventListener('hidden.bs.modal', function() {
+                setTimeout(() => {
+                    if (document.getElementById('addRowModal')) document.body.removeChild(modal);
+                }, 500);
+            });
+        }
+
+        // 获取工程费用（序号1）的合计
+        function getEngineeringTotal() {
+            let total = 0;
+            document.querySelectorAll('.estimate-table tbody tr').forEach(row => {
+                if (row.querySelector('td:first-child').textContent === '1') {
+                    const cells = row.querySelectorAll('td');
+                    if (cells[6]) {
+                        total = parseFloat(cells[6].textContent) || 0;
+                    }
+                }
+            });
+            return total;
+        }
+
+        // 获取勘察费
+        function getSurveyFee() {
+            let fee = 0;
+            document.querySelectorAll('.estimate-table tbody tr').forEach(row => {
+                if (row.getAttribute('data-auto-calc') === 'survey') {
+                    const costInput = row.querySelector('.cost-input');
+                    if (costInput) {
+                        fee += parseFloat(costInput.value) || 0;
+                    }
+                }
+            });
+            return fee;
+        }
+
+        // 获取设计费
+        function getDesignFee() {
+            let fee = 0;
+            document.querySelectorAll('.estimate-table tbody tr').forEach(row => {
+                if (row.getAttribute('data-auto-calc') === 'design-fee') {
+                    const costInput = row.querySelector('.cost-input');
+                    if (costInput) {
+                        fee += parseFloat(costInput.value) || 0;
+                    }
+                }
+            });
+            return fee;
+        }
+
+        // 获取工程监理费
+        function getSupervisionFee() {
+            let fee = 0;
+            document.querySelectorAll('.estimate-table tbody tr').forEach(row => {
+                if (row.getAttribute('data-auto-calc') === 'supervision-fee') {
+                    const costInput = row.querySelector('.cost-input');
+                    if (costInput) {
+                        fee += parseFloat(costInput.value) || 0;
+                    }
+                }
+            });
+            return fee;
+        }
+
+        // 计算项目建设管理费
+        function calculateProjectManagementFee(engTotal) {
+            let baseFee = 0, rate = 0;
+            if (engTotal <= 1000) {
+                rate = 2.0;
+                baseFee = engTotal * rate / 100;
+            } else if (engTotal <= 5000) {
+                rate = 1.5;
+                baseFee = 20 + (engTotal - 1000) * rate / 100;
+            } else if (engTotal <= 10000) {
+                rate = 1.2;
+                baseFee = 80 + (engTotal - 5000) * rate / 100;
+            } else if (engTotal <= 50000) {
+                rate = 1.0;
+                baseFee = 140 + (engTotal - 10000) * rate / 100;
+            } else if (engTotal <= 100000) {
+                rate = 0.8;
+                baseFee = 540 + (engTotal - 50000) * rate / 100;
+            } else {
+                rate = 0.4;
+                baseFee = 940 + (engTotal - 100000) * rate / 100;
+            }
+            return { baseFee, rate };
+        }
+
+        // 计算设计费基价（直线内插法）
+        function calculateDesignFee(engTotal) {
+            const brackets = [
+                { x: 200, y: 9.0 },
+                { x: 500, y: 20.9 },
+                { x: 1000, y: 38.8 },
+                { x: 3000, y: 103.8 },
+                { x: 5000, y: 163.9 },
+                { x: 8000, y: 249.6 },
+                { x: 10000, y: 304.8 },
+                { x: 20000, y: 566.8 },
+                { x: 40000, y: 1054.0 },
+                { x: 60000, y: 1515.2 },
+                { x: 80000, y: 1960.1 },
+                { x: 100000, y: 2393.4 }
+            ];
+
+            if (engTotal <= 0) return 0;
+
+            // 小于等于最小档，按比例计算
+            if (engTotal <= brackets[0].x) {
+                return engTotal * brackets[0].y / brackets[0].x;
+            }
+
+            // 大于等于最大档，用最后两档外推
+            if (engTotal >= brackets[brackets.length - 1].x) {
+                const last = brackets[brackets.length - 1];
+                const prev = brackets[brackets.length - 2];
+                return last.y + (engTotal - last.x) / (last.x - prev.x) * (last.y - prev.y);
+            }
+
+            // 查找所在区间，直线内插法公式: Y = Y1 + (X-X1)/(X2-X1)*(Y2-Y1)
+            for (let i = 0; i < brackets.length - 1; i++) {
+                const x1 = brackets[i].x, y1 = brackets[i].y;
+                const x2 = brackets[i + 1].x, y2 = brackets[i + 1].y;
+                if (engTotal > x1 && engTotal <= x2) {
+                    return y1 + (engTotal - x1) / (x2 - x1) * (y2 - y1);
+                }
+            }
+
+            return 0;
+        }
+
+        // 城市基础设施配套费计费基价数据（元/平方米）
+        const urbanInfrastructureRates = {
+            '石家庄市': {
+                '井陉矿区': { '县城': { '住宅': 70, '非住宅': 50 }, '建制镇': { '住宅': 35, '非住宅': 25 } },
+                '新乐市': { '县城': { '住宅': 100, '非住宅': 80 }, '建制镇': { '住宅': 50, '非住宅': 40 } },
+                '晋州市': { '县城': { '住宅': 100, '非住宅': 80 }, '建制镇': { '住宅': 50, '非住宅': 40 } },
+                '高邑县': { '县城': { '住宅': 80, '非住宅': 60 }, '建制镇': { '住宅': 40, '非住宅': 30 } },
+                '赞皇县': { '县城': { '住宅': 80, '非住宅': 60 }, '建制镇': { '住宅': 40, '非住宅': 30 } },
+                '元氏县': { '县城': { '住宅': 80, '非住宅': 60 }, '建制镇': { '住宅': 40, '非住宅': 30 } },
+                '赵县': { '县城': { '住宅': 80, '非住宅': 60 }, '建制镇': { '住宅': 40, '非住宅': 30 } },
+                '深泽县': { '县城': { '住宅': 80, '非住宅': 60 }, '建制镇': { '住宅': 40, '非住宅': 30 } },
+                '无极县': { '县城': { '住宅': 80, '非住宅': 60 }, '建制镇': { '住宅': 40, '非住宅': 30 } },
+                '井陉县': { '县城': { '住宅': 70, '非住宅': 50 }, '建制镇': { '住宅': 35, '非住宅': 25 } },
+                '行唐县': { '县城': { '住宅': 70, '非住宅': 50 }, '建制镇': { '住宅': 35, '非住宅': 25 } },
+                '灵寿县': { '县城': { '住宅': 70, '非住宅': 50 }, '建制镇': { '住宅': 35, '非住宅': 25 } },
+                '平山县': { '县城': { '住宅': 70, '非住宅': 50 }, '建制镇': { '住宅': 35, '非住宅': 25 } },
+                '市区': { '县城': { '住宅': 178, '非住宅': 158 }, '建制镇': { '住宅': 178, '非住宅': 158 } }
+            },
+            '邯郸市': {
+                '永年区': { '县城': { '住宅': 80, '非住宅': 60 }, '建制镇': { '住宅': 50, '非住宅': 20 } },
+                '武安市': { '县城': { '住宅': 120, '非住宅': 90 }, '建制镇': { '住宅': 50, '非住宅': 20 } },
+                '涉县': { '县城': { '住宅': 60, '非住宅': 40 }, '建制镇': { '住宅': 30, '非住宅': 20 } },
+                '鸡泽县': { '县城': { '住宅': 70, '非住宅': 60 }, '建制镇': { '住宅': 30, '非住宅': 30 } },
+                '邱县': { '县城': { '住宅': 40, '非住宅': 45 }, '建制镇': { '住宅': 20, '非住宅': 22.5 } },
+                '曲周县': { '县城': { '住宅': 65, '非住宅': 55 }, '建制镇': { '住宅': 35, '非住宅': 20 } },
+                '魏县': { '县城': { '住宅': 50, '非住宅': 40 }, '建制镇': { '住宅': 30, '非住宅': 20 } },
+                '大名县': { '县城': { '住宅': 70, '非住宅': 60 }, '建制镇': { '住宅': 35, '非住宅': 25 } },
+                '成安县': { '县城': { '住宅': 50, '非住宅': 40 }, '建制镇': { '住宅': 30, '非住宅': 20 } },
+                '磁县': { '县城': { '住宅': 81.37, '非住宅': 81.37 }, '建制镇': { '住宅': 20, '非住宅': 20 } },
+                '广平县': { '县城': { '住宅': 90, '非住宅': 90 }, '建制镇': { '住宅': 50, '非住宅': 50 } },
+                '临漳县': { '县城': { '住宅': 68, '非住宅': 68 }, '建制镇': { '住宅': 38, '非住宅': 38 } },
+                '肥乡区': { '县城': { '住宅': 50, '非住宅': 50 }, '建制镇': { '住宅': 30, '非住宅': 30 } },
+                '馆陶县': { '县城': { '住宅': 50, '非住宅': 50 }, '建制镇': { '住宅': 30, '非住宅': 30 } },
+                '市区': { '县城': { '住宅': 148, '非住宅': 148 }, '建制镇': { '住宅': 148, '非住宅': 148 } }
+            }
+        };
+
+        // 获取城市基础设施配套费计费基价
+        function getUrbanInfrastructureRate(location, buildCategory, addressCategory) {
+            if (!location) return null;
+
+            // 解析项目所在地，提取城市和区县
+            let city = '';
+            let district = '';
+
+            // 尝试匹配城市
+            for (const cityName of Object.keys(urbanInfrastructureRates)) {
+                if (location.includes(cityName)) {
+                    city = cityName;
+                    // 提取区县部分
+                    const cityIndex = location.indexOf(cityName);
+                    district = location.substring(cityIndex + cityName.length).trim();
+                    break;
+                }
+            }
+
+            if (!city) return null;
+
+            // 查找匹配的区县
+            const cityData = urbanInfrastructureRates[city];
+            if (cityData[district]) {
+                return cityData[district][addressCategory][buildCategory];
+            }
+
+            // 如果没有找到匹配的区县，使用市区价格
+            return cityData['市区'][addressCategory][buildCategory];
+        }
+
+        // 计算工程监理费基价（直线内插法）
+        function calculateSupervisionFee(engTotal) {
+            const brackets = [
+                { x: 500, y: 16.5 },
+                { x: 1000, y: 30.1 },
+                { x: 3000, y: 78.1 },
+                { x: 5000, y: 120.8 },
+                { x: 8000, y: 181.0 },
+                { x: 10000, y: 218.6 },
+                { x: 20000, y: 393.4 },
+                { x: 40000, y: 708.2 },
+                { x: 60000, y: 991.4 },
+                { x: 80000, y: 1255.8 },
+                { x: 100000, y: 1507.0 },
+                { x: 200000, y: 2712.5 },
+                { x: 400000, y: 4882.6 },
+                { x: 600000, y: 6835.6 }
+            ];
+
+            if (engTotal <= 0) return 0;
+
+            // 小于等于最小档，按比例计算
+            if (engTotal <= brackets[0].x) {
+                return engTotal * brackets[0].y / brackets[0].x;
+            }
+
+            // 大于等于最大档，用最后两档外推
+            if (engTotal >= brackets[brackets.length - 1].x) {
+                const last = brackets[brackets.length - 1];
+                const prev = brackets[brackets.length - 2];
+                return last.y + (engTotal - last.x) / (last.x - prev.x) * (last.y - prev.y);
+            }
+
+            // 查找所在区间，直线内插法公式: Y = Y1 + (X-X1)/(X2-X1)*(Y2-Y1)
+            for (let i = 0; i < brackets.length - 1; i++) {
+                const x1 = brackets[i].x, y1 = brackets[i].y;
+                const x2 = brackets[i + 1].x, y2 = brackets[i + 1].y;
+                if (engTotal > x1 && engTotal <= x2) {
+                    return y1 + (engTotal - x1) / (x2 - x1) * (y2 - y1);
+                }
+            }
+
+            return 0;
+        }
+
+        // 计算前期工作咨询费（线性内插法）
+        function calculateConsultationFee(engTotal) {
+            const tiers = [
+                { min: 0, max: 1000, minFee: 4.5, maxFee: 7.5 },
+                { min: 1000, max: 3000, minFee: 7.5, maxFee: 18 },
+                { min: 3000, max: 10000, minFee: 18, maxFee: 42 },
+                { min: 10000, max: 50000, minFee: 42, maxFee: 112 },
+                { min: 50000, max: 100000, minFee: 112, maxFee: 165 }
+            ];
+
+            if (engTotal <= 0) return 0;
+
+            for (const tier of tiers) {
+                if (engTotal > tier.min && engTotal <= tier.max) {
+                    const ratio = (engTotal - tier.min) / (tier.max - tier.min);
+                    return tier.minFee + ratio * (tier.maxFee - tier.minFee);
+                }
+            }
+
+            // 超过100000万元，沿用最后一档的末端值线性外推
+            if (engTotal > 100000) {
+                const lastTier = tiers[tiers.length - 1];
+                const ratio = (engTotal - lastTier.min) / (lastTier.max - lastTier.min);
+                return lastTier.minFee + ratio * (lastTier.maxFee - lastTier.minFee);
+            }
+
+            return 0;
+        }
+
+        // 计算招标代理费（差额定率累进法）
+        function calculateTenderAgentFee(engTotal) {
+            if (engTotal <= 0) return 0;
+
+            let fee = 0;
+            const Y = engTotal;
+
+            if (Y <= 100) {
+                fee = Y * 0.01;
+            } else if (Y <= 500) {
+                fee = (Y - 100) * 0.007 + 100 * 0.01;
+            } else if (Y <= 1000) {
+                fee = (Y - 500) * 0.0055 + 400 * 0.007 + 100 * 0.01;
+            } else if (Y <= 5000) {
+                fee = (Y - 1000) * 0.0035 + 500 * 0.0055 + 400 * 0.007 + 100 * 0.01;
+            } else if (Y <= 10000) {
+                fee = (Y - 5000) * 0.002 + 4000 * 0.0035 + 500 * 0.0055 + 400 * 0.007 + 100 * 0.01;
+            } else if (Y <= 100000) {
+                fee = (Y - 10000) * 0.0005 + 5000 * 0.002 + 4000 * 0.0035 + 500 * 0.0055 + 400 * 0.007 + 100 * 0.01;
+            } else {
+                fee = (Y - 100000) * 0.0001 + 90000 * 0.0005 + 5000 * 0.002 + 4000 * 0.0035 + 500 * 0.0055 + 400 * 0.007 + 100 * 0.01;
+            }
+
+            return fee;
+        }
+
+        // 序号2的添加模态框（特殊表单）
+        function showLevel2Modal(modal, level, nextSerial) {
+            const costNameOptions = [
+                '土地费', '项目建设管理费', '建设场地准备及临时设施费', '前期工作咨询费',
+                '勘察费', '设计费', '施工图审查费', '研究实验费', '工程造价咨询费',
+                '招标代理费', '工程监理费', '城市基础设施配套费', '防空地下室易地建设费',
+                '工程保险费', '竣工财务决算费', '其他'
+            ];
+
+            const optionsHtml = costNameOptions.map(name => `<option value="${name}">${name}</option>`).join('');
+
+            modal.innerHTML = `
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addRowModalLabel">添加工程建设其他费用</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="addRowForm">
+                                <input type="hidden" name="level" value="${level}">
+                                <input type="hidden" name="serialNumber" value="${nextSerial}">
+                                <input type="hidden" name="costType" value="other">
+                                <div class="mb-3">
+                                    <label for="itemName" class="form-label">费用名称</label>
+                                    <select class="form-select" id="itemName" name="itemName" required>
+                                        ${optionsHtml}
+                                    </select>
+                                </div>
+                                <div id="customNameField" class="mb-3" style="display:none">
+                                    <label for="customName" class="form-label">自定义费用名称</label>
+                                    <input type="text" class="form-control" id="customName" name="customName" placeholder="请输入费用名称">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">序号</label>
+                                    <input type="text" class="form-control" value="${nextSerial}" readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="otherCost" class="form-label">其他费用（万元）</label>
+                                    <input type="number" class="form-control" id="otherCost" name="otherCost" step="0.01" value="0">
+                                </div>
+                                <div id="billingBasisField" class="mb-3">
+                                    <label for="billingBasis" class="form-label">计费依据</label>
+                                    <input type="text" class="form-control" id="billingBasis" name="billingBasis" placeholder="例如：总投资额、建筑面积等">
+                                </div>
+                                <div id="rateFields" class="row mb-3">
+                                    <div class="col">
+                                        <label for="calcRate" class="form-label">计算费率（%）</label>
+                                        <input type="number" class="form-control" id="calcRate" name="calcRate" step="0.01" value="0">
+                                    </div>
+                                    <div class="col">
+                                        <label for="discountRate" class="form-label">折扣收费率（%）</label>
+                                        <input type="number" class="form-control" id="discountRate" name="discountRate" step="1" value="100">
+                                    </div>
+                                </div>
+                                <div id="surveyFields" class="mb-3" style="display:none">
+                                    <div class="row">
+                                        <div class="col">
+                                            <label for="surveyArea" class="form-label">建构筑物占地面积（㎡）</label>
+                                            <input type="number" class="form-control" id="surveyArea" step="0.01" value="0" min="0">
+                                        </div>
+                                        <div class="col">
+                                            <label for="unitPrice" class="form-label">单价（元/㎡）</label>
+                                            <input type="number" class="form-control" id="unitPrice" step="0.01" value="15" min="0">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="urbanInfrastructureFields" class="mb-3" style="display:none">
+                                    <div class="mb-3">
+                                        <label class="form-label">项目所在地</label>
+                                        <input type="text" class="form-control" id="projectLocationDisplay" readonly style="background:#f0f0f0">
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col">
+                                            <label for="buildCategory" class="form-label">项目建设类别</label>
+                                            <select class="form-select" id="buildCategory">
+                                                <option value="住宅">住宅</option>
+                                                <option value="非住宅">非住宅</option>
+                                            </select>
+                                        </div>
+                                        <div class="col">
+                                            <label for="addressCategory" class="form-label">建设地址类别</label>
+                                            <select class="form-select" id="addressCategory">
+                                                <option value="县城">县城</option>
+                                                <option value="建制镇">建制镇</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="buildingArea" class="form-label">地上总建筑面积（㎡）</label>
+                                        <input type="number" class="form-control" id="buildingArea" step="0.01" value="0" min="0">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">计费基价（元/㎡）</label>
+                                        <input type="number" class="form-control" id="urbanRate" readonly style="background:#f0f0f0">
+                                    </div>
+                                </div>
+                                <div id="airDefenseFields" class="mb-3" style="display:none">
+                                    <div class="mb-3">
+                                        <label for="airDefenseArea" class="form-label">应建防空地下室面积（㎡）</label>
+                                        <input type="number" class="form-control" id="airDefenseArea" step="0.01" value="0" min="0">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="airDefenseUnitPrice" class="form-label">单价（元/㎡）</label>
+                                        <input type="number" class="form-control" id="airDefenseUnitPrice" step="0.01" value="0" min="0" placeholder="6B级设区市300，县级200；6B级以外设区市1500，县级1000">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                            <button type="button" class="btn btn-primary" id="confirmAddRow">确定添加</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+
+            const bootstrapModal = new bootstrap.Modal(modal);
+            bootstrapModal.show();
+
+            // 城市基础设施配套费计算函数
+            function updateUrbanInfrastructureFee() {
+                const location = document.getElementById('projectLocation').value;
+                const buildCategory = document.getElementById('buildCategory').value;
+                const addressCategory = document.getElementById('addressCategory').value;
+                const buildingArea = parseFloat(document.getElementById('buildingArea').value) || 0;
+                const discountRate = parseFloat(document.getElementById('discountRate').value) || 100;
+
+                const rate = getUrbanInfrastructureRate(location, buildCategory, addressCategory);
+                document.getElementById('urbanRate').value = rate ? rate.toFixed(2) : '未找到';
+
+                if (rate && buildingArea > 0) {
+                    const fee = rate * buildingArea / 10000 * discountRate / 100; // 转换为万元并乘以折扣收费率
+                    document.getElementById('otherCost').value = fee.toFixed(2);
+                } else {
+                    document.getElementById('otherCost').value = '0';
+                }
+            }
+
+            // 为城市基础设施配套费字段添加事件监听器
+            document.getElementById('buildCategory').addEventListener('change', updateUrbanInfrastructureFee);
+            document.getElementById('addressCategory').addEventListener('change', updateUrbanInfrastructureFee);
+            document.getElementById('buildingArea').addEventListener('input', updateUrbanInfrastructureFee);
+            document.getElementById('discountRate').addEventListener('input', updateUrbanInfrastructureFee);
+
+            // 防空地下室易地建设费计算函数
+            function updateAirDefenseFee() {
+                const area = parseFloat(document.getElementById('airDefenseArea').value) || 0;
+                const unitPrice = parseFloat(document.getElementById('airDefenseUnitPrice').value) || 0;
+                const discountRate = parseFloat(document.getElementById('discountRate').value) || 100;
+
+                const baseFee = area * unitPrice / 10000; // 转换为万元
+                const finalFee = baseFee * discountRate / 100;
+                document.getElementById('otherCost').value = finalFee.toFixed(2);
+            }
+
+            // 为防空地下室易地建设费字段添加事件监听器
+            document.getElementById('airDefenseArea').addEventListener('input', updateAirDefenseFee);
+            document.getElementById('airDefenseUnitPrice').addEventListener('input', updateAirDefenseFee);
+
+            document.getElementById('itemName').addEventListener('change', function() {
+                const val = this.value;
+
+                // 默认显示费率字段，隐藏勘察字段
+                document.getElementById('billingBasisField').style.display = '';
+                document.getElementById('rateFields').style.display = '';
+                document.getElementById('customNameField').style.display = 'none';
+                document.getElementById('surveyFields').style.display = 'none';
+
+                if (val === '项目建设管理费') {
+                    updateTotals();
+                    const engTotal = getEngineeringTotal();
+                    const result = calculateProjectManagementFee(engTotal);
+                    document.getElementById('otherCost').value = result.baseFee.toFixed(2);
+                    document.getElementById('calcRate').value = result.rate.toFixed(2);
+                    document.getElementById('discountRate').value = 100;
+                    document.getElementById('billingBasis').value = '工程费用合计';
+                } else if (val === '设计费') {
+                    updateTotals();
+                    const engTotal = getEngineeringTotal();
+                    const baseFee = calculateDesignFee(engTotal);
+                    document.getElementById('otherCost').value = baseFee.toFixed(2);
+                    document.getElementById('calcRate').value = 100;
+                    document.getElementById('discountRate').value = 100;
+                    document.getElementById('billingBasis').value = '工程费用合计';
+                } else if (val === '建设场地准备及临时设施费') {
+                    updateTotals();
+                    const engTotal = getEngineeringTotal();
+                    const rate = 0.5;
+                    const fee = engTotal * rate / 100;
+                    document.getElementById('otherCost').value = fee.toFixed(2);
+                    document.getElementById('calcRate').value = rate.toFixed(2);
+                    document.getElementById('discountRate').value = 100;
+                    document.getElementById('billingBasis').value = '工程费用合计';
+                } else if (val === '前期工作咨询费') {
+                    updateTotals();
+                    const engTotal = getEngineeringTotal();
+                    const baseFee = calculateConsultationFee(engTotal);
+                    document.getElementById('otherCost').value = baseFee.toFixed(2);
+                    document.getElementById('calcRate').value = 0;
+                    document.getElementById('discountRate').value = 100;
+                    document.getElementById('billingBasis').value = '工程费用合计';
+                } else if (val === '勘察费') {
+                    document.getElementById('otherCost').value = 0;
+                    document.getElementById('calcRate').value = 0;
+                    document.getElementById('discountRate').value = 100;
+                    document.getElementById('billingBasis').value = '建构筑物占地面积';
+                    document.getElementById('surveyArea').value = 0;
+                    document.getElementById('unitPrice').value = 15;
+                    document.getElementById('billingBasisField').style.display = 'none';
+                    document.getElementById('rateFields').style.display = 'none';
+                    document.getElementById('surveyFields').style.display = 'block';
+                } else if (val === '施工图审查费') {
+                    updateTotals();
+                    const surveyFee = getSurveyFee();
+                    const designFee = getDesignFee();
+                    const baseFee = surveyFee + designFee;
+                    const rate = 6.5;
+                    const fee = baseFee * rate / 100;
+                    document.getElementById('otherCost').value = fee.toFixed(2);
+                    document.getElementById('calcRate').value = rate.toFixed(2);
+                    document.getElementById('discountRate').value = 100;
+                    document.getElementById('discountRate').readOnly = true;
+                    document.getElementById('discountRate').style.background = '#f0f0f0';
+                    document.getElementById('billingBasis').value = '勘察费+设计费';
+                } else if (val === '研究实验费') {
+                    document.getElementById('otherCost').value = 0;
+                    document.getElementById('calcRate').value = 0;
+                    document.getElementById('discountRate').value = 100;
+                    document.getElementById('billingBasis').value = '市场价';
+                    document.getElementById('billingBasisField').style.display = 'none';
+                    document.getElementById('rateFields').style.display = 'none';
+                    document.getElementById('surveyFields').style.display = 'none';
+                } else if (val === '工程造价咨询费') {
+                    updateTotals();
+                    const engTotal = getEngineeringTotal();
+                    const rate = 1.0;
+                    const fee = engTotal * rate / 100;
+                    document.getElementById('otherCost').value = fee.toFixed(2);
+                    document.getElementById('calcRate').value = rate.toFixed(2);
+                    document.getElementById('billingBasis').value = '工程费用合计';
+                    // 隐藏折扣收费率字段
+                    document.getElementById('discountRate').parentElement.style.display = 'none';
+                } else if (val === '招标代理费') {
+                    updateTotals();
+                    const engTotal = getEngineeringTotal();
+                    const fee = calculateTenderAgentFee(engTotal);
+                    document.getElementById('otherCost').value = fee.toFixed(2);
+                    document.getElementById('calcRate').value = 0;
+                    document.getElementById('billingBasis').value = '工程费用合计（差额定率累进法）';
+                    // 隐藏折扣收费率字段
+                    document.getElementById('discountRate').parentElement.style.display = 'none';
+                } else if (val === '工程监理费') {
+                    updateTotals();
+                    const engTotal = getEngineeringTotal();
+                    const baseFee = calculateSupervisionFee(engTotal);
+                    document.getElementById('otherCost').value = baseFee.toFixed(2);
+                    document.getElementById('calcRate').value = 100;
+                    document.getElementById('discountRate').value = 100;
+                    document.getElementById('billingBasis').value = '工程费用合计';
+                } else if (val === '城市基础设施配套费') {
+                    // 显示城市基础设施配套费的特殊字段
+                    document.getElementById('billingBasisField').style.display = 'none';
+                    document.getElementById('rateFields').style.display = '';
+                    document.getElementById('surveyFields').style.display = 'none';
+                    document.getElementById('urbanInfrastructureFields').style.display = 'block';
+                    document.getElementById('airDefenseFields').style.display = 'none';
+
+                    // 隐藏计算费率，保留折扣收费率
+                    document.getElementById('calcRate').parentElement.style.display = 'none';
+                    document.getElementById('discountRate').parentElement.style.display = '';
+                    document.getElementById('discountRate').value = 100;
+
+                    // 获取项目所在地
+                    const projectLocation = document.getElementById('projectLocation').value;
+                    document.getElementById('projectLocationDisplay').value = projectLocation || '未填写';
+
+                    // 初始化计费基价
+                    updateUrbanInfrastructureFee();
+                } else if (val === '防空地下室易地建设费') {
+                    // 显示防空地下室易地建设费的特殊字段
+                    document.getElementById('billingBasisField').style.display = 'none';
+                    document.getElementById('rateFields').style.display = '';
+                    document.getElementById('surveyFields').style.display = 'none';
+                    document.getElementById('urbanInfrastructureFields').style.display = 'none';
+                    document.getElementById('airDefenseFields').style.display = 'block';
+
+                    // 隐藏计算费率，保留折扣收费率
+                    document.getElementById('calcRate').parentElement.style.display = 'none';
+                    document.getElementById('discountRate').parentElement.style.display = '';
+
+                    // 初始化费用
+                    updateAirDefenseFee();
+                } else if (val === '工程保险费') {
+                    document.getElementById('billingBasisField').style.display = 'none';
+                    document.getElementById('rateFields').style.display = '';
+                    document.getElementById('surveyFields').style.display = 'none';
+                    document.getElementById('urbanInfrastructureFields').style.display = 'none';
+                    document.getElementById('airDefenseFields').style.display = 'none';
+
+                    // 显示计算费率，隐藏折扣收费率
+                    document.getElementById('calcRate').parentElement.style.display = '';
+                    document.getElementById('discountRate').parentElement.style.display = 'none';
+
+                    updateTotals();
+                    const engTotal = getEngineeringTotal();
+                    const rate = 0.6;
+                    document.getElementById('calcRate').value = rate;
+                    document.getElementById('otherCost').value = (engTotal * rate / 100).toFixed(2);
+                    document.getElementById('billingBasis').value = '工程费用合计';
+                } else if (val === '竣工财务决算费') {
+                    document.getElementById('billingBasisField').style.display = 'none';
+                    document.getElementById('rateFields').style.display = '';
+                    document.getElementById('surveyFields').style.display = 'none';
+                    document.getElementById('urbanInfrastructureFields').style.display = 'none';
+                    document.getElementById('airDefenseFields').style.display = 'none';
+
+                    // 显示计算费率，隐藏折扣收费率
+                    document.getElementById('calcRate').parentElement.style.display = '';
+                    document.getElementById('discountRate').parentElement.style.display = 'none';
+
+                    updateTotals();
+                    const engTotal = getEngineeringTotal();
+                    const rate = 0.3;
+                    document.getElementById('calcRate').value = rate;
+                    document.getElementById('otherCost').value = (engTotal * rate / 100).toFixed(2);
+                    document.getElementById('billingBasis').value = '工程费用合计';
+                    document.getElementById('customNameField').style.display = 'none';
+                } else if (val === '其他') {
+                    document.getElementById('customNameField').style.display = '';
+                    document.getElementById('customName').focus();
+                    document.getElementById('otherCost').value = 0;
+                    document.getElementById('billingBasis').value = '市场价';
+                    document.getElementById('billingBasisField').style.display = '';
+                    document.getElementById('rateFields').style.display = 'none';
+                    document.getElementById('surveyFields').style.display = 'none';
+                    document.getElementById('urbanInfrastructureFields').style.display = 'none';
+                    document.getElementById('airDefenseFields').style.display = 'none';
+                } else {
+                    document.getElementById('customNameField').style.display = 'none';
+                }
+            });
+
+            document.getElementById('confirmAddRow').addEventListener('click', function() {
+                const form = document.getElementById('addRowForm');
+                const formData = new FormData(form);
+                const level = formData.get('level');
+                const serialNumber = formData.get('serialNumber');
+                const itemName = formData.get('itemName');
+                const billingBasis = formData.get('billingBasis') || '';
+                const calcRate = parseFloat(formData.get('calcRate')) || 0;
+                const discountRate = parseFloat(formData.get('discountRate')) || 100;
+
+                let otherCost, quantity, index, unit;
+                if (itemName === '勘察费') {
+                    const surveyArea = parseFloat(document.getElementById('surveyArea').value) || 0;
+                    const unitPrice = parseFloat(document.getElementById('unitPrice').value) || 0;
+                    otherCost = surveyArea * unitPrice / 10000;
+                    quantity = surveyArea;
+                    index = unitPrice;
+                    unit = '㎡';
+                } else if (itemName === '城市基础设施配套费') {
+                    const buildingArea = parseFloat(document.getElementById('buildingArea').value) || 0;
+                    const urbanRate = parseFloat(document.getElementById('urbanRate').value) || 0;
+                    const buildCategory = document.getElementById('buildCategory').value;
+                    const addressCategory = document.getElementById('addressCategory').value;
+                    const discountRate = parseFloat(document.getElementById('discountRate').value) || 100;
+                    otherCost = urbanRate * buildingArea / 10000 * discountRate / 100;
+                    quantity = buildingArea;
+                    index = urbanRate;
+                    unit = '㎡';
+                    // 保存城市基础设施配套费的特殊信息
+                    addNewRow(level, serialNumber, itemName, 0, 0, 0, otherCost, otherCost, unit, quantity, index, false, 'other', `${addressCategory}${buildCategory}`, 0, discountRate, buildCategory, addressCategory);
+                    bootstrapModal.hide();
+                    setTimeout(() => document.body.removeChild(modal), 500);
+                    return;
+                } else if (itemName === '防空地下室易地建设费') {
+                    const airDefenseArea = parseFloat(document.getElementById('airDefenseArea').value) || 0;
+                    const airDefenseUnitPrice = parseFloat(document.getElementById('airDefenseUnitPrice').value) || 0;
+                    const discountRate = parseFloat(document.getElementById('discountRate').value) || 100;
+                    otherCost = airDefenseArea * airDefenseUnitPrice / 10000 * discountRate / 100;
+                    quantity = airDefenseArea;
+                    index = airDefenseUnitPrice;
+                    unit = '㎡';
+                    // 保存防空地下室易地建设费的特殊信息
+                    addNewRow(level, serialNumber, itemName, 0, 0, 0, otherCost, otherCost, unit, quantity, index, false, 'other', '应建防空地下室面积×单价', 0, discountRate);
+                    bootstrapModal.hide();
+                    setTimeout(() => document.body.removeChild(modal), 500);
+                    return;
+                } else if (itemName === '工程保险费') {
+                    const rate = parseFloat(formData.get('calcRate')) || 0.6;
+                    updateTotals();
+                    const engTotal = getEngineeringTotal();
+                    otherCost = engTotal * rate / 100;
+                    quantity = 0;
+                    index = 0;
+                    unit = '';
+                    addNewRow(level, serialNumber, itemName, 0, 0, 0, otherCost, otherCost, unit, quantity, index, false, 'other', '工程费用合计', rate, 100);
+                    bootstrapModal.hide();
+                    setTimeout(() => document.body.removeChild(modal), 500);
+                    return;
+                } else if (itemName === '竣工财务决算费') {
+                    const rate = parseFloat(formData.get('calcRate')) || 0.3;
+                    updateTotals();
+                    const engTotal = getEngineeringTotal();
+                    otherCost = engTotal * rate / 100;
+                    quantity = 0;
+                    index = 0;
+                    unit = '';
+                    addNewRow(level, serialNumber, itemName, 0, 0, 0, otherCost, otherCost, unit, quantity, index, false, 'other', '工程费用合计', rate, 100);
+                    bootstrapModal.hide();
+                    setTimeout(() => document.body.removeChild(modal), 500);
+                    return;
+                } else {
+                    otherCost = parseFloat(formData.get('otherCost')) || 0;
+                    quantity = 0;
+                    index = 0;
+                    unit = '';
+                }
+
+                let finalItemName = itemName;
+                if (itemName === '其他') {
+                    finalItemName = (formData.get('customName') || '').trim();
+                    if (!finalItemName) {
+                        alert('请输入费用名称');
+                        return;
+                    }
+                }
+
+                const total = otherCost;
+                addNewRow(level, serialNumber, finalItemName, 0, 0, 0, otherCost, total, unit, quantity, index, false, 'other', billingBasis || '市场价', calcRate, discountRate);
+
+                bootstrapModal.hide();
+                setTimeout(() => document.body.removeChild(modal), 500);
+            });
+
+            modal.addEventListener('hidden.bs.modal', function() {
+                setTimeout(() => {
+                    if (document.getElementById('addRowModal')) document.body.removeChild(modal);
+                }, 500);
+            });
+        }
+
+        // 序号3的费率设置模态框
+        function showLevel3Modal(modal, level) {
+            // 获取当前保存的费率
+            const row3 = document.querySelector('.estimate-table tbody tr:first-child + tr + tr + tr');
+            // 找到序号为3的行
+            let currentRate = 6.00;
+            document.querySelectorAll('.estimate-table tbody tr').forEach(row => {
+                if (row.querySelector('td:first-child').textContent === '3') {
+                    const storedRate = row.getAttribute('data-reserve-rate');
+                    if (storedRate) {
+                        currentRate = parseFloat(storedRate);
+                    } else {
+                        // 从显示中提取默认值
+                        const indexCell = row.querySelectorAll('td')[9];
+                        if (indexCell) {
+                            const match = indexCell.textContent.match(/[\d.]+/);
+                            if (match) currentRate = parseFloat(match[0]);
+                        }
+                    }
+                }
+            });
+
+            modal.innerHTML = `
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addRowModalLabel">设置预备费费率</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="addRowForm">
+                                <input type="hidden" name="level" value="${level}">
+                                <div class="mb-3">
+                                    <label for="reserveRate" class="form-label">预备费费率（%）</label>
+                                    <input type="number" class="form-control" id="reserveRate" name="reserveRate" step="0.0001" value="${currentRate}" required>
+                                    <div class="form-text">预备费 =（工程费用 + 工程建设其他费用）× 费率</div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                            <button type="button" class="btn btn-primary" id="confirmAddRow">确定</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+
+            const bootstrapModal = new bootstrap.Modal(modal);
+            bootstrapModal.show();
+
+            document.getElementById('confirmAddRow').addEventListener('click', function() {
+                const rate = parseFloat(document.getElementById('reserveRate').value) || 0;
+
+                // 将费率存储到序号3的行上
+                document.querySelectorAll('.estimate-table tbody tr').forEach(row => {
+                    if (row.querySelector('td:first-child').textContent === '3') {
+                        row.setAttribute('data-reserve-rate', rate);
+                        // 更新费率的显示
+                        const cells = row.querySelectorAll('td');
+                        if (cells[9]) {
+                            cells[9].textContent = rate.toFixed(2) + '%';
+                        }
+                    }
+                });
+
+                // 重新计算汇总
+                updateTotals();
+
+                bootstrapModal.hide();
+                setTimeout(() => document.body.removeChild(modal), 500);
+            });
+
+            modal.addEventListener('hidden.bs.modal', function() {
+                setTimeout(() => {
+                    if (document.getElementById('addRowModal')) document.body.removeChild(modal);
+                }, 500);
+            });
+        }
+
+        // 添加新行
+        function addNewRow(level, serialNumber, itemName, buildingCost, installationCost, equipmentCost, otherCost, total, unit, quantity, index, useIndex, costType, billingBasis, calcRate, discountRate, buildCategory, addressCategory) {
+            const tbody = document.querySelector('.estimate-table tbody');
+
+            // 创建新行
+            const newRow = document.createElement('tr');
+            newRow.setAttribute('data-use-index', useIndex);
+            newRow.setAttribute('data-cost-type', costType);
+            newRow.setAttribute('data-serial-number', serialNumber);
+            
+            // 只有二级序号（1、2、3）才添加subtotal-row类，三级及以下不设置底色
+            const serialParts = serialNumber.split('.');
+            if (serialParts.length === 1 && !['一', '二', '三', '四'].includes(serialNumber)) {
+                newRow.classList.add('subtotal-row');
+            }
+            
+            // 判断是否为序号2的下级费用
+            const isLevel2 = serialNumber.startsWith('2.') && serialParts.length === 2;
+            
+            if (isLevel2) {
+                const discountVal = discountRate || 100;
+                const baseFee = discountVal > 0 ? otherCost / (discountVal / 100) : otherCost;
+                newRow.setAttribute('data-billing-basis', billingBasis || '');
+                newRow.setAttribute('data-calc-rate', calcRate || 0);
+                newRow.setAttribute('data-discount-rate', discountRate || 100);
+                newRow.setAttribute('data-base-fee', baseFee.toFixed(2));
+                if (itemName === '项目建设管理费') {
+                    newRow.setAttribute('data-auto-calc', 'project-management');
+                }
+                if (itemName === '设计费') {
+                    newRow.setAttribute('data-auto-calc', 'design-fee');
+                }
+                if (itemName === '建设场地准备及临时设施费') {
+                    newRow.setAttribute('data-auto-calc', 'site-preparation');
+                }
+                if (itemName === '前期工作咨询费') {
+                    newRow.setAttribute('data-auto-calc', 'preliminary-consultation');
+                }
+                if (itemName === '勘察费') {
+                    newRow.setAttribute('data-auto-calc', 'survey');
+                }
+                if (itemName === '施工图审查费') {
+                    newRow.setAttribute('data-auto-calc', 'construction-drawing-review');
+                }
+                if (itemName === '工程造价咨询费') {
+                    newRow.setAttribute('data-auto-calc', 'cost-consultation');
+                }
+                if (itemName === '招标代理费') {
+                    newRow.setAttribute('data-auto-calc', 'tender-agent');
+                }
+                if (itemName === '工程监理费') {
+                    newRow.setAttribute('data-auto-calc', 'supervision-fee');
+                }
+                if (itemName === '城市基础设施配套费') {
+                    newRow.setAttribute('data-auto-calc', 'urban-infrastructure');
+                    newRow.setAttribute('data-build-category', buildCategory || '住宅');
+                    newRow.setAttribute('data-address-category', addressCategory || '县城');
+                    newRow.setAttribute('data-quantity', quantity || 0);
+                }
+                if (itemName === '防空地下室易地建设费') {
+                    newRow.setAttribute('data-auto-calc', 'air-defense');
+                }
+                if (itemName === '工程保险费') {
+                    newRow.setAttribute('data-auto-calc', 'engineering-insurance');
+                }
+                if (itemName === '竣工财务决算费') {
+                    newRow.setAttribute('data-auto-calc', 'completion-settlement');
+                }
+
+                if (itemName === '勘察费') {
+                    const surveyArea = quantity || 0;
+                    const uPrice = index || 15;
+                    newRow.setAttribute('data-survey-area', surveyArea);
+                    newRow.setAttribute('data-unit-price', uPrice);
+                    newRow.innerHTML = `
+                        <td>${serialNumber}</td>
+                        <td><input type="text" class="form-control form-control-sm item-name-input" value="${itemName}" style="min-width:100px"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><input type="number" class="form-control form-control-sm cost-input" value="${otherCost}" step="0.01" readonly style="background:#f0f0f0"></td>
+                        <td class="total-cell">${total.toFixed(2)}</td>
+                        <td>㎡</td>
+                        <td><input type="number" class="form-control form-control-sm survey-area-input" value="${surveyArea}" step="0.01" min="0" style="width:90px"></td>
+                        <td><input type="number" class="form-control form-control-sm unit-price-input" value="${uPrice}" step="0.01" min="0" style="width:90px"></td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-danger delete-row">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                } else if (itemName === '施工图审查费') {
+                    newRow.innerHTML = `
+                        <td>${serialNumber}</td>
+                        <td><input type="text" class="form-control form-control-sm item-name-input" value="${itemName}" style="min-width:100px"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><input type="number" class="form-control form-control-sm cost-input" value="${otherCost}" step="0.01" readonly style="background:#f0f0f0"></td>
+                        <td class="total-cell">${total.toFixed(2)}</td>
+                        <td><input type="text" class="form-control form-control-sm billing-basis-input" value="${billingBasis || '勘察费+设计费'}" readonly style="background:#f0f0f0; min-width:80px"></td>
+                        <td class="td-with-unit"><span class="input-unit-wrapper"><input type="number" class="form-control form-control-sm calc-rate-input" value="${(calcRate || 6.5).toFixed(2)}" step="0.01" min="0" style="width:70px"><span class="unit-text">%</span></span></td>
+                        <td class="td-with-unit"><span class="input-unit-wrapper"><input type="number" class="form-control form-control-sm discount-rate-input" value="100" readonly style="background:#f0f0f0; width:70px"><span class="unit-text">%</span></span></td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-danger delete-row">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                } else if (itemName === '研究实验费') {
+                    newRow.innerHTML = `
+                        <td>${serialNumber}</td>
+                        <td><input type="text" class="form-control form-control-sm item-name-input" value="${itemName}" style="min-width:100px"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><input type="number" class="form-control form-control-sm cost-input" value="${otherCost}" step="0.01"></td>
+                        <td class="total-cell">${total.toFixed(2)}</td>
+                        <td><input type="text" class="form-control form-control-sm billing-basis-input" value="市场价" readonly style="background:#f0f0f0; min-width:80px"></td>
+                        <td class="td-with-unit"><span class="input-unit-wrapper"><input type="number" class="form-control form-control-sm calc-rate-input" value="0" readonly style="background:#f0f0f0; width:70px"><span class="unit-text">%</span></span></td>
+                        <td class="td-with-unit"><span class="input-unit-wrapper"><input type="number" class="form-control form-control-sm discount-rate-input" value="100" readonly style="background:#f0f0f0; width:70px"><span class="unit-text">%</span></span></td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-danger delete-row">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                } else if (itemName === '工程造价咨询费') {
+                    newRow.innerHTML = `
+                        <td>${serialNumber}</td>
+                        <td><input type="text" class="form-control form-control-sm item-name-input" value="${itemName}" style="min-width:100px"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><input type="number" class="form-control form-control-sm cost-input" value="${otherCost}" step="0.01" readonly style="background:#f0f0f0"></td>
+                        <td class="total-cell">${total.toFixed(2)}</td>
+                        <td><input type="text" class="form-control form-control-sm billing-basis-input" value="${billingBasis || '工程费用合计'}" readonly style="background:#f0f0f0; min-width:80px"></td>
+                        <td class="td-with-unit"><span class="input-unit-wrapper"><input type="number" class="form-control form-control-sm calc-rate-input" value="${(calcRate || 1).toFixed(2)}" step="0.01" min="0" style="width:70px"><span class="unit-text">%</span></span></td>
+                        <td></td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-danger delete-row">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                } else if (itemName === '招标代理费') {
+                    newRow.innerHTML = `
+                        <td>${serialNumber}</td>
+                        <td><input type="text" class="form-control form-control-sm item-name-input" value="${itemName}" style="min-width:100px"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><input type="number" class="form-control form-control-sm cost-input" value="${otherCost}" step="0.01" readonly style="background:#f0f0f0"></td>
+                        <td class="total-cell">${total.toFixed(2)}</td>
+                        <td><input type="text" class="form-control form-control-sm billing-basis-input" value="${billingBasis || '工程费用合计（差额定率累进法）'}" readonly style="background:#f0f0f0; min-width:120px"></td>
+                        <td class="td-with-unit"><span class="input-unit-wrapper"><input type="number" class="form-control form-control-sm calc-rate-input" value="0" readonly style="background:#f0f0f0; width:70px"><span class="unit-text">%</span></span></td>
+                        <td></td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-danger delete-row">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                } else if (itemName === '城市基础设施配套费') {
+                    const buildCat = buildCategory || '住宅';
+                    const addrCat = addressCategory || '县城';
+                    const discountVal = discountRate || 100;
+                    newRow.innerHTML = `
+                        <td>${serialNumber}</td>
+                        <td><input type="text" class="form-control form-control-sm item-name-input" value="${itemName}" style="min-width:100px"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><input type="number" class="form-control form-control-sm cost-input" value="${otherCost}" step="0.01" readonly style="background:#f0f0f0"></td>
+                        <td class="total-cell">${total.toFixed(2)}</td>
+                        <td class="td-with-unit"><span class="input-unit-wrapper"><input type="number" class="form-control form-control-sm infrastructure-area-input" value="${quantity}" step="0.01" min="0" style="width:90px"><span class="unit-text">㎡</span></span></td>
+                        <td class="td-with-unit"><span class="input-unit-wrapper"><input type="number" class="form-control form-control-sm calc-rate-input" value="${index}" step="0.01" min="0" style="width:70px"><span class="unit-text">元/㎡</span></span></td>
+                        <td class="td-with-unit"><span class="input-unit-wrapper"><input type="number" class="form-control form-control-sm discount-rate-input" value="${Math.round(discountVal)}" step="1" min="0" max="100" style="width:70px"><span class="unit-text">%</span></span></td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-danger delete-row">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                } else if (itemName === '防空地下室易地建设费') {
+                    const discountVal = discountRate || 100;
+                    newRow.innerHTML = `
+                        <td>${serialNumber}</td>
+                        <td><input type="text" class="form-control form-control-sm item-name-input" value="${itemName}" style="min-width:100px"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><input type="number" class="form-control form-control-sm cost-input" value="${otherCost}" step="0.01" readonly style="background:#f0f0f0"></td>
+                        <td class="total-cell">${total.toFixed(2)}</td>
+                        <td class="td-with-unit"><span class="input-unit-wrapper"><input type="number" class="form-control form-control-sm air-defense-area-input" value="${quantity}" step="0.01" min="0" style="width:90px"><span class="unit-text">㎡</span></span></td>
+                        <td class="td-with-unit"><span class="input-unit-wrapper"><input type="number" class="form-control form-control-sm air-defense-unit-price-input" value="${index}" step="0.01" min="0" style="width:90px" placeholder="6B级设区市300，县级200；6B级以外设区市1500，县级1000"><span class="unit-text">元/㎡</span></span></td>
+                        <td class="td-with-unit"><span class="input-unit-wrapper"><input type="number" class="form-control form-control-sm discount-rate-input" value="${Math.round(discountVal)}" step="1" min="0" max="100" style="width:70px"><span class="unit-text">%</span></span></td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-danger delete-row">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                } else if (itemName === '工程保险费' || itemName === '竣工财务决算费') {
+                    const rateVal = calcRate || (itemName === '工程保险费' ? 0.6 : 0.3);
+                    newRow.innerHTML = `
+                        <td>${serialNumber}</td>
+                        <td><input type="text" class="form-control form-control-sm item-name-input" value="${itemName}" style="min-width:100px"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><input type="number" class="form-control form-control-sm cost-input" value="${otherCost}" step="0.01" readonly style="background:#f0f0f0"></td>
+                        <td class="total-cell">${total.toFixed(2)}</td>
+                        <td><input type="text" class="form-control form-control-sm billing-basis-input" value="工程费用合计" readonly style="background:#f0f0f0; min-width:80px"></td>
+                        <td class="td-with-unit"><span class="input-unit-wrapper"><input type="number" class="form-control form-control-sm calc-rate-input" value="${rateVal.toFixed(2)}" step="0.01" min="0" style="width:70px"><span class="unit-text">%</span></span></td>
+                        <td></td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-danger delete-row">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                } else {
+                    newRow.innerHTML = `
+                        <td>${serialNumber}</td>
+                        <td><input type="text" class="form-control form-control-sm item-name-input" value="${itemName}" style="min-width:100px"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><input type="number" class="form-control form-control-sm cost-input" value="${otherCost}" step="0.01"></td>
+                        <td class="total-cell">${total.toFixed(2)}</td>
+                        <td><input type="text" class="form-control form-control-sm billing-basis-input" value="${billingBasis || ''}" placeholder="计费依据" style="min-width:80px"></td>
+                        <td class="td-with-unit"><span class="input-unit-wrapper"><input type="number" class="form-control form-control-sm calc-rate-input" value="${(calcRate || 0).toFixed(2)}" step="0.01" min="0" style="width:70px"><span class="unit-text">%</span></span></td>
+                        <td class="td-with-unit"><span class="input-unit-wrapper"><input type="number" class="form-control form-control-sm discount-rate-input" value="${Math.round(discountRate || 100)}" step="1" min="0" max="100" style="width:70px"><span class="unit-text">%</span></span></td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-danger delete-row">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                }
+            } else {
+                newRow.innerHTML = `
+                    <td>${serialNumber}</td>
+                    <td>${itemName}</td>
+                    <td><input type="number" class="form-control form-control-sm cost-input" value="${buildingCost}" step="0.01"></td>
+                    <td><input type="number" class="form-control form-control-sm cost-input" value="${installationCost}" step="0.01"></td>
+                    <td><input type="number" class="form-control form-control-sm cost-input" value="${equipmentCost}" step="0.01"></td>
+                    <td><input type="number" class="form-control form-control-sm cost-input" value="${otherCost}" step="0.01"></td>
+                    <td class="total-cell">${total.toFixed(2)}</td>
+                    <td><input type="text" class="form-control form-control-sm" value="${unit}"></td>
+                    <td><input type="number" class="form-control form-control-sm quantity-input" value="${quantity}" step="0.01"></td>
+                    <td><input type="number" class="form-control form-control-sm index-input" value="${index}" step="0.01"></td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-danger delete-row">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                `;
+            }
+            insertAndSortRow(tbody, newRow);
+
+            // 为新行的输入框添加事件监听器
+            newRow.querySelectorAll('.cost-input').forEach(input => {
+                input.addEventListener('input', updateTotals);
+                input.addEventListener('change', function() {
+                    if (newRow.getAttribute('data-auto-calc') === 'project-management' || newRow.getAttribute('data-auto-calc') === 'design-fee') {
+                        const discountRate = parseInt(newRow.getAttribute('data-discount-rate')) || 100;
+                        const currentCost = parseFloat(this.value) || 0;
+                        const baseFee = discountRate > 0 ? currentCost / (discountRate / 100) : currentCost;
+                        newRow.setAttribute('data-base-fee', baseFee.toFixed(2));
+                    }
+                });
+            });
+
+            // 为数量和指标输入框添加事件监听器
+            const quantityInput = newRow.querySelector('.quantity-input');
+            const indexInput = newRow.querySelector('.index-input');
+            if (quantityInput) {
+                quantityInput.addEventListener('input', function() {
+                    updateRowCost(newRow);
+                });
+            }
+            if (indexInput) {
+                indexInput.addEventListener('input', function() {
+                    updateRowCost(newRow);
+                });
+            }
+
+            // 为折扣收费率输入框添加事件监听器
+            const discountRateInput = newRow.querySelector('.discount-rate-input');
+            if (discountRateInput) {
+                discountRateInput.addEventListener('change', function() {
+                    let val = parseInt(this.value) || 100;
+                    if (val < 0) val = 0;
+                    if (val > 100) val = 100;
+                    this.value = val;
+                    newRow.setAttribute('data-discount-rate', val);
+
+                    if (newRow.getAttribute('data-auto-calc') === 'project-management' || newRow.getAttribute('data-auto-calc') === 'design-fee' || newRow.getAttribute('data-auto-calc') === 'site-preparation' || newRow.getAttribute('data-auto-calc') === 'preliminary-consultation' || newRow.getAttribute('data-auto-calc') === 'supervision-fee' || newRow.getAttribute('data-auto-calc') === 'air-defense' || newRow.getAttribute('data-auto-calc') === 'urban-infrastructure') {
+                        const baseFee = parseFloat(newRow.getAttribute('data-base-fee')) || 0;
+                        if (baseFee > 0) {
+                            const newFee = baseFee * val / 100;
+                            const costInput = newRow.querySelector('.cost-input');
+                            if (costInput) {
+                                costInput.value = newFee.toFixed(2);
+                            }
+                            const totalCell = newRow.querySelector('.total-cell');
+                            if (totalCell) {
+                                totalCell.textContent = newFee.toFixed(2);
+                            }
+                            updateTotals();
+                        }
+                    }
+                });
+            }
+
+            // 为勘察费的占地面积和单价输入框添加事件监听器
+            const surveyAreaInput = newRow.querySelector('.survey-area-input');
+            const unitPriceInput = newRow.querySelector('.unit-price-input');
+            function recalcSurveyCost() {
+                if (!surveyAreaInput || !unitPriceInput) return;
+                const area = parseFloat(surveyAreaInput.value) || 0;
+                const price = parseFloat(unitPriceInput.value) || 0;
+                const calculated = area * price / 10000;
+                const costInput = newRow.querySelector('.cost-input');
+                const totalCell = newRow.querySelector('.total-cell');
+                if (costInput) costInput.value = calculated.toFixed(2);
+                if (totalCell) totalCell.textContent = calculated.toFixed(2);
+                newRow.setAttribute('data-survey-area', area);
+                newRow.setAttribute('data-unit-price', price);
+                updateTotals();
+            }
+            if (surveyAreaInput) {
+                surveyAreaInput.addEventListener('input', recalcSurveyCost);
+            }
+            if (unitPriceInput) {
+                unitPriceInput.addEventListener('input', recalcSurveyCost);
+            }
+
+            // 为防空地下室易地建设费的面积、单价和折扣收费率输入框添加事件监听器
+            const airDefenseAreaInput = newRow.querySelector('.air-defense-area-input');
+            const airDefenseUnitPriceInput = newRow.querySelector('.air-defense-unit-price-input');
+            const airDefenseDiscountInput = newRow.querySelector('.discount-rate-input');
+            function recalcAirDefenseCost() {
+                if (!airDefenseAreaInput || !airDefenseUnitPriceInput) return;
+                const area = parseFloat(airDefenseAreaInput.value) || 0;
+                const price = parseFloat(airDefenseUnitPriceInput.value) || 0;
+                const discountRate = airDefenseDiscountInput ? parseInt(airDefenseDiscountInput.value) || 100 : 100;
+                const calculated = area * price / 10000 * discountRate / 100;
+                const costInput = newRow.querySelector('.cost-input');
+                const totalCell = newRow.querySelector('.total-cell');
+                if (costInput) costInput.value = calculated.toFixed(2);
+                if (totalCell) totalCell.textContent = calculated.toFixed(2);
+                newRow.setAttribute('data-base-fee', (area * price / 10000).toFixed(2));
+                updateTotals();
+            }
+            if (airDefenseAreaInput) {
+                airDefenseAreaInput.addEventListener('input', recalcAirDefenseCost);
+            }
+            if (airDefenseUnitPriceInput) {
+                airDefenseUnitPriceInput.addEventListener('input', recalcAirDefenseCost);
+            }
+            if (airDefenseDiscountInput) {
+                airDefenseDiscountInput.addEventListener('input', recalcAirDefenseCost);
+            }
+
+            // 为城市基础设施配套费的面积输入框添加事件监听器
+            const infraAreaInput = newRow.querySelector('.infrastructure-area-input');
+            function recalcInfraCost() {
+                if (!infraAreaInput) return;
+                const area = parseFloat(infraAreaInput.value) || 0;
+                const rate = calcRateInput ? parseFloat(calcRateInput.value) || 0 : 0;
+                const discountInput = newRow.querySelector('.discount-rate-input');
+                const discountRate = discountInput ? parseInt(discountInput.value) || 100 : 100;
+                const baseFee = rate * area / 10000;
+                const finalFee = baseFee * discountRate / 100;
+                const costInput = newRow.querySelector('.cost-input');
+                const totalCell = newRow.querySelector('.total-cell');
+                if (costInput) costInput.value = finalFee.toFixed(2);
+                if (totalCell) totalCell.textContent = finalFee.toFixed(2);
+                newRow.setAttribute('data-base-fee', baseFee.toFixed(2));
+                updateTotals();
+            }
+            if (infraAreaInput) {
+                infraAreaInput.addEventListener('input', recalcInfraCost);
+            }
+
+            // 为计费依据输入框添加事件监听器
+            const billingBasisInput = newRow.querySelector('.billing-basis-input');
+            if (billingBasisInput) {
+                billingBasisInput.addEventListener('change', function() {
+                    newRow.setAttribute('data-billing-basis', this.value);
+                });
+            }
+
+            // 为计算费率输入框添加事件监听器
+            const calcRateInput = newRow.querySelector('.calc-rate-input');
+            if (calcRateInput) {
+                calcRateInput.addEventListener('change', function() {
+                    let val = parseFloat(this.value) || 0;
+                    if (val < 0) val = 0;
+                    this.value = val.toFixed(2);
+                    newRow.setAttribute('data-calc-rate', val.toFixed(2));
+                    // For auto-calc items, recalculate when rate changes
+                    const autoCalc = newRow.getAttribute('data-auto-calc');
+                    if (autoCalc === 'site-preparation' || autoCalc === 'project-management' || autoCalc === 'preliminary-consultation' || autoCalc === 'construction-drawing-review' || autoCalc === 'cost-consultation' || autoCalc === 'urban-infrastructure' || autoCalc === 'engineering-insurance' || autoCalc === 'completion-settlement') {
+                        updateTotals();
+                    }
+                });
+            }
+
+            // 为费用名称输入框添加事件监听器（切换名称时更新自动计算标识）
+            const itemNameInput = newRow.querySelector('.item-name-input');
+            if (itemNameInput) {
+                itemNameInput.addEventListener('change', function() {
+                    const name = this.value;
+                    if (name === '设计费') {
+                        newRow.setAttribute('data-auto-calc', 'design-fee');
+                        updateTotals();
+                    } else if (name === '项目建设管理费') {
+                        newRow.setAttribute('data-auto-calc', 'project-management');
+                        updateTotals();
+                    } else if (name === '施工图审查费') {
+                        newRow.setAttribute('data-auto-calc', 'construction-drawing-review');
+                        updateTotals();
+                    } else if (name === '工程造价咨询费') {
+                        newRow.setAttribute('data-auto-calc', 'cost-consultation');
+                        updateTotals();
+                    } else if (name === '招标代理费') {
+                        newRow.setAttribute('data-auto-calc', 'tender-agent');
+                        updateTotals();
+                    } else if (name === '工程监理费') {
+                        newRow.setAttribute('data-auto-calc', 'supervision-fee');
+                        updateTotals();
+                    } else if (name === '防空地下室易地建设费') {
+                        newRow.setAttribute('data-auto-calc', 'air-defense');
+                        updateTotals();
+                    } else if (name === '工程保险费') {
+                        newRow.setAttribute('data-auto-calc', 'engineering-insurance');
+                        updateTotals();
+                    } else if (name === '竣工财务决算费') {
+                        newRow.setAttribute('data-auto-calc', 'completion-settlement');
+                        updateTotals();
+                    } else {
+                        newRow.removeAttribute('data-auto-calc');
+                    }
+                });
+            }
+
+            // 为删除按钮添加事件监听器
+            newRow.querySelector('.delete-row').addEventListener('click', function() {
+                newRow.remove();
+                updateTotals();
+            });
+
+            // 更新汇总
+            updateTotals();
+        }
+
+        // 插入并排序行
+        function insertAndSortRow(tbody, newRow) {
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            const newSerialNumber = newRow.getAttribute('data-serial-number');
+
+            // 固定行序号列表（按显示顺序排列）
+            const fixedSerials = ['一', '1', '2', '3', '二', '三', '四'];
+
+            // 分离固定行和可排序行
+            const fixedRows = [];
+            const sortableRows = [];
+
+            rows.forEach(row => {
+                const serialNumber = row.querySelector('td:first-child').textContent;
+                if (fixedSerials.includes(serialNumber)) {
+                    fixedRows.push(row);
+                } else {
+                    sortableRows.push(row);
+                }
+            });
+
+            // 确保新行在可排序列表中
+            if (!sortableRows.includes(newRow)) {
+                sortableRows.push(newRow);
+            }
+
+            // 按序号排序
+            sortableRows.sort((a, b) => {
+                const aSerial = a.getAttribute('data-serial-number') || a.querySelector('td:first-child').textContent;
+                const bSerial = b.getAttribute('data-serial-number') || b.querySelector('td:first-child').textContent;
+                return compareSerialNumbers(aSerial, bSerial);
+            });
+
+            // 清空tbody
+            while (tbody.firstChild) {
+                tbody.removeChild(tbody.firstChild);
+            }
+
+            // 按正确顺序重建tbody
+            fixedSerials.forEach(serial => {
+                const fixedRow = fixedRows.find(r => r.querySelector('td:first-child').textContent === serial);
+                if (fixedRow) {
+                    tbody.appendChild(fixedRow);
+                }
+                // 如果是1、2、3，在其后面插入对应的下级行
+                if (['1', '2', '3'].includes(serial)) {
+                    sortableRows.forEach(row => {
+                        const rowSerial = row.getAttribute('data-serial-number') || row.querySelector('td:first-child').textContent;
+                        if (rowSerial.startsWith(serial + '.') && rowSerial !== serial) {
+                            tbody.appendChild(row);
+                        }
+                    });
+                }
+            });
+        }
+
+        // 比较序号
+        function compareSerialNumbers(a, b) {
+            const aParts = a.split('.').map(Number);
+            const bParts = b.split('.').map(Number);
+
+            for (let i = 0; i < Math.max(aParts.length, bParts.length); i++) {
+                const aVal = aParts[i] || 0;
+                const bVal = bParts[i] || 0;
+                if (aVal !== bVal) {
+                    return aVal - bVal;
+                }
+            }
+            return 0;
+        }
+
+        // 更新行费用
+        function updateRowCost(row) {
+            const useIndex = row.getAttribute('data-use-index') === 'true';
+            const costType = row.getAttribute('data-cost-type');
+            const quantityInput = row.querySelector('.quantity-input');
+            const indexInput = row.querySelector('.index-input');
+            const costInputs = row.querySelectorAll('.cost-input');
+
+            if (useIndex && quantityInput && indexInput) {
+                const quantity = parseFloat(quantityInput.value) || 0;
+                const index = parseFloat(indexInput.value) || 0;
+                const calculatedCost = (quantity * index) / 10000; // 元转换为万元
+
+                // 重置所有费用输入框
+                costInputs.forEach(input => {
+                    input.value = '0';
+                });
+
+                // 根据费用类型设置计算的费用
+                switch (costType) {
+                    case 'building':
+                        costInputs[0].value = calculatedCost.toFixed(2);
+                        break;
+                    case 'installation':
+                        costInputs[1].value = calculatedCost.toFixed(2);
+                        break;
+                    case 'equipment':
+                        costInputs[2].value = calculatedCost.toFixed(2);
+                        break;
+                    case 'other':
+                        costInputs[3].value = calculatedCost.toFixed(2);
+                        break;
+                }
+            }
+
+            // 更新当前行的合计
+            const buildingCost = parseFloat(costInputs[0].value) || 0;
+            const installationCost = parseFloat(costInputs[1].value) || 0;
+            const equipmentCost = parseFloat(costInputs[2].value) || 0;
+            const otherCost = parseFloat(costInputs[3].value) || 0;
+            const total = buildingCost + installationCost + equipmentCost + otherCost;
+
+            const totalCell = row.querySelector('.total-cell');
+            if (totalCell) {
+                totalCell.textContent = total.toFixed(2);
+            }
+
+            // 更新汇总
+            updateTotals();
+        }
+
+        // 初始化自动计算
+        function initAutoCalculate() {
+            // 为所有现有的费用输入框添加事件监听器
+            document.querySelectorAll('.cost-input').forEach(input => {
+                input.addEventListener('input', updateTotals);
+            });
+            
+            // 为所有现有的数量输入框添加事件监听器
+            document.querySelectorAll('.quantity-input').forEach(input => {
+                input.addEventListener('input', function() {
+                    const row = this.closest('tr');
+                    updateRowCost(row);
+                });
+            });
+            
+            // 为所有现有的指标输入框添加事件监听器
+            document.querySelectorAll('.index-input').forEach(input => {
+                input.addEventListener('input', function() {
+                    const row = this.closest('tr');
+                    updateRowCost(row);
+                });
+            });
+        }
+
+        // 计算小计
+        function calculateSubtotal(serialNumber, rowMap, childrenMap) {
+            if (!rowMap[serialNumber]) return;
+
+            const children = childrenMap[serialNumber] || [];
+            
+            if (children.length === 0) {
+                return;
+            }
+
+            let sumBuilding = 0, sumInstallation = 0, sumEquipment = 0, sumOther = 0, sumTotal = 0;
+
+            children.forEach(childSerial => {
+                calculateSubtotal(childSerial, rowMap, childrenMap);
+                if (rowMap[childSerial]) {
+                    sumBuilding += rowMap[childSerial].buildingCost;
+                    sumInstallation += rowMap[childSerial].installationCost;
+                    sumEquipment += rowMap[childSerial].equipmentCost;
+                    sumOther += rowMap[childSerial].otherCost;
+                    sumTotal += rowMap[childSerial].total;
+                }
+            });
+
+            rowMap[serialNumber].buildingCost = round2(sumBuilding);
+            rowMap[serialNumber].installationCost = round2(sumInstallation);
+            rowMap[serialNumber].equipmentCost = round2(sumEquipment);
+            rowMap[serialNumber].otherCost = round2(sumOther);
+            rowMap[serialNumber].total = round2(sumTotal);
+        }
+
+        // 更新汇总数据
+        // 四舍五入到两位小数
+        function round2(n) {
+            return Math.round((n || 0) * 100) / 100;
+        }
+
+        function updateTotals() {
+            const rows = document.querySelectorAll('.estimate-table tbody tr');
+            const rowMap = {};
+            const childrenMap = {};
+
+            rows.forEach(row => {
+                const serialNumber = row.querySelector('td:first-child').textContent;
+                const costInputs = row.querySelectorAll('.cost-input');
+                const isSubtotalRow = row.classList.contains('subtotal-row');
+                const isTotalRow = row.classList.contains('total-row');
+                
+                rowMap[serialNumber] = {
+                    row: row,
+                    isSubtotalRow: isSubtotalRow,
+                    isTotalRow: isTotalRow,
+                    buildingCost: 0,
+                    installationCost: 0,
+                    equipmentCost: 0,
+                    otherCost: 0,
+                    total: 0,
+                    hasChildren: false
+                };
+
+                if (costInputs.length > 0) {
+                    // 序号2的下级费用（如2.1、2.2）只有一个输入框，属于其他费用
+                    const isLevel2Child = serialNumber.startsWith('2.') && serialNumber.split('.').length === 2;
+                    const isManualOther = ['二', '三'].includes(serialNumber);
+                    
+                    if ((isLevel2Child || isManualOther) && costInputs.length === 1) {
+                        rowMap[serialNumber].otherCost = round2(parseFloat(costInputs[0].value) || 0);
+                    } else {
+                        rowMap[serialNumber].buildingCost = round2(costInputs[0] ? parseFloat(costInputs[0].value) || 0 : 0);
+                        rowMap[serialNumber].installationCost = round2(costInputs[1] ? parseFloat(costInputs[1].value) || 0 : 0);
+                        rowMap[serialNumber].equipmentCost = round2(costInputs[2] ? parseFloat(costInputs[2].value) || 0 : 0);
+                        rowMap[serialNumber].otherCost = round2(costInputs[3] ? parseFloat(costInputs[3].value) || 0 : 0);
+                    }
+                    rowMap[serialNumber].total = round2(rowMap[serialNumber].buildingCost +
+                                                        rowMap[serialNumber].installationCost +
+                                                        rowMap[serialNumber].equipmentCost +
+                                                        rowMap[serialNumber].otherCost);
+                    
+                    const totalCell = row.querySelector('.total-cell');
+                    if (totalCell) {
+                        totalCell.textContent = rowMap[serialNumber].total.toFixed(2);
+                    }
+                }
+
+                const parts = serialNumber.split('.');
+                if (parts.length > 1) {
+                    const parentSerial = parts.slice(0, parts.length - 1).join('.');
+                    if (!childrenMap[parentSerial]) {
+                        childrenMap[parentSerial] = [];
+                    }
+                    childrenMap[parentSerial].push(serialNumber);
+                }
+            });
+
+            // 对所有有子节点的序号计算小计
+            Object.keys(childrenMap).forEach(serialNumber => {
+                calculateSubtotal(serialNumber, rowMap, childrenMap);
+            });
+
+            // 计算预备费用（3）= [工程费用(1) + 工程建设其他费用(2)] × 预备费费率
+            if (rowMap['3']) {
+                let reserveRate = 6.0;
+                document.querySelectorAll('.estimate-table tbody tr').forEach(row => {
+                    if (row.querySelector('td:first-child').textContent === '3') {
+                        const stored = row.getAttribute('data-reserve-rate');
+                        if (stored) reserveRate = parseFloat(stored);
+                    }
+                });
+                const baseTotal = (rowMap['1'] ? rowMap['1'].total : 0) + (rowMap['2'] ? rowMap['2'].total : 0);
+                const calculated = round2(baseTotal * reserveRate / 100);
+                rowMap['3'].otherCost = calculated;
+                rowMap['3'].total = calculated;
+            }
+
+            // 自动计算项目建设管理费（阶梯计算规则）
+            document.querySelectorAll('.estimate-table tbody tr').forEach(row => {
+                if (row.getAttribute('data-auto-calc') === 'project-management') {
+                    const engTotal = rowMap['1'] ? rowMap['1'].total : 0;
+                    const result = calculateProjectManagementFee(engTotal);
+                    const discountRate = parseInt(row.getAttribute('data-discount-rate')) || 100;
+                    const finalFee = result.baseFee * discountRate / 100;
+
+                    // 更新费用输入框
+                    const costInput = row.querySelector('.cost-input');
+                    if (costInput) {
+                        costInput.value = finalFee.toFixed(2);
+                    }
+
+                    // 更新 rowMap 数据
+                    const serial = row.querySelector('td:first-child').textContent;
+                    if (rowMap[serial]) {
+                        rowMap[serial].otherCost = round2(finalFee);
+                        rowMap[serial].total = round2(finalFee);
+                    }
+
+                    // 更新计算费率显示
+                    const calcRateInput = row.querySelector('.calc-rate-input');
+                    if (calcRateInput) {
+                        calcRateInput.value = result.rate.toFixed(2);
+                    }
+
+                    // 更新 base-fee 属性
+                    row.setAttribute('data-base-fee', result.baseFee.toFixed(2));
+                }
+            });
+
+            // 自动计算设计费（直线内插法）
+            document.querySelectorAll('.estimate-table tbody tr').forEach(row => {
+                if (row.getAttribute('data-auto-calc') === 'design-fee') {
+                    const engTotal = rowMap['1'] ? rowMap['1'].total : 0;
+                    const baseFee = calculateDesignFee(engTotal);
+                    const discountRate = parseInt(row.getAttribute('data-discount-rate')) || 100;
+                    const finalFee = baseFee * discountRate / 100;
+
+                    const costInput = row.querySelector('.cost-input');
+                    if (costInput) {
+                        costInput.value = finalFee.toFixed(2);
+                    }
+
+                    const serial = row.querySelector('td:first-child').textContent;
+                    if (rowMap[serial]) {
+                        rowMap[serial].otherCost = round2(finalFee);
+                        rowMap[serial].total = round2(finalFee);
+                    }
+
+                    row.setAttribute('data-base-fee', baseFee.toFixed(2));
+                }
+            });
+
+            // 自动计算建设场地准备及临时设施费（工程费用 × 费率，默认0.5%）
+            document.querySelectorAll('.estimate-table tbody tr').forEach(row => {
+                if (row.getAttribute('data-auto-calc') === 'site-preparation') {
+                    const engTotal = rowMap['1'] ? rowMap['1'].total : 0;
+                    const calcRate = parseFloat(row.getAttribute('data-calc-rate')) || 0.5;
+                    const discountRate = parseInt(row.getAttribute('data-discount-rate')) || 100;
+                    const baseFee = engTotal * calcRate / 100;
+                    const finalFee = baseFee * discountRate / 100;
+
+                    const costInput = row.querySelector('.cost-input');
+                    if (costInput) {
+                        costInput.value = finalFee.toFixed(2);
+                    }
+
+                    const serial = row.querySelector('td:first-child').textContent;
+                    if (rowMap[serial]) {
+                        rowMap[serial].otherCost = round2(finalFee);
+                        rowMap[serial].total = round2(finalFee);
+                    }
+
+                    const calcRateInput = row.querySelector('.calc-rate-input');
+                    if (calcRateInput) {
+                        calcRateInput.value = calcRate.toFixed(2);
+                    }
+
+                    row.setAttribute('data-base-fee', baseFee.toFixed(2));
+                }
+            });
+
+            // 自动计算前期工作咨询费（线性内插法）
+            document.querySelectorAll('.estimate-table tbody tr').forEach(row => {
+                if (row.getAttribute('data-auto-calc') === 'preliminary-consultation') {
+                    const engTotal = rowMap['1'] ? rowMap['1'].total : 0;
+                    const baseFee = calculateConsultationFee(engTotal);
+                    const discountRate = parseInt(row.getAttribute('data-discount-rate')) || 100;
+                    const finalFee = baseFee * discountRate / 100;
+
+                    const costInput = row.querySelector('.cost-input');
+                    if (costInput) {
+                        costInput.value = finalFee.toFixed(2);
+                    }
+
+                    const serial = row.querySelector('td:first-child').textContent;
+                    if (rowMap[serial]) {
+                        rowMap[serial].otherCost = round2(finalFee);
+                        rowMap[serial].total = round2(finalFee);
+                    }
+
+                    row.setAttribute('data-base-fee', baseFee.toFixed(2));
+                }
+            });
+
+            // 自动计算施工图审查费（勘察费 + 设计费 × 费率）
+            document.querySelectorAll('.estimate-table tbody tr').forEach(row => {
+                if (row.getAttribute('data-auto-calc') === 'construction-drawing-review') {
+                    const surveyFee = getSurveyFee();
+                    const designFee = getDesignFee();
+                    const baseFee = surveyFee + designFee;
+                    const calcRate = parseFloat(row.getAttribute('data-calc-rate')) || 6.5;
+                    const finalFee = baseFee * calcRate / 100;
+
+                    const costInput = row.querySelector('.cost-input');
+                    if (costInput) {
+                        costInput.value = finalFee.toFixed(2);
+                    }
+
+                    const serial = row.querySelector('td:first-child').textContent;
+                    if (rowMap[serial]) {
+                        rowMap[serial].otherCost = round2(finalFee);
+                        rowMap[serial].total = round2(finalFee);
+                    }
+
+                    // 更新计算费率显示
+                    const calcRateInput = row.querySelector('.calc-rate-input');
+                    if (calcRateInput) {
+                        calcRateInput.value = calcRate.toFixed(2);
+                    }
+
+                    row.setAttribute('data-base-fee', baseFee.toFixed(2));
+                }
+            });
+
+            // 自动计算工程造价咨询费（工程费用合计 × 费率）
+            document.querySelectorAll('.estimate-table tbody tr').forEach(row => {
+                if (row.getAttribute('data-auto-calc') === 'cost-consultation') {
+                    const engTotal = rowMap['1'] ? rowMap['1'].total : 0;
+                    const calcRate = parseFloat(row.getAttribute('data-calc-rate')) || 1;
+                    const baseFee = engTotal * calcRate / 100;
+                    const finalFee = baseFee;
+
+                    const costInput = row.querySelector('.cost-input');
+                    if (costInput) {
+                        costInput.value = finalFee.toFixed(2);
+                    }
+
+                    const serial = row.querySelector('td:first-child').textContent;
+                    if (rowMap[serial]) {
+                        rowMap[serial].otherCost = round2(finalFee);
+                        rowMap[serial].total = round2(finalFee);
+                    }
+
+                    // 更新计算费率显示（保留两位小数）
+                    const calcRateInput = row.querySelector('.calc-rate-input');
+                    if (calcRateInput) {
+                        calcRateInput.value = calcRate.toFixed(2);
+                    }
+
+                    row.setAttribute('data-base-fee', baseFee.toFixed(2));
+                }
+            });
+
+            // 自动计算招标代理费（差额定率累进法）
+            document.querySelectorAll('.estimate-table tbody tr').forEach(row => {
+                if (row.getAttribute('data-auto-calc') === 'tender-agent') {
+                    const engTotal = rowMap['1'] ? rowMap['1'].total : 0;
+                    const finalFee = calculateTenderAgentFee(engTotal);
+
+                    const costInput = row.querySelector('.cost-input');
+                    if (costInput) {
+                        costInput.value = finalFee.toFixed(2);
+                    }
+
+                    const serial = row.querySelector('td:first-child').textContent;
+                    if (rowMap[serial]) {
+                        rowMap[serial].otherCost = round2(finalFee);
+                        rowMap[serial].total = round2(finalFee);
+                    }
+
+                    row.setAttribute('data-base-fee', finalFee.toFixed(2));
+                }
+            });
+
+            // 自动计算工程监理费（直线内插法）
+            document.querySelectorAll('.estimate-table tbody tr').forEach(row => {
+                if (row.getAttribute('data-auto-calc') === 'supervision-fee') {
+                    const engTotal = rowMap['1'] ? rowMap['1'].total : 0;
+                    const baseFee = calculateSupervisionFee(engTotal);
+                    const discountRate = parseInt(row.getAttribute('data-discount-rate')) || 100;
+                    const finalFee = baseFee * discountRate / 100;
+
+                    const costInput = row.querySelector('.cost-input');
+                    if (costInput) {
+                        costInput.value = finalFee.toFixed(2);
+                    }
+
+                    const serial = row.querySelector('td:first-child').textContent;
+                    if (rowMap[serial]) {
+                        rowMap[serial].otherCost = round2(finalFee);
+                        rowMap[serial].total = round2(finalFee);
+                    }
+
+                    row.setAttribute('data-base-fee', baseFee.toFixed(2));
+                }
+            });
+
+            // 自动计算城市基础设施配套费（计费基价×面积×折扣收费率）
+            document.querySelectorAll('.estimate-table tbody tr').forEach(row => {
+                if (row.getAttribute('data-auto-calc') === 'urban-infrastructure') {
+                    const calcRateInput = row.querySelector('.calc-rate-input');
+                    const rate = calcRateInput ? parseFloat(calcRateInput.value) || 0 : 0;
+                    const infraAreaInput = row.querySelector('.infrastructure-area-input');
+                    const quantity = infraAreaInput ? parseFloat(infraAreaInput.value) || 0 : 0;
+                    const discountRateInput = row.querySelector('.discount-rate-input');
+                    const discountRate = discountRateInput ? parseInt(discountRateInput.value) || 100 : 100;
+                    const baseFee = rate * quantity / 10000;
+                    const finalFee = baseFee * discountRate / 100;
+
+                    const costInput = row.querySelector('.cost-input');
+                    if (costInput) {
+                        costInput.value = finalFee.toFixed(2);
+                    }
+
+                    const serial = row.querySelector('td:first-child').textContent;
+                    if (rowMap[serial]) {
+                        rowMap[serial].otherCost = round2(finalFee);
+                        rowMap[serial].total = round2(finalFee);
+                    }
+
+                    row.setAttribute('data-base-fee', baseFee.toFixed(2));
+                }
+            });
+
+            // 自动计算工程保险费（工程费用合计×费率）
+            document.querySelectorAll('.estimate-table tbody tr').forEach(row => {
+                if (row.getAttribute('data-auto-calc') === 'engineering-insurance') {
+                    const calcRateInput = row.querySelector('.calc-rate-input');
+                    const rate = calcRateInput ? parseFloat(calcRateInput.value) || 0 : 0;
+                    const engTotal = getEngineeringTotal();
+                    const finalFee = engTotal * rate / 100;
+
+                    const costInput = row.querySelector('.cost-input');
+                    if (costInput) {
+                        costInput.value = finalFee.toFixed(2);
+                    }
+
+                    const serial = row.querySelector('td:first-child').textContent;
+                    if (rowMap[serial]) {
+                        rowMap[serial].otherCost = round2(finalFee);
+                        rowMap[serial].total = round2(finalFee);
+                    }
+                }
+            });
+
+            // 自动计算竣工财务决算费（工程费用合计×费率）
+            document.querySelectorAll('.estimate-table tbody tr').forEach(row => {
+                if (row.getAttribute('data-auto-calc') === 'completion-settlement') {
+                    const calcRateInput = row.querySelector('.calc-rate-input');
+                    const rate = calcRateInput ? parseFloat(calcRateInput.value) || 0 : 0;
+                    const engTotal = getEngineeringTotal();
+                    const finalFee = engTotal * rate / 100;
+
+                    const costInput = row.querySelector('.cost-input');
+                    if (costInput) {
+                        costInput.value = finalFee.toFixed(2);
+                    }
+
+                    const serial = row.querySelector('td:first-child').textContent;
+                    if (rowMap[serial]) {
+                        rowMap[serial].otherCost = round2(finalFee);
+                        rowMap[serial].total = round2(finalFee);
+                    }
+                }
+            });
+
+            // 重新计算第2节的小计（因为管理费/设计费等可能已变化）
+            if (childrenMap['2']) {
+                calculateSubtotal('2', rowMap, childrenMap);
+            }
+
+            // 计算建设投资（一）= 工程费用(1) + 工程建设其他费用(2) + 预备费用(3)
+            if (rowMap['一']) {
+                const serials = ['1', '2', '3'];
+                let sumBuilding = 0, sumInstallation = 0, sumEquipment = 0, sumOther = 0;
+                serials.forEach(s => {
+                    if (rowMap[s]) {
+                        sumBuilding += rowMap[s].buildingCost;
+                        sumInstallation += rowMap[s].installationCost;
+                        sumEquipment += rowMap[s].equipmentCost;
+                        sumOther += rowMap[s].otherCost;
+                    }
+                });
+                rowMap['一'].buildingCost = round2(sumBuilding);
+                rowMap['一'].installationCost = round2(sumInstallation);
+                rowMap['一'].equipmentCost = round2(sumEquipment);
+                rowMap['一'].otherCost = round2(sumOther);
+                rowMap['一'].total = round2(sumBuilding + sumInstallation + sumEquipment + sumOther);
+            }
+
+            rows.forEach(row => {
+                const serialNumber = row.querySelector('td:first-child').textContent;
+                const isSubtotalRow = row.classList.contains('subtotal-row');
+                const isTotalRow = row.classList.contains('total-row');
+                const hasChildren = childrenMap[serialNumber] && childrenMap[serialNumber].length > 0;
+                const cells = row.querySelectorAll('td');
+
+                if ((isSubtotalRow || hasChildren) && rowMap[serialNumber]) {
+                    if (cells[2]) {
+                        const input = cells[2].querySelector('.cost-input');
+                        const val = rowMap[serialNumber].buildingCost;
+                        if (input) {
+                            input.value = val.toFixed(2);
+                        } else {
+                            cells[2].textContent = val.toFixed(2);
+                        }
+                    }
+                    if (cells[3]) {
+                        const input = cells[3].querySelector('.cost-input');
+                        const val = rowMap[serialNumber].installationCost;
+                        if (input) {
+                            input.value = val.toFixed(2);
+                        } else {
+                            cells[3].textContent = val.toFixed(2);
+                        }
+                    }
+                    if (cells[4]) {
+                        const input = cells[4].querySelector('.cost-input');
+                        const val = rowMap[serialNumber].equipmentCost;
+                        if (input) {
+                            input.value = val.toFixed(2);
+                        } else {
+                            cells[4].textContent = val.toFixed(2);
+                        }
+                    }
+                    if (cells[5]) {
+                        const input = cells[5].querySelector('.cost-input');
+                        const val = rowMap[serialNumber].otherCost;
+                        if (input) {
+                            input.value = val.toFixed(2);
+                        } else {
+                            cells[5].textContent = val.toFixed(2);
+                        }
+                    }
+                    if (cells[6]) {
+                        const totalCell = cells[6].querySelector('.total-cell, .cost-input');
+                        if (totalCell) {
+                            totalCell.value = rowMap[serialNumber].total.toFixed(2);
+                        } else {
+                            cells[6].textContent = rowMap[serialNumber].total.toFixed(2);
+                        }
+                    }
+                } else if (isTotalRow) {
+                    const totalInvestment = round2((rowMap['一'] ? rowMap['一'].total : 0) +
+                                                  (rowMap['二'] ? rowMap['二'].total : 0) +
+                                                  (rowMap['三'] ? rowMap['三'].total : 0));
+                    if (cells[6]) {
+                        cells[6].textContent = totalInvestment.toFixed(2);
+                    }
+                }
+            });
+        }
+        
+        // 获取项目ID
+        function getProjectId() {
+            const pathParts = window.location.pathname.split('/');
+            return pathParts[pathParts.indexOf('project') + 1];
+        }
+        
+        // 保存投资估算数据
+        function saveInvestmentData() {
+            const projectId = getProjectId();
+            const rows = document.querySelectorAll('.estimate-table tbody tr');
+            const data = [];
+
+            // 单次遍历，按DOM顺序保存所有行
+            rows.forEach(row => {
+                const sn = row.querySelector('td:first-child').textContent.trim();
+                const cells = row.querySelectorAll('td');
+                const itemNameInput = row.querySelector('td:nth-child(2) .item-name-input');
+                const itemName = itemNameInput ? itemNameInput.value : cells[1]?.textContent.trim();
+                const costInputs = row.querySelectorAll('.cost-input');
+                const isSubtotal = row.classList.contains('subtotal-row');
+                const isTotal = row.classList.contains('total-row');
+                const isLevel2Child = sn.startsWith('2.') && sn.split('.').length === 2;
+                const isManualOther = ['二', '三'].includes(sn);
+
+                const val = (i) => parseFloat(cells[i]?.textContent) || 0;
+                const unitInput = row.querySelector('td:nth-child(8) input');
+                const quantityInput = row.querySelector('td:nth-child(9) input');
+                const indexInput = row.querySelector('td:nth-child(10) input');
+                const billingBasisInput = row.querySelector('.billing-basis-input');
+                const calcRateInput = row.querySelector('.calc-rate-input');
+                const discountRateInput = row.querySelector('.discount-rate-input');
+
+                const obj = {
+                    serial_number: sn,
+                    item_name: itemName,
+                    is_subtotal_row: isSubtotal,
+                    is_total_row: isTotal,
+                    building_cost: 0,
+                    installation_cost: 0,
+                    equipment_cost: 0,
+                    other_cost: 0,
+                    total: 0,
+                    unit: '',
+                    quantity: 0,
+                    index: 0,
+                    use_index: row.getAttribute('data-use-index') === 'true',
+                    billing_basis: '',
+                    calc_rate: 0,
+                    discount_rate: 100
+                };
+
+                if (costInputs.length > 0) {
+                    // 有输入框的行
+                    if ((isLevel2Child || isManualOther) && costInputs.length === 1) {
+                        obj.other_cost = parseFloat(costInputs[0].value) || 0;
+                        obj.total = obj.other_cost;
+                        obj.billing_basis = billingBasisInput ? billingBasisInput.value : (row.getAttribute('data-billing-basis') || '');
+                        obj.calc_rate = calcRateInput ? (parseFloat(calcRateInput.value) || 0) : (parseFloat(row.getAttribute('data-calc-rate')) || 0);
+                        obj.discount_rate = discountRateInput ? (parseInt(discountRateInput.value) || 100) : (parseFloat(row.getAttribute('data-discount-rate')) || 100);
+
+                        if (itemName === '勘察费') {
+                            const surveyAreaInput = row.querySelector('.survey-area-input');
+                            const unitPriceInput = row.querySelector('.unit-price-input');
+                            obj.unit = '㎡';
+                            obj.quantity = surveyAreaInput ? parseFloat(surveyAreaInput.value) || 0 : 0;
+                            obj.index = unitPriceInput ? parseFloat(unitPriceInput.value) || 15 : 15;
+                            obj.survey_area = obj.quantity;
+                            obj.unit_price = obj.index;
+                        } else if (itemName === '城市基础设施配套费') {
+                            const infraAreaInput = row.querySelector('.infrastructure-area-input');
+                            const infraCalcRateInput = row.querySelector('.calc-rate-input');
+                            obj.unit = '㎡';
+                            obj.quantity = infraAreaInput ? parseFloat(infraAreaInput.value) || 0 : 0;
+                            obj.index = infraCalcRateInput ? parseFloat(infraCalcRateInput.value) || 0 : 0;
+                            obj.billing_basis = obj.quantity;
+                            obj.calc_rate = obj.index;
+                            obj.build_category = row.getAttribute('data-build-category') || '住宅';
+                            obj.address_category = row.getAttribute('data-address-category') || '县城';
+                        } else if (itemName === '防空地下室易地建设费') {
+                            const airDefenseAreaInput = row.querySelector('.air-defense-area-input');
+                            const airDefenseUnitPriceInput = row.querySelector('.air-defense-unit-price-input');
+                            obj.unit = '㎡';
+                            obj.quantity = airDefenseAreaInput ? parseFloat(airDefenseAreaInput.value) || 0 : 0;
+                            obj.index = airDefenseUnitPriceInput ? parseFloat(airDefenseUnitPriceInput.value) || 0 : 0;
+                            obj.billing_basis = obj.quantity;
+                            obj.calc_rate = obj.index;
+                        } else if (itemName === '工程保险费' || itemName === '竣工财务决算费') {
+                            obj.discount_rate = 100;
+                        }
+                    } else {
+                        obj.building_cost = costInputs[0] ? parseFloat(costInputs[0].value) || 0 : 0;
+                        obj.installation_cost = costInputs[1] ? parseFloat(costInputs[1].value) || 0 : 0;
+                        obj.equipment_cost = costInputs[2] ? parseFloat(costInputs[2].value) || 0 : 0;
+                        obj.other_cost = costInputs[3] ? parseFloat(costInputs[3].value) || 0 : 0;
+                        obj.total = obj.building_cost + obj.installation_cost + obj.equipment_cost + obj.other_cost;
+                        obj.unit = unitInput ? unitInput.value : '';
+                        obj.quantity = quantityInput ? parseFloat(quantityInput.value) || 0 : 0;
+                        obj.index = indexInput ? parseFloat(indexInput.value) || 0 : 0;
+                    }
+                } else if (isSubtotal || isTotal) {
+                    // 固定行（一、1、2、3、四）：从单元格文本读取计算值
+                    obj.building_cost = val(2);
+                    obj.installation_cost = val(3);
+                    obj.equipment_cost = val(4);
+                    obj.other_cost = val(5);
+                    obj.total = val(6);
+
+                    // 保存技术经济指标列的文本（公式/费率等）
+                    const indexText = (cells[9]?.textContent || '').trim();
+                    if (indexText && sn !== '四') {
+                        const parsed = parseFloat(indexText);
+                        obj.index = isNaN(parsed) ? indexText : parsed;
+                    } else if (sn === '四') {
+                        obj.index = indexText;
+                    }
+
+                    if (sn === '3') {
+                        const rate = row.getAttribute('data-reserve-rate');
+                        obj.is_reserve_rate = true;
+                        obj.reserve_rate = rate ? parseFloat(rate) : 6.0;
+                    }
+                }
+
+                data.push(obj);
+            });
+            
+            fetch(`/api/project/${projectId}/investment/save`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ data: data })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    showToast('保存成功');
+                } else {
+                    showToast('保存失败：' + result.message, true);
+                }
+            })
+            .catch(error => {
+                console.error('保存失败:', error);
+                showToast('保存失败，请重试', true);
+            });
+        }
+        
+        // 加载已保存的投资估算数据
+        function loadSavedData() {
+            const projectId = getProjectId();
+            
+            fetch(`/api/project/${projectId}/investment/load`)
+            .then(response => response.json())
+            .then(result => {
+                if (result.success && result.data && result.data.length > 0) {
+                    const tbody = document.querySelector('.estimate-table tbody');
+                    
+                    // 清除现有动态添加的行（保留固定行）
+                    const existingRows = tbody.querySelectorAll('tr');
+                    existingRows.forEach(row => {
+                        const serialNumber = row.querySelector('td:first-child').textContent;
+                        if (!['一', '二', '三', '四', '1', '2', '3'].includes(serialNumber)) {
+                            row.remove();
+                        }
+                    });
+                    
+                    // 添加保存的数据
+                    result.data.forEach(item => {
+                        if (!['一', '二', '三', '四', '1', '2', '3'].includes(item.serial_number)) {
+                            const isLevel2 = item.serial_number.startsWith('2.');
+                            addNewRow(
+                                item.serial_number.split('.')[0],
+                                item.serial_number,
+                                item.item_name,
+                                item.building_cost || 0,
+                                item.installation_cost || 0,
+                                item.equipment_cost || 0,
+                                item.other_cost || 0,
+                                (item.building_cost || 0) + (item.installation_cost || 0) + (item.equipment_cost || 0) + (item.other_cost || 0),
+                                item.unit || '',
+                                item.quantity || 0,
+                                item.index || 0,
+                                item.use_index === true,
+                                isLevel2 ? 'other' : 'building',
+                                item.billing_basis || '',
+                                item.calc_rate || 0,
+                                item.discount_rate || 100,
+                                item.build_category || '住宅',
+                                item.address_category || '县城'
+                            );
+
+                            // 恢复城市基础设施配套费的 data-quantity 属性
+                            if (item.item_name === '城市基础设施配套费') {
+                                const rows = document.querySelectorAll('.estimate-table tbody tr');
+                                rows.forEach(row => {
+                                    if (row.querySelector('td:first-child').textContent === item.serial_number) {
+                                        row.setAttribute('data-quantity', item.quantity || 0);
+                                    }
+                                });
+                            }
+                        }
+                    });
+
+                    // 恢复预备费费率
+                    result.data.forEach(item => {
+                        if (item.is_reserve_rate && item.reserve_rate) {
+                            document.querySelectorAll('.estimate-table tbody tr').forEach(row => {
+                                if (row.querySelector('td:first-child').textContent === '3') {
+                                    row.setAttribute('data-reserve-rate', item.reserve_rate);
+                                    const cells = row.querySelectorAll('td');
+                                    if (cells[9]) {
+                                        cells[9].textContent = parseFloat(item.reserve_rate).toFixed(2) + '%';
+                                    }
+                                }
+                            });
+                        }
+                    });
+
+                    // 恢复建设期利息(二)和流动资金(三)的值
+                    result.data.forEach(item => {
+                        if (['二', '三'].includes(item.serial_number)) {
+                            document.querySelectorAll('.estimate-table tbody tr').forEach(row => {
+                                if (row.querySelector('td:first-child').textContent === item.serial_number) {
+                                    const costInput = row.querySelector('.cost-input');
+                                    if (costInput) {
+                                        costInput.value = item.other_cost || 0;
+                                    }
+                                }
+                            });
+                        }
+                    });
+
+                    // 重新计算汇总
+                    updateTotals();
+                }
+            })
+            .catch(error => {
+                console.error('加载数据失败:', error);
+            });
+        }
+        
+        // 导出到Excel
+        function exportToExcel() {
+            const projectId = getProjectId();
+            window.location.href = `/api/project/${projectId}/investment/export`;
+        }
+    </script>
+{% endblock %}
