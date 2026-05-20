@@ -1,0 +1,331 @@
+# Windows 部署 kyglxtv3 项目 —— 完整命令清单
+
+> 适用环境：Windows 10/11 个人电脑部署  
+> 默认用户名：管理员账户
+
+---
+
+## 一、系统基础环境
+
+### 1.1 安装 Python
+
+1. 访问 https://www.python.org/downloads/
+2. 下载 Python 3.11.x 或 3.12.x（推荐3.11稳定版）
+3. **安装时勾选**：
+   - ☑️ Add Python to PATH
+   - ☑️ Install pip
+4. 验证安装：
+```cmd
+python --version
+pip --version
+```
+
+### 1.2 安装 Git（可选，用于代码管理）
+
+1. 访问 https://git-scm.com/downloads
+2. 下载并安装 Git for Windows
+3. 验证：
+```cmd
+git --version
+```
+
+### 1.3 创建项目目录
+
+```cmd
+mkdir C:\项目管理系统
+cd C:\项目管理系统
+```
+
+---
+
+## 二、项目部署
+
+### 2.1 复制项目文件
+
+将项目文件夹内容复制到 `C:\项目管理系统\` 目录下，确保目录结构如下：
+```
+C:\项目管理系统\
+├── app.py
+├── config.py
+├── extensions.py
+├── models.py
+├── requirements.txt
+├── license_manager.py
+├── blueprints\
+├── templates\
+├── static\
+└── instance\
+```
+
+### 2.2 创建虚拟环境
+
+```cmd
+cd C:\项目管理系统
+python -m venv venv
+venv\Scripts\activate
+```
+
+### 2.3 安装依赖
+
+```cmd
+pip install --upgrade pip
+pip install -r requirements.txt
+pip install cryptography
+```
+
+### 2.4 创建上传目录
+
+```cmd
+mkdir uploads
+mkdir uploads\标准文件
+```
+
+---
+
+## 三、加密系统部署（License验证）
+
+### 3.1 文件准备
+
+**U盘工具**：
+- `license_generator.py`
+- `private_key.pem`
+
+**客户电脑**（源代码目录）：
+- `C:\项目管理系统\license_manager.py`（已包含公钥）
+
+### 3.2 一键部署（推荐）
+
+将U盘插入客户电脑，执行一条命令即可完成：
+```cmd
+python license_generator.py --auto-deploy
+```
+
+**执行过程**：
+1. 自动读取客户设备指纹
+2. 显示设备信息（计算机名、MAC、CPU等）
+3. 提示输入授权到期日期
+4. 用U盘私钥签名，自动生成 `license.key` 并写入项目目录
+
+**预期输出示例**：
+```
+============================================================
+  河北鑫奥项目管理系统 - 一键部署
+============================================================
+
+设备信息：
+  计算机名:  DESKTOP-ABC123
+  设备指纹:  a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6
+  MAC地址:   00:11:22:33:44:55
+  CPU序列号: BFEBFBFF00090675
+  磁盘序列号: WD1234567890
+
+授权到期日期 [默认: 2027-05-19]:
+
+部署完成！
+  License文件: C:\项目管理系统\license.key
+  到期日期:    2027-05-19（剩余 365 天）
+  指纹:        a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6
+
+系统启动时将自动验证授权。
+============================================================
+```
+
+### 3.3 验证License
+
+```cmd
+cd C:\项目管理系统
+venv\Scripts\activate
+python -c "from license_manager import verify_license; valid, msg = verify_license(); print(msg)"
+```
+
+**预期输出**：`授权有效，剩余 365 天（到期日：2027-05-19）`
+
+---
+
+## 四、启动与访问
+
+### 4.1 启动应用
+
+```cmd
+cd C:\项目管理系统
+venv\Scripts\activate
+python app.py
+```
+
+**预期输出**：
+```
+授权有效，剩余 XXX 天（到期日：2027-05-19）
+数据库文件不存在，正在初始化数据库...
+数据库初始化完成
+ * Running on http://0.0.0.0:5000
+```
+
+### 4.2 访问系统
+
+- **本机访问**：http://localhost:5000
+- **局域网访问**：http://电脑IP地址:5000
+  - 查看本机IP：`ipconfig`，找"IPv4 地址"
+
+### 4.3 创建启动脚本（方便客户使用）
+
+在项目目录创建 `启动系统.bat`：
+```bat
+@echo off
+chcp 65001 >nul
+cd /d C:\项目管理系统
+call venv\Scripts\activate
+python app.py
+pause
+```
+
+---
+
+## 五、开机自启配置（可选）
+
+### 5.1 创建任务计划程序
+
+1. 按 `Win + R`，输入 `taskschd.msc`，回车
+2. 点击"创建基本任务"
+3. 名称：`项目管理系统`
+4. 触发器：`当计算机启动时`
+5. 操作：`启动程序`
+   - 程序：`C:\项目管理系统\venv\Scripts\python.exe`
+   - 参数：`C:\项目管理系统\app.py`
+   - 起始于：`C:\项目管理系统`
+6. 完成
+
+### 5.2 或使用NSSM（推荐）
+
+1. 下载NSSM：https://nssm.cc/download
+2. 解压后，管理员运行命令提示符：
+```cmd
+nssm install ProjectManagementSystem
+```
+
+3. 在弹出窗口配置：
+   - Path：`C:\项目管理系统\venv\Scripts\python.exe`
+   - Startup directory：`C:\项目管理系统`
+   - Arguments：`app.py`
+
+4. 启动服务：
+```cmd
+nssm start ProjectManagementSystem
+```
+
+---
+
+## 六、防火墙配置
+
+### 6.1 允许应用通过防火墙
+
+1. 按 `Win + R`，输入 `wf.msc`，回车
+2. 点击"入站规则" → "新建规则"
+3. 选择"端口" → 下一步
+4. 输入端口：`5000` → 下一步
+5. 选择"允许连接" → 下一步
+6. 勾选所有配置文件 → 下一步
+7. 名称：`项目管理系统` → 完成
+
+### 6.2 或使用命令行（管理员权限）
+
+```cmd
+netsh advfirewall firewall add rule name="项目管理系统" dir=in action=allow protocol=tcp localport=5000
+```
+
+---
+
+## 七、日常维护
+
+### 7.1 启动系统
+
+双击 `启动系统.bat` 或运行：
+```cmd
+cd C:\项目管理系统
+venv\Scripts\activate
+python app.py
+```
+
+### 7.2 停止系统
+
+在运行窗口按 `Ctrl + C`
+
+### 7.3 更新代码
+
+```cmd
+cd C:\项目管理系统
+git pull origin main
+venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+### 7.4 数据库备份
+
+```cmd
+copy C:\项目管理系统\instance\system.db C:\备份\备份_%date:~0,4%%date:~5,2%%date:~8,2%.db
+```
+
+### 7.5 License续期
+
+将U盘插入客户电脑，执行一条命令：
+```cmd
+python U:\license_generator.py --auto-deploy C:\项目管理系统
+```
+
+输入新的到期日期即可覆盖旧License。
+
+---
+
+## 八、常见故障排查
+
+| 现象 | 解决方法 |
+|------|----------|
+| 授权验证失败 | 检查 `license.key` 是否存在且在项目根目录 |
+| 设备指纹不匹配 | 重新生成绑定当前设备的License |
+| 授权已过期 | 使用U盘工具续期License |
+| 端口被占用 | 修改 `config.py` 中的端口号，或关闭占用端口的程序 |
+| 数据库错误 | 删除 `instance\system.db`，重新启动程序自动初始化 |
+| 模块导入错误 | 确认已激活虚拟环境：`venv\Scripts\activate` |
+
+---
+
+## 九、项目目录结构说明
+
+```
+C:\项目管理系统\
+├── app.py                  # 主程序入口
+├── config.py               # 配置文件
+├── extensions.py           # Flask扩展
+├── models.py               # 数据库模型
+├── utils.py                # 工具函数
+├── requirements.txt        # Python依赖
+├── license_manager.py      # License验证模块
+├── license.key             # 授权文件（部署时生成）
+├── blueprints\             # 路由模块
+│   ├── auth.py             # 认证模块
+│   ├── projects.py         # 项目管理
+│   ├── admin.py            # 管理员功能
+│   ├── files.py            # 文件管理
+│   └── estimation.py       # 估算功能
+├── templates\              # HTML模板
+├── static\                 # 静态资源
+├── instance\               # 数据库文件
+├── uploads\                # 上传文件目录
+├── venv\                   # Python虚拟环境
+├── 启动系统.bat            # 启动脚本
+└── license.key             # 授权文件
+```
+
+---
+
+## 十、安全建议
+
+1. **定期备份**：每周备份 `instance\system.db` 和 `uploads\` 目录
+2. **License管理**：记录每个客户的设备指纹和License到期时间
+3. **U盘保管**：私钥文件 `private_key.pem` 妥善保管，切勿泄露
+4. **系统更新**：定期更新Python和依赖包，修复安全漏洞
+5. **网络隔离**：如无需外网访问，建议仅在内网使用
+
+---
+
+> 📅 最后更新：2026-05-19  
+> ✍️ 基于 Windows 10/11 实际部署经验整理
