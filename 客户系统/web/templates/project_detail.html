@@ -86,9 +86,9 @@
                         </div>
                     </div>
                     <div class="d-flex gap-2">
-                        <a href="/download/{{ p.id }}/{{ attachment.filename }}" class="btn btn-sm btn-primary" title="下载文件"><i class="bi bi-download"></i> 下载</a>
+                        <a href="/files/download/{{ p.id }}/{{ attachment.filename }}" class="btn btn-sm btn-primary" title="下载文件"><i class="bi bi-download"></i> 下载</a>
                         {% if can_delete %}
-                        <form method="post" action="/delete_file/{{ p.id }}/{{ attachment.id }}" onsubmit="return confirm('确定要删除文件「{{ attachment.filename }}」吗？');">
+                        <form method="post" action="/files/delete/{{ p.id }}/{{ attachment.filename }}" onsubmit="return confirm('确定要删除文件「{{ attachment.filename }}」吗？');">
                             <button type="submit" class="btn btn-sm btn-danger" title="删除文件"><i class="bi bi-trash"></i> 删除</button>
                         </form>
                         {% endif %}
@@ -114,7 +114,7 @@
             {% if role != 'visitor' %}
             <div class="mt-4 pt-3 border-top" style="border-color:var(--border-color) !important;">
                 <h6 class="mb-3">上传新附件</h6>
-                <form method="post" action="/upload/{{ p.id }}" enctype="multipart/form-data" id="uploadForm">
+                <form method="post" action="/files/upload/{{ p.id }}" enctype="multipart/form-data" id="uploadForm">
                     <div class="upload-area" id="uploadArea">
                         <div class="text-center">
                             <i class="bi bi-cloud-arrow-up" style="font-size:3rem;color:var(--text-muted);margin-bottom:10px;"></i>
@@ -183,7 +183,7 @@
             {% if role != 'visitor' %}
             <a href="/project/edit/{{ p.id }}" class="btn btn-primary me-2"><i class="bi bi-pencil"></i> 编辑项目</a>
             {% endif %}
-            <a href="/my/projects" class="btn btn-outline-primary"><i class="bi bi-list-task"></i> 返回我的项目</a>
+            <a href="/my_projects" class="btn btn-outline-primary"><i class="bi bi-list-task"></i> 返回我的项目</a>
         </div>
     </div>
 </div>

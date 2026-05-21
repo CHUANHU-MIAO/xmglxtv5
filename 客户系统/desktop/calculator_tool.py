@@ -223,7 +223,7 @@ class LoginDialog(QDialog):
         layout = QVBoxLayout(self)
         layout.setSpacing(12)
 
-        title = QLabel('河北鑫奥项目管理系统')
+        title = QLabel('项目管理系统')
         title.setAlignment(Qt.AlignCenter)
         title_font = QFont()
         title_font.setPointSize(14)
@@ -603,7 +603,7 @@ class MainWindow(QMainWindow):
     def __init__(self, client):
         super().__init__()
         self.client = client
-        self.setWindowTitle('河北鑫奥项目管理系统 - 桌面端')
+        self.setWindowTitle('项目管理系统 - 桌面端')
         self.resize(900, 700)
         self._setup_ui()
 
@@ -642,7 +642,7 @@ class MainWindow(QMainWindow):
 
 def main():
     app = QApplication(sys.argv)
-    app.setApplicationName('河北鑫奥项目管理系统')
+    app.setApplicationName('项目管理系统')
     client = SubscriptionClient()
     ok, msg = client.verify()
     if not ok:

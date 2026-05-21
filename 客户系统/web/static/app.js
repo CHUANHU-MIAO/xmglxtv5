@@ -1,5 +1,5 @@
 /* ========================================
-   河北鑫奥项目管理系统 - 共享 JavaScript
+   项目管理系统 - 共享 JavaScript
    ======================================== */
 
 document.addEventListener('DOMContentLoaded', function () {

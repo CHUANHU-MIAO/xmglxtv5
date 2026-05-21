@@ -306,9 +306,9 @@
 
         revenueChart.on('click', function(params) {
             if (params.name === '已收账款') {
-                window.location.href = '/admin/projects?payment_status=received';
+                window.location.href = '/admin/projects?payment_group=received';
             } else if (params.name === '应收账款') {
-                window.location.href = '/admin/projects?payment_status=receivable';
+                window.location.href = '/admin/projects?payment_group=receivable';
             }
         });
 

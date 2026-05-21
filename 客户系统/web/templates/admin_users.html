@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}用户管理 - 河北鑫奥项目管理系统{% endblock %}
+{% block title %}用户管理 - 项目管理系统{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
@@ -73,12 +73,12 @@
                         {% for u in users %}
                         <tr>
                             <td>{{ u.id }}</td>
-                            <td>{{ u.name }}</td>
+                            <td>{{ u.username }}</td>
                             <td><span class="badge {% if u.role == 'admin' %}bg-primary{% elif u.role == 'visitor' %}bg-info{% else %}bg-secondary{% endif %}">{{ {'admin':'管理员','engineer':'工程师','visitor':'访客'}.get(u.role, u.role) }}</span></td>
-                            <td><code style="color:var(--text-muted);font-family:var(--font-mono);font-size:0.82rem;">{{ u.password }}</code></td>
+                            <td><code style="color:var(--text-muted);font-family:var(--font-mono);font-size:0.82rem;">******</code></td>
                             <td>
-                                {% if u.name != 'admin' %}
-                                <form method="post" action="/admin/user/delete/{{ u.id }}" style="display:inline;" onsubmit="return confirm('确定删除用户【{{ u.name }}】吗？删除后该账号将无法登录！');">
+                                {% if u.username != 'admin' %}
+                                <form method="post" action="/admin/user/delete/{{ u.id }}" style="display:inline;" onsubmit="return confirm('确定删除用户【{{ u.username }}】吗？删除后该账号将无法登录！');">
                                     <button type="submit" class="delete-btn"><i class="bi bi-trash"></i> 删除</button>
                                 </form>
                                 {% else %}

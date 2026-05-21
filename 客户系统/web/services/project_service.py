@@ -39,7 +39,8 @@ def get_index_statistics(months=12):
         extract('month', Project.start_date).label('m'),
         func.count('*').label('cnt')
     ).filter(
-        Project.start_date >= earliest_date
+        Project.start_date >= earliest_date,
+        Project.is_valid == 1
     ).group_by('y', 'm').all()
 
     month_count_map = {(int(r.y), int(r.m)): r.cnt for r in rows}
@@ -57,26 +58,26 @@ def get_index_statistics(months=12):
             target_year += 1
             target_month -= 12
 
-        month_labels.append(f"{target_year}年{target_month:02d}月")
+        month_labels.append(f"{target_year}-{target_month:02d}")
         month_data.append(month_count_map.get((target_year, target_month), 0))
 
     area_expr = func.coalesce(Project.location, '未知')
     area_rows = db.session.query(
         area_expr.label('loc'),
         func.count('*').label('cnt')
-    ).group_by(area_expr).all()
+    ).filter(Project.is_valid == 1).group_by(area_expr).all()
     area_dict = {r.loc: r.cnt for r in area_rows}
 
-    eng_expr = func.coalesce(User.name, '未知')
+    eng_expr = func.coalesce(User.username, '未知')
     eng_rows = db.session.query(
         eng_expr.label('eng_name'),
         func.count('*').label('cnt')
     ).select_from(Project).outerjoin(
-        User, Project.engineer_id == User.id
-    ).group_by(eng_expr).all()
+        User, Project.user_id == User.id
+    ).filter(Project.is_valid == 1).group_by(eng_expr).all()
     eng_dict = {r.eng_name: r.cnt for r in eng_rows}
 
-    year_total = Project.query.count()
+    year_total = Project.query.filter(Project.is_valid == 1).count()
 
     result = {
         'month_labels': month_labels,
@@ -93,7 +94,7 @@ def get_index_statistics(months=12):
 
 
 def search_projects(keyword, page=1, per_page=20):
-    query = Project.query.join(User, Project.engineer_id == User.id)
+    query = Project.query.join(User, Project.user_id == User.id)
     if keyword:
         from sqlalchemy import or_
         query = query.filter(
@@ -104,7 +105,7 @@ def search_projects(keyword, page=1, per_page=20):
                 Project.owner_name.like(f'%{keyword}%'),
                 Project.service_content.like(f'%{keyword}%'),
                 Project.remark.like(f'%{keyword}%'),
-                User.name.like(f'%{keyword}%')
+                User.username.like(f'%{keyword}%')
             )
         )
     return query.order_by(Project.create_time.desc()).paginate(page=page, per_page=per_page, error_out=False)

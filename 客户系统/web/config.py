@@ -11,3 +11,4 @@ class Config:
     )
     SECRET_KEY = '123456'
     STANDARD_FILES_FOLDER = os.path.join(UPLOAD_FOLDER, 'standard_files')
+    VERSION = 'V5.0.1'

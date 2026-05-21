@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
 from web.models import User
 from web.extensions import db
+import datetime
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -14,8 +15,20 @@ def login():
         user = User.query.filter_by(username=username).first()
         if user and user.check_password(password):
             login_user(user)
+            user.last_active_time = datetime.datetime.utcnow()
+            db.session.commit()
             return redirect(url_for('projects.index'))
         flash('用户名或密码错误')
+    else:
+        cutoff = datetime.datetime.utcnow() - datetime.timedelta(days=365)
+        inactive_visitors = User.query.filter(
+            User.role == 'visitor',
+            User.last_active_time < cutoff
+        ).all()
+        for v in inactive_visitors:
+            db.session.delete(v)
+        if inactive_visitors:
+            db.session.commit()
     return render_template('login.html')
 
 
@@ -55,4 +68,4 @@ def change_password():
             flash('密码修改成功')
             return redirect(url_for('projects.index'))
         flash('原密码错误')
-    return render_template('change_password.html')
+    return render_template('change_password.html', role=current_user.role)

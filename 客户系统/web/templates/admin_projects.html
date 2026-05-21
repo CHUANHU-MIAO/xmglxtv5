@@ -98,12 +98,14 @@
         </div>
 
         <!-- 当前筛选条件显示 -->
-        <div id="admFilterInfo" style="margin-top:15px;padding:10px 16px;background:rgba(0,0,0,0.02);border:1px solid var(--border-color);border-radius:6px;font-size:14px;{% if not (keyword or start_date or end_date or contract_status or payment_status or invoice_status) %}display:none{% endif %};">
+        <div id="admFilterInfo" style="margin-top:15px;padding:10px 16px;background:rgba(0,0,0,0.02);border:1px solid var(--border-color);border-radius:6px;font-size:14px;{% if not (keyword or start_date or end_date or contract_status or payment_status or payment_group or invoice_status) %}display:none{% endif %};">
             <i class="bi bi-info-circle"></i> 当前筛选：
             {% if keyword %}<span class="badge bg-info">关键词：{{ keyword }}</span>{% endif %}
             {% if start_date %}<span class="badge bg-primary">从 {{ start_date }}</span>{% endif %}
             {% if end_date %}<span class="badge bg-primary">至 {{ end_date }}</span>{% endif %}
             {% if contract_status %}<span class="badge bg-secondary">{{ contract_status }}</span>{% endif %}
+            {% if payment_group == 'received' %}<span class="badge bg-success">已收账款（已结款 + 部分结清）</span>{% endif %}
+            {% if payment_group == 'receivable' %}<span class="badge bg-warning">应收账款（未结款 + 未结算）</span>{% endif %}
             {% if payment_status %}<span class="badge bg-secondary">{{ payment_status_label or payment_status }}</span>{% endif %}
             {% if invoice_status %}<span class="badge bg-secondary">{{ invoice_status }}</span>{% endif %}
             | 共找到 <strong id="admCountText">{{ projects.total|default(projects.items|length) }}</strong> 个项目
@@ -119,6 +121,7 @@
         {% if start_date %}{% set export_params = export_params + ['start_date=' + start_date] %}{% endif %}
         {% if end_date %}{% set export_params = export_params + ['end_date=' + end_date] %}{% endif %}
         {% if contract_status %}{% set export_params = export_params + ['contract_status=' + contract_status|urlencode] %}{% endif %}
+        {% if payment_group %}{% set export_params = export_params + ['payment_group=' + payment_group] %}{% endif %}
         {% if payment_status %}{% set export_params = export_params + ['payment_status=' + payment_status|urlencode] %}{% endif %}
         {% if invoice_status %}{% set export_params = export_params + ['invoice_status=' + invoice_status|urlencode] %}{% endif %}
         {% if export_params %}{% set export_url = export_url + '?' + export_params|join('&') %}{% endif %}
@@ -147,10 +150,10 @@
                             <th>合同金额(万元)</th>
                             <th>合同情况</th>
                             <th>结款状态</th>
-                            {% if payment_status != 'receivable' %}
+                            {% if payment_group != 'receivable' and payment_status != 'receivable' %}
                             <th>已结账款(万元)</th>
                             {% endif %}
-                            {% if payment_status != 'received' %}
+                            {% if payment_group != 'received' and payment_status != 'received' %}
                             <th>未结账款(万元)</th>
                             {% endif %}
                             <th>发票情况</th>
@@ -206,7 +209,7 @@
                                 <span class="text-muted">-</span>
                                 {% endif %}
                             </td>
-                            {% if payment_status != 'receivable' %}
+                            {% if payment_group != 'receivable' and payment_status != 'receivable' %}
                             <td>
                                 {% set contract_amt = project.contract_amount|float if project.contract_amount else 0 %}
                                 {% set settled_amt = project.settled_amount|float if project.settled_amount else 0 %}
@@ -220,7 +223,7 @@
                                 {% endif %}
                             </td>
                             {% endif %}
-                            {% if payment_status != 'received' %}
+                            {% if payment_group != 'received' and payment_status != 'received' %}
                             <td>
                                 {% set contract_amt = project.contract_amount|float if project.contract_amount else 0 %}
                                 {% set settled_amt = project.settled_amount|float if project.settled_amount else 0 %}
@@ -277,11 +280,11 @@
             <nav aria-label="Page navigation" class="d-flex justify-content-center">
                 <ul class="pagination mb-0">
                     <li class="page-item {% if not projects.has_prev %}disabled{% endif %}">
-                        <a class="page-link" href="?page={{ projects.prev_num }}&keyword={{ keyword|urlencode }}&start_date={{ start_date }}&end_date={{ end_date }}&contract_status={{ contract_status }}&payment_status={{ payment_status }}&invoice_status={{ invoice_status }}">上一页</a>
+                        <a class="page-link" href="?page={{ projects.prev_num }}&keyword={{ keyword|urlencode }}&start_date={{ start_date }}&end_date={{ end_date }}&contract_status={{ contract_status }}&payment_group={{ payment_group }}&payment_status={{ payment_status }}&invoice_status={{ invoice_status }}">上一页</a>
                     </li>
                     <li class="page-item active"><span class="page-link">{{ projects.page }}</span></li>
                     <li class="page-item {% if not projects.has_next %}disabled{% endif %}">
-                        <a class="page-link" href="?page={{ projects.next_num }}&keyword={{ keyword|urlencode }}&start_date={{ start_date }}&end_date={{ end_date }}&contract_status={{ contract_status }}&payment_status={{ payment_status }}&invoice_status={{ invoice_status }}">下一页</a>
+                        <a class="page-link" href="?page={{ projects.next_num }}&keyword={{ keyword|urlencode }}&start_date={{ start_date }}&end_date={{ end_date }}&contract_status={{ contract_status }}&payment_group={{ payment_group }}&payment_status={{ payment_status }}&invoice_status={{ invoice_status }}">下一页</a>
                     </li>
                     <li class="page-item disabled"><span class="page-link">共 {{ projects.pages }} 页</span></li>
                 </ul>
@@ -322,6 +325,7 @@
         end_date: '{{ end_date|default('') }}',
         contract_status: '{{ contract_status|default('') }}',
         payment_status: '{{ payment_status|default('') }}',
+        payment_group: '{{ payment_group|default('') }}',
         invoice_status: '{{ invoice_status|default('') }}'
     };
 
@@ -345,9 +349,10 @@
     function doAdminSearch(page) {
         page = page || 1;
         var f = getAdminFilters();
+        f.payment_group = currentAdminFilters.payment_group;
         var params = new URLSearchParams({ context: 'admin', page: page, per_page: 20, keyword: f.keyword,
             start_date: f.start_date, end_date: f.end_date, contract_status: f.contract_status,
-            payment_status: f.payment_status, invoice_status: f.invoice_status });
+            payment_status: f.payment_status, payment_group: f.payment_group, invoice_status: f.invoice_status });
         currentAdminFilters = f;
         currentAdminPage = page;
 
@@ -365,14 +370,16 @@
                 document.getElementById('admCountText').textContent = d.pagination.total;
 
                 var info = document.getElementById('admFilterInfo');
-                var hasFilter = f.keyword || f.start_date || f.end_date || f.contract_status || f.payment_status || f.invoice_status;
+                var hasFilter = f.keyword || f.start_date || f.end_date || f.contract_status || f.payment_status || f.payment_group || f.invoice_status;
                 if (hasFilter) {
                     var labels = [];
                     if (f.keyword) labels.push('<span class="badge bg-info">关键词：' + f.keyword + '</span>');
                     if (f.start_date) labels.push('<span class="badge bg-primary">从 ' + f.start_date + '</span>');
                     if (f.end_date) labels.push('<span class="badge bg-primary">至 ' + f.end_date + '</span>');
                     if (f.contract_status) labels.push('<span class="badge bg-secondary">' + f.contract_status + '</span>');
-                    if (f.payment_status) labels.push('<span class="badge bg-secondary">' + f.payment_status + '</span>');
+                    if (f.payment_group === 'received') labels.push('<span class="badge bg-success">已收账款（已结款 + 部分结清）</span>');
+                    else if (f.payment_group === 'receivable') labels.push('<span class="badge bg-warning">应收账款（未结款 + 未结算）</span>');
+                    else if (f.payment_status) labels.push('<span class="badge bg-secondary">' + f.payment_status + '</span>');
                     if (f.invoice_status) labels.push('<span class="badge bg-secondary">' + f.invoice_status + '</span>');
                     info.innerHTML = '<i class="bi bi-info-circle"></i> 当前筛选：' + labels.join(' ') + ' | 共找到 <strong id="admCountText">' + d.pagination.total + '</strong> 个项目';
                     info.style.display = '';
@@ -385,6 +392,7 @@
                 if (f.start_date) exParams.push('start_date=' + f.start_date);
                 if (f.end_date) exParams.push('end_date=' + f.end_date);
                 if (f.contract_status) exParams.push('contract_status=' + encodeURIComponent(f.contract_status));
+                if (f.payment_group) exParams.push('payment_group=' + f.payment_group);
                 if (f.payment_status) exParams.push('payment_status=' + encodeURIComponent(f.payment_status));
                 if (f.invoice_status) exParams.push('invoice_status=' + encodeURIComponent(f.invoice_status));
                 document.getElementById('admExportBtn').href = '/admin/projects/export' + (exParams.length ? '?' + exParams.join('&') : '');
@@ -467,6 +475,7 @@
         if (f.start_date) ep.push('start_date=' + f.start_date);
         if (f.end_date) ep.push('end_date=' + f.end_date);
         if (f.contract_status) ep.push('contract_status=' + encodeURIComponent(f.contract_status));
+        if (f.payment_group) ep.push('payment_group=' + f.payment_group);
         if (f.payment_status) ep.push('payment_status=' + encodeURIComponent(f.payment_status));
         if (f.invoice_status) ep.push('invoice_status=' + encodeURIComponent(f.invoice_status));
         var html = '<div class="card-footer"><nav class="d-flex justify-content-center"><ul class="pagination mb-0">';
@@ -490,6 +499,7 @@
         document.getElementById('adminContractStatus').value = '';
         document.getElementById('adminPaymentStatus').value = '';
         document.getElementById('adminInvoiceStatus').value = '';
+        currentAdminFilters.payment_group = '';
         doAdminSearch(1);
     });
     document.getElementById('adminKeyword').addEventListener('keydown', function(e) { if (e.key === 'Enter') doAdminSearch(1); });
@@ -503,6 +513,7 @@
             document.getElementById('adminContractStatus').value = s.contract_status || '';
             document.getElementById('adminPaymentStatus').value = s.payment_status || '';
             document.getElementById('adminInvoiceStatus').value = s.invoice_status || '';
+            currentAdminFilters.payment_group = s.payment_group || '';
             doAdminSearch(e.state.page || 1);
         }
     });

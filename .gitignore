@@ -22,10 +22,14 @@ env/
 .DS_Store
 Thumbs.db
 
+# Claude AI workspace
+.claude/
+
 # Config (local)
 config.json
 
 # Generated files - 客户系统
+客户系统/%localappdata%/
 客户系统/上传的文件/
 客户系统/uploads/
 客户系统/instance/

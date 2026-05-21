@@ -68,7 +68,7 @@ venv\Scripts\activate
 ### 2.3 安装依赖
 
 ```cmd
-pip install --upgrade pip
+python.exe -m pip install --upgrade pip
 pip install -r requirements.txt
 pip install cryptography
 ```
@@ -97,7 +97,7 @@ mkdir uploads\标准文件
 
 将U盘插入客户电脑，执行一条命令即可完成：
 ```cmd
-python license_generator.py --auto-deploy
+python license_generator.py --auto-deploy <客户系统目录>
 ```
 
 **执行过程**：

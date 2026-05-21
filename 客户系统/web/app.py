@@ -1,17 +1,21 @@
 from flask import Flask
 from web.config import Config
 from web.extensions import db, login_manager
+import os
 
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
+    os.makedirs(os.path.join(app.config['BASEDIR'], 'instance'), exist_ok=True)
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
     db.init_app(app)
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
 
-    from web.models import User
+    from web.models import User, EnergyFactor
 
     @login_manager.user_loader
     def load_user(user_id):
@@ -29,7 +33,56 @@ def create_app():
     app.register_blueprint(files_bp)
     app.register_blueprint(estimation_bp)
 
+    @app.context_processor
+    def inject_version():
+        return dict(system_version=app.config.get('VERSION', ''))
+
     with app.app_context():
         db.create_all()
+
+        if not User.query.filter_by(username='admin').first():
+            admin = User(username='admin', role='admin')
+            admin.set_password('admin123')
+            db.session.add(admin)
+            db.session.commit()
+
+        if not EnergyFactor.query.first():
+            energy_factors = [
+                {'name': '电力', 'unit': '万kWh', 'equivalent_coef': 1.229, 'equivalent_note': '当量值: 1.229 tce/万kWh', 'equivalent_coef_val': 3.015, 'equivalent_val_note': '等价值: 3.015 tce/万kWh', 'category': '能源', 'sort_order': 1},
+                {'name': '天然气', 'unit': '万m³', 'equivalent_coef': 12.143, 'equivalent_note': '12.143 tce/万m³', 'equivalent_coef_val': 12.143, 'equivalent_val_note': '', 'category': '能源', 'sort_order': 2},
+                {'name': '热力', 'unit': 'GJ', 'equivalent_coef': 0.0341, 'equivalent_note': '0.0341 tce/GJ', 'equivalent_coef_val': 0.0341, 'equivalent_val_note': '', 'category': '能源', 'sort_order': 3},
+                {'name': '原煤', 'unit': 't', 'equivalent_coef': 0.7143, 'equivalent_note': '0.7143 tce/t', 'equivalent_coef_val': 0.7143, 'equivalent_val_note': '', 'category': '能源', 'sort_order': 4},
+                {'name': '洗精煤', 'unit': 't', 'equivalent_coef': 0.9000, 'equivalent_note': '0.9000 tce/t', 'equivalent_coef_val': 0.9000, 'equivalent_val_note': '', 'category': '能源', 'sort_order': 5},
+                {'name': '焦炭', 'unit': 't', 'equivalent_coef': 0.9714, 'equivalent_note': '0.9714 tce/t', 'equivalent_coef_val': 0.9714, 'equivalent_val_note': '', 'category': '能源', 'sort_order': 6},
+                {'name': '汽油', 'unit': 't', 'equivalent_coef': 1.4714, 'equivalent_note': '1.4714 tce/t', 'equivalent_coef_val': 1.4714, 'equivalent_val_note': '', 'category': '能源', 'sort_order': 7},
+                {'name': '柴油', 'unit': 't', 'equivalent_coef': 1.4571, 'equivalent_note': '1.4571 tce/t', 'equivalent_coef_val': 1.4571, 'equivalent_val_note': '', 'category': '能源', 'sort_order': 8},
+                {'name': '燃料油', 'unit': 't', 'equivalent_coef': 1.4286, 'equivalent_note': '1.4286 tce/t', 'equivalent_coef_val': 1.4286, 'equivalent_val_note': '', 'category': '能源', 'sort_order': 9},
+                {'name': '液化石油气', 'unit': 't', 'equivalent_coef': 1.7143, 'equivalent_note': '1.7143 tce/t', 'equivalent_coef_val': 1.7143, 'equivalent_val_note': '', 'category': '能源', 'sort_order': 10},
+                {'name': '炼厂干气', 'unit': 't', 'equivalent_coef': 1.5714, 'equivalent_note': '1.5714 tce/t', 'equivalent_coef_val': 1.5714, 'equivalent_val_note': '', 'category': '能源', 'sort_order': 11},
+                {'name': '煤焦油', 'unit': 't', 'equivalent_coef': 1.1429, 'equivalent_note': '1.1429 tce/t', 'equivalent_coef_val': 1.1429, 'equivalent_val_note': '', 'category': '能源', 'sort_order': 12},
+                {'name': '粗苯', 'unit': 't', 'equivalent_coef': 1.4286, 'equivalent_note': '1.4286 tce/t', 'equivalent_coef_val': 1.4286, 'equivalent_val_note': '', 'category': '能源', 'sort_order': 13},
+                {'name': '甲醇', 'unit': 't', 'equivalent_coef': 0.7143, 'equivalent_note': '0.7143 tce/t', 'equivalent_coef_val': 0.7143, 'equivalent_val_note': '', 'category': '能源', 'sort_order': 14},
+                {'name': '乙醇', 'unit': 't', 'equivalent_coef': 0.9286, 'equivalent_note': '0.9286 tce/t', 'equivalent_coef_val': 0.9286, 'equivalent_val_note': '', 'category': '能源', 'sort_order': 15},
+                {'name': '氢气', 'unit': '万m³', 'equivalent_coef': 5.0000, 'equivalent_note': '5.0000 tce/万m³', 'equivalent_coef_val': 5.0000, 'equivalent_val_note': '', 'category': '能源', 'sort_order': 16},
+                {'name': '生物质颗粒', 'unit': 't', 'equivalent_coef': 0.5000, 'equivalent_note': '0.5000 tce/t', 'equivalent_coef_val': 0.5000, 'equivalent_val_note': '', 'category': '能源', 'sort_order': 17},
+                {'name': '除盐水', 'unit': 't', 'equivalent_coef': 0.0000, 'equivalent_note': '', 'equivalent_coef_val': 0.0980, 'equivalent_val_note': '等价值: 0.0980 tce/t', 'category': '耗能工质', 'sort_order': 18},
+                {'name': '压缩空气', 'unit': '万m³', 'equivalent_coef': 0.0000, 'equivalent_note': '', 'equivalent_coef_val': 0.4000, 'equivalent_val_note': '等价值: 0.4000 tce/万m³', 'category': '耗能工质', 'sort_order': 19},
+                {'name': '氧气', 'unit': '万m³', 'equivalent_coef': 0.0000, 'equivalent_note': '', 'equivalent_coef_val': 0.4000, 'equivalent_val_note': '等价值: 0.4000 tce/万m³', 'category': '耗能工质', 'sort_order': 20},
+                {'name': '氮气', 'unit': '万m³', 'equivalent_coef': 0.0000, 'equivalent_note': '', 'equivalent_coef_val': 0.2000, 'equivalent_val_note': '等价值: 0.2000 tce/万m³', 'category': '耗能工质', 'sort_order': 21},
+                {'name': '水', 'unit': 't', 'equivalent_coef': 0.0000, 'equivalent_note': '', 'equivalent_coef_val': 0.0857, 'equivalent_val_note': '等价值: 0.0857 tce/t', 'category': '耗能工质', 'sort_order': 22},
+            ]
+            for ef in energy_factors:
+                factor = EnergyFactor(
+                    name=ef['name'],
+                    unit=ef['unit'],
+                    equivalent_coef=ef['equivalent_coef'],
+                    equivalent_note=ef['equivalent_note'],
+                    equivalent_coef_val=ef['equivalent_coef_val'],
+                    equivalent_val_note=ef['equivalent_val_note'],
+                    category=ef['category'],
+                    sort_order=ef['sort_order'],
+                )
+                db.session.add(factor)
+            db.session.commit()
 
     return app
