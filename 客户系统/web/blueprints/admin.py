@@ -117,7 +117,7 @@ def projects():
     if payment_group == 'received':
         query = query.filter(Project.payment_status.in_(['已结款', '已结清', '部分结清']))
     elif payment_group == 'receivable':
-        query = query.filter(Project.payment_status.in_(['未结款', '未结', '未结算']))
+        query = query.filter(Project.payment_status.in_(['未结款', '未结', '未结算', '部分结清']))
     elif payment_status:
         query = query.filter(Project.payment_status == payment_status)
     if invoice_status:
@@ -148,9 +148,9 @@ def projects():
 
     payment_group_label = ''
     if payment_group == 'received':
-        payment_group_label = '已收账款（已结款 + 部分结清）'
+        payment_group_label = '已收账款（已结款 + 已结清 + 部分结清）'
     elif payment_group == 'receivable':
-        payment_group_label = '应收账款（未结款 + 未结算）'
+        payment_group_label = '应收账款（未结款 + 未结算 + 部分结清）'
 
     return render_template('admin_projects.html',
                            projects=projects_paginated,
@@ -210,7 +210,7 @@ def projects_export():
     if payment_group == 'received':
         query = query.filter(Project.payment_status.in_(['已结款', '已结清', '部分结清']))
     elif payment_group == 'receivable':
-        query = query.filter(Project.payment_status.in_(['未结款', '未结', '未结算']))
+        query = query.filter(Project.payment_status.in_(['未结款', '未结', '未结算', '部分结清']))
     elif payment_status:
         query = query.filter(Project.payment_status == payment_status)
     if invoice_status:
@@ -374,27 +374,16 @@ def operations():
 
     all_projects = Project.query.filter_by(is_valid=1).order_by(Project.name).all()
 
-    received_projects = Project.query.filter(
-        Project.is_valid == 1,
-        Project.payment_status.in_(['已结款', '已结清', '部分结清'])
-    ).all()
-    receivable_projects = Project.query.filter(
-        Project.is_valid == 1,
-        Project.payment_status.in_(['未结款', '未结', '未结算'])
-    ).all()
+    all_valid_projects = Project.query.filter(Project.is_valid == 1).all()
 
     received = 0.0
-    for rp in received_projects:
-        settled = float(rp.settled_amount or 0)
-        contract = float(rp.contract_amount or 0)
-        if rp.payment_status in ('已结款', '已结清') and settled == 0:
+    receivable = 0.0
+    for p in all_valid_projects:
+        contract = float(p.contract_amount or 0)
+        settled = float(p.settled_amount or 0)
+        if p.payment_status in ('已结款', '已结清') and settled == 0:
             settled = contract
         received += settled
-
-    receivable = 0.0
-    for rp in receivable_projects:
-        contract = float(rp.contract_amount or 0)
-        settled = float(rp.settled_amount or 0)
         receivable += max(0, contract - settled)
 
     total_revenue = received + receivable
@@ -407,26 +396,37 @@ def operations():
     month_revenues = []
     month_expenses_list = []
     month_profits = []
+
     for i in range(5, -1, -1):
-        month_start = (now.replace(day=1) - datetime.timedelta(days=i * 31)).replace(day=1)
-        if month_start.month == 12:
-            month_end = month_start.replace(year=month_start.year + 1, month=1, day=1)
+        year = now.year
+        month = now.month - i
+        while month <= 0:
+            month += 12
+            year -= 1
+        month_start = datetime.date(year, month, 1)
+        if month == 12:
+            month_end = datetime.date(year + 1, 1, 1)
         else:
-            month_end = month_start.replace(month=month_start.month + 1, day=1)
+            month_end = datetime.date(year, month + 1, 1)
         month_labels.append(month_start.strftime('%Y-%m'))
 
-        month_revenue = db.session.query(func.coalesce(func.sum(Project.settled_amount), 0)).filter(
-            Project.is_valid == 1,
-            Project.start_date >= month_start,
-            Project.start_date < month_end
-        ).scalar()
+        month_revenue = 0.0
+        for p in all_valid_projects:
+            if p.start_date and month_start <= p.start_date < month_end:
+                settled = float(p.settled_amount or 0)
+                contract = float(p.contract_amount or 0)
+                if p.payment_status in ('已结款', '已结清') and settled == 0:
+                    settled = contract
+                month_revenue += settled
+        month_revenues.append(round(month_revenue, 2))
+
         month_expense = db.session.query(func.coalesce(func.sum(FundRecord.amount), 0)).filter(
             FundRecord.use_date >= month_start,
             FundRecord.use_date < month_end
         ).scalar()
-        month_revenues.append(round(float(month_revenue), 2))
-        month_expenses_list.append(round(float(month_expense) / 10000, 2))
-        month_profits.append(round(float(month_revenue) - float(month_expense) / 10000, 2))
+        month_expense_wan = round(float(month_expense) / 10000, 2)
+        month_expenses_list.append(month_expense_wan)
+        month_profits.append(round(month_revenue - month_expense_wan, 2))
 
     return render_template('admin_operations.html',
                            expense_list=expense_list,

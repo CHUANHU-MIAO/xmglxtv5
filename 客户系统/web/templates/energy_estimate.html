@@ -364,7 +364,7 @@
         try {
             const r = await fetch('/api/energy/factors');
             const d = await r.json();
-            if (d.success) factorsData = d.data;
+            if (d.success) factorsData = d.factors || [];
         } catch (e) { console.error('加载系数失败:', e); }
     }
 
@@ -429,32 +429,25 @@
     }
 
     function addEnergyRow(factorName) {
-        const row = {
+        var effectiveName = factorName || '电力';
+        var f = getFactor(effectiveName);
+        var row = {
             row_id: nextRowId++,
-            name: factorName || '',
-            unit: factorName ? getFactorUnit(factorName) : '',
+            name: f ? effectiveName : '',
+            unit: f ? f.unit : '',
             annual_qty: 0,
-            equivalent_coef: 0,
-            equivalent_note: '',
-            equivalent_coef_val: 0,
-            equivalent_val_note: '',
+            equivalent_coef: f ? f.equivalent_coef : 0,
+            equivalent_note: f ? (f.equivalent_note || '') : '',
+            equivalent_coef_val: f ? (f.equivalent_coef_val || 0) : 0,
+            equivalent_val_note: f ? (f.equivalent_val_note || '') : '',
             unit_price: 0,
             remark: '',
             include_in_total: true,
             coef_modified: false,
-            coef_val_modified: false
+            coef_val_modified: false,
+            _power_auto: false
         };
-        if (factorName) {
-            const f = getFactor(factorName);
-            if (f) {
-                row.equivalent_coef = f.equivalent_coef;
-                row.equivalent_note = f.equivalent_note || '';
-                row.equivalent_coef_val = f.equivalent_coef_val || 0;
-                row.equivalent_val_note = f.equivalent_val_note || '';
-                row.unit = f.unit;
-                if (f.category === '耗能工质') row.include_in_total = false;
-            }
-        }
+        if (f && f.category === '耗能工质') row.include_in_total = false;
         energyRows.push(row);
         renderTable();
         updateCharts();

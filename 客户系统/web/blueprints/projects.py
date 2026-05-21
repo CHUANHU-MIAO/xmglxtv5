@@ -194,7 +194,7 @@ def api_projects_search():
     if payment_group == 'received':
         query = query.filter(Project.payment_status.in_(['已结款', '已结清', '部分结清']))
     elif payment_group == 'receivable':
-        query = query.filter(Project.payment_status.in_(['未结款', '未结', '未结算']))
+        query = query.filter(Project.payment_status.in_(['未结款', '未结', '未结算', '部分结清']))
     elif payment_status:
         query = query.filter(Project.payment_status == payment_status)
 

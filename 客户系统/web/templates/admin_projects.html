@@ -104,8 +104,8 @@
             {% if start_date %}<span class="badge bg-primary">从 {{ start_date }}</span>{% endif %}
             {% if end_date %}<span class="badge bg-primary">至 {{ end_date }}</span>{% endif %}
             {% if contract_status %}<span class="badge bg-secondary">{{ contract_status }}</span>{% endif %}
-            {% if payment_group == 'received' %}<span class="badge bg-success">已收账款（已结款 + 部分结清）</span>{% endif %}
-            {% if payment_group == 'receivable' %}<span class="badge bg-warning">应收账款（未结款 + 未结算）</span>{% endif %}
+            {% if payment_group == 'received' %}<span class="badge bg-success">已收账款（已结款 + 已结清 + 部分结清）</span>{% endif %}
+            {% if payment_group == 'receivable' %}<span class="badge bg-warning">应收账款（未结款 + 未结算 + 部分结清）</span>{% endif %}
             {% if payment_status %}<span class="badge bg-secondary">{{ payment_status_label or payment_status }}</span>{% endif %}
             {% if invoice_status %}<span class="badge bg-secondary">{{ invoice_status }}</span>{% endif %}
             | 共找到 <strong id="admCountText">{{ projects.total|default(projects.items|length) }}</strong> 个项目
