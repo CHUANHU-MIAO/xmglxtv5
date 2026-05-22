@@ -67,7 +67,7 @@
                     {% block nav_right %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-person-circle"></i> {{ user|default('未知用户') }}
+                            <i class="bi bi-person-circle"></i> {{ current_user.username|default('未知用户') }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="/auth/change_password"><i class="bi bi-lock"></i> 修改密码</a></li>

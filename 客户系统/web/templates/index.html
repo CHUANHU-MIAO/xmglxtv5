@@ -127,7 +127,7 @@
                                 <span class="text-muted">-</span>
                                 {% endif %}
                             </td>
-                            <td>{{ project.engineer.name|default('未知') }}</td>
+                            <td>{{ project.author|default('未知') }}</td>
                             <td>
                                 {% if project.start_date %}
                                 <span class="text-primary fw-bold">{{ project.start_date.strftime('%m-%d') }}</span>

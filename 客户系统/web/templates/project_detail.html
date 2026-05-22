@@ -49,7 +49,7 @@
                     <div class="info-row"><div class="info-label">来源：</div><div class="info-value">{{ p.source|default('未设置') }}</div></div>
                     <div class="info-row"><div class="info-label">业主姓名：</div><div class="info-value">{{ p.owner_name|default('未填写') }}</div></div>
                     <div class="info-row"><div class="info-label">业主电话：</div><div class="info-value">{{ p.owner_phone|default('未填写') }}</div></div>
-                    <div class="info-row"><div class="info-label">编制人员：</div><div class="info-value">{{ p.engineer.name|default('未知') }}</div></div>
+                    <div class="info-row"><div class="info-label">编制人员：</div><div class="info-value">{{ p.author|default('未知') }}</div></div>
                     <div class="info-row"><div class="info-label">创建时间：</div><div class="info-value">{% if p.create_time %}{{ p.create_time.strftime('%Y年%m月%d日 %H:%M') }}{% else %}未知{% endif %}</div></div>
                 </div>
             </div>
