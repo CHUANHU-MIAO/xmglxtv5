@@ -69,6 +69,9 @@ def user_delete(user_id):
     if project_count > 0:
         flash(f'该用户拥有 {project_count} 个项目，无法删除')
         return redirect(url_for('admin.users'))
+    admin_user = User.query.filter_by(username='admin').first()
+    if admin_user:
+        Project.query.filter_by(user_id=user.id).update({'user_id': admin_user.id})
     db.session.delete(user)
     db.session.commit()
     flash('用户已删除')
