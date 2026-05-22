@@ -587,16 +587,20 @@ def finance_save(project_id):
     if check_result:
         return jsonify({'success': False, 'message': '无权限'})
 
-    data = request.json or {}
-    mode = data.get('mode', 'normal')
-    payload = data.get('data', {})
+    json_data = request.get_json()
+    mode = json_data.pop('_finance_mode', 'bond') if isinstance(json_data, dict) else 'bond'
 
     folder = _ensure_project_folder(project)
+    file_path = os.path.join(folder, 'finance_data.json')
+    all_data = {}
+    if os.path.exists(file_path):
+        with open(file_path, 'r', encoding='utf-8') as f:
+            all_data = json.load(f)
+    all_data[mode] = json_data
+    _write_json(folder, 'finance_data.json', all_data)
 
-    if mode == 'bond':
-        _write_json(folder, 'finance_bond.json', payload)
-    else:
-        _write_json(folder, 'finance_normal.json', payload)
+    meta_path = os.path.join(folder, 'finance_meta.json')
+    _write_json(folder, 'finance_meta.json', {'finance_mode': mode})
 
     return jsonify({'success': True, 'message': '保存成功'})
 
@@ -609,15 +613,26 @@ def finance_load(project_id):
     if check_result:
         return jsonify({'success': False, 'message': '无权限'})
 
-    mode = request.args.get('mode', 'normal')
+    mode = request.args.get('mode', 'bond')
     folder = get_project_folder(project)
+    file_path = os.path.join(folder, 'finance_data.json')
+    legacy_path = os.path.join(folder, 'finance_data_normal.json')
 
-    if mode == 'bond':
-        data = _read_json(folder, 'finance_bond.json')
-    else:
-        data = _read_json(folder, 'finance_normal.json')
+    if os.path.exists(file_path):
+        with open(file_path, 'r', encoding='utf-8') as f:
+            all_data = json.load(f)
+        if mode in all_data:
+            return jsonify({'success': True, 'data': all_data[mode]})
+        elif 'fund' in all_data:
+            if mode == 'bond':
+                return jsonify({'success': True, 'data': all_data})
+            return jsonify({'success': True, 'data': None})
 
-    return jsonify({'success': True, 'data': data if data is not None else {}})
+    if mode == 'normal' and os.path.exists(legacy_path):
+        with open(legacy_path, 'r', encoding='utf-8') as f:
+            return jsonify({'success': True, 'data': json.load(f)})
+
+    return jsonify({'success': True, 'data': None})
 
 
 @estimation_bp.route('/api/project/<int:project_id>/finance/meta')
@@ -644,11 +659,19 @@ def finance_export(project_id):
     mode = request.args.get('mode', 'bond')
     folder = get_project_folder(project)
 
+    file_path = os.path.join(folder, 'finance_data.json')
+    legacy_path = os.path.join(folder, 'finance_data_normal.json')
     data = {}
-    if mode == 'bond':
-        data = _read_json(folder, 'finance_bond.json') or {}
-    else:
-        data = _read_json(folder, 'finance_normal.json') or {}
+    if os.path.exists(file_path):
+        with open(file_path, 'r', encoding='utf-8') as f:
+            all_data = json.load(f)
+        if mode in all_data:
+            data = all_data[mode]
+        elif 'fund' in all_data and mode == 'bond':
+            data = all_data
+    elif mode == 'normal' and os.path.exists(legacy_path):
+        with open(legacy_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
 
     try:
         wb = openpyxl.Workbook()
