@@ -124,10 +124,10 @@
                             </td>
                             <td>
                                 <a href="/project/detail/{{ project.id }}" class="project-name-link" title="点击查看项目详情">
-                                    {{ project.name|default('无标题')|truncate(15) }}
+                                    {{ (project.name or '无标题')|truncate(15) }}
                                 </a>
                             </td>
-                            <td>{{ project.owner|default('-')|truncate(10) }}</td>
+                            <td>{{ (project.owner or '-')|truncate(10) }}</td>
                             <td>
                                 {% if project.total_investment %}
                                 <strong class="text-success">{{ project.total_investment }}</strong>

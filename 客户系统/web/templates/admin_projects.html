@@ -174,7 +174,7 @@
                             </td>
                             <td>
                                 <a href="/project/detail/{{ project.id }}" class="project-name-link" title="点击查看项目详情">
-                                    {{ project.name|default('-')|truncate(20) }}
+                                    {{ (project.name or '-')|truncate(20) }}
                                 </a>
                             </td>
                             <td>

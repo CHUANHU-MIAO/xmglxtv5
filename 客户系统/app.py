@@ -1,6 +1,9 @@
 from web.app import create_app
 import os
 
+from license_manager import check_license_or_exit
+check_license_or_exit()
+
 app = create_app()
 
 if __name__ == '__main__':
