@@ -34,6 +34,7 @@ config.json
 客户系统/uploads/
 客户系统/instance/
 客户系统/desktop/config.json
+客户系统/desktop/desktop_data/
 客户系统/*.key
 客户系统/license.key
 
