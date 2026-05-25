@@ -7,7 +7,6 @@ from routes.auth import auth_bp
 from routes.subscription import sub_bp
 from routes.device import device_bp
 from routes.admin import admin_bp
-from routes.pair import pair_bp
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -18,7 +17,6 @@ app.register_blueprint(auth_bp, url_prefix='/api/auth')
 app.register_blueprint(sub_bp, url_prefix='/api/subscription')
 app.register_blueprint(device_bp, url_prefix='/api/device')
 app.register_blueprint(admin_bp, url_prefix='/admin/api')
-app.register_blueprint(pair_bp, url_prefix='/api/pair')
 
 def admin_required(view):
     @functools.wraps(view)
@@ -68,9 +66,6 @@ def admin_logout():
     session.pop('admin_logged_in', None)
     return redirect('/admin/login')
 
-@app.route('/scan')
-def scan_page():
-    return render_template('scan.html')
 
 @app.errorhandler(404)
 def not_found(e):

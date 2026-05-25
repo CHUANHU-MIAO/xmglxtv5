@@ -2,7 +2,6 @@ import json
 import os
 import sys
 import re
-import io
 
 from PySide6.QtCore import QUrl, Qt, QTimer, QSize, QPoint, QRect
 from PySide6.QtGui import QAction, QIcon, QFont, QPixmap, QImage
@@ -16,7 +15,6 @@ from PySide6.QtWidgets import (
     QToolTip,
 )
 
-import qrcode
 from desktop.subscription import SubscriptionClient
 
 CONFIG_FILE = os.path.join(os.path.dirname(__file__), 'config.json')
@@ -262,141 +260,6 @@ class SubscriptionDialog(QDialog):
             self.status_label.setStyleSheet('font-size: 12px; color: #dc3545; min-height: 20px;')
             self.status_label.setText(f'注册时发生错误：{str(e)}')
         self.register_btn.setEnabled(True)
-
-
-class QRCodeLoginDialog(QDialog):
-    def __init__(self, client, parent=None):
-        super().__init__(parent)
-        self.client = client
-        self._pair_code = None
-        self._poll_timer = QTimer(self)
-        self._poll_timer.timeout.connect(self._poll_status)
-        self.setWindowTitle('Estimate Studio - 扫码登录')
-        self.setFixedSize(380, 480)
-        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
-        self._setup_ui()
-        self._create_pair()
-
-    def _setup_ui(self):
-        layout = QVBoxLayout(self)
-        layout.setSpacing(12)
-        layout.setContentsMargins(32, 24, 32, 24)
-
-        title = QLabel('🔐 扫码登录')
-        title.setAlignment(Qt.AlignCenter)
-        title.setStyleSheet('font-size: 20px; font-weight: 700; color: #1a1a2e; margin-bottom: 4px;')
-        layout.addWidget(title)
-
-        subtitle = QLabel('使用手机微信/浏览器扫码')
-        subtitle.setAlignment(Qt.AlignCenter)
-        subtitle.setStyleSheet('font-size: 13px; color: #6c757d; margin-bottom: 8px;')
-        layout.addWidget(subtitle)
-
-        self.qr_label = QLabel()
-        self.qr_label.setAlignment(Qt.AlignCenter)
-        self.qr_label.setFixedSize(240, 240)
-        self.qr_label.setStyleSheet('background: #fff; border: 2px solid #e9ecef; border-radius: 12px; padding: 8px;')
-        layout.addWidget(self.qr_label, 0, Qt.AlignCenter)
-
-        self.code_label = QLabel('生成配对码...')
-        self.code_label.setAlignment(Qt.AlignCenter)
-        self.code_label.setStyleSheet('font-size: 13px; color: #6c757d; margin-top: 4px;')
-        layout.addWidget(self.code_label)
-
-        self.status_label = QLabel('等待扫码...')
-        self.status_label.setAlignment(Qt.AlignCenter)
-        self.status_label.setStyleSheet('font-size: 12px; color: #0d6efd; min-height: 20px;')
-        layout.addWidget(self.status_label)
-
-        self.server_label = QLabel(f'服务器: {self.client.server_url}')
-        self.server_label.setAlignment(Qt.AlignCenter)
-        self.server_label.setStyleSheet('font-size: 11px; color: #adb5bd;')
-        layout.addWidget(self.server_label)
-
-        btn_layout = QHBoxLayout()
-        btn_layout.setSpacing(12)
-
-        self.refresh_btn = QPushButton('刷新二维码')
-        self.refresh_btn.setStyleSheet('''
-            QPushButton {
-                padding: 8px 16px; border: 1px solid #ced4da;
-                border-radius: 6px; font-size: 13px; color: #495057;
-                background: #fff;
-            }
-            QPushButton:hover { background: #f8f9fa; }
-        ''')
-        self.refresh_btn.clicked.connect(self._create_pair)
-        btn_layout.addWidget(self.refresh_btn)
-
-        self.pwd_btn = QPushButton('使用账号密码')
-        self.pwd_btn.setStyleSheet('''
-            QPushButton {
-                padding: 8px 16px; border: none;
-                border-radius: 6px; font-size: 13px; color: #0d6efd;
-                background: transparent;
-            }
-            QPushButton:hover { background: #f0f4ff; }
-        ''')
-        self.pwd_btn.clicked.connect(self._switch_to_password)
-        btn_layout.addWidget(self.pwd_btn)
-
-        layout.addLayout(btn_layout)
-
-    def _create_pair(self):
-        self.status_label.setText('正在生成二维码...')
-        self.status_label.setStyleSheet('font-size: 12px; color: #0d6efd; min-height: 20px;')
-        self.qr_label.clear()
-        self.code_label.setText('')
-        self.refresh_btn.setEnabled(False)
-        QApplication.processEvents()
-
-        data = self.client.create_pair()
-        if not data:
-            self.status_label.setText('无法连接服务器')
-            self.status_label.setStyleSheet('font-size: 12px; color: #dc3545; min-height: 20px;')
-            self.refresh_btn.setEnabled(True)
-            return
-
-        self._pair_code = data.get('code', '')
-        qr_url = data.get('qr_url', '')
-
-        self.code_label.setText(f'配对码: {self._pair_code}')
-
-        qr_img = qrcode.make(qr_url, box_size=6, border=2)
-        img_bytes = io.BytesIO()
-        qr_img.save(img_bytes, format='PNG')
-        img_bytes.seek(0)
-        pixmap = QPixmap()
-        pixmap.loadFromData(img_bytes.read(), 'PNG')
-        self.qr_label.setPixmap(pixmap.scaled(220, 220, Qt.KeepAspectRatio, Qt.SmoothTransformation))
-
-        self.status_label.setText('请用手机扫码')
-        self.status_label.setStyleSheet('font-size: 12px; color: #198754; min-height: 20px;')
-        self.refresh_btn.setEnabled(True)
-
-        self._poll_timer.start(1500)
-
-    def _poll_status(self):
-        if not self._pair_code:
-            return
-        ok, msg = self.client.poll_pair_status(self._pair_code)
-        if ok:
-            self._poll_timer.stop()
-            self.status_label.setText('配对成功！')
-            self.status_label.setStyleSheet('font-size: 14px; color: #198754; font-weight: 600; min-height: 20px;')
-            QApplication.processEvents()
-            QTimer.singleShot(500, self.accept)
-        else:
-            self.status_label.setText(msg)
-            self.status_label.setStyleSheet('font-size: 12px; color: #6c757d; min-height: 20px;')
-
-    def _switch_to_password(self):
-        self._poll_timer.stop()
-        self.reject()
-
-    def closeEvent(self, event):
-        self._poll_timer.stop()
-        super().closeEvent(event)
 
 
 class NavButton(QPushButton):
@@ -724,27 +587,13 @@ class EstimateStudioWindow(QMainWindow):
             self._init_web_view()
             return
 
-        while True:
-            qr_dlg = QRCodeLoginDialog(self._subscription_client, self)
-            result = qr_dlg.exec()
-            if result == QDialog.Accepted:
-                self._logged_in = True
-                self._update_subscription_info()
-                self._init_web_view()
-                return
-            dlg = SubscriptionDialog(self._subscription_client, self)
-            if dlg.exec() == QDialog.Accepted:
-                self._logged_in = True
-                self._update_subscription_info()
-                self._init_web_view()
-                return
-            retry = QMessageBox.question(self, '登录失败',
-                '登录失败或已取消，是否重试？',
-                QMessageBox.Yes | QMessageBox.No)
-            if retry != QMessageBox.Yes:
-                break
-
-        QTimer.singleShot(100, self.close)
+        dlg = SubscriptionDialog(self._subscription_client, self)
+        if dlg.exec() == QDialog.Accepted:
+            self._logged_in = True
+            self._update_subscription_info()
+            self._init_web_view()
+        else:
+            QTimer.singleShot(100, self.close)
 
     def _update_subscription_info(self):
         if not self._subscription_client or not self._subscription_client.user_info:
