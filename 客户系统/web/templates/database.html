@@ -66,9 +66,9 @@
                             <td>{{ file.upload_time.strftime('%Y-%m-%d %H:%M') }}</td>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <a href="/admin/database/view/{{ file.id }}" target="_blank" class="btn btn-info" title="在线查看"><i class="bi bi-eye"></i></a>
-                                    <a href="/admin/database/download/{{ file.id }}" class="btn btn-success" title="下载"><i class="bi bi-download"></i></a>
-                                    <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#uploadModal" data-file-id="{{ file.id }}" title="上传新版本"><i class="bi bi-arrow-up"></i></button>
+                                    <a href="/admin/database/view/{{ file.id }}" target="_blank" class="btn btn-info btn-sm" title="查看"><i class="bi bi-eye"></i></a>
+                                    <a href="/admin/database/download/{{ file.id }}" class="btn btn-success btn-sm" title="下载"><i class="bi bi-download"></i></a>
+                                    <a href="/admin/database/delete/{{ file.id }}" class="btn btn-danger btn-sm" title="删除" onclick="return confirm('确定删除此文件？')"><i class="bi bi-trash"></i></a>
                                 </div>
                             </td>
                         </tr>

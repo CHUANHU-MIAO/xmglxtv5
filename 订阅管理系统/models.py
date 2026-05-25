@@ -66,3 +66,13 @@ class PhoneSession(db.Model):
     user_agent = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     last_used_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class CommonFile(db.Model):
+    __tablename__ = 'common_files'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    filename = db.Column(db.String(255), nullable=False)
+    save_name = db.Column(db.String(255), nullable=False)
+    file_size = db.Column(db.Integer, default=0)
+    upload_time = db.Column(db.DateTime, default=datetime.utcnow)

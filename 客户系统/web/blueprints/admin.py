@@ -590,17 +590,17 @@ def database_upload():
         flash('请输入标准名称')
         return redirect(url_for('admin.database'))
 
-    filename = secure_filename(file.filename)
     standard_folder = current_app.config['STANDARD_FILES_FOLDER']
     os.makedirs(standard_folder, exist_ok=True)
 
-    timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
-    save_name = f'{timestamp}_{filename}'
+    import uuid
+    ext = os.path.splitext(file.filename)[1]
+    save_name = f'{uuid.uuid4().hex}{ext}'
     file_path = os.path.join(standard_folder, save_name)
     file.save(file_path)
 
     standard_file = StandardFile(
-        filename=filename,
+        filename=file.filename,
         standard_name=standard_name,
         version=version,
         file_type=file_type,
@@ -625,44 +625,18 @@ def database_download(file_id):
     return send_from_directory(standard_folder, sf.file_path, as_attachment=True, download_name=sf.filename)
 
 
-@admin_bp.route('/database/update/<int:file_id>', methods=['POST'])
+@admin_bp.route('/database/delete/<int:file_id>')
 @login_required
 @admin_required
-def database_update(file_id):
+def database_delete(file_id):
     sf = StandardFile.query.get_or_404(file_id)
-    file = request.files.get('file')
-
-    if file and file.filename != '':
-        standard_folder = current_app.config['STANDARD_FILES_FOLDER']
-        old_path = os.path.join(standard_folder, sf.file_path)
-        if os.path.exists(old_path):
-            os.remove(old_path)
-
-        new_filename = secure_filename(file.filename)
-        timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
-        save_name = f'{timestamp}_{new_filename}'
-        new_path = os.path.join(standard_folder, save_name)
-        file.save(new_path)
-
-        sf.filename = new_filename
-        sf.file_path = save_name
-
-    version = request.form.get('version')
-    if version:
-        sf.version = version
-
-    standard_name = request.form.get('standard_name')
-    if standard_name:
-        sf.standard_name = standard_name
-
-    file_type = request.form.get('file_type')
-    if file_type:
-        sf.file_type = file_type
-
-    sf.upload_time = datetime.datetime.utcnow()
-    sf.upload_user = current_user.username
+    standard_folder = current_app.config['STANDARD_FILES_FOLDER']
+    old_path = os.path.join(standard_folder, sf.file_path)
+    if os.path.exists(old_path):
+        os.remove(old_path)
+    db.session.delete(sf)
     db.session.commit()
-    flash('文件版本已更新')
+    flash('文件已删除')
     return redirect(url_for('admin.database'))
 
 
@@ -674,7 +648,7 @@ def database_view(file_id):
     sf.download_count = (sf.download_count or 0) + 1
     db.session.commit()
     standard_folder = current_app.config['STANDARD_FILES_FOLDER']
-    return send_from_directory(standard_folder, sf.file_path)
+    return send_from_directory(standard_folder, sf.file_path, download_name=sf.filename)
 
 
 @admin_bp.route('/database/raw/<int:file_id>')

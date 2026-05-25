@@ -7,6 +7,7 @@ from routes.auth import auth_bp
 from routes.subscription import sub_bp
 from routes.device import device_bp
 from routes.admin import admin_bp
+from routes.files import files_bp
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -17,6 +18,7 @@ app.register_blueprint(auth_bp, url_prefix='/api/auth')
 app.register_blueprint(sub_bp, url_prefix='/api/subscription')
 app.register_blueprint(device_bp, url_prefix='/api/device')
 app.register_blueprint(admin_bp, url_prefix='/admin/api')
+app.register_blueprint(files_bp, url_prefix='/api/files')
 
 # 自动初始化数据库（gunicorn 启动时也会执行）
 with app.app_context():
@@ -51,6 +53,11 @@ def forgot_password_page():
 @app.route('/pricing')
 def pricing_page():
     return render_template('pricing.html')
+
+
+@app.route('/cloud-files')
+def cloud_files_page():
+    return render_template('cloud_files.html')
 
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():

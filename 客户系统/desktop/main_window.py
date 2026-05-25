@@ -26,22 +26,23 @@ LOGIN_JS = """
     var p = document.querySelector('input[name="password"]');
     var f = document.querySelector('form');
     if (u && p && f) {
-        var formData = new FormData(f);
-        formData.set('username', 'admin');
-        formData.set('password', 'admin123');
-        return fetch(f.action || '/auth/login', {
-            method: 'POST',
-            body: new URLSearchParams(formData)
-        }).then(function(resp) {
-            if (resp.redirected) {
-                return JSON.stringify({ok: true});
-            }
-            return JSON.stringify({ok: false, url: window.location.href});
-        }).catch(function() {
-            return JSON.stringify({ok: false, url: window.location.href});
-        });
+        u.value = 'admin';
+        p.value = 'admin123';
+        f.submit();
     }
-    return Promise.resolve(JSON.stringify({ok: false, url: window.location.href}));
+})();
+"""
+
+HIDE_NAV_AND_ATTACH_JS = """
+(function() {
+    try {
+        var n = document.querySelector('nav.navbar');
+        if (n) { n.style.display = 'none'; }
+        document.querySelectorAll('.info-card').forEach(function(c) {
+            var h = c.querySelector('.info-header');
+            if (h && h.textContent.indexOf('\u9879\u76ee\u9644\u4ef6') > -1) { c.style.display = 'none'; }
+        });
+    } catch(e) {}
 })();
 """
 
@@ -71,25 +72,6 @@ ADD_PROJECT_FORM_JS = """
 })();
 """
 
-INJECT_DETAIL_BUTTONS_JS = """
-(function(projectId) {
-    var container = document.querySelector('.container.mt-5.py-4') || document.querySelector('.container');
-    if (!container) return JSON.stringify({ok: false, msg: 'container not found'});
-    if (document.getElementById('desktop-detail-buttons')) return JSON.stringify({ok: false, msg: 'already injected'});
-    var bar = document.createElement('div');
-    bar.id = 'desktop-detail-buttons';
-    bar.style.cssText = 'background: #f0f4ff; border: 1px solid #d0d9f0; border-radius: 10px; padding: 16px 20px; margin-bottom: 20px; text-align: center;';
-    bar.innerHTML = '<div style="font-size:13px;color:#6c757d;margin-bottom:10px;">测算功能</div>' +
-        '<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">' +
-        '<a href="/project/' + projectId + '/investment" class="btn btn-primary" style="padding:8px 28px;font-size:15px;font-weight:600;border-radius:8px;text-decoration:none;">投资估算</a>' +
-        '<a href="/project/' + projectId + '/energy" class="btn btn-success" style="padding:8px 28px;font-size:15px;font-weight:600;border-radius:8px;text-decoration:none;">能耗估算</a>' +
-        '<a href="/project/' + projectId + '/finance" class="btn btn-info" style="padding:8px 28px;font-size:15px;font-weight:600;border-radius:8px;text-decoration:none;color:#fff;">财务测算</a>' +
-        '</div>';
-    container.insertBefore(bar, container.firstChild);
-    return JSON.stringify({ok: true});
-})();
-"""
-
 GET_PAGE_URL_JS = """
 (function() { return window.location.href; })();
 """
@@ -105,89 +87,158 @@ class SubscriptionDialog(QDialog):
     def __init__(self, client, parent=None):
         super().__init__(parent)
         self.client = client
-        self.setWindowTitle('Estimate Studio - 登录')
-        self.setFixedSize(400, 340)
+        self.setWindowTitle('Estimate Studio')
+        self.setFixedSize(400, 440)
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
         self._setup_ui()
         self._load_saved_credentials()
 
     def _setup_ui(self):
+        self.setStyleSheet('''
+            QDialog {
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                    stop:0 #f8fafc, stop:1 #f1f5f9);
+                border: 1px solid rgba(0,0,0,0.06);
+            }
+        ''')
+
         layout = QVBoxLayout(self)
-        layout.setSpacing(12)
-        layout.setContentsMargins(32, 24, 32, 24)
+        layout.setSpacing(0)
+        layout.setContentsMargins(0, 0, 0, 0)
+
+        header = QWidget()
+        header.setFixedHeight(120)
+        header.setStyleSheet('''
+            QWidget {
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                    stop:0 #1a1a2e, stop:1 #0f3460);
+            }
+        ''')
+        header_layout = QVBoxLayout(header)
+        header_layout.setContentsMargins(32, 24, 32, 20)
+        header_layout.setSpacing(4)
+
+        icon_label = QLabel('📋')
+        icon_label.setAlignment(Qt.AlignCenter)
+        icon_label.setStyleSheet('font-size: 32px; background: transparent;')
+        header_layout.addWidget(icon_label)
 
         title = QLabel('Estimate Studio')
         title.setAlignment(Qt.AlignCenter)
-        title.setStyleSheet('font-size: 22px; font-weight: 700; color: #0d6efd; margin-bottom: 4px;')
-        layout.addWidget(title)
+        title.setStyleSheet('font-size: 20px; font-weight: 700; color: #ffffff; background: transparent; letter-spacing: 0.3px;')
+        header_layout.addWidget(title)
 
-        subtitle = QLabel('请登录以验证订阅')
+        subtitle = QLabel('登录以验证订阅授权')
         subtitle.setAlignment(Qt.AlignCenter)
-        subtitle.setStyleSheet('font-size: 13px; color: #6c757d; margin-bottom: 4px;')
-        layout.addWidget(subtitle)
+        subtitle.setStyleSheet('font-size: 12px; color: rgba(255,255,255,0.55); background: transparent;')
+        header_layout.addWidget(subtitle)
 
-        form = QFormLayout()
-        form.setSpacing(10)
-        form.setLabelAlignment(Qt.AlignRight)
+        layout.addWidget(header)
+
+        body = QWidget()
+        body_layout = QVBoxLayout(body)
+        body_layout.setContentsMargins(32, 24, 32, 24)
+        body_layout.setSpacing(0)
+
+        input_style = '''
+            QLineEdit {
+                padding: 10px 14px;
+                border: 2px solid #e2e8f0;
+                border-radius: 8px;
+                font-size: 14px;
+                color: #1e293b;
+                background: #ffffff;
+            }
+            QLineEdit:focus {
+                border-color: #10b981;
+                background: #ffffff;
+            }
+            QLineEdit::placeholder {
+                color: #94a3b8;
+            }
+        '''
+
+        label_style = 'font-size: 12px; font-weight: 600; color: #475569; padding-bottom: 4px;'
+
+        username_label = QLabel('用户名')
+        username_label.setStyleSheet(label_style)
+        body_layout.addWidget(username_label)
 
         self.username_edit = QLineEdit()
-        self.username_edit.setPlaceholderText('请输入用户名')
-        self.username_edit.setStyleSheet('padding: 8px 12px; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px;')
-        form.addRow('用户名：', self.username_edit)
+        self.username_edit.setPlaceholderText('请输入您的用户名')
+        self.username_edit.setStyleSheet(input_style)
+        body_layout.addWidget(self.username_edit)
+
+        body_layout.addSpacing(14)
+
+        password_label = QLabel('密码')
+        password_label.setStyleSheet(label_style)
+        body_layout.addWidget(password_label)
 
         self.password_edit = QLineEdit()
         self.password_edit.setPlaceholderText('请输入密码')
         self.password_edit.setEchoMode(QLineEdit.Password)
-        self.password_edit.setStyleSheet('padding: 8px 12px; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px;')
-        form.addRow('密　码：', self.password_edit)
-        layout.addLayout(form)
+        self.password_edit.setStyleSheet(input_style)
+        body_layout.addWidget(self.password_edit)
 
-        # Remember options
+        body_layout.addSpacing(10)
+
         remember_layout = QHBoxLayout()
+        remember_layout.setContentsMargins(0, 0, 0, 0)
         remember_layout.setSpacing(16)
-        remember_layout.setContentsMargins(4, 0, 4, 0)
 
         self.remember_user_cb = QCheckBox('记住用户名')
-        self.remember_user_cb.setStyleSheet('font-size: 12px; color: #495057;')
+        self.remember_user_cb.setStyleSheet('font-size: 12px; color: #64748b;')
         remember_layout.addWidget(self.remember_user_cb)
 
         self.remember_pwd_cb = QCheckBox('记住密码')
-        self.remember_pwd_cb.setStyleSheet('font-size: 12px; color: #495057;')
+        self.remember_pwd_cb.setStyleSheet('font-size: 12px; color: #64748b;')
         remember_layout.addWidget(self.remember_pwd_cb)
 
         remember_layout.addStretch()
-        layout.addLayout(remember_layout)
+        body_layout.addLayout(remember_layout)
+
+        body_layout.addSpacing(6)
 
         self.status_label = QLabel('')
         self.status_label.setAlignment(Qt.AlignCenter)
         self.status_label.setWordWrap(True)
-        self.status_label.setStyleSheet('font-size: 12px; color: #dc3545; min-height: 20px;')
-        layout.addWidget(self.status_label)
+        self.status_label.setFixedHeight(32)
+        self.status_label.setStyleSheet('font-size: 12px; color: #ef4444; padding: 4px 0;')
+        body_layout.addWidget(self.status_label)
+
+        body_layout.addSpacing(4)
 
         btn_layout = QHBoxLayout()
         btn_layout.setSpacing(12)
+        btn_layout.setContentsMargins(0, 0, 0, 0)
 
         self.login_btn = QPushButton('登 录')
         self.login_btn.setDefault(True)
+        self.login_btn.setCursor(Qt.PointingHandCursor)
         self.login_btn.setStyleSheet('''
             QPushButton {
-                padding: 8px 24px; background: #0d6efd; color: white;
-                border: none; border-radius: 6px; font-size: 14px; font-weight: 600;
+                padding: 10px 24px; background: #10b981; color: white;
+                border: none; border-radius: 8px; font-size: 14px; font-weight: 700;
             }
-            QPushButton:hover { background: #0b5ed7; }
-            QPushButton:disabled { background: #6c757d; }
+            QPushButton:hover { background: #059669; }
+            QPushButton:disabled { background: #94a3b8; }
         ''')
         btn_layout.addWidget(self.login_btn)
 
         self.register_btn = QPushButton('注 册')
+        self.register_btn.setCursor(Qt.PointingHandCursor)
         self.register_btn.setStyleSheet('''
             QPushButton {
-                padding: 8px 24px; background: #198754; color: white;
-                border: none; border-radius: 6px; font-size: 14px; font-weight: 600;
+                padding: 10px 24px; background: transparent; color: #64748b;
+                border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-weight: 600;
             }
-            QPushButton:hover { background: #157347; }
+            QPushButton:hover { border-color: #10b981; color: #10b981; }
         ''')
         btn_layout.addWidget(self.register_btn)
-        layout.addLayout(btn_layout)
+        body_layout.addLayout(btn_layout)
+
+        layout.addWidget(body, stretch=1)
 
         self.login_btn.clicked.connect(self._on_login)
         self.register_btn.clicked.connect(self._on_register)
@@ -404,7 +455,7 @@ class EstimateStudioWindow(QMainWindow):
         self._view_mode = 'tree'
         self._sort_mode = 'time'
         self._setup_ui()
-        self._check_subscription()
+        self._show_login_dialog()
 
     def _setup_ui(self):
         central = QWidget()
@@ -423,12 +474,19 @@ class EstimateStudioWindow(QMainWindow):
 
         # Brand
         brand = QLabel('Estimate Studio')
-        brand.setStyleSheet('font-size: 17px; font-weight: 700; color: #0d6efd; padding: 8px 8px 12px 8px;')
+        brand.setStyleSheet('font-size: 17px; font-weight: 700; color: #0d6efd; padding: 8px 8px 4px 8px;')
         sidebar_layout.addWidget(brand)
 
-        # Subscription info
-        self.sub_label = QLabel('订阅: -')
-        self.sub_label.setStyleSheet('font-size: 11px; color: #6c757d; padding: 2px 8px 10px 8px;')
+        # User info
+        self.user_label = QLabel('未登录')
+        self.user_label.setStyleSheet('font-size: 11px; color: #6c757d; padding: 0px 8px 2px 8px;')
+        sidebar_layout.addWidget(self.user_label)
+
+        # Subscription info (clickable)
+        self.sub_label = QLabel('')
+        self.sub_label.setCursor(Qt.PointingHandCursor)
+        self.sub_label.setStyleSheet('font-size: 11px; color: #10b981; padding: 0px 8px 10px 8px; text-decoration: underline;')
+        self.sub_label.mousePressEvent = lambda e: self._open_pricing()
         sidebar_layout.addWidget(self.sub_label)
 
         # Separator
@@ -535,28 +593,24 @@ class EstimateStudioWindow(QMainWindow):
         script.setName('desktop_hide_nav')
         script.setSourceCode('''
 (function() {
-    var s = document.getElementById('desktop-hide-nav');
-    if (!s) {
-        s = document.createElement('style');
-        s.id = 'desktop-hide-nav';
-        s.textContent = 'nav.navbar{display:none!important}.page-content{padding-top:0!important}body{padding-top:0!important}';
-        (document.head || document.documentElement).appendChild(s);
-    }
+    try {
+        var s = document.getElementById('desktop-hide-nav');
+        if (!s) {
+            s = document.createElement('style');
+            s.id = 'desktop-hide-nav';
+            s.textContent = 'nav.navbar{display:none!important}.page-content{padding-top:0!important}body{padding-top:0!important}';
+            var h = document.head || document.documentElement;
+            if (h) h.appendChild(s);
+        }
+    } catch(e) {}
 })();
 ''')
         script.setInjectionPoint(QWebEngineScript.DocumentCreation)
         script.setWorldId(QWebEngineScript.MainWorld)
         self.web_view.page().scripts().insert(script)
 
-    def _check_subscription(self):
+    def _show_login_dialog(self):
         self._subscription_client = SubscriptionClient()
-        valid, msg = self._subscription_client.verify()
-        if valid:
-            self._logged_in = True
-            self._update_subscription_info()
-            self._init_web_view()
-            return
-
         dlg = SubscriptionDialog(self._subscription_client, self)
         if dlg.exec() == QDialog.Accepted:
             self._logged_in = True
@@ -565,9 +619,14 @@ class EstimateStudioWindow(QMainWindow):
         else:
             QTimer.singleShot(100, self.close)
 
+    def _open_pricing(self):
+        import webbrowser
+        webbrowser.open(f'{self._subscription_client.server_url}/pricing')
+
     def _update_subscription_info(self):
         if not self._subscription_client or not self._subscription_client.user_info:
             return
+        username = self._subscription_client.user_info.get('username', '用户')
         sub = self._subscription_client.user_info.get('subscription', {})
         level = sub.get('level', 'standard')
         self._subscription_level = level
@@ -575,8 +634,10 @@ class EstimateStudioWindow(QMainWindow):
         self._max_projects = limits['max_projects']
         expire = sub.get('expire_date', '未知')
         label = limits['label']
-        self.sub_label.setText(f'订阅: {label}  |  上限: {self._max_projects} 个')
-        self.sub_label.setStyleSheet('font-size: 11px; color: #6c757d; padding: 2px 8px 10px 8px;')
+        self.user_label.setText(f'用户: {username}')
+        self.user_label.setStyleSheet('font-size: 11px; color: #1e293b; font-weight: 600; padding: 0px 8px 2px 8px;')
+        expire_text = expire if expire != '未知' and expire else '永久'
+        self.sub_label.setText(f'{label} | 上限 {self._max_projects} 个 | 到期 {expire_text}')
 
     def _get_project_count(self):
         return len(self.projects)
@@ -648,37 +709,17 @@ class EstimateStudioWindow(QMainWindow):
             return
         url = self.web_view.url().toString()
 
-        if '/auth/login' in url and self._logged_in:
-            self.web_view.page().runJavaScript(LOGIN_JS, self._on_login_result)
-        else:
-            self.web_view.page().runJavaScript(GET_PAGE_URL_JS, self._on_check_current_url)
+        self.web_view.page().runJavaScript(HIDE_NAV_AND_ATTACH_JS)
 
-    def _on_login_result(self, result_str):
-        if not result_str:
-            QTimer.singleShot(1000, lambda: self.web_view.reload())
-            return
-        try:
-            result = json.loads(result_str)
-        except Exception:
-            result = {}
-        if result.get('ok'):
+        if '/auth/login' in url and self._logged_in and not getattr(self, '_login_attempted', False):
+            self._login_attempted = True
+            self.web_view.page().runJavaScript(LOGIN_JS)
+        elif '/auth/login' in url:
+            pass
+        else:
+            self._login_attempted = False
             self._web_authenticated = True
-            target = self._pending_nav
-            url = self._target_url(target)
-            if url:
-                self.web_view.load(QUrl(url))
-            else:
-                self.web_view.load(QUrl(f'{FLASK_BASE}/my_projects'))
-            QTimer.singleShot(1500, self._delayed_extract_projects)
-        else:
-            QTimer.singleShot(800, lambda: self.web_view.reload())
-
-    def _delayed_extract_projects(self):
-        current_url = self.web_view.url().toString()
-        if '/my_projects' in current_url:
-            self._extract_projects()
-        elif '/project/detail/' in current_url:
-            self._inject_detail_buttons()
+            self.web_view.page().runJavaScript(GET_PAGE_URL_JS, self._on_check_current_url)
 
     def _on_check_current_url(self, url):
         if not url:
@@ -686,9 +727,11 @@ class EstimateStudioWindow(QMainWindow):
         if '/my_projects' in url:
             QTimer.singleShot(300, self._extract_projects)
         elif '/project/detail/' in url:
-            QTimer.singleShot(300, self._inject_detail_buttons)
+            pass
         elif '/project/add' in url:
             QTimer.singleShot(400, self._on_add_project_page_loaded)
+        else:
+            QTimer.singleShot(500, self._extract_projects)
 
     def _extract_projects(self):
         self.web_view.page().runJavaScript(GET_PROJECTS_JS, self._on_projects_data)
@@ -822,19 +865,6 @@ class EstimateStudioWindow(QMainWindow):
         self.web_view.page().runJavaScript(ADD_PROJECT_FORM_JS, self._on_check_add_form)
 
     def _on_check_add_form(self, result_str):
-        if not result_str:
-            return
-        try:
-            result = json.loads(result_str)
-        except Exception:
-            pass
-
-    def _inject_detail_buttons(self):
-        project_id = self._current_project_id
-        js = INJECT_DETAIL_BUTTONS_JS.replace('projectId', str(project_id))
-        self.web_view.page().runJavaScript(js, self._on_inject_result)
-
-    def _on_inject_result(self, result_str):
         if not result_str:
             return
         try:
