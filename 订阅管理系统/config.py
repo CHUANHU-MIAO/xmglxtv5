@@ -9,7 +9,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'jwt-secret-key-change-in-production'
     JWT_ACCESS_TOKEN_EXPIRES = 86400 * 7  # 7天
-    ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME') or 'admin'
-    ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD') or 'admin123'
+    ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME') or '马立亚'
+    ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD') or 'SKILLworld..000'
     SERVER_PUBLIC_URL = os.environ.get('SERVER_PUBLIC_URL') or ''
     CONTACT_WECHAT = os.environ.get('CONTACT_WECHAT') or '17631020218'
