@@ -189,11 +189,6 @@ class SubscriptionDialog(QDialog):
         btn_layout.addWidget(self.register_btn)
         layout.addLayout(btn_layout)
 
-        self.server_label = QLabel(f'服务器: {self.client.server_url}')
-        self.server_label.setAlignment(Qt.AlignCenter)
-        self.server_label.setStyleSheet('font-size: 11px; color: #adb5bd;')
-        layout.addWidget(self.server_label)
-
         self.login_btn.clicked.connect(self._on_login)
         self.register_btn.clicked.connect(self._on_register)
         self.password_edit.returnPressed.connect(self._on_login)
