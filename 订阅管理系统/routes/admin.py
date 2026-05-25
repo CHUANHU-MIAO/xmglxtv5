@@ -69,7 +69,7 @@ def create_user_admin():
     return jsonify({'success': True, 'message': '用户创建成功', 'user': {'id': user.id}})
 
 @admin_bp.route('/users/<int:user_id>/subscription', methods=['POST'])
-def set_subscription():
+def set_subscription(user_id):
     data = request.get_json()
     level = data.get('level')
     expire_str = data.get('expire_date')
@@ -84,7 +84,7 @@ def set_subscription():
         return jsonify({'success': False, 'message': msg}), 400
 
 @admin_bp.route('/users/<int:user_id>/status', methods=['POST'])
-def set_user_status():
+def set_user_status(user_id):
     data = request.get_json()
     status = data.get('status')
     user = User.query.get(user_id)

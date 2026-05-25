@@ -224,8 +224,10 @@ async function handleRegister(e) {
         const data = await res.json();
         if (data.success) {
             msgEl.className = 'msg-box success';
-            msgEl.innerHTML = '<i class="bi bi-check-circle-fill"></i> 注册成功！正在跳转登录页...';
-            setTimeout(() => { window.location.href = '/admin/login'; }, 1500);
+            msgEl.innerHTML = '<i class="bi bi-check-circle-fill"></i> 注册成功！<br><span style="font-size:13px">本页面将在10秒后自动关闭</span>';
+            btn.disabled = true;
+            btn.innerHTML = '注册成功';
+            setTimeout(() => { window.close(); }, 10000);
         } else {
             msgEl.className = 'msg-box error';
             msgEl.textContent = data.message;
