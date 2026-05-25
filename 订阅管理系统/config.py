@@ -11,5 +11,5 @@ class Config:
     JWT_ACCESS_TOKEN_EXPIRES = 86400 * 7  # 7天
     ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME') or '马立亚'
     ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD') or 'SKILLworld..000'
-    SERVER_PUBLIC_URL = os.environ.get('SERVER_PUBLIC_URL') or ''
+    SERVER_PUBLIC_URL = os.environ.get('SERVER_PUBLIC_URL') or 'http://121.43.152.108:5001'
     CONTACT_WECHAT = os.environ.get('CONTACT_WECHAT') or '17631020218'

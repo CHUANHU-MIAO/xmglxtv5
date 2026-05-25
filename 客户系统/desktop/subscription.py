@@ -91,7 +91,7 @@ def get_machine_fingerprint():
 
 class SubscriptionClient:
     def __init__(self, server_url=None):
-        self.server_url = server_url or 'http://127.0.0.1:5001'
+        self.server_url = server_url or 'http://121.43.152.108:5001'
         self.token = None
         self.user_info = None
         self._load_config()
