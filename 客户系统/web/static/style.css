@@ -4,36 +4,36 @@
 
 /* --- CSS Variables --- */
 :root {
-    --bg-primary: #f0f4f8;
+    --bg-primary: #f8fafc;
     --bg-secondary: #ffffff;
     --bg-card: #ffffff;
     --bg-card-hover: #f8fafc;
     --bg-input: #f0f4f8;
     --bg-navbar: rgba(255, 255, 255, 0.95);
 
-    --accent-primary: #00b894;
-    --accent-primary-dim: rgba(0, 184, 148, 0.1);
-    --accent-amber: #d49400;
-    --accent-amber-dim: rgba(212, 148, 0, 0.1);
-    --accent-lavender: #8b74e0;
-    --accent-lavender-dim: rgba(139, 116, 224, 0.1);
-    --accent-coral: #e55555;
-    --accent-coral-dim: rgba(229, 85, 85, 0.1);
+    --accent-primary: #10b981;
+    --accent-primary-dim: rgba(16, 185, 129, 0.1);
+    --accent-amber: #f59e0b;
+    --accent-amber-dim: rgba(245, 158, 11, 0.1);
+    --accent-lavender: #8b5cf6;
+    --accent-lavender-dim: rgba(139, 92, 246, 0.1);
+    --accent-coral: #ef4444;
+    --accent-coral-dim: rgba(239, 68, 68, 0.1);
     --accent-blue: #3b82f6;
     --accent-blue-dim: rgba(59, 130, 246, 0.1);
 
-    --text-primary: #1a2332;
-    --text-secondary: #5a6b7a;
-    --text-muted: #9aa8b8;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-muted: #94a3b8;
 
-    --border-color: rgba(0, 0, 0, 0.08);
-    --border-light: rgba(0, 0, 0, 0.04);
-    --border-accent: rgba(0, 184, 148, 0.3);
+    --border-color: rgba(0, 0, 0, 0.06);
+    --border-light: rgba(0, 0, 0, 0.03);
+    --border-accent: rgba(16, 185, 129, 0.3);
 
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
     --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.06);
     --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.08);
-    --shadow-glow: 0 0 20px rgba(0, 184, 148, 0.1);
+    --shadow-glow: 0 0 20px rgba(16, 185, 129, 0.1);
 
     --radius-sm: 6px;
     --radius-md: 10px;
@@ -331,16 +331,199 @@ body {
 }
 
 /* ========================================
-   TABLES
+   表格输入框 - 优雅透明风格
    ======================================== */
+
+/* 默认状态：透明无框，与普通单元格一致 */
+table input[type="number"],
+table input[type="text"],
+table select {
+    width: 100%;
+    min-width: 60px;
+    border: 1px solid transparent;
+    background: transparent;
+    text-align: center;
+    padding: 4px 6px;
+    font-size: inherit;
+    font-family: inherit;
+    color: inherit;
+    transition: all 0.15s ease;
+    border-radius: 4px;
+}
+
+/* Hover状态：轻微提示可编辑 */
+table input[type="number"]:hover,
+table input[type="text"]:hover,
+table select:hover {
+    border-color: rgba(59, 130, 246, 0.2);
+    background: rgba(59, 130, 246, 0.03);
+}
+
+/* Focus状态：完整高亮效果 */
+table input[type="number"]:focus,
+table input[type="text"]:focus,
+table select:focus {
+    border-color: var(--accent-primary);
+    outline: none;
+    background: #fff;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.15),
+                0 0 12px rgba(16, 185, 129, 0.1);
+}
+
+/* 只读或禁用输入：完全透明 */
+table input[type="number"][readonly],
+table input[type="text"][readonly],
+table input[type="number"][disabled],
+table input[type="text"][disabled],
+table select[disabled] {
+    pointer-events: none;
+    opacity: 1;
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+}
+
+/* 针对不同表格类的专门优化 */
+.estimate-table input[type="number"],
+.estimate-table input[type="text"],
+.estimate-table select,
+.finance-table input[type="number"],
+.finance-table input[type="text"],
+.finance-table select,
+.energy-table input[type="number"],
+.energy-table input[type="text"],
+.energy-table select,
+.electricity-table input[type="number"],
+.electricity-table input[type="text"],
+.electricity-table select {
+    width: 100%;
+    border: 1px solid transparent;
+    background: transparent;
+    text-align: center;
+}
+
+.estimate-table input[type="number"]:focus,
+.estimate-table input[type="text"]:focus,
+.estimate-table select:focus,
+.finance-table input[type="number"]:focus,
+.finance-table input[type="text"]:focus,
+.finance-table select:focus,
+.energy-table input[type="number"]:focus,
+.energy-table input[type="text"]:focus,
+.energy-table select:focus,
+.electricity-table input[type="number"]:focus,
+.electricity-table input[type="text"]:focus,
+.electricity-table select:focus {
+    border-color: var(--accent-primary);
+    outline: none;
+    background: #fff;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.15);
+}
+
+/* 输入框值修改提示 */
+table input[type="number"].modified,
+table input[type="text"].modified {
+    background: var(--accent-amber-dim);
+    border-color: rgba(245, 158, 11, 0.3);
+}
+
+/* 计算单元格（不可编辑） */
+.calc-cell {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+}
+
+/* 表格中的 Bootstrap form-control 样式覆盖 */
+table .form-control,
+table .form-select {
+    border: 1px solid transparent;
+    background: transparent;
+    padding: 4px 6px;
+    font-size: inherit;
+    height: auto;
+    min-height: auto;
+}
+
+table .form-control:hover,
+table .form-select:hover {
+    border-color: rgba(59, 130, 246, 0.2);
+    background: rgba(59, 130, 246, 0.03);
+}
+
+table .form-control:focus,
+table .form-select:focus {
+    border-color: var(--accent-primary);
+    background: #fff;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.15),
+                0 0 12px rgba(16, 185, 129, 0.1);
+}
+
+table .form-control[readonly],
+table .form-control[disabled],
+table .form-select[disabled] {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    pointer-events: none;
+}
+
+/* ========================================
+   TABLES - Enhanced Design System
+   ======================================== */
+
+/* Global Table Container */
+.table-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+}
+
+.table-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-primary), var(--accent-blue));
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+}
+
+.table-container:hover::before {
+    opacity: 1;
+}
+
+/* Responsive scrollable container */
+.table-responsive {
+    position: relative;
+    border-radius: var(--radius-md);
+}
+
+.table-responsive::after {
+    content: '';
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: linear-gradient(transparent, rgba(255, 255, 255, 0.9));
+    pointer-events: none;
+}
+
+/* Bootstrap Table Base */
 .table {
     --bs-table-bg: transparent;
     --bs-table-color: var(--text-primary);
     --bs-table-striped-bg: rgba(0, 0, 0, 0.02);
-    --bs-table-hover-bg: rgba(0, 184, 148, 0.04);
+    --bs-table-hover-bg: rgba(16, 185, 129, 0.04);
     --bs-table-striped-color: var(--text-primary);
     --bs-table-hover-color: var(--text-primary);
-    --bs-table-active-bg: rgba(0, 184, 148, 0.08);
+    --bs-table-active-bg: rgba(16, 185, 129, 0.08);
     color: var(--text-primary);
     margin-bottom: 0;
 }
@@ -350,35 +533,55 @@ body {
     border-bottom-color: var(--border-light);
 }
 
+/* Table Header */
 .table thead th {
-    background: rgba(0, 0, 0, 0.03);
+    background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
     color: var(--text-secondary);
     font-family: var(--font-display);
     font-weight: 600;
-    font-size: 0.78rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     padding: 14px 16px;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 2px solid var(--border-color);
     border-top: none;
     white-space: nowrap;
+    position: relative;
 }
 
+.table thead th::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--accent-primary);
+    transform: scaleX(0);
+    transition: transform var(--transition-normal);
+}
+
+.table thead th:hover::after {
+    transform: scaleX(1);
+}
+
+/* Table Body */
 .table tbody td {
     padding: 14px 16px;
     border-bottom: 1px solid var(--border-light);
     vertical-align: middle;
     font-size: 0.9rem;
     color: var(--text-primary);
-    transition: background var(--transition-fast);
+    transition: all var(--transition-fast);
 }
 
 .table tbody tr {
     transition: all var(--transition-fast);
+    position: relative;
 }
 
 .table tbody tr:hover {
-    background: rgba(0, 184, 148, 0.025);
+    background: rgba(16, 185, 129, 0.025);
 }
 
 .table tbody tr:hover td:first-child {
@@ -386,15 +589,43 @@ body {
 }
 
 .table-hover tbody tr:hover {
-    background: rgba(0, 184, 148, 0.025);
+    background: rgba(16, 185, 129, 0.025);
     color: var(--text-primary);
 }
 
-/* Non-bootstrap tables */
+/* Numeric Cells */
+.table .numeric-cell,
+.table td.text-end {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+.table td.text-center {
+    text-align: center;
+}
+
+/* Value States */
+.value-positive {
+    color: var(--accent-primary);
+    font-weight: 600;
+}
+
+.value-negative {
+    color: var(--accent-coral);
+    font-weight: 600;
+}
+
+.value-neutral {
+    color: var(--text-muted);
+}
+
+/* Non-bootstrap Tables */
 .estimate-table,
 .standard-table {
     width: 100%;
     border-collapse: collapse;
+    background: var(--bg-card);
 }
 
 .estimate-table th,
@@ -410,18 +641,26 @@ body {
 
 .estimate-table th,
 .standard-table th {
-    background: rgba(0, 0, 0, 0.03);
+    background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
     color: var(--text-secondary);
     font-family: var(--font-display);
     font-weight: 600;
-    font-size: 0.78rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
+    border-bottom: 2px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 5;
 }
 
 .estimate-table tr:hover,
 .standard-table tr:hover {
-    background: rgba(0, 184, 148, 0.025);
+    background: rgba(16, 185, 129, 0.025);
+}
+
+.estimate-table tr:hover td:first-child {
+    box-shadow: inset 3px 0 0 var(--accent-primary);
 }
 
 /* Center-align all content in estimate / standard tables */
@@ -434,23 +673,327 @@ body {
 
 .standard-table td a {
     color: var(--text-primary);
-    transition: color 0.2s;
+    transition: color var(--transition-fast);
 }
 
 .standard-table td a:hover {
     color: var(--accent-primary);
 }
 
-.estimate-table .total-row {
-    background: var(--accent-primary-dim) !important;
-    font-weight: 600;
+/* Row Categories */
+.total-row {
+    background: linear-gradient(90deg, rgba(16, 185, 129, 0.1), transparent) !important;
+    font-weight: 700;
     color: var(--accent-primary);
+    border-left: 3px solid var(--accent-primary);
 }
 
-.estimate-table .subtotal-row {
-    background: var(--accent-lavender-dim) !important;
+.subtotal-row {
+    background: linear-gradient(90deg, rgba(139, 92, 246, 0.08), transparent) !important;
     font-weight: 600;
     color: var(--accent-lavender);
+    border-left: 3px solid var(--accent-lavender);
+}
+
+.construction-row {
+    background: linear-gradient(90deg, rgba(239, 68, 68, 0.06), transparent) !important;
+    font-weight: 600;
+    border-left: 3px solid #ef4444;
+}
+
+.operation-row {
+    background: linear-gradient(90deg, rgba(16, 185, 129, 0.06), transparent) !important;
+    font-weight: 600;
+    border-left: 3px solid var(--accent-primary);
+}
+
+/* Editable Cells - Pure Cell Editing */
+.editable-cell {
+    position: relative;
+    padding: 6px 28px 6px 10px;
+    border-radius: var(--radius-sm);
+    cursor: text;
+    transition: all var(--transition-fast);
+    border: 1px solid transparent;
+    background: transparent;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+}
+
+.editable-cell::before {
+    content: '✎';
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
+    opacity: 0;
+    color: var(--accent-blue);
+    transition: opacity var(--transition-fast);
+    pointer-events: none;
+}
+
+.editable-cell:hover {
+    background: rgba(59, 130, 246, 0.04);
+    border-color: rgba(59, 130, 246, 0.2);
+}
+
+.editable-cell:hover::before {
+    opacity: 0.5;
+}
+
+.editable-cell:focus-within {
+    outline: none;
+    background: #fff;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15),
+                0 0 20px rgba(16, 185, 129, 0.1);
+}
+
+.editable-cell:focus-within::before {
+    opacity: 0;
+}
+
+.editable-cell[contenteditable="true"]:empty::before {
+    content: '点击输入...';
+    color: var(--text-muted);
+    font-style: italic;
+    font-size: 0.85em;
+}
+
+.editable-cell .cell-value {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    width: 100%;
+}
+
+.editable-cell[contenteditable="true"] {
+    display: block;
+}
+
+.editable-cell[contenteditable="true"] .cell-value {
+    display: none;
+}
+
+/* Number Input - Minimal Focus Glow */
+.table input[type="number"],
+.table input[type="text"] {
+    width: 100%;
+    border: 1px solid transparent;
+    background: transparent;
+    padding: 6px 10px;
+    font-size: inherit;
+    font-family: var(--font-mono);
+    color: inherit;
+    text-align: inherit;
+    outline: none;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+}
+
+.table input[type="number"]:hover,
+.table input[type="text"]:hover {
+    background: rgba(59, 130, 246, 0.04);
+    border-color: rgba(59, 130, 246, 0.2);
+}
+
+.table input[type="number"]:focus,
+.table input[type="text"]:focus {
+    background: #fff;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15),
+                0 0 20px rgba(16, 185, 129, 0.1);
+}
+
+/* Number Stepper Control */
+.number-cell {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding-right: 28px;
+    cursor: pointer;
+}
+
+.number-cell .cell-value {
+    flex: 1;
+    text-align: right;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+}
+
+.stepper-control {
+    display: none;
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    flex-direction: column;
+    gap: 3px;
+    z-index: 10;
+}
+
+.number-cell:hover .stepper-control,
+.number-cell:focus-within .stepper-control {
+    display: flex;
+}
+
+.stepper-control button {
+    width: 18px;
+    height: 14px;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stepper-control button:hover {
+    background: #f1f5f9;
+    color: var(--accent-primary);
+    border-color: var(--accent-primary);
+}
+
+.stepper-control button:active {
+    transform: scale(0.92);
+}
+
+/* Select in Table */
+.table select {
+    width: 100%;
+    border: 1px solid transparent;
+    background: transparent;
+    padding: 6px 28px 6px 10px;
+    font-size: inherit;
+    font-family: inherit;
+    color: inherit;
+    outline: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    transition: all var(--transition-fast);
+}
+
+.table select:hover {
+    background-color: rgba(59, 130, 246, 0.04);
+    border-color: rgba(59, 130, 246, 0.2);
+}
+
+.table select:focus {
+    background-color: #fff;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+
+/* Save Indicator */
+.save-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-left: auto;
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    background: rgba(0, 0, 0, 0.02);
+    transition: all var(--transition-fast);
+}
+
+.save-indicator.saving {
+    color: var(--accent-amber);
+    background: var(--accent-amber-dim);
+}
+
+.save-indicator.saving::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: pulse 1s infinite;
+}
+
+.save-indicator.saved {
+    color: var(--accent-primary);
+    background: var(--accent-primary-dim);
+}
+
+.save-indicator.saved::before {
+    content: '✓';
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.save-indicator.error {
+    color: var(--accent-coral);
+    background: var(--accent-coral-dim);
+}
+
+.save-indicator.error::before {
+    content: '✕';
+    font-size: 10px;
+    font-weight: 700;
+}
+
+/* Table Actions Column */
+.table-actions {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+}
+
+.table-actions .btn {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+}
+
+/* Status Badges in Table */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.status-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.status-badge.status-pending {
+    color: var(--accent-amber);
+    background: var(--accent-amber-dim);
+}
+
+.status-badge.status-active,
+.status-badge.status-progress {
+    color: var(--accent-primary);
+    background: var(--accent-primary-dim);
+}
+
+.status-badge.status-completed {
+    color: var(--accent-blue);
+    background: var(--accent-blue-dim);
+}
+
+.status-badge.status-cancelled {
+    color: var(--accent-coral);
+    background: var(--accent-coral-dim);
 }
 
 /* ========================================
@@ -1649,6 +2192,198 @@ a.project-link:hover {
 }
 
 /* ========================================
+   ENHANCED ANIMATIONS
+   ======================================== */
+
+/* Staggered Fade In for Table Rows */
+@keyframes fadeInRow {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.table tbody tr {
+    animation: fadeInRow 0.4s ease-out;
+}
+
+.table tbody tr:nth-child(1) { animation-delay: 0ms; }
+.table tbody tr:nth-child(2) { animation-delay: 30ms; }
+.table tbody tr:nth-child(3) { animation-delay: 60ms; }
+.table tbody tr:nth-child(4) { animation-delay: 90ms; }
+.table tbody tr:nth-child(5) { animation-delay: 120ms; }
+.table tbody tr:nth-child(6) { animation-delay: 150ms; }
+.table tbody tr:nth-child(7) { animation-delay: 180ms; }
+.table tbody tr:nth-child(8) { animation-delay: 210ms; }
+.table tbody tr:nth-child(9) { animation-delay: 240ms; }
+.table tbody tr:nth-child(10) { animation-delay: 270ms; }
+
+/* Pulse Animation for Save Indicator */
+@keyframes pulseRing {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* Ripple Effect for Buttons */
+@keyframes ripple {
+    0% {
+        transform: scale(0);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+.btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    width: 20px;
+    height: 20px;
+    margin-left: -10px;
+    margin-top: -10px;
+    animation: ripple 0.6s ease-out;
+    pointer-events: none;
+}
+
+/* Glow Pulse for Active Elements */
+@keyframes glowPulse {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(16, 185, 129, 0.2);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+    }
+}
+
+.editable-cell:focus-within {
+    animation: glowPulse 1.5s ease-in-out;
+}
+
+/* Slide In for Toast Notifications */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.toast {
+    animation: slideInRight 0.3s ease-out;
+}
+
+.toast.hiding {
+    animation: slideOutRight 0.3s ease-out;
+}
+
+/* Card Entrance Animation */
+@keyframes cardEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.card {
+    animation: cardEntrance 0.5s ease-out;
+}
+
+.stat-card:nth-child(1) { animation-delay: 0ms; }
+.stat-card:nth-child(2) { animation-delay: 100ms; }
+.stat-card:nth-child(3) { animation-delay: 200ms; }
+.stat-card:nth-child(4) { animation-delay: 300ms; }
+.stat-card:nth-child(5) { animation-delay: 400ms; }
+.stat-card:nth-child(6) { animation-delay: 500ms; }
+
+/* Hover Lift Effect */
+.hover-lift {
+    transition: transform var(--transition-normal), 
+                box-shadow var(--transition-normal);
+}
+
+.hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Focus Scale for Interactive Elements */
+.form-control:focus,
+.form-select:focus {
+    transform: scale(1.01);
+    transition: transform var(--transition-fast);
+}
+
+/* Smooth Table Scroll Indicator */
+@keyframes scrollHint {
+    0%, 100% {
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+.table-responsive::after {
+    animation: scrollHint 2s ease-in-out infinite;
+}
+
+/* Loading Skeleton Animation */
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.skeleton {
+    background: linear-gradient(90deg, 
+        #f0f0f0 25%, 
+        #e0e0e0 50%, 
+        #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: var(--radius-sm);
+}
+
+/* ========================================
    RESPONSIVE - TABLETS
    ======================================== */
 @media (max-width: 991.98px) {
@@ -1756,6 +2491,95 @@ a.project-link:hover {
         font-size: 0.9rem;
         padding: 10px 14px;
         color: var(--text-secondary);
+    }
+
+    /* Enhanced Mobile Table Styles */
+    .table-container {
+        border-radius: var(--radius-md);
+        margin: 0 -12px;
+        border-left: none;
+        border-right: none;
+    }
+
+    .table {
+        font-size: 0.85rem;
+    }
+
+    .table thead th {
+        padding: 10px 12px;
+        font-size: 0.7rem;
+    }
+
+    .table tbody td {
+        padding: 10px 12px;
+    }
+
+    .table td:first-child,
+    .table th:first-child {
+        position: sticky;
+        left: 0;
+        background: inherit;
+        z-index: 5;
+        box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .editable-cell {
+        padding: 4px 24px 4px 8px;
+        font-size: 0.85rem;
+    }
+
+    .editable-cell::before {
+        font-size: 9px;
+        right: 4px;
+    }
+
+    .number-cell {
+        padding-right: 32px;
+    }
+
+    .stepper-control button {
+        width: 20px;
+        height: 16px;
+    }
+
+    .table-responsive::after {
+        content: '← 左右滑动 →';
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 32px;
+        background: linear-gradient(transparent, rgba(248, 250, 252, 0.95));
+        color: var(--text-muted);
+        font-size: 0.7rem;
+        padding-bottom: 8px;
+        pointer-events: none;
+    }
+
+    .status-badge {
+        padding: 3px 8px;
+        font-size: 0.75rem;
+    }
+
+    .table-actions {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .table-actions .btn {
+        padding: 4px 8px;
+        font-size: 0.75rem;
+    }
+
+    .stat-card {
+        padding: 16px;
+    }
+
+    .stat-number {
+        font-size: 1.8rem;
     }
 
     /* Page titles */

@@ -233,3 +233,37 @@ class SubscriptionClient:
         self.token = None
         self.user_info = None
         self.save_config()
+
+    def create_pair(self):
+        device_id = get_machine_fingerprint()
+        try:
+            resp = requests.post(
+                f'{self.server_url}/api/pair/create',
+                json={'device_fingerprint': device_id},
+                timeout=10,
+            )
+            data = resp.json()
+            if data.get('success'):
+                return data
+            return None
+        except Exception:
+            return None
+
+    def poll_pair_status(self, code):
+        try:
+            resp = requests.get(
+                f'{self.server_url}/api/pair/status',
+                params={'code': code},
+                timeout=10,
+            )
+            data = resp.json()
+            if data.get('success') and data.get('status') == 'confirmed' and data.get('token'):
+                self.token = data['token']
+                self.user_info = data.get('user')
+                self.save_config()
+                return True, '配对成功'
+            return False, data.get('message', '等待扫码...')
+        except requests.exceptions.ConnectionError:
+            return False, f'无法连接服务器（{self.server_url}）'
+        except Exception as e:
+            return False, f'配对时发生错误：{str(e)}'
