@@ -233,33 +233,8 @@ class SubscriptionDialog(QDialog):
             self.login_btn.setEnabled(True)
 
     def _on_register(self):
-        username = self.username_edit.text().strip()
-        password = self.password_edit.text().strip()
-        if not username or not password:
-            self.status_label.setText('请输入用户名和密码')
-            return
-        self.register_btn.setEnabled(False)
-        self.status_label.setStyleSheet('font-size: 12px; color: #0d6efd; min-height: 20px;')
-        self.status_label.setText('正在注册...')
-        QApplication.processEvents()
-        try:
-            import requests
-            resp = requests.post(
-                f'{self.client.server_url}/api/auth/register',
-                json={'username': username, 'password': password},
-                timeout=10,
-            )
-            data = resp.json()
-            if data.get('success'):
-                self.status_label.setStyleSheet('font-size: 12px; color: #198754; min-height: 20px;')
-                self.status_label.setText('注册成功，请登录')
-            else:
-                self.status_label.setStyleSheet('font-size: 12px; color: #dc3545; min-height: 20px;')
-                self.status_label.setText(data.get('message', '注册失败'))
-        except Exception as e:
-            self.status_label.setStyleSheet('font-size: 12px; color: #dc3545; min-height: 20px;')
-            self.status_label.setText(f'注册时发生错误：{str(e)}')
-        self.register_btn.setEnabled(True)
+        import webbrowser
+        webbrowser.open(f'{self.client.server_url}/register')
 
 
 class NavButton(QPushButton):
