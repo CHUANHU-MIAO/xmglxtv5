@@ -11,3 +11,5 @@ class Config:
     JWT_ACCESS_TOKEN_EXPIRES = 86400 * 7  # 7天
     ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME') or 'admin'
     ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD') or 'admin123'
+    SERVER_PUBLIC_URL = os.environ.get('SERVER_PUBLIC_URL') or ''
+    CONTACT_WECHAT = os.environ.get('CONTACT_WECHAT') or '17631020218'

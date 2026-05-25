@@ -52,6 +52,9 @@ def create_subscription_for_admin(user_id, level, expire_date):
     level_config = SUBSCRIPTION_LEVELS.get(level)
     if not level_config:
         return None, '无效的订阅等级'
+    old = Subscription.query.filter_by(user_id=user_id, status='active').first()
+    if old:
+        old.status = 'cancelled'
     sub = Subscription(
         user_id=user_id,
         level=level,

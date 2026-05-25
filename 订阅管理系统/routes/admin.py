@@ -22,7 +22,19 @@ def login():
 @admin_bp.route('/users', methods=['GET'])
 def users():
     users = User.query.all()
-    return jsonify({'success': True, 'users': [{'id': u.id, 'username': u.username, 'email': u.email, 'status': u.status, 'created_at': u.created_at.isoformat()} for u in users]})
+    result = []
+    for u in users:
+        sub = Subscription.query.filter_by(user_id=u.id, status='active').order_by(Subscription.id.desc()).first()
+        result.append({
+            'id': u.id, 'username': u.username, 'email': u.email, 'phone': u.phone,
+            'status': u.status, 'created_at': u.created_at.isoformat(),
+            'subscription': {
+                'level': sub.level,
+                'max_projects': sub.max_projects,
+                'expire_date': sub.expire_date.isoformat() if sub.expire_date else None
+            } if sub else None,
+        })
+    return jsonify({'success': True, 'users': result})
 
 @admin_bp.route('/users/<int:user_id>', methods=['GET'])
 def user_detail(user_id):

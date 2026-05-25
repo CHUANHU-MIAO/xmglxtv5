@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册 - 订阅管理系统</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f3460;
+            --accent: #10b981;
+            --danger: #ef4444;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .reg-wrapper {
+            display: flex;
+            max-width: 860px;
+            width: 100%;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+            overflow: hidden;
+            animation: fadeIn 0.4s ease-out;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        .reg-left {
+            flex: 1;
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 50%, #16213e 100%);
+            padding: 48px 36px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        .reg-left::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 20% 50%, rgba(16,185,129,0.12) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 50%, rgba(99,102,241,0.08) 0%, transparent 50%);
+        }
+        .reg-left > * { position: relative; z-index: 1; }
+        .reg-left .big-icon { font-size: 44px; margin-bottom: 16px; }
+        .reg-left h2 { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+        .reg-left p { color: rgba(255,255,255,0.6); font-size: 14px; line-height: 1.6; margin-bottom: 24px; }
+        .reg-left ul { list-style: none; padding: 0; }
+        .reg-left ul li { padding: 7px 0; color: rgba(255,255,255,0.8); font-size: 13px; display: flex; align-items: center; gap: 10px; }
+        .reg-left ul li i { color: var(--accent); }
+        .reg-right { width: 420px; padding: 36px 32px; display: flex; flex-direction: column; justify-content: center; }
+        .reg-right h3 { font-size: 20px; font-weight: 700; color: var(--text-dark); margin-bottom: 2px; }
+        .reg-right .reg-sub { color: var(--text-muted); font-size: 13px; margin-bottom: 20px; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-dark); margin-bottom: 4px; }
+        .form-group .input-wrap { position: relative; }
+        .form-group .input-wrap i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
+        .form-group input {
+            width: 100%; height: 42px; border: 2px solid #e9ecef; border-radius: 10px;
+            padding: 0 12px 0 38px; font-size: 14px; transition: border-color 0.2s; outline: none;
+        }
+        .form-group input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(16,185,129,0.1); }
+        .form-group input.error { border-color: var(--danger); }
+        .form-group .validation-msg { font-size: 12px; margin-top: 3px; display: flex; align-items: center; gap: 4px; }
+        .form-group .validation-msg.error { color: var(--danger); }
+        .form-group .validation-msg.success { color: var(--accent); }
+        .btn-reg {
+            background: linear-gradient(135deg, var(--accent), #059669); color: #fff; border: none;
+            padding: 12px; border-radius: 10px; font-size: 15px; font-weight: 700; width: 100%;
+            cursor: pointer; transition: all 0.2s; margin-top: 4px;
+        }
+        .btn-reg:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(16,185,129,0.3); }
+        .btn-reg:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+        .login-link { text-align: center; margin-top: 14px; font-size: 13px; color: var(--text-muted); }
+        .login-link a { color: var(--accent); text-decoration: none; font-weight: 600; }
+        .login-link a:hover { text-decoration: underline; }
+        .msg-box { padding: 10px 14px; border-radius: 8px; margin-bottom: 14px; font-size: 13px; display: none; }
+        .msg-box.error { display: block; background: #fef2f2; color: var(--danger); border: 1px solid #fecaca; }
+        .msg-box.success { display: block; background: #f0fdf4; color: #059669; border: 1px solid #bbf7d0; }
+        @media (max-width: 700px) { .reg-left { display: none; } .reg-right { width: 100%; padding: 28px 24px; } }
+    </style>
+</head>
+<body>
+<div class="reg-wrapper">
+    <div class="reg-left">
+        <div class="big-icon">📋</div>
+        <h2>订阅管理系统</h2>
+        <p>注册账号，管理您的桌面端订阅授权</p>
+        <ul>
+            <li><i class="bi bi-check-circle-fill"></i> 注册即享标准版（免费永久）</li>
+            <li><i class="bi bi-check-circle-fill"></i> 用户名/邮箱/手机号唯一校验</li>
+            <li><i class="bi bi-check-circle-fill"></i> 支持找回密码</li>
+            <li><i class="bi bi-check-circle-fill"></i> 随时升级 Pro / Max</li>
+        </ul>
+    </div>
+    <div class="reg-right">
+        <h3>创建账号</h3>
+        <p class="reg-sub">注册后自动开通标准版订阅</p>
+        <div id="message" class="msg-box"></div>
+        <form id="registerForm" onsubmit="return handleRegister(event)">
+            <div class="form-group">
+                <label>用户名 <span style="color:var(--danger)">*</span></label>
+                <div class="input-wrap">
+                    <i class="bi bi-person"></i>
+                    <input type="text" id="username" placeholder="设置登录用户名" required autofocus onblur="checkField('username')">
+                </div>
+                <div class="validation-msg" id="v-username"></div>
+            </div>
+            <div class="form-group">
+                <label>邮箱</label>
+                <div class="input-wrap">
+                    <i class="bi bi-envelope"></i>
+                    <input type="email" id="email" placeholder="输入邮箱地址（用于找回密码）" onblur="checkField('email')">
+                </div>
+                <div class="validation-msg" id="v-email"></div>
+            </div>
+            <div class="form-group">
+                <label>手机号</label>
+                <div class="input-wrap">
+                    <i class="bi bi-phone"></i>
+                    <input type="tel" id="phone" placeholder="输入手机号（用于找回密码）" onblur="checkField('phone')">
+                </div>
+                <div class="validation-msg" id="v-phone"></div>
+            </div>
+            <div class="form-group">
+                <label>密码 <span style="color:var(--danger)">*</span></label>
+                <div class="input-wrap">
+                    <i class="bi bi-lock"></i>
+                    <input type="password" id="password" placeholder="密码不少于6位" required minlength="6">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>确认密码 <span style="color:var(--danger)">*</span></label>
+                <div class="input-wrap">
+                    <i class="bi bi-lock-fill"></i>
+                    <input type="password" id="password2" placeholder="再次输入密码" required>
+                </div>
+            </div>
+            <button type="submit" class="btn-reg" id="regBtn"><i class="bi bi-person-plus"></i> 注册并开通标准版</button>
+        </form>
+        <div class="login-link">
+            已有账号？<a href="/admin/login">去登录</a>
+            &middot; <a href="/forgot-password">忘记密码？</a>
+            &middot; <a href="/pricing">订阅方案</a>
+        </div>
+    </div>
+</div>
+<script>
+let checkedFields = {};
+
+async function checkField(field) {
+    const el = document.getElementById(field);
+    const val = el.value.trim();
+    const msgEl = document.getElementById('v-' + field);
+    if (!val) { msgEl.className = 'validation-msg'; msgEl.textContent = ''; return; }
+    const body = {};
+    body[field] = val;
+    try {
+        const res = await fetch('/api/auth/check-unique', {
+            method: 'POST', headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(body)
+        });
+        const data = await res.json();
+        if (data.success) {
+            msgEl.className = 'validation-msg success';
+            msgEl.innerHTML = '<i class="bi bi-check-circle-fill"></i> 可用';
+            checkedFields[field] = true;
+        } else {
+            msgEl.className = 'validation-msg error';
+            msgEl.innerHTML = '<i class="bi bi-exclamation-circle-fill"></i> ' + data.message;
+            checkedFields[field] = false;
+        }
+    } catch(e) {
+        msgEl.className = 'validation-msg error';
+        msgEl.innerHTML = '<i class="bi bi-exclamation-circle-fill"></i> 验证失败';
+    }
+}
+
+document.getElementById('username').addEventListener('blur', function() { checkField('username'); });
+document.getElementById('email').addEventListener('blur', function() { checkField('email'); });
+document.getElementById('phone').addEventListener('blur', function() { checkField('phone'); });
+
+async function handleRegister(e) {
+    e.preventDefault();
+    const username = document.getElementById('username').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const password = document.getElementById('password').value;
+    const password2 = document.getElementById('password2').value;
+    const msgEl = document.getElementById('message');
+
+    if (!username || !password) { msgEl.className = 'msg-box error'; msgEl.textContent = '用户名和密码为必填项'; return; }
+    if (password.length < 6) { msgEl.className = 'msg-box error'; msgEl.textContent = '密码不能少于6位'; return; }
+    if (password !== password2) { msgEl.className = 'msg-box error'; msgEl.textContent = '两次密码输入不一致'; return; }
+
+    if (email && checkedFields['email'] === undefined) { await checkField('email'); }
+    if (phone && checkedFields['phone'] === undefined) { await checkField('phone'); }
+    if ((email && checkedFields['email'] === false) || (phone && checkedFields['phone'] === false)) {
+        msgEl.className = 'msg-box error';
+        msgEl.textContent = '请修改已被占用的邮箱或手机号';
+        return;
+    }
+
+    const btn = document.getElementById('regBtn');
+    btn.disabled = true; btn.textContent = '注册中...';
+    msgEl.className = 'msg-box';
+
+    try {
+        const res = await fetch('/api/auth/register', {
+            method: 'POST', headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({username, password, email, phone})
+        });
+        const data = await res.json();
+        if (data.success) {
+            msgEl.className = 'msg-box success';
+            msgEl.innerHTML = '<i class="bi bi-check-circle-fill"></i> 注册成功！正在跳转登录页...';
+            setTimeout(() => { window.location.href = '/admin/login'; }, 1500);
+        } else {
+            msgEl.className = 'msg-box error';
+            msgEl.textContent = data.message;
+            btn.disabled = false; btn.innerHTML = '<i class="bi bi-person-plus"></i> 注册并开通标准版';
+        }
+    } catch(e) {
+        msgEl.className = 'msg-box error';
+        msgEl.textContent = '网络错误，请重试';
+        btn.disabled = false; btn.innerHTML = '<i class="bi bi-person-plus"></i> 注册并开通标准版';
+    }
+    return false;
+}
+</script>
+</body>
+</html>
