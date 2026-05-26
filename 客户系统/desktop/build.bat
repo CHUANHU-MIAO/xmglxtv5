@@ -39,7 +39,7 @@ echo [2/3] 使用 PyInstaller 打包桌面端...
 echo.
 
 :: 打包 GUI 版本（有窗口）
-pyinstaller --onedir --windowed ^
+pyinstaller --onedir --windowed --noconfirm ^
     --name "EstimateStudio" ^
     --add-data "..\web;web" ^
     --add-data "..\core;core" ^
