@@ -1,0 +1,1865 @@
+{% extends "base_desktop.html" %}
+
+{% block title %}财务测算 - 一般项目{% endblock %}
+
+{% block extra_head %}
+<style>
+    .finance-tabs .nav-link { font-size: 0.85rem; padding: 6px 12px; }
+    .finance-tabs .nav-link.active { font-weight: 600; border-bottom: 2px solid var(--accent-primary); }
+    .tab-toolbar { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+    .tab-toolbar .btn { font-size: 0.82rem; }
+    .guide-tip { background: #e8f5e9; border-left: 3px solid var(--accent-primary); padding: 10px 14px; margin-bottom: 12px; border-radius: 6px; font-size: 0.85rem; color: #2e7d32; }
+    .generated-badge { display: inline-block; background: var(--accent-blue); color: #fff; font-size: 0.7rem; padding: 1px 6px; border-radius: 8px; margin-left: 6px; vertical-align: middle; }
+    .finance-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .finance-table th, .finance-table td { padding: 5px 8px; border: 1px solid #dee2e6; text-align: center; vertical-align: middle; white-space: nowrap; }
+    .finance-table th { background: #f0f4f8; font-weight: 600; position: sticky; top: 0; z-index: 1; }
+    .finance-table .subtotal-row { background: #f3e5f5; font-weight: 600; }
+    .finance-table .total-row { background: #e8f5e9; font-weight: 700; }
+    .finance-table tbody tr:hover { background: rgba(16, 185, 129, 0.025); }
+    .finance-table .text-end,
+    .finance-table .text-start { text-align: center !important; }
+    .sensitivity-table .positive { color: #2e7d32; }
+    .sensitivity-table .negative { color: #c62828; }
+    .sensitivity-table .base { font-weight: 700; color: var(--accent-blue); }
+    .debt-card { display: inline-flex; align-items: center; gap: 8px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 6px 12px; margin: 0 8px 8px 0; font-size: 0.82rem; }
+    .debt-card .debt-name { font-weight: 600; color: #1565c0; }
+    .debt-card .debt-info { color: #555; }
+    .debt-card .btn-close-sm { padding: 0; margin-left: 4px; font-size: 0.7rem; cursor: pointer; border: none; background: none; color: #c62828; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4 py-3">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-info alert-dismissible fade show" role="alert">{{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="info-card">
+        <div class="info-header">
+            <i class="bi bi-calculator"></i> 财务测算（一般项目）
+            <small class="text-muted ms-2">{{ project.name }}</small>
+            <div class="float-end">
+                {% if role != 'visitor' %}
+                <button type="button" class="btn btn-primary btn-sm" id="btnSave"><i class="bi bi-save"></i> 保存</button>
+                {% endif %}
+                <button type="button" class="btn btn-success btn-sm" id="btnExport"><i class="bi bi-file-excel"></i> 导出Excel</button>
+                <a href="/project/{{ project.id }}/finance" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> 返回选择</a>
+            </div>
+        </div>
+        <div class="info-body">
+            <!-- 选项卡导航 -->
+            <ul class="nav nav-tabs finance-tabs mb-3" id="normalTabNav" role="tablist">
+                <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tab-fund">资金使用计划</a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-repay">还本付息</a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-revcost">收入成本</a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#nb-tab-dep-amort">折旧摊销<span class="generated-badge">自动</span></a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-tax">税费估算<span class="generated-badge">自动</span></a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#nb-tab-profit">利润表<span class="generated-badge">自动</span></a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#nb-tab-cf-all">全部投资现金流<span class="generated-badge">自动</span></a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#nb-tab-cf-equity">资本金现金流<span class="generated-badge">自动</span></a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#nb-tab-cf-plan">财务计划现金流<span class="generated-badge">自动</span></a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#nb-tab-metrics">财务评价指标<span class="generated-badge">自动</span></a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#nb-tab-breakeven">盈亏平衡分析<span class="generated-badge">自动</span></a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#nb-tab-sensitivity">敏感性分析<span class="generated-badge">自动</span></a></li>
+            </ul>
+
+            <div class="tab-content">
+                {% include "includes/_finance_shared_tabs.html" %}
+
+                <!-- ==================== 非专项债 TAB: 折旧摊销 ==================== -->
+                <div class="tab-pane fade" id="nb-tab-dep-amort" role="tabpanel">
+                    <div class="guide-tip"><i class="bi bi-info-circle"></i> 点击"添加"按钮录入折旧/摊销项目，系统自动按年计算并汇总。</div>
+                    <h6 class="mb-2"><i class="bi bi-arrow-down-up"></i> 固定资产折旧估算表</h6>
+                    <div class="overflow-x-auto mb-2">
+                        <table class="finance-table" id="nbDepTable">
+                            <thead id="nbDepHead"></thead>
+                            <tbody id="nbDepBody"></tbody>
+                        </table>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-success mb-4" id="btnAddNbDepItem"><i class="bi bi-plus"></i> 添加折旧项</button>
+
+                    <h6 class="mb-2"><i class="bi bi-arrow-down-up"></i> 无形及递延资产摊销表</h6>
+                    <div class="overflow-x-auto mb-2">
+                        <table class="finance-table" id="nbAmortTable">
+                            <thead id="nbAmortHead"></thead>
+                            <tbody id="nbAmortBody"></tbody>
+                        </table>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-success mb-4" id="btnAddNbAmortItem"><i class="bi bi-plus"></i> 添加摊销项</button>
+                </div>
+
+                <!-- ==================== 非专项债 TAB: 利润表 ==================== -->
+                <div class="tab-pane fade" id="nb-tab-profit" role="tabpanel">
+                    <div class="guide-tip"><i class="bi bi-info-circle"></i> 利润表根据收入、成本、税费数据自动计算。</div>
+                    <div class="overflow-x-auto">
+                        <table class="finance-table" id="nbProfitTable">
+                            <thead><tr><th>序号</th><th>项目</th><!-- 动态年份列 --><th>合计</th></tr></thead>
+                            <tbody id="nbProfitBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ==================== 非专项债 TAB: 全部投资现金流量表 ==================== -->
+                <div class="tab-pane fade" id="nb-tab-cf-all" role="tabpanel">
+                    <div class="guide-tip"><i class="bi bi-info-circle"></i> 全部投资现金流量表，不考虑融资方案，用于计算项目本身的盈利能力。</div>
+                    <div class="overflow-x-auto">
+                        <table class="finance-table" id="nbCFAllTable">
+                            <thead><tr><th>序号</th><th>项目</th><!-- 动态年份列 --><th>合计</th></tr></thead>
+                            <tbody id="nbCFAllBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="overflow-x-auto mt-3">
+                        <table class="finance-table" style="font-size:0.8rem;">
+                            <thead><tr><th>指标</th><th>数值</th><th>备注（计算依据与规则）</th></tr></thead>
+                            <tbody>
+                                <tr><td class="text-start">税前内部收益率（IRR）</td><td><input type="text" class="form-control form-control-sm" id="nbIRRPreTax" readonly></td><td class="text-start" style="font-size:0.76rem;color:var(--text-secondary);">以全投资现金流量表税前净现金流量为基础，采用插值法求解使 NPV=0 的折现率</td></tr>
+                                <tr><td class="text-start">税后内部收益率（IRR）</td><td><input type="text" class="form-control form-control-sm" id="nbIRRPostTax" readonly></td><td class="text-start" style="font-size:0.76rem;color:var(--text-secondary);">以全投资现金流量表税后净现金流量为基础，采用插值法求解使 NPV=0 的折现率</td></tr>
+                                <tr><td class="text-start">税前净现值（NPV）</td><td><input type="text" class="form-control form-control-sm" id="nbNPVPreTax" readonly></td><td class="text-start" style="font-size:0.76rem;color:var(--text-secondary);">以全投资现金流量表税前净现金流量为基础，按基准收益率折现后求和：Σ(CFₜ/(1+i)ᵗ)</td></tr>
+                                <tr><td class="text-start">税后净现值（NPV）</td><td><input type="text" class="form-control form-control-sm" id="nbNPVPostTax" readonly></td><td class="text-start" style="font-size:0.76rem;color:var(--text-secondary);">以全投资现金流量表税后净现金流量为基础，按基准收益率折现后求和：Σ(CFₜ/(1+i)ᵗ)</td></tr>
+                                <tr><td class="text-start">税前投资回收期（年）</td><td><input type="text" class="form-control form-control-sm" id="nbPaybackPreTax" readonly></td><td class="text-start" style="font-size:0.76rem;color:var(--text-secondary);">以全投资现金流量表累计税前净现金流量为基础，线性插值至累计值由负转正的年份：T-1+|累计负值|/当年净现金流</td></tr>
+                                <tr><td class="text-start">税后投资回收期（年）</td><td><input type="text" class="form-control form-control-sm" id="nbPaybackPostTax" readonly></td><td class="text-start" style="font-size:0.76rem;color:var(--text-secondary);">以全投资现金流量表累计税后净现金流量为基础，线性插值至累计值由负转正的年份：T-1+|累计负值|/当年净现金流</td></tr>
+                                <tr><td class="text-start">基准收益率（%）</td><td><input type="number" class="form-control form-control-sm" id="nbDiscountRate" value="6" step="0.5"></td><td class="text-start" style="font-size:0.76rem;color:var(--text-secondary);">用于 NPV 折现计算和 IRR 对比判据的基准折现率，即项目可接受的最低收益率</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ==================== 非专项债 TAB: 资本金现金流量表 ==================== -->
+                <div class="tab-pane fade" id="nb-tab-cf-equity" role="tabpanel">
+                    <div class="guide-tip"><i class="bi bi-info-circle"></i> 资本金现金流量表，从投资者角度分析，考虑借款本金偿还和利息支付。</div>
+                    <div class="overflow-x-auto">
+                        <table class="finance-table" id="nbCFEquityTable">
+                            <thead><tr><th>序号</th><th>项目</th><!-- 动态年份列 --><th>合计</th></tr></thead>
+                            <tbody id="nbCFEquityBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="overflow-x-auto mt-3">
+                        <div class="row mb-2">
+                            <div class="col-md-3"><label class="form-label">基准收益率 ic(%)</label><input type="number" class="form-control form-control-sm" id="nbEquityDiscountRate" value="8" step="0.5"></div>
+                        </div>
+                        <table class="finance-table" style="font-size:0.8rem;">
+                            <thead><tr><th>指标</th><th>数值</th><th>备注（计算依据与规则）</th></tr></thead>
+                            <tbody>
+                                <tr><td class="text-start">资本金内部收益率 CIRR(%)</td><td><input type="text" class="form-control form-control-sm" id="nbEquityIRR" readonly></td><td class="text-start" style="font-size:0.76rem;color:var(--text-secondary);">以资本金现金流量表净现金流量（序号3）为基础，采用插值法求解使 NPV=0 的折现率，即投资者自有资金的实际获利能力；CIRR ≥ ic 说明资本金获利能力满足要求</td></tr>
+                                <tr><td class="text-start">财务净现值 FNPV（万元）</td><td><input type="text" class="form-control form-control-sm" id="nbEquityFNPV" readonly></td><td class="text-start" style="font-size:0.76rem;color:var(--text-secondary);">以全部投资税后净现金流量为基础，按基准收益率(ic)折现后求和：Σ(CFₜ/(1+ic)ᵗ)；FNPV ≥ 0 说明项目在满足基准收益率要求后仍有盈余，财务可行</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ==================== 非专项债 TAB: 财务计划现金流量表 ==================== -->
+                <div class="tab-pane fade" id="nb-tab-cf-plan" role="tabpanel">
+                    <div class="guide-tip"><i class="bi bi-info-circle"></i> 财务计划现金流量表，综合经营、投资、筹资三类活动。</div>
+                    <div class="overflow-x-auto">
+                        <table class="finance-table" id="nbCFPlanTable">
+                            <thead><tr><th>序号</th><th>项目</th><!-- 动态年份列 --><th>合计</th></tr></thead>
+                            <tbody id="nbCFPlanBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ==================== 非专项债 TAB: 财务评价指标汇总 ==================== -->
+                <div class="tab-pane fade" id="nb-tab-metrics" role="tabpanel">
+                    <div class="guide-tip"><i class="bi bi-info-circle"></i> 财务评价指标汇总，综合反映项目盈利能力、偿债能力和抗风险能力。</div>
+                    <div class="overflow-x-auto">
+                        <table class="finance-table" id="nbMetricsTable" style="font-size:0.8rem;">
+                            <thead><tr><th>序号</th><th>指标名称</th><th>数据</th><th>备注（计算依据与规则）</th></tr></thead>
+                            <tbody id="nbMetricsBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ==================== 非专项债 TAB: 盈亏平衡分析 ==================== -->
+                <div class="tab-pane fade" id="nb-tab-breakeven" role="tabpanel">
+                    <div class="guide-tip"><i class="bi bi-info-circle"></i> 盈亏平衡分析，计算项目保本所需的最低产能利用率。</div>
+                    <div class="overflow-x-auto">
+                        <table class="finance-table" id="nbBreakevenTable">
+                            <thead><tr><th>指标</th><th>数值</th></tr></thead>
+                            <tbody id="nbBreakevenBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="overflow-x-auto mt-3">
+                        <h6>不同达产率下的盈亏分析</h6>
+                        <table class="finance-table" id="nbBreakevenDetailTable">
+                            <thead id="nbBreakevenDetailHead"></thead>
+                            <tbody id="nbBreakevenDetailBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ==================== 非专项债 TAB: 敏感性分析 ==================== -->
+                <div class="tab-pane fade" id="nb-tab-sensitivity" role="tabpanel">
+                    <div class="guide-tip"><i class="bi bi-info-circle"></i> 敏感性分析，分析营业收入、经营成本、建设投资变化对IRR、NPV和投资回收期的影响。</div>
+                    <div class="tab-toolbar">
+                        <span class="text-muted">变化范围：</span>
+                        <select class="form-select form-select-sm" style="width:auto" id="nbSensitivityRange">
+                            <option value="15">±15%</option>
+                            <option value="10">±10%</option>
+                            <option value="20">±20%</option>
+                        </select>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="finance-table sensitivity-table" id="nbSensitivityTable">
+                            <thead><tr><th>指标</th><!-- 动态变化率列 --></tr></thead>
+                            <tbody id="nbSensitivityBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include "includes/_finance_shared_modals.html" %}
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const FINANCE_MODE = 'normal';
+
+{% include "includes/_finance_shared_js.html" %}
+
+// ==================== 基准方案现金流缓存（供敏感性分析±0%复用） ====================
+var _nbCFBasePreTax = [];
+var _nbCFBasePostTax = [];
+
+// ==================== 非专项债: 折旧/摊销项目数据 ====================
+var nbDepItems = [];
+var nbAmortItems = [];
+
+function nb_renderDepTable() {
+    var years = getYearRange();
+    var opStart = val('operationStartYear');
+    var thead = document.querySelector('#nbDepTable thead');
+    var tbody = document.getElementById('nbDepBody');
+    thead.innerHTML = '<tr><th>序号</th><th>项目</th><th>折旧年限</th><th>残值率</th><th>原值</th>' + years.map(function(y) { return '<th>' + y + '</th>'; }).join('') + '<th>合计</th><th>操作</th></tr>';
+    tbody.innerHTML = '';
+    var totalDep = {}; years.forEach(function(y) { totalDep[y] = 0; });
+    var totalBase = 0, totalSalvage = 0, totalAll = 0;
+    nbDepItems.forEach(function(item, i) {
+        var salvage = round2(item.base * item.rate / 100);
+        var annualDep = item.years > 0 ? round2((item.base - salvage) / item.years) : 0;
+        var remaining = item.base, rowTotal = 0;
+        var tr = document.createElement('tr');
+        var cells = '<td>' + (i + 1) + '</td><td class="text-start">' + item.name + '</td><td class="text-end">' + item.years + '</td><td class="text-end">' + item.rate.toFixed(1) + '%</td><td class="text-end">' + fmt(item.base) + '</td>';
+        years.forEach(function(y) {
+            var dep = 0;
+            if (y >= opStart && remaining > salvage) { dep = Math.min(annualDep, round2(remaining - salvage)); remaining = round2(remaining - dep); }
+            totalDep[y] = round2((totalDep[y] || 0) + dep);
+            rowTotal += dep;
+            cells += '<td class="text-end">' + fmt(dep) + '</td>';
+        });
+        cells += '<td class="text-end">' + fmt(rowTotal) + '</td>';
+        cells += '<td><button class="btn btn-outline-primary btn-sm btn-edit-nb-dep" data-idx="' + i + '"><i class="bi bi-pencil"></i></button> <button class="btn btn-outline-danger btn-sm btn-remove-nb-dep" data-idx="' + i + '"><i class="bi bi-trash"></i></button></td>';
+        tr.innerHTML = cells; tbody.appendChild(tr);
+        totalBase += item.base; totalSalvage += salvage; totalAll += rowTotal;
+    });
+    var trT = document.createElement('tr'); trT.className = 'total-row';
+    var tc = '<td></td><td class="text-start">合计</td><td></td><td></td><td class="text-end">' + fmt(totalBase) + '</td>';
+    years.forEach(function(y) { tc += '<td class="text-end">' + fmt(totalDep[y] || 0) + '</td>'; });
+    tc += '<td class="text-end">' + fmt(totalAll) + '</td><td></td>';
+    trT.innerHTML = tc; tbody.appendChild(trT);
+    var trN = document.createElement('tr'); trN.className = 'total-row';
+    var nc = '<td></td><td class="text-start">净值</td><td></td><td></td><td></td>';
+    var netVal = totalBase;
+    years.forEach(function(y) { netVal = round2(netVal - (totalDep[y] || 0)); nc += '<td class="text-end">' + fmt(Math.max(0, netVal)) + '</td>'; });
+    nc += '<td></td><td></td>';
+    trN.innerHTML = nc; tbody.appendChild(trN);
+    return totalDep;
+}
+
+function nb_renderAmortTable() {
+    var years = getYearRange();
+    var opStart = val('operationStartYear');
+    var thead = document.querySelector('#nbAmortTable thead');
+    var tbody = document.getElementById('nbAmortBody');
+    thead.innerHTML = '<tr><th>序号</th><th>项目</th><th>摊销年限</th><th>原值</th>' + years.map(function(y) { return '<th>' + y + '</th>'; }).join('') + '<th>合计</th><th>操作</th></tr>';
+    tbody.innerHTML = '';
+    var totalAmt = {}; years.forEach(function(y) { totalAmt[y] = 0; });
+    var totalBase = 0, totalAll = 0;
+    nbAmortItems.forEach(function(item, i) {
+        var annualAmt = item.years > 0 ? round2(item.base / item.years) : 0;
+        var remaining = item.base, rowTotal = 0;
+        var tr = document.createElement('tr');
+        var cells = '<td>' + (i + 1) + '</td><td class="text-start">' + item.name + '</td><td class="text-end">' + item.years + '</td><td class="text-end">' + fmt(item.base) + '</td>';
+        years.forEach(function(y) {
+            var amt = 0;
+            if (y >= opStart && remaining > 0) { amt = Math.min(annualAmt, round2(remaining)); remaining = round2(remaining - amt); }
+            totalAmt[y] = round2((totalAmt[y] || 0) + amt);
+            rowTotal += amt;
+            cells += '<td class="text-end">' + fmt(amt) + '</td>';
+        });
+        cells += '<td class="text-end">' + fmt(rowTotal) + '</td>';
+        cells += '<td><button class="btn btn-outline-primary btn-sm btn-edit-nb-amort" data-idx="' + i + '"><i class="bi bi-pencil"></i></button> <button class="btn btn-outline-danger btn-sm btn-remove-nb-amort" data-idx="' + i + '"><i class="bi bi-trash"></i></button></td>';
+        tr.innerHTML = cells; tbody.appendChild(tr);
+        totalBase += item.base; totalAll += rowTotal;
+    });
+    var trT = document.createElement('tr'); trT.className = 'total-row';
+    var tc = '<td></td><td class="text-start">合计</td><td></td><td class="text-end">' + fmt(totalBase) + '</td>';
+    years.forEach(function(y) { tc += '<td class="text-end">' + fmt(totalAmt[y] || 0) + '</td>'; });
+    tc += '<td class="text-end">' + fmt(totalAll) + '</td><td></td>';
+    trT.innerHTML = tc; tbody.appendChild(trT);
+    var trN = document.createElement('tr'); trN.className = 'total-row';
+    var nc = '<td></td><td class="text-start">净值</td><td></td><td></td>';
+    var netVal = totalBase;
+    years.forEach(function(y) { netVal = round2(netVal - (totalAmt[y] || 0)); nc += '<td class="text-end">' + fmt(Math.max(0, netVal)) + '</td>'; });
+    nc += '<td></td><td></td>';
+    trN.innerHTML = nc; tbody.appendChild(trN);
+    return totalAmt;
+}
+
+function nb_getDepForYear(y) {
+    var opStart = val('operationStartYear');
+    var total = 0;
+    nbDepItems.forEach(function(item) {
+        var salvage = round2(item.base * item.rate / 100);
+        var annualDep = item.years > 0 ? round2((item.base - salvage) / item.years) : 0;
+        var depStart = opStart;
+        var yrsSince = y - depStart;
+        if (yrsSince >= 0 && yrsSince < item.years) {
+            total += annualDep;
+        }
+    });
+    return round2(total);
+}
+
+function nb_getAmortForYear(y) {
+    var opStart = val('operationStartYear');
+    var total = 0;
+    nbAmortItems.forEach(function(item) {
+        var annualAmt = item.years > 0 ? round2(item.base / item.years) : 0;
+        var yrsSince = y - opStart;
+        if (yrsSince >= 0 && yrsSince < item.years) {
+            total += annualAmt;
+        }
+    });
+    return round2(total);
+}
+
+// 折旧表中指定年份的固定资产净值
+function nb_getDepNetValueAtYear(targetYear) {
+    var opStart = val('operationStartYear');
+    var totalBase = 0;
+    nbDepItems.forEach(function(item) { totalBase += item.base; });
+    var cumDep = 0;
+    for (var y = opStart; y <= targetYear; y++) {
+        cumDep += nb_getDepForYear(y);
+    }
+    return round2(Math.max(0, totalBase - cumDep));
+}
+
+// ==================== 非专项债: 利润表 ====================
+var nbProfitOverrides = {};  // { rowIndex: { year: value } }
+
+function nb_generateProfitTable() {
+    var years = getYearRange(), opStart = val('operationStartYear');
+    var repayData = getRepayData();
+    var thead = document.querySelector('#nbProfitTable thead tr'), tbody = document.getElementById('nbProfitBody');
+    thead.innerHTML = '<th>序号</th><th>项目</th>' + years.map(function(y) { return '<th>' + y + '</th>'; }).join('') + '<th>合计</th>';
+    tbody.innerHTML = '';
+
+    function gd(y) {
+        if (y < opStart) return { rev: 0, cost: 0, tax: 0, interest: 0, dep: 0, amt: 0 };
+        var tx = _cachedTaxResults[y] || { vatPayable: 0, surcharge: 0 };
+        var rd = repayData.find(function(r) { return r.year === y; }) || { interest: 0 };
+        return {
+            rev: getRevenueForYear(y),
+            cost: getCostForYear(y),
+            tax: tx.vatPayable + tx.surcharge,
+            interest: rd.interest,
+            dep: nb_getDepForYear(y),
+            amt: nb_getAmortForYear(y)
+        };
+    }
+
+    var prevUndistributed = 0;
+    var editableRows = [3, 5, 9, 11, 13, 14, 16];  // 0-indexed: 补贴收入,弥补亏损,法定公积金,优先股股利,任意公积金,投资方分配
+
+    // 计算每行每年的值
+    var allValues = {};
+    years.forEach(function(y) {
+        var d = gd(y);
+        var v = {};
+        v[0] = d.rev;                                      // 营业收入
+        v[1] = d.tax;                                      // 税金及附加
+        v[2] = d.cost + d.dep + d.amt + d.interest;         // 总成本费用(经营成本+折旧+摊销+利息)
+        v[3] = (nbProfitOverrides[3] || {})[y] || 0;      // 补贴收入
+        v[4] = v[0] - v[1] - v[2] + v[3];                 // 利润总额(1-2-3+4)
+        v[5] = (nbProfitOverrides[5] || {})[y] || 0;      // 弥补以前年度亏损
+        v[6] = v[4] - v[5];                                // 应纳税所得额(5-6)
+        v[7] = Math.max(0, v[6] * 0.25);                   // 所得税
+        v[8] = v[4] - v[7];                                // 净利润(5-8)
+        if (y === years[0]) {
+            v[9] = (nbProfitOverrides[9] || {})[y] || 0;
+        } else {
+            v[9] = (nbProfitOverrides[9] || {})[y] !== undefined ? (nbProfitOverrides[9] || {})[y] : prevUndistributed;
+        }
+        v[10] = v[8] + v[9];                               // 可供分配的利润(9+10)
+        v[11] = (nbProfitOverrides[11] || {})[y] || 0;     // 提取法定盈余公积金
+        v[12] = v[10] - v[11];                              // 可供投资者分配的利润(11-12)
+        v[13] = (nbProfitOverrides[13] || {})[y] || 0;     // 应付优先股股利
+        v[14] = (nbProfitOverrides[14] || {})[y] || 0;     // 提取任意盈余公积金
+        v[15] = v[12] - v[13] - v[14];                     // 应付普通股股利(13-14-15)
+        v[16] = (nbProfitOverrides[16] || {})[y] || 0;     // 各投资方利润分配
+        v[17] = v[12] - v[13] - v[14] - v[16];            // 未分配利润(13-14-15-17)
+        v[18] = v[4] + d.interest;                          // 息税前利润(利润总额+利息)
+        v[19] = v[4] + d.interest + d.dep + d.amt;         // 息税折旧摊销前利润
+        prevUndistributed = v[17];
+        allValues[y] = v;
+    });
+
+    var profitItems = [
+        { name: '营业收入', cls: 'subtotal-row' },
+        { name: '税金及附加', cls: '' },
+        { name: '总成本费用', cls: '' },
+        { name: '补贴收入', cls: '' },
+        { name: '利润总额(1-2-3+4)', cls: 'subtotal-row' },
+        { name: '弥补以前年度亏损', cls: '' },
+        { name: '应纳税所得额(5-6)', cls: '' },
+        { name: '所得税', cls: '' },
+        { name: '净利润(5-8)', cls: 'subtotal-row' },
+        { name: '期初未分配利润', cls: '' },
+        { name: '可供分配的利润（9+10）', cls: 'subtotal-row' },
+        { name: '提取法定盈余公积金', cls: '' },
+        { name: '可供投资者分配的利润（11-12）', cls: 'subtotal-row' },
+        { name: '应付优先股股利', cls: '' },
+        { name: '提取任意盈余公积金', cls: '' },
+        { name: '可供普通股股东分配的理论金额（13-14-15）', cls: 'subtotal-row' },
+        { name: '各投资方利润分配', cls: '' },
+        { name: '未分配利润（13-14-15-17）', cls: 'subtotal-row' },
+        { name: '息税前利润', cls: '' },
+        { name: '息税折旧摊销前利润', cls: 'total-row' }
+    ];
+
+    profitItems.forEach(function(item, i) {
+        var tr = document.createElement('tr'); if (item.cls) tr.className = item.cls;
+        var total = 0;
+        var cells = '<td>' + (i + 1) + '</td><td class="text-start">' + item.name + '</td>';
+        years.forEach(function(y) {
+            var v = allValues[y][i]; total += v;
+            if (editableRows.indexOf(i) >= 0) {
+                cells += '<td class="text-end"><input type="number" class="form-control form-control-sm text-end" value="' + round2(v) + '" data-row="' + i + '" data-year="' + y + '" step="0.01"></td>';
+            } else {
+                cells += '<td class="text-end">' + fmt(v) + '</td>';
+            }
+        });
+        cells += '<td class="text-end">' + fmt(total) + '</td>';
+        tr.innerHTML = cells; tbody.appendChild(tr);
+    });
+}
+
+// 利润表可编辑输入事件 - 仅保存并就地更新，不重新生成表格
+document.getElementById('nbProfitBody')?.addEventListener('input', function(e) {
+    var inp = e.target;
+    if (inp.tagName !== 'INPUT' || inp.type !== 'number') return;
+    var row = parseInt(inp.dataset.row), year = parseInt(inp.dataset.year);
+    if (isNaN(row) || isNaN(year)) return;
+    if (!nbProfitOverrides[row]) nbProfitOverrides[row] = {};
+    nbProfitOverrides[row][year] = parseFloat(inp.value) || 0;
+    nb_updateProfitCellsInPlace();
+});
+
+function nb_updateProfitCellsInPlace() {
+    var years = getYearRange(), opStart = val('operationStartYear');
+    var repayData = getRepayData();
+    var prevUndistributed = 0;
+    var editableRows = [3, 5, 9, 11, 13, 14, 16];
+    var rows = document.getElementById('nbProfitBody')?.querySelectorAll('tr');
+    if (!rows || rows.length < 20) return;
+
+    years.forEach(function(y, yi) {
+        var tx = _cachedTaxResults[y] || { vatPayable: 0, surcharge: 0 };
+        var rd = repayData.find(function(r) { return r.year === y; }) || { interest: 0 };
+        var d = { rev: 0, cost: 0, tax: 0, interest: 0, dep: 0, amt: 0 };
+        if (y >= opStart) {
+            d.rev = getRevenueForYear(y); d.cost = getCostForYear(y);
+            d.tax = tx.vatPayable + tx.surcharge; d.interest = rd.interest;
+            d.dep = nb_getDepForYear(y); d.amt = nb_getAmortForYear(y);
+        }
+
+        function ov(row) { return (nbProfitOverrides[row] || {})[y] || 0; }
+        function getVal(row) {
+            var cell = rows[row]?.children[yi + 2];
+            if (!cell) return 0;
+            var inp = cell.querySelector('input');
+            return inp ? (parseFloat(inp.value) || 0) : (parseFloat(cell.textContent) || 0);
+        }
+
+        var v0 = d.rev;
+        var v1 = d.tax;
+        var v2 = d.cost + d.dep + d.amt + d.interest;
+        var v3 = getVal(3);
+        var v4 = v0 - v1 - v2 + v3;
+        var v5 = getVal(5);
+        var v6 = v4 - v5;
+        var v7 = Math.max(0, v6 * 0.25);
+        var v8 = v4 - v7;
+        if (y === years[0]) { var v9 = getVal(9); } else { var v9 = (nbProfitOverrides[9] || {})[y] !== undefined ? (nbProfitOverrides[9] || {})[y] : prevUndistributed; }
+        var v10 = v8 + v9;
+        var v11 = getVal(11);
+        var v12 = v10 - v11;
+        var v13 = getVal(13);
+        var v14 = getVal(14);
+        var v15 = v12 - v13 - v14;
+        var v16 = getVal(16);
+        var v17 = v12 - v13 - v14 - v16;
+        var v18 = v4 + d.interest;
+        var v19 = v4 + d.interest + d.dep + d.amt;
+        prevUndistributed = v17;
+
+        function setCalc(row, val) {
+            var cell = rows[row]?.children[yi + 2];
+            if (cell && !cell.querySelector('input')) cell.textContent = fmt(val);
+        }
+        setCalc(0, v0); setCalc(1, v1); setCalc(2, v2);
+        setCalc(4, v4); setCalc(6, v6); setCalc(7, v7); setCalc(8, v8);
+        setCalc(10, v10); setCalc(12, v12); setCalc(15, v15); setCalc(17, v17);
+        setCalc(18, v18); setCalc(19, v19);
+    });
+}
+
+// ==================== 非专项债: 全部投资现金流量表 ====================
+var nbCFAllOverrides = {};  // { rowIndex: { year: value } }
+
+function nb_generateAllInvestmentCF() {
+    var years = getYearRange(), opStart = val('operationStartYear');
+    var fpYears = getFundPlanYears();
+    var fd = {};
+    document.querySelectorAll('#fundPlanTable tbody tr').forEach(function(row) {
+        var label = (row.querySelector('td')?.textContent || '').replace(/ /g, '').trim();
+        var byYear = {};
+        row.querySelectorAll('input[type="number"]').forEach(function(inp) {
+            var y = parseInt(inp.dataset.year); if (!isNaN(y)) byYear[y] = parseFloat(inp.value) || 0;
+        });
+        if (Object.keys(byYear).length > 0) { fd[label] = byYear; }
+    });
+    function getFD(label, y) { return (fd[label] || {})[y] || 0; }
+
+    var thead = document.querySelector('#nbCFAllTable thead tr'), tbody = document.getElementById('nbCFAllBody');
+    thead.innerHTML = '<th>序号</th><th>项目</th>' + years.map(function(y) { return '<th>' + y + '</th>'; }).join('') + '<th>合计</th>';
+    tbody.innerHTML = '';
+
+    function getInvest(y) { return Math.abs(getFD('工程费', y)) + Math.abs(getFD('工程建设其他费', y)) + Math.abs(getFD('预备费', y)); }
+    function getWorking(y) { return Math.abs(getFD('流动资金', y)); }
+    // 累计流动资金投入总额（所有年份之和）
+    var totalWorking = 0;
+    years.forEach(function(y) { totalWorking += Math.abs(getFD('流动资金', y)); });
+    totalWorking = round2(totalWorking);
+    function getSalvage(y) { return y === years[years.length - 1] ? nb_getDepNetValueAtYear(years[years.length - 1]) : 0; }
+    function getVatPayable(y) { var tx = _cachedTaxResults[y] || { vatPayable: 0 }; return y >= opStart ? tx.vatPayable : 0; }
+    function getSurcharge(y) { var tx = _cachedTaxResults[y] || { surcharge: 0 }; return y >= opStart ? tx.surcharge : 0; }
+    function getOpCost(y) { return y >= opStart ? getCostForYear(y) : 0; }
+    var _repayDataCFAll = getRepayData();
+    function getIncomeTax(y) {
+        if (y < opStart) return 0;
+        var rev = getRevenueForYear(y), cost = getCostForYear(y);
+        var tx = _cachedTaxResults[y] || { vatPayable: 0, surcharge: 0 };
+        var allTax = tx.vatPayable + tx.surcharge;
+        var dep = nb_getDepForYear(y), amt = nb_getAmortForYear(y);
+        var rd = _repayDataCFAll.find(function(r) { return r.year === y; }) || { interest: 0 };
+        var pretax = rev - cost - allTax - dep - amt - rd.interest;
+        return Math.max(0, pretax * 0.25);
+    }
+    function ov(row, y) { return (nbCFAllOverrides[row] || {})[y] || 0; }
+
+    // 可编辑行索引 (cfItems下标): 2=补贴收入, 5=其他收入, 13=维持运营投资, 14=其它现金流出
+    var editableRows = [2, 5, 13, 14];
+
+    // 计算每行每年的值 (v索引与cfItems数组下标严格对齐)
+    var allValues = {};
+    years.forEach(function(y) {
+        var revenue = y >= opStart ? getRevenueForYear(y) : 0;
+        var subsidy = ov(2, y);
+        var salvage = getSalvage(y);
+        var workingRecover = y === years[years.length - 1] ? totalWorking : 0;
+        var otherIn = ov(5, y);
+        var invest = getInvest(y);
+        var working = getWorking(y);
+        var constInterest = Math.abs(getFD('建设期利息', y));
+        var opCost = getOpCost(y);
+        var vatPay = getVatPayable(y);
+        var surcharge = getSurcharge(y);
+        var maintInvest = ov(13, y);
+        var otherOut = ov(14, y);
+        var incomeTax = getIncomeTax(y);
+        var v = {};
+        // 现金流入子项 (cfItems[1]~[5])
+        v[1] = revenue;
+        v[2] = subsidy;
+        v[3] = salvage;
+        v[4] = workingRecover;
+        v[5] = otherIn;
+        v[0] = revenue + subsidy + salvage + workingRecover + otherIn;                                                     // 现金流入合计(父级)
+        // 现金流出子项 (cfItems[7]~[14])
+        v[7] = invest;
+        v[8] = working;
+        v[9] = constInterest;
+        v[10] = opCost;
+        v[11] = vatPay;
+        v[12] = surcharge;
+        v[13] = maintInvest;
+        v[14] = otherOut;
+        v[6] = invest + working + constInterest + opCost + vatPay + surcharge + maintInvest + otherOut;                     // 现金流出合计(父级)
+        // 计算行 (cfItems[15]~[19])
+        v[15] = v[0] - v[6];                                                                                               // 所得税前净现金流量
+        v[17] = incomeTax;                                                                                                 // 调整所得税
+        v[18] = v[15] - v[17];                                                                                             // 所得税后净现金流量
+        allValues[y] = v;
+    });
+
+    // 累计行 (cfItems[16]=累计所得税前, cfItems[19]=累计所得税后)
+    var cumPre = 0, cumPost = 0;
+    years.forEach(function(y) {
+        cumPre += allValues[y][15];
+        cumPost += allValues[y][18];
+        allValues[y][16] = cumPre;
+        allValues[y][19] = cumPost;
+    });
+
+    var cfItems = [
+        { seq: '1', name: '现金流入', cls: 'subtotal-row' },
+        { seq: '1.1', name: '营业收入', cls: '' },
+        { seq: '1.2', name: '补贴收入', cls: '' },
+        { seq: '1.3', name: '回收固定资产余值', cls: '' },
+        { seq: '1.4', name: '回收流动资金', cls: '' },
+        { seq: '1.5', name: '其他收入', cls: '' },
+        { seq: '2', name: '现金流出', cls: 'subtotal-row' },
+        { seq: '2.1', name: '建设投资', cls: '' },
+        { seq: '2.2', name: '流动资金', cls: '' },
+        { seq: '2.3', name: '建设期利息', cls: '' },
+        { seq: '2.4', name: '经营成本', cls: '' },
+        { seq: '2.5', name: '增值税（实缴）', cls: '' },
+        { seq: '2.6', name: '税金及附加', cls: '' },
+        { seq: '2.7', name: '维持运营投资', cls: '' },
+        { seq: '2.8', name: '其它现金流出', cls: '' },
+        { seq: '3', name: '所得税前净现金流量（1-2）', cls: 'total-row' },
+        { seq: '4', name: '累计所得税前净现金流量', cls: 'total-row' },
+        { seq: '5', name: '调整所得税', cls: '' },
+        { seq: '6', name: '所得税后净现金流量（3-5）', cls: 'total-row' },
+        { seq: '7', name: '累计所得税后净现金流量', cls: 'total-row' }
+    ];
+
+    cfItems.forEach(function(item, i) {
+        var tr = document.createElement('tr'); if (item.cls) tr.className = item.cls;
+        var total = 0;
+        var cells = '<td>' + item.seq + '</td><td class="text-start">' + item.name + '</td>';
+        var prefix = item.seq + '.';
+        var hasChildren = cfItems.some(function(c) { return c.seq.indexOf(prefix) === 0; });
+        years.forEach(function(y) {
+            var v;
+            if (hasChildren) {
+                v = 0;
+                cfItems.forEach(function(child, ci) {
+                    if (child.seq.indexOf(prefix) === 0) {
+                        v += allValues[y][ci];
+                    }
+                });
+            } else {
+                v = allValues[y][i];
+            }
+            v = round2(v);
+            total += v;
+            if (editableRows.indexOf(i) >= 0) {
+                cells += '<td class="text-end"><input type="number" class="form-control form-control-sm text-end" value="' + v + '" data-row="' + i + '" data-year="' + y + '" step="0.01"></td>';
+            } else {
+                cells += '<td class="text-end">' + fmt(v) + '</td>';
+            }
+        });
+        cells += '<td class="text-end">' + fmt(total) + '</td>';
+        tr.innerHTML = cells; tbody.appendChild(tr);
+    });
+
+    // 计算评价指标 (cfItems索引: [15]=税前净现金流量, [18]=税后净现金流量)
+    var cfPreTax = years.map(function(y) { return allValues[y][15]; });
+    var cfPostTax = years.map(function(y) { return allValues[y][18]; });
+    var dr = val('nbDiscountRate') / 100 || 0.06;
+    document.getElementById('nbIRRPreTax').value = calcIRR(cfPreTax) !== null ? calcIRR(cfPreTax) + '%' : '-';
+    document.getElementById('nbIRRPostTax').value = calcIRR(cfPostTax) !== null ? calcIRR(cfPostTax) + '%' : '-';
+    document.getElementById('nbNPVPreTax').value = fmt(calcNPV(dr, cfPreTax));
+    document.getElementById('nbNPVPostTax').value = fmt(calcNPV(dr, cfPostTax));
+    document.getElementById('nbPaybackPreTax').value = calcPaybackPeriod(cfPreTax) !== null ? calcPaybackPeriod(cfPreTax) + '年' : '-';
+    document.getElementById('nbPaybackPostTax').value = calcPaybackPeriod(cfPostTax) !== null ? calcPaybackPeriod(cfPostTax) + '年' : '-';
+}
+
+// 全部投资现金流量表可编辑输入事件 - 就地更新
+document.getElementById('nbCFAllBody')?.addEventListener('input', function(e) {
+    var inp = e.target;
+    if (inp.tagName !== 'INPUT' || inp.type !== 'number') return;
+    var row = parseInt(inp.dataset.row), year = parseInt(inp.dataset.year);
+    if (isNaN(row) || isNaN(year)) return;
+    if (!nbCFAllOverrides[row]) nbCFAllOverrides[row] = {};
+    nbCFAllOverrides[row][year] = parseFloat(inp.value) || 0;
+    nb_updateCFAllCellsInPlace();
+});
+
+function nb_updateCFAllCellsInPlace() {
+    var years = getYearRange(), opStart = val('operationStartYear');
+    var fd = {};
+    document.querySelectorAll('#fundPlanTable tbody tr').forEach(function(row) {
+        var label = (row.querySelector('td')?.textContent || '').replace(/ /g, '').trim();
+        var byYear = {};
+        row.querySelectorAll('input[type="number"]').forEach(function(inp) {
+            var y = parseInt(inp.dataset.year); if (!isNaN(y)) byYear[y] = parseFloat(inp.value) || 0;
+        });
+        if (Object.keys(byYear).length > 0) { fd[label] = byYear; }
+    });
+    function getFD(label, y) { return (fd[label] || {})[y] || 0; }
+    var _repayDataCFAllUpdate = getRepayData();
+
+    var rows = document.getElementById('nbCFAllBody')?.querySelectorAll('tr');
+    if (!rows || rows.length < 20) return;
+
+    // 累计流动资金投入总额
+    var totalWorking = 0;
+    years.forEach(function(y) { totalWorking += Math.abs(getFD('流动资金', y)); });
+    totalWorking = round2(totalWorking);
+
+    var cumPre = 0, cumPost = 0;
+    years.forEach(function(y, yi) {
+        function getVal(row) {
+            var cell = rows[row]?.children[yi + 2];
+            if (!cell) return 0;
+            var inp = cell.querySelector('input');
+            return inp ? (parseFloat(inp.value) || 0) : (parseFloat(cell.textContent) || 0);
+        }
+        function setCalc(row, v) {
+            var cell = rows[row]?.children[yi + 2];
+            if (cell && !cell.querySelector('input')) cell.textContent = fmt(v);
+        }
+
+        var tx = _cachedTaxResults[y] || { vatPayable: 0, surcharge: 0 };
+        var rev = y >= opStart ? getRevenueForYear(y) : 0;
+        var salvage = y === years[years.length - 1] ? nb_getDepNetValueAtYear(years[years.length - 1]) : 0;
+        var working = y === years[years.length - 1] ? totalWorking : 0;
+        var invest = (Math.abs(getFD('工程费', y)) + Math.abs(getFD('工程建设其他费', y)) + Math.abs(getFD('预备费', y)));
+        var constInterest = Math.abs(getFD('建设期利息', y));
+        var opCost = y >= opStart ? getCostForYear(y) : 0;
+        var vatPay = y >= opStart ? tx.vatPayable : 0;
+        var surcharge = y >= opStart ? tx.surcharge : 0;
+
+        // 现金流入 (cfItems[1]~[5])
+        var inflow_1_1 = rev;
+        var inflow_1_2 = getVal(2);
+        var inflow_1_3 = salvage;
+        var inflow_1_4 = working;
+        var inflow_1_5 = getVal(5);
+        var inflow_total = inflow_1_1 + inflow_1_2 + inflow_1_3 + inflow_1_4 + inflow_1_5;
+        // 现金流出 (cfItems[7]~[14])
+        var outflow_2_1 = invest;
+        var outflow_2_2 = Math.abs(getFD('流动资金', y));
+        var outflow_2_3 = constInterest;
+        var outflow_2_4 = opCost;
+        var outflow_2_5 = vatPay;
+        var outflow_2_6 = surcharge;
+        var outflow_2_7 = getVal(13);
+        var outflow_2_8 = getVal(14);
+        var outflow_total = outflow_2_1 + outflow_2_2 + outflow_2_3 + outflow_2_4 + outflow_2_5 + outflow_2_6 + outflow_2_7 + outflow_2_8;
+        var netPreTax = inflow_total - outflow_total;
+        var incomeTax = (y < opStart) ? 0 : (function() {
+            var dep = nb_getDepForYear(y), amt = nb_getAmortForYear(y);
+            var rd = _repayDataCFAllUpdate.find(function(r) { return r.year === y; }) || { interest: 0 };
+            var pretax = rev - opCost - vatPay - surcharge - dep - amt - rd.interest;
+            return Math.max(0, pretax * 0.25);
+        })();
+        var netPostTax = netPreTax - incomeTax;
+        cumPre += netPreTax;
+        cumPost += netPostTax;
+
+        // 子项行 (cfItems索引对齐)
+        setCalc(1, inflow_1_1); setCalc(2, inflow_1_2); setCalc(3, inflow_1_3);
+        setCalc(4, inflow_1_4); setCalc(5, inflow_1_5);
+        setCalc(7, outflow_2_1); setCalc(8, outflow_2_2); setCalc(9, outflow_2_3);
+        setCalc(10, outflow_2_4); setCalc(11, outflow_2_5); setCalc(12, outflow_2_6);
+        setCalc(13, outflow_2_7); setCalc(14, outflow_2_8);
+        setCalc(15, netPreTax); setCalc(16, cumPre); setCalc(17, incomeTax);
+        setCalc(18, netPostTax); setCalc(19, cumPost);
+        // 父级行汇总
+        setCalc(0, inflow_total);
+        setCalc(6, outflow_total);
+    });
+
+    // 更新评价指标 (cfItems[15]=税前净现金流量, [18]=税后净现金流量)
+    var cfPre = [], cfPost = [];
+    years.forEach(function(y, yi) {
+        cfPre.push(parseFloat(rows[15]?.children[yi + 2]?.textContent) || 0);
+        cfPost.push(parseFloat(rows[18]?.children[yi + 2]?.textContent) || 0);
+    });
+    var dr = val('nbDiscountRate') / 100 || 0.06;
+    document.getElementById('nbIRRPreTax').value = calcIRR(cfPre) !== null ? calcIRR(cfPre) + '%' : '-';
+    document.getElementById('nbIRRPostTax').value = calcIRR(cfPost) !== null ? calcIRR(cfPost) + '%' : '-';
+    document.getElementById('nbNPVPreTax').value = fmt(calcNPV(dr, cfPre));
+    document.getElementById('nbNPVPostTax').value = fmt(calcNPV(dr, cfPost));
+    document.getElementById('nbPaybackPreTax').value = calcPaybackPeriod(cfPre) !== null ? calcPaybackPeriod(cfPre) + '年' : '-';
+    document.getElementById('nbPaybackPostTax').value = calcPaybackPeriod(cfPost) !== null ? calcPaybackPeriod(cfPost) + '年' : '-';
+}
+
+// ==================== 非专项债: 资本金现金流量表 ====================
+var nbCFEquityOverrides = {};  // { rowIndex: { year: value } }
+
+// 从利润表第4行（补贴收入）读取指定年份的数值
+function getSubsidyForYear(y) {
+    var rows = document.getElementById('nbProfitBody')?.querySelectorAll('tr');
+    if (!rows || rows.length < 4) return 0;
+    var years = getYearRange();
+    var yi = years.indexOf(y);
+    if (yi < 0) return 0;
+    var cell = rows[3]?.children[yi + 2];  // 利润表第4行(index 3), 数据列从第3列开始
+    if (!cell) return 0;
+    var inp = cell.querySelector('input');
+    return inp ? (parseFloat(inp.value) || 0) : (parseFloat(cell.textContent) || 0);
+}
+
+// 从利润表第8行（所得税）读取指定年份的数值
+function getProfitTaxForYear(y) {
+    var rows = document.getElementById('nbProfitBody')?.querySelectorAll('tr');
+    if (!rows || rows.length < 8) return 0;
+    var years = getYearRange();
+    var yi = years.indexOf(y);
+    if (yi < 0) return 0;
+    var cell = rows[7]?.children[yi + 2];  // 利润表第8行(index 7)
+    if (!cell) return 0;
+    return parseFloat(cell.textContent) || 0;
+}
+
+function nb_generateEquityCF() {
+    var years = getYearRange(), opStart = val('operationStartYear');
+    var repaySummary = getYearlyRepaySummary();
+    var fd = {};
+    document.querySelectorAll('#fundPlanTable tbody tr').forEach(function(row) {
+        var label = (row.querySelector('td')?.textContent || '').replace(/ /g, '').trim();
+        var byYear = {};
+        row.querySelectorAll('input[type="number"]').forEach(function(inp) {
+            var y = parseInt(inp.dataset.year); if (!isNaN(y)) byYear[y] = parseFloat(inp.value) || 0;
+        });
+        if (Object.keys(byYear).length > 0) { fd[label] = byYear; }
+    });
+    function getFD(label, y) { return (fd[label] || {})[y] || 0; }
+
+    var thead = document.querySelector('#nbCFEquityTable thead tr'), tbody = document.getElementById('nbCFEquityBody');
+    thead.innerHTML = '<th>序号</th><th>项目</th>' + years.map(function(y) { return '<th>' + y + '</th>'; }).join('') + '<th>合计</th>';
+    tbody.innerHTML = '';
+
+    // 累计流动资金投入总额
+    var totalWorking = 0;
+    years.forEach(function(y) { totalWorking += Math.abs(getFD('流动资金', y)); });
+    totalWorking = round2(totalWorking);
+
+    function getSalvage(y) { return y === years[years.length - 1] ? nb_getDepNetValueAtYear(years[years.length - 1]) : 0; }
+    function ov(row, y) { return (nbCFEquityOverrides[row] || {})[y] || 0; }
+
+    // 可编辑行索引 (cfItems下标): 5=其他收入, 14=维持运营投资, 15=其他现金流出
+    var editableRows = [5, 14, 15];
+
+    // 计算每行每年的值 (v索引与cfItems数组下标严格对齐)
+    var allValues = {};
+    years.forEach(function(y) {
+        var rs = repaySummary[y] || { repayment: 0, interest: 0 };
+        var tx = _cachedTaxResults[y] || { vatPayable: 0, surcharge: 0 };
+        var revenue = y >= opStart ? getRevenueForYear(y) : 0;
+        var subsidy = y >= opStart ? getSubsidyForYear(y) : 0;
+        var salvage = getSalvage(y);
+        var workingRecover = y === years[years.length - 1] ? totalWorking : 0;
+        var otherIn = ov(5, y);
+        var capital = Math.abs(getFD('自有资金', y));
+        var repayment = rs.repayment;
+        var interest = rs.interest;
+        var opCost = y >= opStart ? getCostForYear(y) : 0;
+        var vatPay = y >= opStart ? tx.vatPayable : 0;
+        var surcharge = y >= opStart ? tx.surcharge : 0;
+        var incomeTax = y >= opStart ? getProfitTaxForYear(y) : 0;
+        var maintInvest = ov(14, y);
+        var otherOut = ov(15, y);
+        var v = {};
+        // 现金流入子项 (cfItems[1]~[5])
+        v[1] = revenue;
+        v[2] = subsidy;
+        v[3] = salvage;
+        v[4] = workingRecover;
+        v[5] = otherIn;
+        v[0] = revenue + subsidy + salvage + workingRecover + otherIn;                              // 现金流入合计(父级)
+        // 现金流出子项 (cfItems[7]~[15])
+        v[7] = capital;
+        v[8] = repayment;
+        v[9] = interest;
+        v[10] = opCost;
+        v[11] = vatPay;
+        v[12] = surcharge;
+        v[13] = incomeTax;
+        v[14] = maintInvest;
+        v[15] = otherOut;
+        v[6] = capital + repayment + interest + opCost + vatPay + surcharge + incomeTax + maintInvest + otherOut;  // 现金流出合计(父级)
+        // 计算行 (cfItems[16]~[17])
+        v[16] = v[0] - v[6];                                                                        // 净现金流量
+        allValues[y] = v;
+    });
+
+    // 累计行 (cfItems[17]=累计净现金流量)
+    var cum = 0;
+    years.forEach(function(y) {
+        cum += allValues[y][16];
+        allValues[y][17] = cum;
+    });
+
+    var cfItems = [
+        { seq: '1', name: '现金流入', cls: 'subtotal-row' },
+        { seq: '1.1', name: '营业收入', cls: '' },
+        { seq: '1.2', name: '补贴收入', cls: '' },
+        { seq: '1.3', name: '回收固定资产余值', cls: '' },
+        { seq: '1.4', name: '回收流动资金', cls: '' },
+        { seq: '1.5', name: '其他收入', cls: '' },
+        { seq: '2', name: '现金流出', cls: 'subtotal-row' },
+        { seq: '2.1', name: '项目资本金', cls: '' },
+        { seq: '2.2', name: '借款本金偿还', cls: '' },
+        { seq: '2.3', name: '借款利息支付', cls: '' },
+        { seq: '2.4', name: '经营成本', cls: '' },
+        { seq: '2.5', name: '增值税', cls: '' },
+        { seq: '2.6', name: '营业税金及附加', cls: '' },
+        { seq: '2.7', name: '所得税', cls: '' },
+        { seq: '2.8', name: '维持运营投资', cls: '' },
+        { seq: '2.9', name: '其他现金流出', cls: '' },
+        { seq: '3', name: '净现金流量', cls: 'total-row' },
+        { seq: '4', name: '累计净现金流量', cls: 'total-row' }
+    ];
+
+    cfItems.forEach(function(item, i) {
+        var tr = document.createElement('tr'); if (item.cls) tr.className = item.cls;
+        var total = 0;
+        var cells = '<td>' + item.seq + '</td><td class="text-start">' + item.name + '</td>';
+        var prefix = item.seq + '.';
+        var hasChildren = cfItems.some(function(c) { return c.seq.indexOf(prefix) === 0; });
+        years.forEach(function(y) {
+            var v;
+            if (hasChildren) {
+                v = 0;
+                cfItems.forEach(function(child, ci) {
+                    if (child.seq.indexOf(prefix) === 0) {
+                        v += allValues[y][ci];
+                    }
+                });
+            } else {
+                v = allValues[y][i];
+            }
+            v = round2(v);
+            total += v;
+            if (editableRows.indexOf(i) >= 0) {
+                cells += '<td class="text-end"><input type="number" class="form-control form-control-sm text-end" value="' + v + '" data-row="' + i + '" data-year="' + y + '" step="0.01"></td>';
+            } else {
+                cells += '<td class="text-end">' + fmt(v) + '</td>';
+            }
+        });
+        cells += '<td class="text-end">' + fmt(total) + '</td>';
+        tr.innerHTML = cells; tbody.appendChild(tr);
+    });
+
+    // 计算评价指标
+    var cfEquity = years.map(function(y) { return allValues[y][16]; });
+    var eqDR = val('nbEquityDiscountRate') / 100 || 0.08;
+    document.getElementById('nbEquityIRR').value = calcIRR(cfEquity) !== null ? calcIRR(cfEquity).toFixed(2) + '%' : '-';
+}
+
+// 资本金现金流量表可编辑输入事件 - 就地更新
+document.getElementById('nbCFEquityBody')?.addEventListener('input', function(e) {
+    var inp = e.target;
+    if (inp.tagName !== 'INPUT' || inp.type !== 'number') return;
+    var row = parseInt(inp.dataset.row), year = parseInt(inp.dataset.year);
+    if (isNaN(row) || isNaN(year)) return;
+    if (!nbCFEquityOverrides[row]) nbCFEquityOverrides[row] = {};
+    nbCFEquityOverrides[row][year] = parseFloat(inp.value) || 0;
+    nb_updateCFEquityCellsInPlace();
+});
+
+function nb_updateCFEquityCellsInPlace() {
+    var years = getYearRange(), opStart = val('operationStartYear');
+    var repaySummary = getYearlyRepaySummary();
+    var fd = {};
+    document.querySelectorAll('#fundPlanTable tbody tr').forEach(function(row) {
+        var label = (row.querySelector('td')?.textContent || '').replace(/ /g, '').trim();
+        var byYear = {};
+        row.querySelectorAll('input[type="number"]').forEach(function(inp) {
+            var y = parseInt(inp.dataset.year); if (!isNaN(y)) byYear[y] = parseFloat(inp.value) || 0;
+        });
+        if (Object.keys(byYear).length > 0) { fd[label] = byYear; }
+    });
+    function getFD(label, y) { return (fd[label] || {})[y] || 0; }
+
+    var rows = document.getElementById('nbCFEquityBody')?.querySelectorAll('tr');
+    if (!rows || rows.length < 18) return;
+
+    var totalWorking = 0;
+    years.forEach(function(y) { totalWorking += Math.abs(getFD('流动资金', y)); });
+    totalWorking = round2(totalWorking);
+
+    var cum = 0;
+    years.forEach(function(y, yi) {
+        function getVal(row) {
+            var cell = rows[row]?.children[yi + 2];
+            if (!cell) return 0;
+            var inp = cell.querySelector('input');
+            return inp ? (parseFloat(inp.value) || 0) : (parseFloat(cell.textContent) || 0);
+        }
+        function setCalc(row, v) {
+            var cell = rows[row]?.children[yi + 2];
+            if (cell && !cell.querySelector('input')) cell.textContent = fmt(v);
+        }
+
+        var rs = repaySummary[y] || { repayment: 0, interest: 0 };
+        var tx = _cachedTaxResults[y] || { vatPayable: 0, surcharge: 0 };
+        var salvage = y === years[years.length - 1] ? nb_getDepNetValueAtYear(years[years.length - 1]) : 0;
+        var working = y === years[years.length - 1] ? totalWorking : 0;
+
+        var v0 = y >= opStart ? getRevenueForYear(y) : 0;
+        var v1 = y >= opStart ? getSubsidyForYear(y) : 0;
+        var v2 = salvage;
+        var v3 = working;
+        var v4 = getVal(5);
+        var v5 = v0 + v1 + v2 + v3 + v4;
+        var v6 = Math.abs(getFD('自有资金', y));
+        var v7 = rs.repayment;
+        var v8 = rs.interest;
+        var v9 = y >= opStart ? getCostForYear(y) : 0;
+        var v10 = y >= opStart ? tx.vatPayable : 0;
+        var v11 = y >= opStart ? tx.surcharge : 0;
+        var v12 = y >= opStart ? getProfitTaxForYear(y) : 0;
+        var v13 = getVal(14);
+        var v14 = getVal(15);
+        var v15 = v6 + v7 + v8 + v9 + v10 + v11 + v12 + v13 + v14;
+        var v16 = v5 - v15;
+        cum += v16;
+
+        setCalc(1, v0); setCalc(2, v1); setCalc(3, v2); setCalc(4, v3); setCalc(5, v4);
+        setCalc(7, v6); setCalc(8, v7); setCalc(9, v8); setCalc(10, v9);
+        setCalc(11, v10); setCalc(12, v11); setCalc(13, v12); setCalc(14, v13); setCalc(15, v14);
+        setCalc(16, v16); setCalc(17, cum);
+        // 父级行汇总
+        setCalc(0, v5);
+        setCalc(6, v15);
+    });
+}
+
+// ==================== 非专项债: 财务计划现金流量表 ====================
+function nb_generateFinancialPlanCF() {
+    var years = getYearRange(), opStart = val('operationStartYear');
+    var repaySummary = getYearlyRepaySummary();
+    var fd = {};
+    document.querySelectorAll('#fundPlanTable tbody tr').forEach(function(row) {
+        var label = (row.querySelector('td')?.textContent || '').replace(/ /g, '').trim();
+        var byYear = {};
+        row.querySelectorAll('input[type="number"]').forEach(function(inp) {
+            var y = parseInt(inp.dataset.year); if (!isNaN(y)) byYear[y] = parseFloat(inp.value) || 0;
+        });
+        if (Object.keys(byYear).length > 0) { fd[label] = byYear; }
+    });
+    function getFD(label, y) { return (fd[label] || {})[y] || 0; }
+
+    var thead = document.querySelector('#nbCFPlanTable thead tr'), tbody = document.getElementById('nbCFPlanBody');
+    thead.innerHTML = '<th>序号</th><th>项目</th>' + years.map(function(y) { return '<th>' + y + '</th>'; }).join('') + '<th>合计</th>';
+    tbody.innerHTML = '';
+
+    // 按年计算各科目
+    var allValues = {};
+    var cumWarningShown = false;
+    years.forEach(function(y, idx) {
+        var tx = _cachedTaxResults[y] || { vatPayable: 0, surcharge: 0 };
+        var rs = repaySummary[y] || { repayment: 0, interest: 0 };
+        var v = {};
+        // 经营活动
+        v[0] = 0;  // 标题行占位
+        v[1] = y >= opStart ? getRevenueForYear(y) : 0;                              // 营业收入（含税）
+        v[2] = 0;                                                                      // 其他经营流入
+        v[3] = v[1] + v[2];                                                            // 经营活动现金流入
+        v[4] = 0;  // 标题行占位
+        v[5] = y >= opStart ? getCostForYear(y) : 0;                                  // 经营成本（含税）
+        v[6] = y >= opStart ? tx.vatPayable : 0;                                      // 增值税（实缴）
+        v[7] = y >= opStart ? tx.surcharge : 0;                                       // 营业税金及附加
+        v[8] = y >= opStart ? getProfitTaxForYear(y) : 0;                             // 所得税
+        v[9] = 0;                                                                       // 其他经营流出
+        v[10] = v[5] + v[6] + v[7] + v[8] + v[9];                                    // 经营活动现金流出
+        v[11] = v[3] - v[10];                                                           // 经营活动净现金流量
+        // 投资活动
+        v[12] = 0;  // 标题行占位
+        v[13] = 0;                                                                      // 投资活动现金流入
+        v[14] = 0;  // 标题行占位
+        v[15] = (Math.abs(getFD('工程费', y)) + Math.abs(getFD('工程建设其他费', y)) + Math.abs(getFD('预备费', y)));                                         // 建设投资
+        v[16] = Math.abs(getFD('流动资金', y));                                         // 流动资金
+        v[17] = 0;                                                                      // 其他投资流出
+        v[18] = v[15] + v[16] + v[17];                                                 // 投资活动现金流出
+        v[19] = v[13] - v[18];                                                          // 投资活动净现金流量
+        // 筹资活动
+        v[20] = 0;  // 标题行占位
+        v[21] = getFD('债务资金', y);                                                    // 借款收到的现金
+        v[22] = 0;                                                                      // 其他筹资流入
+        v[23] = v[21] + v[22];                                                          // 筹资活动现金流入
+        v[24] = 0;  // 标题行占位
+        v[25] = rs.repayment;                                                            // 偿还债务本金
+        v[26] = rs.interest;                                                             // 支付利息
+        v[27] = 0;                                                                       // 其他筹资流出
+        v[28] = v[25] + v[26] + v[27];                                                  // 筹资活动现金流出
+        v[29] = v[23] - v[28];                                                           // 筹资活动净现金流量
+        // 汇总
+        v[30] = v[11] + v[19] + v[29];                                                  // 现金净增加额
+        // 期初/期末累计盈余
+        if (idx === 0) {
+            v[31] = 0;
+        } else {
+            v[31] = allValues[years[idx - 1]][32];  // 上一年期末
+        }
+        v[32] = v[31] + v[30];                                                           // 期末累计盈余资金
+        if (v[32] < 0 && y >= opStart + 3 && !cumWarningShown) {
+            cumWarningShown = true;
+            showToast('警告：' + y + '年期末累计盈余资金为负（' + fmt(v[32]) + '万元），请检查资金安排', true);
+        }
+        allValues[y] = v;
+    });
+
+    var cfRows = [
+        { name: '一、经营活动',      cls: 'subtotal-row', idx: 0 },
+        { name: '　营业收入（含税）', cls: '',             idx: 1 },
+        { name: '　其他经营流入',     cls: '',             idx: 2 },
+        { name: '　经营活动现金流入', cls: 'subtotal-row', idx: 3 },
+        { name: '　经营成本（含税）', cls: '',             idx: 5 },
+        { name: '　增值税（实缴）',   cls: '',             idx: 6 },
+        { name: '　营业税金及附加',   cls: '',             idx: 7 },
+        { name: '　所得税',           cls: '',             idx: 8 },
+        { name: '　其他经营流出',     cls: '',             idx: 9 },
+        { name: '　经营活动现金流出', cls: 'subtotal-row', idx: 10 },
+        { name: '　经营活动净现金流量', cls: 'total-row',  idx: 11 },
+        { name: '二、投资活动',       cls: 'subtotal-row', idx: 12 },
+        { name: '　投资活动现金流入', cls: '',             idx: 13 },
+        { name: '　建设投资',         cls: '',             idx: 15 },
+        { name: '　流动资金',         cls: '',             idx: 16 },
+        { name: '　其他投资流出',     cls: '',             idx: 17 },
+        { name: '　投资活动现金流出', cls: 'subtotal-row', idx: 18 },
+        { name: '　投资活动净现金流量', cls: 'total-row',  idx: 19 },
+        { name: '三、筹资活动',       cls: 'subtotal-row', idx: 20 },
+        { name: '　借款收到的现金',   cls: '',             idx: 21 },
+        { name: '　其他筹资流入',     cls: '',             idx: 22 },
+        { name: '　筹资活动现金流入', cls: 'subtotal-row', idx: 23 },
+        { name: '　偿还债务本金',     cls: '',             idx: 25 },
+        { name: '　支付利息',         cls: '',             idx: 26 },
+        { name: '　其他筹资流出',     cls: '',             idx: 27 },
+        { name: '　筹资活动现金流出', cls: 'subtotal-row', idx: 28 },
+        { name: '　筹资活动净现金流量', cls: 'total-row',  idx: 29 },
+        { name: '四、现金净增加额',   cls: 'total-row',    idx: 30 },
+        { name: '　期初累计盈余资金', cls: '',             idx: 31 },
+        { name: '　期末累计盈余资金', cls: 'total-row',    idx: 32 }
+    ];
+
+    cfRows.forEach(function(r, i) {
+        var tr = document.createElement('tr'); if (r.cls) tr.className = r.cls;
+        var total = 0;
+        var cells = '<td>' + (i + 1) + '</td><td class="text-start">' + r.name + '</td>';
+        years.forEach(function(y) {
+            var v = allValues[y][r.idx];
+            total += v;
+            cells += '<td class="text-end">' + fmt(v) + '</td>';
+        });
+        cells += '<td class="text-end">' + fmt(total) + '</td>';
+        tr.innerHTML = cells;
+        tbody.appendChild(tr);
+    });
+}
+
+// ==================== 非专项债: 财务评价指标汇总 ====================
+function nb_generateFinancialMetrics() {
+    var years = getYearRange(), opStart = val('operationStartYear');
+    var repayData = getRepayData();
+    var fpYears = getFundPlanYears();
+    var fd = {};
+    document.querySelectorAll('#fundPlanTable tbody tr').forEach(function(row) {
+        var label = (row.querySelector('td')?.textContent || '').replace(/ /g, '').trim();
+        var byYear = {};
+        row.querySelectorAll('input[type="number"]').forEach(function(inp) {
+            var y = parseInt(inp.dataset.year); if (!isNaN(y)) byYear[y] = parseFloat(inp.value) || 0;
+        });
+        if (Object.keys(byYear).length > 0) { fd[label] = byYear; }
+    });
+    function getFD(label, y) { return (fd[label] || {})[y] || 0; }
+
+    // 累计流动资金投入总额
+    var totalWorking = 0;
+    years.forEach(function(y) { totalWorking += Math.abs(getFD('流动资金', y)); });
+    totalWorking = round2(totalWorking);
+
+    var cfPostTax = [], cfPreTax = [], cfEquity = [];
+    years.forEach(function(y) {
+        var salvage = y === years[years.length - 1] ? nb_getDepNetValueAtYear(years[years.length - 1]) : 0;
+        var working = y === years[years.length - 1] ? totalWorking : 0;
+        var invest = (Math.abs(getFD('工程费', y)) + Math.abs(getFD('工程建设其他费', y)) + Math.abs(getFD('预备费', y)));
+        var constInterest = Math.abs(getFD('建设期利息', y));
+        var opCost = y >= opStart ? getCostForYear(y) : 0;
+        var tx = _cachedTaxResults[y] || { vatPayable: 0, surcharge: 0 };
+        var opTax = y >= opStart ? tx.vatPayable + tx.surcharge : 0;
+        var dep = nb_getDepForYear(y), amt = nb_getAmortForYear(y);
+        var rd = repayData.find(function(r) { return r.year === y; }) || { repayment: 0, interest: 0, totalPayment: 0 };
+        var pretax = y >= opStart ? getRevenueForYear(y) - opCost - opTax - dep - amt - rd.interest : 0;
+        var incomeTax = Math.max(0, pretax * 0.25);
+        var subsidy = (nbCFAllOverrides[2] || {})[y] || 0;
+        var otherIn = (nbCFAllOverrides[5] || {})[y] || 0;
+        var maintInvest = (nbCFAllOverrides[13] || {})[y] || 0;
+        var otherOut = (nbCFAllOverrides[14] || {})[y] || 0;
+        var inflow = y >= opStart ? getRevenueForYear(y) + subsidy + salvage + working + otherIn : 0;
+        var outflowPre  = invest + Math.abs(getFD('流动资金', y)) + constInterest + opCost + opTax + maintInvest + otherOut;
+        var outflowPost = outflowPre + incomeTax;
+        cfPostTax.push(inflow - outflowPost);
+        cfPreTax.push(inflow - outflowPre);
+        var equityOut = Math.abs(getFD('自有资金', y)) + opCost + opTax + incomeTax + rd.repayment + rd.interest;
+        cfEquity.push(inflow - equityOut);
+    });
+
+    // 缓存基准现金流数组，供敏感性分析±0%复用，确保数据一致
+    _nbCFBasePreTax = cfPreTax.slice();
+    _nbCFBasePostTax = cfPostTax.slice();
+
+    var dr = val('nbDiscountRate') / 100 || 0.06;
+    var eqDR = val('nbEquityDiscountRate') / 100 || 0.08;
+
+    var cirrVal = calcIRR(cfEquity);
+    var fnpvVal = calcNPV(eqDR, cfPostTax);
+    document.getElementById('nbEquityFNPV').value = fmt(fnpvVal);
+    document.getElementById('nbEquityIRR').value = cirrVal !== null ? cirrVal.toFixed(2) + '%' : '-';
+
+    var totalBP = repayData.reduce(function(s, r) { return s + r.totalPayment; }, 0);
+    var totalInterest = repayData.reduce(function(s, r) { return s + r.interest; }, 0);
+
+    var avgRev = 0, avgCost = 0, avgTax = 0, avgFixedCash = 0, avgVarCost = 0;
+    var opYears = years.filter(function(y) { return y >= opStart; });
+    var outputRate = val('taxRateOutput') / 100 || 0;
+    opYears.forEach(function(y) {
+        avgRev += getRevenueForYear(y) / (1 + outputRate);
+        avgCost += getCostForYear(y);
+        avgVarCost += getVariableCostForYear(y);
+        avgFixedCash += getFixedCostForYear(y);
+        var tx = _cachedTaxResults[y] || { vatPayable: 0, surcharge: 0 };
+        avgTax += tx.vatPayable + tx.surcharge;
+    });
+    avgRev = opYears.length > 0 ? avgRev / opYears.length : 0;
+    avgCost = opYears.length > 0 ? avgCost / opYears.length : 0;
+    avgTax = opYears.length > 0 ? avgTax / opYears.length : 0;
+    avgVarCost = opYears.length > 0 ? avgVarCost / opYears.length : 0;
+    avgFixedCash = opYears.length > 0 ? avgFixedCash / opYears.length : 0;
+
+    var avgDep = 0, avgAmort = 0, avgSurcharge = 0;
+    opYears.forEach(function(y) {
+        avgDep += nb_getDepForYear(y);
+        avgAmort += nb_getAmortForYear(y);
+        var tx = _cachedTaxResults[y] || { surcharge: 0 };
+        avgSurcharge += tx.surcharge;
+    });
+    avgDep = opYears.length > 0 ? avgDep / opYears.length : 0;
+    avgAmort = opYears.length > 0 ? avgAmort / opYears.length : 0;
+    avgSurcharge = opYears.length > 0 ? avgSurcharge / opYears.length : 0;
+
+    var bepDenom = avgRev - avgVarCost - avgSurcharge;
+    var bep = bepDenom > 0 ? avgFixedCash / bepDenom * 100 : 0;
+
+    // === 偿债能力指标计算（使用按年汇总，正确合并多笔债务） ===
+    var yearlySummary = getYearlyRepaySummary();
+
+    // 借款偿还期 = 最后一笔还本年份 - 第一笔借款年份 + 1
+    var lastRepayYear = 0, firstBorrowYear = years[0];
+    repayData.forEach(function(r) {
+        if (r.year > lastRepayYear) lastRepayYear = r.year;
+        if (r.issue > 0 && r.year < firstBorrowYear) firstBorrowYear = r.year;
+    });
+    var repayPeriod = lastRepayYear > 0 && firstBorrowYear <= lastRepayYear
+        ? lastRepayYear - firstBorrowYear + 1 : 0;
+
+    // ICR = 总EBIT / 总利息（各还款年合计，非比率平均值）
+    var totalICR_EBIT = 0, totalICR_Interest = 0;
+    // DSCR = 总(EBITDA-所得税) / 总还本付息额
+    var totalDSCR_Fund = 0, totalDSCR_Payment = 0;
+
+    Object.keys(yearlySummary).sort().forEach(function(ys) {
+        var y = parseInt(ys);
+        if (y < opStart) return;
+        var sum = yearlySummary[y];
+        if (sum.interest <= 0 || sum.totalPayment <= 0) return;
+        var rev = getRevenueForYear(y) / (1 + outputRate);
+        var cost = getCostForYear(y);
+        var dep = nb_getDepForYear(y), amt = nb_getAmortForYear(y);
+        var tx = _cachedTaxResults[y] || { surcharge: 0 };
+        var surcharge = tx.surcharge;
+        var ebit = rev - cost - dep - amt - surcharge;
+        totalICR_EBIT += ebit;
+        totalICR_Interest += sum.interest;
+        var ebtda = rev - cost - surcharge;
+        var incomeTax = Math.max(0, (ebit - sum.interest) * 0.25);
+        totalDSCR_Fund += ebtda - incomeTax;
+        totalDSCR_Payment += sum.totalPayment;
+    });
+    var icrValue = totalICR_Interest > 0 ? totalICR_EBIT / totalICR_Interest : 0;
+    var dscrValue = totalDSCR_Payment > 0 ? totalDSCR_Fund / totalDSCR_Payment : 0;
+
+    var metrics = [
+        { name: '项目总投资（万元）', value: fmt(val('totalInvestment')), desc: '资金使用计划表中录入的项目总投资金额' },
+        { name: '资本金（万元）', value: fmt(val('ownCapital')), desc: '资金使用计划表中录入的自有资金额' },
+        { name: '债务资金（万元）', value: fmt(val('debtFund')), desc: '资金使用计划表中录入的债务资金额（银行贷款等）' },
+        { name: '计算期（年）', value: years.length, desc: '从建设期开始到运营期结束的总年数' },
+        { name: '建设期（年）', value: val('operationStartYear') - val('constructionStartYear'), desc: '从建设开始年份到运营开始年份之间的年数' },
+        { name: '运营期（年）', value: val('operationEndYear') - val('operationStartYear') + 1, desc: '从运营开始年份到运营结束年份之间的年数' },
+        { name: '基准收益率(%)', value: (dr * 100).toFixed(1), desc: '用于净现值(NPV)折现计算和内部收益率(IRR)对比判据的基准折现率' },
+        { name: '税前内部收益率（IRR）(%)', value: calcIRR(cfPreTax) !== null ? calcIRR(cfPreTax) : '-', desc: '全投资现金流量表税前净现金流，采用插值法求解使净现值(NPV)=0的折现率，大于基准收益率说明项目可行' },
+        { name: '资本金内部收益率（CIRR）(%)', value: cirrVal !== null ? cirrVal : '-', desc: '资本金现金流量表净现金流，采用插值法求解使净现值(NPV)=0的折现率，即投资者自有资金的实际获利能力；CIRR ≥ ic 说明资本金获利能力满足要求' },
+        { name: '税前净现值（NPV）（万元）', value: fmt(calcNPV(dr, cfPreTax)), desc: '税前净现金流量按基准收益率折现后求和：Σ(CFₜ/(1+i)ᵗ)，大于零说明项目盈利能力满足要求' },
+        { name: '税后净现值（NPV）（万元）', value: fmt(calcNPV(dr, cfPostTax)), desc: '税后净现金流量按基准收益率折现后求和：Σ(CFₜ/(1+i)ᵗ)，大于零说明项目盈利能力满足要求' },
+        { name: '税前投资回收期（年）', value: calcPaybackPeriod(cfPreTax) !== null ? calcPaybackPeriod(cfPreTax) : '-', desc: '累计税前净现金流量由负转正的年份，线性插值：T-1+|累计负值|/当年净现金流' },
+        { name: '税后投资回收期（年）', value: calcPaybackPeriod(cfPostTax) !== null ? calcPaybackPeriod(cfPostTax) : '-', desc: '累计税后净现金流量由负转正的年份，线性插值：T-1+|累计负值|/当年净现金流' },
+        { name: '借款偿还期（年）', value: repayPeriod > 0 ? repayPeriod : '-', desc: '还本付息表中最后一笔还款年份距开始借款年份的年数，反映项目偿还全部借款所需时间' },
+        { name: '利息备付率（ICR）', value: icrValue > 0 ? icrValue.toFixed(2) : '-', desc: '各还款年息税前利润(EBIT)总和÷应付利息总和，EBIT=收入-经营成本-折旧-摊销-附加税，一般应大于2' },
+        { name: '偿债备付率（DSCR）', value: dscrValue > 0 ? dscrValue.toFixed(2) : '-', desc: '各还款年可用于还本付息的资金总和÷还本付息总额总和，可用于还本付息资金=EBITDA-所得税，一般应大于1.3' }
+    ];
+
+    var tbody = document.getElementById('nbMetricsBody');
+    tbody.innerHTML = '';
+    metrics.forEach(function(m, i) {
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td>' + (i + 1) + '</td><td class="text-start">' + m.name + '</td><td class="text-end">' + m.value + '</td><td class="text-start" style="font-size:0.76rem;color:var(--text-secondary);">' + m.desc + '</td>';
+        tbody.appendChild(tr);
+    });
+}
+
+// ==================== 非专项债: 盈亏平衡分析 ====================
+function nb_generateBreakevenAnalysis() {
+    var years = getYearRange(), opStart = val('operationStartYear');
+    var opYears = years.filter(function(y) { return y >= opStart; });
+    if (opYears.length === 0) return;
+
+    var outputRate = val('taxRateOutput') / 100 || 0;
+    var avgRevNoTax = 0, avgVarCost = 0, avgFixedCash = 0, avgDep = 0, avgAmort = 0, avgSurcharge = 0, avgVat = 0;
+
+    opYears.forEach(function(y) {
+        avgRevNoTax += getRevenueForYear(y) / (1 + outputRate);
+        avgVarCost += getVariableCostForYear(y);
+        avgFixedCash += getFixedCostForYear(y);
+        avgDep += nb_getDepForYear(y);
+        avgAmort += nb_getAmortForYear(y);
+        var tx = _cachedTaxResults[y] || { vatPayable: 0, surcharge: 0 };
+        avgSurcharge += tx.surcharge;
+        avgVat += tx.vatPayable;
+    });
+    var n = opYears.length;
+    avgRevNoTax = round2(avgRevNoTax / n);
+    avgVarCost = round2(avgVarCost / n);
+    avgFixedCash = round2(avgFixedCash / n);
+    avgDep = round2(avgDep / n);
+    avgAmort = round2(avgAmort / n);
+    avgSurcharge = round2(avgSurcharge / n);
+    avgVat = round2(avgVat / n);
+    var avgDepAmort = round2(avgDep + avgAmort);
+
+    var denominator = avgRevNoTax - avgVarCost - avgSurcharge;
+    var bep = denominator > 0 ? avgFixedCash / denominator * 100 : 0;
+    var bepWithDep = denominator > 0 ? (avgFixedCash + avgDepAmort) / denominator * 100 : 0;
+
+    var tbody = document.getElementById('nbBreakevenBody');
+    tbody.innerHTML = '';
+    var rows = [
+        { name: '年均不含税营业收入（万元）', value: fmt(avgRevNoTax) },
+        { name: '年均可变成本（万元）', value: fmt(avgVarCost) },
+        { name: '年均付现固定成本（万元）', value: fmt(avgFixedCash) },
+        { name: '年均折旧摊销（万元）', value: fmt(avgDepAmort) },
+        { name: '年均附加税（万元）', value: fmt(avgSurcharge) },
+        { name: '年均增值税（万元）', value: fmt(avgVat) },
+        { name: '盈亏平衡点(BEP)', value: bep > 0 ? bep.toFixed(2) + '%' : '-' },
+        { name: '盈亏平衡点(含折旧)', value: bepWithDep > 0 ? bepWithDep.toFixed(2) + '%' : '-' }
+    ];
+    rows.forEach(function(r) {
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td class="text-start">' + r.name + '</td><td class="text-end">' + r.value + '</td>';
+        tbody.appendChild(tr);
+    });
+
+    var head = document.getElementById('nbBreakevenDetailHead');
+    var body = document.getElementById('nbBreakevenDetailBody');
+    var rates = [60, 70, 80, 90, 100, 110, 120];
+    head.innerHTML = '<tr><th>指标</th>' + rates.map(function(r) { return '<th>' + r + '%</th>'; }).join('') + '</tr>';
+    body.innerHTML = '';
+
+    var detailRows = [
+        { name: '不含税营业收入', calc: function(r) { return avgRevNoTax * r / 100; } },
+        { name: '可变成本', calc: function(r) { return avgVarCost * r / 100; } },
+        { name: '付现固定成本', calc: function() { return avgFixedCash; } },
+        { name: '折旧摊销', calc: function() { return avgDepAmort; } },
+        { name: '附加税', calc: function(r) { return avgSurcharge * r / 100; } },
+        { name: '增值税', calc: function(r) { return avgVat * r / 100; } },
+        { name: '总成本', calc: function(r) { return avgVarCost * r / 100 + avgFixedCash + avgDepAmort + avgSurcharge * r / 100 + avgVat * r / 100; } },
+        { name: '利润总额', calc: function(r) { return avgRevNoTax * r / 100 - avgVarCost * r / 100 - avgFixedCash - avgDepAmort - avgSurcharge * r / 100; } },
+        { name: '净利润', calc: function(r) { return (avgRevNoTax * r / 100 - avgVarCost * r / 100 - avgFixedCash - avgDepAmort - avgSurcharge * r / 100) * 0.75; } }
+    ];
+    detailRows.forEach(function(r) {
+        var tr = document.createElement('tr');
+        var cells = '<td class="text-start">' + r.name + '</td>';
+        rates.forEach(function(rate) { cells += '<td class="text-end">' + fmt(r.calc(rate)) + '</td>'; });
+        tr.innerHTML = cells; body.appendChild(tr);
+    });
+}
+
+// ==================== 非专项债: 敏感性分析 ====================
+function nb_generateSensitivityTable() {
+    var years = getYearRange(), opStart = val('operationStartYear');
+    var range = parseInt(document.getElementById('nbSensitivityRange')?.value) || 15;
+    var steps = [];
+    for (var s = -range; s <= range; s += 5) { steps.push(round2(s / 100)); }
+    var thead = document.querySelector('#nbSensitivityTable thead tr'), tbody = document.getElementById('nbSensitivityBody');
+    while (thead.children.length > 1) thead.removeChild(thead.lastChild);
+    steps.forEach(function(s) { var th = document.createElement('th'); th.textContent = (s >= 0 ? '+' : '') + (s * 100).toFixed(0) + '%'; if (s === 0) th.className = 'base'; thead.appendChild(th); });
+
+    var fd = {};
+    document.querySelectorAll('#fundPlanTable tbody tr').forEach(function(row) {
+        var label = (row.querySelector('td')?.textContent || '').replace(/ /g, '').trim();
+        var byYear = {};
+        row.querySelectorAll('input[type="number"]').forEach(function(inp) {
+            var y = parseInt(inp.dataset.year); if (!isNaN(y)) byYear[y] = parseFloat(inp.value) || 0;
+        });
+        if (Object.keys(byYear).length > 0) { fd[label] = byYear; }
+    });
+    function getFD(label, y) { return (fd[label] || {})[y] || 0; }
+
+    var totalWorking = 0;
+    years.forEach(function(y) { totalWorking += Math.abs(getFD('流动资金', y)); });
+    totalWorking = round2(totalWorking);
+
+    var dr = val('nbDiscountRate') / 100 || 0.06;
+    var outputRate = val('taxRateOutput') / 100 || 0;
+    var inputRate = val('taxRateInput') / 100 || 0;
+    var cityRate = val('taxRateCity') / 100 || 0;
+    var eduRate = val('taxRateEdu') / 100 || 0;
+    var localEduRate = val('taxRateLocalEdu') / 100 || 0;
+    var surchargeRate = cityRate + eduRate + localEduRate;
+
+    // 按年汇总还本付息数据（支持多笔债务）
+    var yearlySummarySens = getYearlyRepaySummary();
+
+    // 计算全投资税前/税后净现金流 (通用因子变化)
+    function calcCFSens(revMul, costMul, investMul) {
+        // 基准情景（±0%）直接复用主表已缓存的CF数组，确保IRR/NPV/回收期与财务评价指标完全一致
+        if (revMul === 1 && costMul === 1 && investMul === 1 && _nbCFBasePreTax.length > 0) {
+            return { preTax: _nbCFBasePreTax.slice(), postTax: _nbCFBasePostTax.slice() };
+        }
+        var cfsPreTax = [], cfsPostTax = [];
+        years.forEach(function(y) {
+            var salvage = y === years[years.length - 1] ? nb_getDepNetValueAtYear(years[years.length - 1]) : 0;
+            var working = y === years[years.length - 1] ? totalWorking : 0;
+            var invest = (Math.abs(getFD('工程费', y)) + Math.abs(getFD('工程建设其他费', y)) + Math.abs(getFD('预备费', y))) * investMul;
+            var constInterest = Math.abs(getFD('建设期利息', y));
+            var rev = y >= opStart ? getRevenueForYear(y) * revMul : 0;
+            var opCost = y >= opStart ? getCostForYear(y) * costMul : 0;
+            var dep = nb_getDepForYear(y), amt = nb_getAmortForYear(y);
+            // 使用缓存税费（与全投资现金流量表保持一致）
+            var tx = _cachedTaxResults[y] || { vatPayable: 0, surcharge: 0 };
+            var vatPayable = y >= opStart ? tx.vatPayable : 0;
+            var surcharge = y >= opStart ? tx.surcharge : 0;
+            // 使用按年汇总利息（支持多笔债务）
+            var interest = (yearlySummarySens[y] || {}).interest || 0;
+            var pretax = rev - opCost - surcharge - dep - amt - interest;
+            var incomeTax = Math.max(0, pretax * 0.25);
+            var subsidy = (nbCFAllOverrides[2] || {})[y] || 0;
+            var otherIn = (nbCFAllOverrides[5] || {})[y] || 0;
+            var maintInvest = (nbCFAllOverrides[13] || {})[y] || 0;
+            var otherOut = (nbCFAllOverrides[14] || {})[y] || 0;
+            var inflow = y >= opStart ? rev + subsidy + salvage + working + otherIn : 0;
+            var outflow = invest + Math.abs(getFD('流动资金', y)) + constInterest + opCost + vatPayable + surcharge + maintInvest + otherOut;
+            cfsPreTax.push(inflow - outflow);
+            cfsPostTax.push(inflow - outflow - incomeTax);
+        });
+        return { preTax: cfsPreTax, postTax: cfsPostTax };
+    }
+
+    // 产量/负荷率变化：收入和可变成本按比例变化，固定成本不变
+    function calcCFProduction(mul) {
+        var cfsPreTax = [], cfsPostTax = [];
+        years.forEach(function(y) {
+            var salvage = y === years[years.length - 1] ? nb_getDepNetValueAtYear(years[years.length - 1]) : 0;
+            var working = y === years[years.length - 1] ? totalWorking : 0;
+            var invest = (Math.abs(getFD('工程费', y)) + Math.abs(getFD('工程建设其他费', y)) + Math.abs(getFD('预备费', y)));
+            var constInterest = Math.abs(getFD('建设期利息', y));
+            var rev = y >= opStart ? getRevenueForYear(y) * mul : 0;
+            var varCost = y >= opStart ? getVariableCostForYear(y) * mul : 0;
+            var fixCost = y >= opStart ? getFixedCostForYear(y) : 0;
+            var opCost = varCost + fixCost;
+            var dep = nb_getDepForYear(y), amt = nb_getAmortForYear(y);
+            // 使用缓存税费（与全投资现金流量表保持一致）
+            var tx = _cachedTaxResults[y] || { vatPayable: 0, surcharge: 0 };
+            var vatPayable = y >= opStart ? tx.vatPayable : 0;
+            var surcharge = y >= opStart ? tx.surcharge : 0;
+            // 使用按年汇总利息（支持多笔债务）
+            var interest = (yearlySummarySens[y] || {}).interest || 0;
+            var pretax = rev - opCost - surcharge - dep - amt - interest;
+            var incomeTax = Math.max(0, pretax * 0.25);
+            var subsidy = (nbCFAllOverrides[2] || {})[y] || 0;
+            var otherIn = (nbCFAllOverrides[5] || {})[y] || 0;
+            var maintInvest = (nbCFAllOverrides[13] || {})[y] || 0;
+            var otherOut = (nbCFAllOverrides[14] || {})[y] || 0;
+            var inflow = y >= opStart ? rev + subsidy + salvage + working + otherIn : 0;
+            var outflow = invest + Math.abs(getFD('流动资金', y)) + constInterest + opCost + vatPayable + surcharge + maintInvest + otherOut;
+            cfsPreTax.push(inflow - outflow);
+            cfsPostTax.push(inflow - outflow - incomeTax);
+        });
+        return { preTax: cfsPreTax, postTax: cfsPostTax };
+    }
+
+    // 原材料价格变化：仅调整可抵扣成本部分
+    function calcCFMaterial(mul) {
+        var cfsPreTax = [], cfsPostTax = [];
+        // 计算可抵扣比例（本地计算，与税费表口径一致）
+        var ciLocal = getCostItems();
+        var materialBase = ciLocal.material + ciLocal.fuel;
+        var totalCostBase = 0;
+        costItems.forEach(function(item) { totalCostBase += (item.amount || 0); });
+        var deductRatio = totalCostBase > 0 ? materialBase / totalCostBase : 0;
+        years.forEach(function(y) {
+            var salvage = y === years[years.length - 1] ? nb_getDepNetValueAtYear(years[years.length - 1]) : 0;
+            var working = y === years[years.length - 1] ? totalWorking : 0;
+            var invest = (Math.abs(getFD('工程费', y)) + Math.abs(getFD('工程建设其他费', y)) + Math.abs(getFD('预备费', y)));
+            var constInterest = Math.abs(getFD('建设期利息', y));
+            var rev = y >= opStart ? getRevenueForYear(y) : 0;
+            var baseOpCost = y >= opStart ? getCostForYear(y) : 0;
+            var deductibleDelta = baseOpCost * deductRatio * (mul - 1);
+            var opCost = baseOpCost + deductibleDelta;
+            var dep = nb_getDepForYear(y), amt = nb_getAmortForYear(y);
+            // 使用缓存税费（与全投资现金流量表保持一致）
+            var tx = _cachedTaxResults[y] || { vatPayable: 0, surcharge: 0 };
+            var vatPayable = y >= opStart ? tx.vatPayable : 0;
+            var surcharge = y >= opStart ? tx.surcharge : 0;
+            // 使用按年汇总利息（支持多笔债务）
+            var interest = (yearlySummarySens[y] || {}).interest || 0;
+            var pretax = rev - opCost - surcharge - dep - amt - interest;
+            var incomeTax = Math.max(0, pretax * 0.25);
+            var subsidy = (nbCFAllOverrides[2] || {})[y] || 0;
+            var otherIn = (nbCFAllOverrides[5] || {})[y] || 0;
+            var maintInvest = (nbCFAllOverrides[13] || {})[y] || 0;
+            var otherOut = (nbCFAllOverrides[14] || {})[y] || 0;
+            var inflow = y >= opStart ? rev + subsidy + salvage + working + otherIn : 0;
+            var outflow = invest + Math.abs(getFD('流动资金', y)) + constInterest + opCost + vatPayable + surcharge + maintInvest + otherOut;
+            cfsPreTax.push(inflow - outflow);
+            cfsPostTax.push(inflow - outflow - incomeTax);
+        });
+        return { preTax: cfsPreTax, postTax: cfsPostTax };
+    }
+
+    // 构建行定义
+    function makeFactorRows(label, cfFunc) {
+        return [
+            { name: '全投资税前IRR(%)', calc: function(s) { return calcIRR(cfFunc(s).preTax); }, isIRR: true },
+            { name: '全投资税后IRR(%)', calc: function(s) { return calcIRR(cfFunc(s).postTax); }, isIRR: true },
+            { name: '全投资税后NPV(万元)', calc: function(s) { return calcNPV(dr, cfFunc(s).postTax); } },
+            { name: '税后投资回收期(年)', calc: function(s) { return calcPaybackPeriod(cfFunc(s).postTax); } }
+        ];
+    }
+
+    var factors = [
+        { label: '一、营业收入变化', rows: makeFactorRows('收入', function(s) { return calcCFSens(1 + s, 1, 1); }) },
+        { label: '二、经营成本变化', rows: makeFactorRows('成本', function(s) { return calcCFSens(1, 1 + s, 1); }) },
+        { label: '三、建设投资变化', rows: makeFactorRows('投资', function(s) { return calcCFSens(1, 1, 1 + s); }) }
+    ];
+
+    tbody.innerHTML = '';
+    factors.forEach(function(factor) {
+        // 分组标题行
+        var headerTr = document.createElement('tr');
+        headerTr.className = 'subtotal-row';
+        headerTr.innerHTML = '<td class="text-start" colspan="' + (steps.length + 1) + '">' + factor.label + '</td>';
+        tbody.appendChild(headerTr);
+
+        factor.rows.forEach(function(r) {
+            var tr = document.createElement('tr');
+            var cells = '<td class="text-start">' + r.name + '</td>';
+            steps.forEach(function(s) {
+                var v = r.calc(s);
+                var display, cls = '';
+                if (r.isIRR) {
+                    display = v !== null ? v.toFixed(2) + '%' : '-';
+                    if (v !== null) cls = v >= dr * 100 ? 'positive' : 'negative';
+                } else if (r.name.indexOf('回收期') >= 0) {
+                    display = v !== null ? v.toFixed(1) + '年' : '-';
+                } else {
+                    display = fmt(v);
+                }
+                var base = s === 0 ? ' base' : '';
+                cells += '<td class="text-end ' + cls + base + '">' + display + '</td>';
+            });
+            tr.innerHTML = cells;
+            tbody.appendChild(tr);
+        });
+    });
+}
+
+// ==================== Tab 导出配置 ====================
+function getTabConfigs() {
+    return [
+        {
+            name: '资金使用计划',
+            tables: ['#fundingSourceTable', '#investmentDetailTable', '#fundPlanTable'],
+            summary: [
+                { label: '项目名称', valueId: 'projectName' },
+                { label: '建设期起始年', valueId: 'constructionStartYear' },
+                { label: '建设期结束年', valueId: 'constructionEndYear' },
+                { label: '运营期起始年', valueId: 'operationStartYear' },
+                { label: '运营期结束年', valueId: 'operationEndYear' },
+                { label: '计算周期', valueId: 'totalCycleYears' }
+            ]
+        },
+        { name: '还本付息', tables: ['#repaymentTable'], summary: [] },
+        {
+            name: '收入成本',
+            tables: ['#revenueTable', '#costTable'],
+            summary: []
+        },
+        { name: '折旧摊销', tables: ['#nbDepTable', '#nbAmortTable'], summary: [] },
+        {
+            name: '税费估算',
+            tables: ['#taxTable'],
+            summary: [
+                { label: '销项税率(%)', valueId: 'taxRateOutput' },
+                { label: '进项税率(%)', valueId: 'taxRateInput' },
+                { label: '城建税税率(%)', valueId: 'taxRateCity' },
+                { label: '教育费附加税率(%)', valueId: 'taxRateEdu' },
+                { label: '地方教育费附加税率(%)', valueId: 'taxRateLocalEdu' },
+                { label: '建设期增值税抵扣', valueId: 'vatDeduction' }
+            ]
+        },
+        { name: '利润表', tables: ['#nbProfitTable'], summary: [] },
+        {
+            name: '全部投资现金流',
+            tables: ['#nbCFAllTable'],
+            summary: [
+                { label: '税前内部收益率', valueId: 'nbIRRPreTax' },
+                { label: '税后内部收益率', valueId: 'nbIRRPostTax' },
+                { label: '税前净现值', valueId: 'nbNPVPreTax' },
+                { label: '税后净现值', valueId: 'nbNPVPostTax' },
+                { label: '税前投资回收期(年)', valueId: 'nbPaybackPreTax' },
+                { label: '税后投资回收期(年)', valueId: 'nbPaybackPostTax' },
+                { label: '基准收益率(%)', valueId: 'nbDiscountRate' }
+            ]
+        },
+        {
+            name: '资本金现金流',
+            tables: ['#nbCFEquityTable'],
+            summary: [
+                { label: '资本金内部收益率 CIRR', valueId: 'nbEquityIRR' },
+                { label: '财务净现值 FNPV', valueId: 'nbEquityFNPV' }
+            ]
+        },
+        { name: '财务计划现金流', tables: ['#nbCFPlanTable'], summary: [] },
+        { name: '财务评价指标', tables: ['#nbMetricsTable'], summary: [] },
+        {
+            name: '盈亏平衡分析',
+            tables: ['#nbBreakevenTable', '#nbBreakevenDetailTable'],
+            summary: []
+        },
+        { name: '敏感性分析', tables: ['#nbSensitivityTable'], summary: [] }
+    ];
+}
+
+// ==================== 模式特定重算 ====================
+function recalcModeSpecific() {
+    nb_renderDepTable();
+    nb_renderAmortTable();
+    nb_generateProfitTable();
+    nb_generateAllInvestmentCF();
+    nb_generateEquityCF();
+    nb_generateFinancialPlanCF();
+    nb_generateFinancialMetrics();
+    nb_generateBreakevenAnalysis();
+    nb_generateSensitivityTable();
+}
+
+// ==================== 事件绑定 ====================
+document.getElementById('nbSensitivityRange')?.addEventListener('change', recalcDownstream);
+document.getElementById('nbDiscountRate')?.addEventListener('input', recalcDownstream);
+document.getElementById('nbEquityDiscountRate')?.addEventListener('input', recalcDownstream);
+
+// 添加折旧项
+document.getElementById('btnAddNbDepItem')?.addEventListener('click', function() {
+    document.getElementById('nbDepItemEditIdx').value = -1;
+    document.getElementById('nbDepItemModalTitle').textContent = '添加折旧项';
+    document.getElementById('nbDepItemName').value = '';
+    document.getElementById('nbDepItemBase').value = '';
+    document.getElementById('nbDepItemYears').value = '';
+    document.getElementById('nbDepItemRate').value = '5';
+    new bootstrap.Modal(document.getElementById('nbDepItemModal')).show();
+});
+document.getElementById('btnConfirmNbDepItem')?.addEventListener('click', function() {
+    var idx = parseInt(document.getElementById('nbDepItemEditIdx').value);
+    var item = {
+        name: document.getElementById('nbDepItemName').value || '折旧项',
+        base: parseFloat(document.getElementById('nbDepItemBase').value) || 0,
+        years: parseInt(document.getElementById('nbDepItemYears').value) || 0,
+        rate: parseFloat(document.getElementById('nbDepItemRate').value) || 0
+    };
+    if (idx >= 0) { nbDepItems[idx] = item; } else { nbDepItems.push(item); }
+    bootstrap.Modal.getInstance(document.getElementById('nbDepItemModal')).hide();
+    recalcDownstream();
+});
+
+// 添加摊销项
+document.getElementById('btnAddNbAmortItem')?.addEventListener('click', function() {
+    document.getElementById('nbAmortItemEditIdx').value = -1;
+    document.getElementById('nbAmortItemModalTitle').textContent = '添加摊销项';
+    document.getElementById('nbAmortItemName').value = '';
+    document.getElementById('nbAmortItemBase').value = '';
+    document.getElementById('nbAmortItemYears').value = '';
+    new bootstrap.Modal(document.getElementById('nbAmortItemModal')).show();
+});
+document.getElementById('btnConfirmNbAmortItem')?.addEventListener('click', function() {
+    var idx = parseInt(document.getElementById('nbAmortItemEditIdx').value);
+    var item = {
+        name: document.getElementById('nbAmortItemName').value || '摊销项',
+        base: parseFloat(document.getElementById('nbAmortItemBase').value) || 0,
+        years: parseInt(document.getElementById('nbAmortItemYears').value) || 0
+    };
+    if (idx >= 0) { nbAmortItems[idx] = item; } else { nbAmortItems.push(item); }
+    bootstrap.Modal.getInstance(document.getElementById('nbAmortItemModal')).hide();
+    recalcDownstream();
+});
+
+// 编辑/删除折旧摊销项（委托事件）
+document.addEventListener('click', function(e) {
+    var btn = e.target.closest('.btn-edit-nb-dep');
+    if (btn) {
+        var idx = parseInt(btn.dataset.idx);
+        var item = nbDepItems[idx]; if (!item) return;
+        document.getElementById('nbDepItemEditIdx').value = idx;
+        document.getElementById('nbDepItemModalTitle').textContent = '编辑折旧项';
+        document.getElementById('nbDepItemName').value = item.name;
+        document.getElementById('nbDepItemBase').value = item.base;
+        document.getElementById('nbDepItemYears').value = item.years;
+        document.getElementById('nbDepItemRate').value = item.rate;
+        new bootstrap.Modal(document.getElementById('nbDepItemModal')).show();
+        return;
+    }
+    btn = e.target.closest('.btn-remove-nb-dep');
+    if (btn) {
+        nbDepItems.splice(parseInt(btn.dataset.idx), 1);
+        recalcDownstream();
+        return;
+    }
+    btn = e.target.closest('.btn-edit-nb-amort');
+    if (btn) {
+        var idx = parseInt(btn.dataset.idx);
+        var item = nbAmortItems[idx]; if (!item) return;
+        document.getElementById('nbAmortItemEditIdx').value = idx;
+        document.getElementById('nbAmortItemModalTitle').textContent = '编辑摊销项';
+        document.getElementById('nbAmortItemName').value = item.name;
+        document.getElementById('nbAmortItemBase').value = item.base;
+        document.getElementById('nbAmortItemYears').value = item.years;
+        new bootstrap.Modal(document.getElementById('nbAmortItemModal')).show();
+        return;
+    }
+    btn = e.target.closest('.btn-remove-nb-amort');
+    if (btn) {
+        nbAmortItems.splice(parseInt(btn.dataset.idx), 1);
+        recalcDownstream();
+        return;
+    }
+});
+
+
+// ==================== 还本付息表扩展：利息备付率 & 偿债备付率 ====================
+(function() {
+    // 扩展表头（仅一次）
+    var headerRow = document.querySelector('#repaymentTable thead tr');
+    if (headerRow) {
+        headerRow.insertAdjacentHTML('beforeend', '<th>利息备付率</th><th>偿债备付率</th>');
+    }
+
+    var _origBuild = buildRepaymentTable;
+
+    buildRepaymentTable = function() {
+        _origBuild();
+        var tbody = document.getElementById('repaymentBody');
+        if (!tbody || !tbody.querySelector('tr')) return;
+
+        var opStart = parseInt(document.getElementById('operationStartYear')?.value) || 0;
+        var outputRateExt = val('taxRateOutput') / 100 || 0;
+        // 辅助：不含税收入
+        function revNoTax(y) { return getRevenueForYear(y) / (1 + outputRateExt); }
+
+        // Pass 1: aggregate interest & totalPayment by year across all debts
+        var yearAgg = {};
+        tbody.querySelectorAll('tr:not(.total-row)').forEach(function(tr) {
+            var cells = tr.querySelectorAll('td');
+            var y = parseInt(cells[1]?.textContent);
+            if (isNaN(y)) return;
+            var interest = parseFloat(cells[7]?.textContent) || 0;
+            var totalPay = parseFloat(cells[8]?.textContent) || 0;
+            if (!yearAgg[y]) yearAgg[y] = { interest: 0, totalPayment: 0 };
+            yearAgg[y].interest += interest;
+            yearAgg[y].totalPayment += totalPay;
+        });
+
+        // Pass 2: compute ICR/DSCR per year (same value for all debt rows sharing a year)
+        var yearRatios = {};
+        Object.keys(yearAgg).forEach(function(ys) {
+            var y = parseInt(ys);
+            var agg = yearAgg[y];
+            var icr = '-', dscr = '-';
+            if (y >= opStart && agg.interest > 0) {
+                var rev = revNoTax(y), cost = getCostForYear(y);
+                var dep = nb_getDepForYear(y), amt = nb_getAmortForYear(y);
+                var tx = _cachedTaxResults[y] || { vatPayable: 0, surcharge: 0 };
+                var surcharge = tx.surcharge;
+                // EBIT = 利润总额 + 利息 = revenue_excl_VAT - cost - surcharge - dep - amt
+                var ebit = rev - cost - surcharge - dep - amt;
+                icr = (ebit / agg.interest).toFixed(2);
+            }
+            if (y >= opStart && agg.totalPayment > 0) {
+                var rev = revNoTax(y), cost = getCostForYear(y);
+                var dep = nb_getDepForYear(y), amt = nb_getAmortForYear(y);
+                var tx = _cachedTaxResults[y] || { vatPayable: 0, surcharge: 0 };
+                var surcharge = tx.surcharge;
+                var pretax = rev - cost - surcharge - dep - amt - agg.interest;
+                var incomeTax = Math.max(0, pretax * 0.25);
+                var netProfit = pretax - incomeTax;
+                // DSCR = (净利润 + 折旧 + 摊销 + 利息) / 应付本息
+                dscr = ((netProfit + dep + amt + agg.interest) / agg.totalPayment).toFixed(2);
+            }
+            yearRatios[y] = { icr: icr, dscr: dscr };
+        });
+
+        // Pass 3: append cells to each row
+        var allICR = [], allDSCR = [], seenICR = {}, seenDSCR = {};
+        // 汇总所有还款年的EBIT/利息/EBITDA/所得税/还本付息额（用于合计行总比值，按唯一年份累加避免多笔债务重复计数）
+        var totalICR_EBIT = 0, totalICR_Interest = 0;
+        var totalDSCR_Fund = 0, totalDSCR_Payment = 0;
+        var seenYearAccum = {};
+        tbody.querySelectorAll('tr').forEach(function(tr) {
+            var cells = tr.querySelectorAll('td');
+
+            if (tr.classList.contains('total-row')) {
+                var totalICR = totalICR_Interest > 0 ? (totalICR_EBIT / totalICR_Interest).toFixed(2) : '-';
+                var totalDSCR = totalDSCR_Payment > 0 ? (totalDSCR_Fund / totalDSCR_Payment).toFixed(2) : '-';
+                tr.insertAdjacentHTML('beforeend', '<td class="text-end">' + totalICR + '</td><td class="text-end">' + totalDSCR + '</td>');
+            } else {
+                var y = parseInt(cells[1]?.textContent);
+                var ratios = yearRatios[y] || { icr: '-', dscr: '-' };
+                if (!seenICR[y] && ratios.icr !== '-') { seenICR[y] = true; allICR.push(parseFloat(ratios.icr)); }
+                if (!seenDSCR[y] && ratios.dscr !== '-') { seenDSCR[y] = true; allDSCR.push(parseFloat(ratios.dscr)); }
+                if (y >= opStart && !seenYearAccum[y]) {
+                    seenYearAccum[y] = true;
+                    var agg = yearAgg[y];
+                    if (agg && agg.interest > 0 && agg.totalPayment > 0) {
+                        var rev = revNoTax(y), cost = getCostForYear(y);
+                        var dep = nb_getDepForYear(y), amt = nb_getAmortForYear(y);
+                        var tx = _cachedTaxResults[y] || { vatPayable: 0, surcharge: 0 };
+                        var surcharge = tx.surcharge;
+                        totalICR_EBIT += rev - cost - surcharge - dep - amt;
+                        totalICR_Interest += agg.interest;
+                        var ebtda = rev - cost - surcharge;
+                        var incomeTax = Math.max(0, (rev - cost - surcharge - dep - amt - agg.interest) * 0.25);
+                        totalDSCR_Fund += ebtda - incomeTax;
+                        totalDSCR_Payment += agg.totalPayment;
+                    }
+                }
+                tr.insertAdjacentHTML('beforeend', '<td class="text-end">' + ratios.icr + '</td><td class="text-end">' + ratios.dscr + '</td>');
+            }
+        });
+    };
+})();
+
+</script>
+{% endblock %}

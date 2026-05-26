@@ -1,0 +1,428 @@
+{% extends "base_desktop.html" %}
+
+{% block title %}我的项目{% endblock %}
+
+{% block content %}
+<div class="container mt-5 py-4">
+    <!-- 页面标题 -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4><i class="bi bi-person-workspace text-primary"></i> 我的项目档案</h4>
+        <a href="/" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left"></i> 返回首页
+        </a>
+    </div>
+
+    <!-- 筛选说明 -->
+    <div class="date-info">
+        <i class="bi bi-info-circle"></i>
+        <strong>筛选说明：</strong>可按开始日期和结算提成状态进行筛选。结算提成状态支持"已结提成"和"未结提成"两种状态。
+    </div>
+
+    <!-- 筛选区域 -->
+    <div class="filter-card">
+        <div class="filter-title">
+            <i class="bi bi-funnel"></i> 项目筛选条件
+        </div>
+        <div class="filter-group d-flex align-items-center gap-3 flex-wrap">
+            <div>
+                <label for="year" class="form-label" style="font-size:13px;">开始年份</label>
+                <select name="year" id="myYear" class="filter-select">
+                    <option value="all">全部年份</option>
+                    {% for year in years %}
+                    <option value="{{ year }}" {% if filter_year == year|string %}selected{% endif %}>{{ year }}年</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="month" class="form-label" style="font-size:13px;">开始月份</label>
+                <select name="month" id="myMonth" class="filter-select">
+                    <option value="all">全部月份</option>
+                    {% for month in months %}
+                    <option value="{{ month }}" {% if filter_month == month|string %}selected{% endif %}>{{ month_names[month] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% if role != 'visitor' %}
+            <div>
+                <label for="settlement" class="form-label" style="font-size:13px;">结算提成</label>
+                <select name="settlement" id="mySettlement" class="filter-select">
+                    <option value="all">全部状态</option>
+                    <option value="已结提成" {% if filter_settlement == '已结提成' %}selected{% endif %}>已结提成</option>
+                    <option value="未结提成" {% if filter_settlement == '未结提成' %}selected{% endif %}>未结提成</option>
+                </select>
+            </div>
+            {% endif %}
+            <div style="align-self:flex-end;">
+                <button type="button" class="filter-btn" id="myFilterBtn"><i class="bi bi-search"></i> 筛选</button>
+            </div>
+            <div style="align-self:flex-end;">
+                <a href="/my_projects" class="reset-btn" id="myResetBtn" style="text-decoration:none;display:inline-block;cursor:pointer;"><i class="bi bi-arrow-clockwise"></i> 重置</a>
+            </div>
+            <div style="align-self:flex-end;margin-left:auto;display:flex;gap:8px;">
+                {% if role != 'visitor' %}
+                <button type="button" class="export-btn" onclick="document.getElementById('batchUploadInput').click()">
+                    <i class="bi bi-upload"></i> 批量上传
+                </button>
+                <input type="file" id="batchUploadInput" accept=".xlsx,.xls" style="display:none">
+                {% endif %}
+                {% set export_url = "/export_my_projects" %}
+                {% set params = [] %}
+                {% if filter_year and filter_year != 'all' %}{% set params = params + ['year=' + filter_year] %}{% endif %}
+                {% if filter_month and filter_month != 'all' %}{% set params = params + ['month=' + filter_month] %}{% endif %}
+                {% if filter_settlement and filter_settlement != 'all' %}{% set params = params + ['settlement=' + filter_settlement] %}{% endif %}
+                {% if params %}{% set export_url = export_url + '?' + params|join('&') %}{% endif %}
+                <a href="{{ export_url }}" class="export-btn" target="_blank"><i class="bi bi-download"></i> 导出Excel</a>
+            </div>
+        </div>
+
+        <div id="myFilterInfo" style="margin-top:15px;padding:10px 16px;background:rgba(0,0,0,0.02);border:1px solid var(--border-color);border-radius:6px;font-size:14px;{% if filter_year == 'all' and filter_month == 'all' and filter_settlement == 'all' %}display:none;{% endif %}">
+            <i class="bi bi-info-circle"></i> 当前筛选：
+            {% if filter_year and filter_year != 'all' %}<span class="badge bg-info">{{ filter_year }}年</span>{% endif %}
+            {% if filter_month and filter_month != 'all' %}<span class="badge bg-info">{{ month_names[filter_month|int] }}</span>{% endif %}
+            {% if filter_settlement and filter_settlement != 'all' %}<span class="badge {% if filter_settlement == '已结提成' %}badge-settled{% else %}badge-unsettled{% endif %}">{{ filter_settlement }}</span>{% endif %}
+            | 共找到 <strong id="myCountText">{{ projects|length }}</strong> 个项目
+        </div>
+
+    </div>
+
+    <!-- 项目表格 -->
+    <div class="card">
+        <div class="card-header d-flex align-items-center">
+            <h5 class="mb-0"><i class="bi bi-clipboard-data text-primary"></i> 项目列表</h5>
+            <span class="stats-badge" id="myStatsBadge">共 {{ projects|length }} 个项目</span>
+        </div>
+
+        {% if projects %}
+        <div id="myTableArea">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th width="5%">ID</th>
+                            <th width="12%">开始时间</th>
+                            <th width="18%">项目名称</th>
+                            <th width="12%">业主单位</th>
+                            <th width="10%">总投资(万元)</th>
+                            {% if role != 'visitor' %}
+                            <th width="10%">结算提成</th>
+                            {% endif %}
+                            <th width="15%">操作</th>
+                            <th width="20%">工具栏</th>
+                        </tr>
+                    </thead>
+                    <tbody id="myProjectTbody">
+                        {% for project in projects %}
+                        <tr>
+                            <td><span class="badge bg-primary">{{ project.id }}</span></td>
+                            <td>
+                                {% if project.start_date %}
+                                <span class="text-primary fw-bold">{{ project.start_date.strftime('%m-%d') }}</span>
+                                {% else %}
+                                <span class="text-warning">未设置</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="/project/detail/{{ project.id }}" class="project-name-link" title="点击查看项目详情">
+                                    {{ (project.name or '无标题')|truncate(15) }}
+                                </a>
+                            </td>
+                            <td>{{ (project.owner or '-')|truncate(10) }}</td>
+                            <td>
+                                {% if project.total_investment %}
+                                <strong class="text-success">{{ project.total_investment }}</strong>
+                                {% else %}
+                                <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            {% if role != 'visitor' %}
+                            <td>
+                                {% if project.payment_settlement_status %}
+                                <span class="badge {% if project.payment_settlement_status == '已结提成' %}badge-settled{% else %}badge-unsettled{% endif %}">
+                                    {{ project.payment_settlement_status }}
+                                </span>
+                                {% else %}
+                                <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            {% endif %}
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="/project/detail/{{ project.id }}" class="btn-action btn-view" title="查看详情"><i class="bi bi-eye"></i></a>
+                                    {% if role != 'visitor' %}
+                                    <a href="/project/edit/{{ project.id }}" class="btn-action btn-edit" title="编辑项目"><i class="bi bi-pencil"></i></a>
+                                    <form method="post" action="/project/delete" class="d-inline" onsubmit="return confirm('确定要删除项目【{{ project.name }}】吗？此操作不可撤销！');">
+                                        <input type="hidden" name="id" value="{{ project.id }}">
+                                        <button type="submit" class="btn-action btn-delete" title="删除项目"><i class="bi bi-trash"></i></button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="toolbar-buttons d-flex gap-2 flex-nowrap">
+                                    <a href="/project/{{ project.id }}/investment" class="btn btn-sm" style="background:var(--accent-blue-dim);color:var(--accent-blue);">投资估算</a>
+                                    <a href="/project/{{ project.id }}/energy" class="btn btn-sm" style="background:var(--accent-amber-dim);color:var(--accent-amber);">能耗估算</a>
+                                    <a href="/project/{{ project.id }}/finance" class="btn btn-sm" style="background:var(--accent-primary-dim);color:var(--accent-primary);">财务测算</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            {% if filter_year != 'all' or filter_month != 'all' or filter_settlement != 'all' %}
+            <i class="bi bi-calendar-x"></i>
+            <h4>未找到符合条件的项目</h4>
+            <p>当前筛选条件下没有找到匹配的项目</p>
+            <div class="mt-3">
+                <a href="/my_projects" class="btn btn-secondary me-2"><i class="bi bi-arrow-clockwise"></i> 重置筛选</a>
+                <a href="/project/add" class="btn btn-primary"><i class="bi bi-plus"></i> 创建新项目</a>
+            </div>
+            {% else %}
+            <i class="bi bi-clipboard-x"></i>
+            <h4>暂无项目数据</h4>
+            <p>您还没有创建任何项目</p>
+            <a href="/project/add" class="btn btn-primary mt-3"><i class="bi bi-plus"></i> 立即创建项目</a>
+            {% endif %}
+        </div>
+        {% endif %}
+        </div>
+    </div>
+
+    <!-- 使用说明 -->
+    <div style="margin-top:20px;padding:16px 20px;background:rgba(0,0,0,0.02);border:1px solid var(--border-color);border-radius:8px;">
+        <h6 style="margin-bottom:10px;color:var(--text-secondary);"><i class="bi bi-question-circle"></i> 使用说明：</h6>
+        <ul style="color:var(--text-muted);line-height:1.8;margin:0;padding-left:20px;">
+            <li><strong>筛选功能：</strong>支持按开始年份、开始月份和结算提成状态进行筛选</li>
+            <li><strong>结算提成：</strong>显示项目的提成结算状态，分为"已结提成"或"未结提成"</li>
+            <li><strong>状态说明：</strong><span class="badge badge-settled">已结提成</span> 表示该项目提成已结算，<span class="badge badge-unsettled">未结提成</span> 表示提成尚未结算</li>
+            <li><strong>导出功能：</strong>点击"导出Excel"可以将筛选后的项目导出为Excel文件</li>
+            <li><strong>项目操作：</strong>点击项目名称查看详情，通过操作列按钮可以查看、编辑或删除项目</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    var myMonthNames = {{ month_names|tojson }};
+    var myFilterYear = '{{ filter_year|default('all') }}';
+    var myFilterMonth = '{{ filter_month|default('all') }}';
+    var myFilterSettlement = '{{ filter_settlement|default('all') }}';
+
+    function escapeHtml(str) {
+        var div = document.createElement('div');
+        div.textContent = str || '-';
+        return div.innerHTML;
+    }
+
+    function doMySearch() {
+        var year = document.getElementById('myYear').value;
+        var month = document.getElementById('myMonth').value;
+        var settlement = document.getElementById('mySettlement') ? document.getElementById('mySettlement').value : 'all';
+        var params = new URLSearchParams({ context: 'my', year: year, month: month, settlement: settlement });
+
+        var btn = document.getElementById('myFilterBtn');
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
+        btn.disabled = true;
+
+        fetch('/api/projects/search?' + params.toString())
+            .then(function(r) { return r.json(); })
+            .then(function(d) {
+                if (!d.success) return;
+                myFilterYear = year; myFilterMonth = month; myFilterSettlement = settlement;
+                renderMyRows(d.rows);
+                document.getElementById('myStatsBadge').textContent = '共 ' + d.pagination.total + ' 个项目';
+                document.getElementById('myCountText').textContent = d.pagination.total;
+
+                var info = document.getElementById('myFilterInfo');
+                if (year !== 'all' || month !== 'all' || settlement !== 'all') {
+                    var labels = [];
+                    if (year !== 'all') labels.push('<span class="badge bg-info">' + year + '年</span>');
+                    if (month !== 'all') labels.push('<span class="badge bg-info">' + (myMonthNames[parseInt(month)] || month) + '</span>');
+                    if (settlement !== 'all') labels.push('<span class="badge ' + (settlement === '已结提成' ? 'badge-settled' : 'badge-unsettled') + '">' + settlement + '</span>');
+                    info.innerHTML = '<i class="bi bi-info-circle"></i> 当前筛选：' + labels.join(' ') + ' | 共找到 <strong id="myCountText">' + d.pagination.total + '</strong> 个项目';
+                    info.style.display = '';
+                } else {
+                    info.style.display = 'none';
+                }
+
+                var exportParams = [];
+                if (year !== 'all') exportParams.push('year=' + year);
+                if (month !== 'all') exportParams.push('month=' + month);
+                if (settlement !== 'all') exportParams.push('settlement=' + settlement);
+                var expUrl = '/export_my_projects' + (exportParams.length ? '?' + exportParams.join('&') : '');
+                var expLink = document.querySelector('#myTableArea a.export-btn');
+                if (!expLink) expLink = document.querySelector('a.export-btn');
+                if (expLink) expLink.href = expUrl;
+
+                if (history.pushState) {
+                    var url = '/my/projects' + (exportParams.length ? '?' + exportParams.join('&') : '');
+                    history.pushState({year: year, month: month, settlement: settlement}, '', '/my_projects' + (exportParams.length ? '?' + exportParams.join('&') : ''));
+                }
+            })
+            .catch(function(e) { console.error(e); })
+            .finally(function() {
+                btn.innerHTML = '<i class="bi bi-search"></i> 筛选';
+                btn.disabled = false;
+            });
+    }
+
+    function renderMyRows(rows) {
+        var area = document.getElementById('myTableArea');
+        if (rows.length === 0) {
+            area.innerHTML = '<div class="empty-state">' +
+                '<i class="bi bi-calendar-x"></i><h4>未找到符合条件的项目</h4>' +
+                '<p>当前筛选条件下没有找到匹配的项目</p>' +
+                '<div class="mt-3"><a href="/my_projects" class="btn btn-secondary me-2"><i class="bi bi-arrow-clockwise"></i> 重置筛选</a>' +
+                {% if role != 'visitor' %}
+                '<a href="/project/add" class="btn btn-primary"><i class="bi bi-plus"></i> 创建新项目</a>' +
+                {% endif %}
+                '</div></div>';
+            document.getElementById('myStatsBadge').textContent = '共 0 个项目';
+            return;
+        }
+        var html = '<div class="card-body p-0"><div class="table-responsive"><table class="table table-hover mb-0"><thead><tr>' +
+            '<th width="5%">ID</th><th width="12%">开始时间</th><th width="18%">项目名称</th><th width="12%">业主单位</th><th width="10%">总投资(万元)</th>' +
+            {% if role != 'visitor' %}
+            '<th width="10%">结算提成</th>' +
+            {% endif %}
+            '<th width="15%">操作</th><th width="20%">工具栏</th></tr></thead><tbody id="myProjectTbody">';
+        for (var i = 0; i < rows.length; i++) {
+            var r = rows[i];
+            var settleClass = r.payment_settlement_status === '已结提成' ? 'badge-settled' : 'badge-unsettled';
+            html += '<tr>' +
+                '<td><span class="badge bg-primary">' + r.id + '</span></td>' +
+                '<td>' + (r.start_date ? '<span class="text-primary fw-bold">' + r.start_date + '</span>' : '<span class="text-warning">未设置</span>') + '</td>' +
+                '<td><a href="/project/detail/' + r.id + '" class="project-name-link">' + escapeHtml(r.name).substring(0, 15) + '</a></td>' +
+                '<td>' + escapeHtml(r.owner).substring(0, 10) + '</td>' +
+                '<td>' + (r.total_investment ? '<strong class="text-success">' + r.total_investment + '</strong>' : '<span class="text-muted">-</span>') + '</td>' +
+                {% if role != 'visitor' %}
+                '<td><span class="badge ' + settleClass + '">' + (r.payment_settlement_status || '<span class="text-muted">-</span>') + '</span></td>' +
+                {% endif %}
+                '<td><div class="action-buttons">' +
+                '<a href="/project/detail/' + r.id + '" class="btn-action btn-view"><i class="bi bi-eye"></i></a>' +
+                {% if role != 'visitor' %}
+                '<a href="/project/edit/' + r.id + '" class="btn-action btn-edit"><i class="bi bi-pencil"></i></a>' +
+                '<form method="post" action="/project/delete" class="d-inline" onsubmit="return confirm(\'确定要删除吗？此操作不可撤销！\');"><input type="hidden" name="id" value="' + r.id + '"><button type="submit" class="btn-action btn-delete"><i class="bi bi-trash"></i></button></form>' +
+                {% endif %}
+                '</div></td>' +
+                '<td><div class="toolbar-buttons d-flex gap-2 flex-nowrap">' +
+                '<a href="/project/' + r.id + '/investment" class="btn btn-sm" style="background:var(--accent-blue-dim);color:var(--accent-blue);">投资估算</a>' +
+                '<a href="/project/' + r.id + '/energy" class="btn btn-sm" style="background:var(--accent-amber-dim);color:var(--accent-amber);">能耗估算</a>' +
+                '<a href="/project/' + r.id + '/finance" class="btn btn-sm" style="background:var(--accent-primary-dim);color:var(--accent-primary);">财务测算</a>' +
+                '</div></td></tr>';
+        }
+        html += '</tbody></table></div></div>';
+        area.innerHTML = html;
+    }
+
+    document.getElementById('myFilterBtn').addEventListener('click', doMySearch);
+    document.getElementById('myResetBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('myYear').value = 'all';
+        document.getElementById('myMonth').value = 'all';
+        if (document.getElementById('mySettlement')) document.getElementById('mySettlement').value = 'all';
+        doMySearch();
+    });
+
+    window.addEventListener('popstate', function(e) {
+        if (e.state) {
+            if (e.state.year !== undefined) document.getElementById('myYear').value = e.state.year;
+            if (e.state.month !== undefined) document.getElementById('myMonth').value = e.state.month;
+            if (e.state.settlement !== undefined && document.getElementById('mySettlement')) document.getElementById('mySettlement').value = e.state.settlement;
+            doMySearch();
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var urlParams = new URLSearchParams(window.location.search);
+        if (!urlParams.get('year') && !urlParams.get('month') && !urlParams.get('settlement')) {
+            document.getElementById('myYear').value = 'all';
+            document.getElementById('myMonth').value = 'all';
+            if (document.getElementById('mySettlement')) document.getElementById('mySettlement').value = 'all';
+        }
+
+        // 批量上传功能
+        const uploadInput = document.getElementById('batchUploadInput');
+        if (uploadInput) {
+            uploadInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const btns = document.querySelectorAll('.export-btn');
+                let btn = null;
+                for (let el of btns) {
+                    if (el.tagName === 'BUTTON') {
+                        btn = el;
+                        break;
+                    }
+                }
+                if (!btn) return;
+                const originalText = btn.innerHTML;
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> 上传中...';
+
+                fetch('/project/batch_upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        let msg = data.message;
+                        if (data.errors && data.errors.length > 0) {
+                            msg += '，部分行导入失败：<br>' + data.errors.slice(0, 5).join('<br>');
+                            if (data.errors.length > 5) {
+                                msg += '<br>...还有 ' + (data.errors.length - 5) + ' 行错误';
+                            }
+                        }
+                        showToast(msg, data.errors && data.errors.length > 0 ? 'warning' : 'success');
+                        // 刷新页面
+                        setTimeout(function() {
+                            location.reload();
+                        }, data.errors && data.errors.length > 0 ? 3000 : 1000);
+                    } else {
+                        showToast(data.message || '上传失败', 'danger');
+                    }
+                })
+                .catch(err => {
+                    showToast('上传失败：' + err.message, 'danger');
+                })
+                .finally(function() {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                    uploadInput.value = '';
+                });
+            });
+        }
+
+        // Toast提示框
+        function showToast(message, type) {
+            const existing = document.querySelector('.batch-toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = 'batch-toast';
+            const bgColor = type === 'success' ? '#00b894' : type === 'warning' ? '#fdcb6e' : '#e17055';
+            const textColor = type === 'warning' ? '#2d3436' : '#fff';
+            toast.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;padding:14px 24px;border-radius:8px;font-size:14px;font-weight:500;box-shadow:0 4px 20px rgba(0,0,0,0.15);max-width:500px;word-break:break-all;';
+            toast.style.backgroundColor = bgColor;
+            toast.style.color = textColor;
+            toast.innerHTML = message;
+            document.body.appendChild(toast);
+            setTimeout(function() {
+                toast.style.transition = 'opacity 0.5s';
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 500);
+            }, 5000);
+        }
+    });
+</script>
+{% endblock %}

@@ -72,6 +72,7 @@
         }
         .form-group input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(16,185,129,0.1); }
         .form-group input.error { border-color: var(--danger); }
+        .form-group .input-hint { font-size: 11px; color: #94a3b8; margin-top: 3px; padding-left: 2px; }
         .form-group .validation-msg { font-size: 12px; margin-top: 3px; display: flex; align-items: center; gap: 4px; }
         .form-group .validation-msg.error { color: var(--danger); }
         .form-group .validation-msg.success { color: var(--accent); }
@@ -115,6 +116,7 @@
                     <i class="bi bi-person"></i>
                     <input type="text" id="username" placeholder="设置登录用户名" required autofocus onblur="checkField('username')">
                 </div>
+                <div class="input-hint">支持中文、字母、数字，建议使用姓名</div>
                 <div class="validation-msg" id="v-username"></div>
             </div>
             <div class="form-group">
@@ -123,6 +125,7 @@
                     <i class="bi bi-envelope"></i>
                     <input type="email" id="email" placeholder="输入邮箱地址（用于找回密码）" onblur="checkField('email')">
                 </div>
+                <div class="input-hint">用于找回密码，格式如 name@example.com</div>
                 <div class="validation-msg" id="v-email"></div>
             </div>
             <div class="form-group">
@@ -131,6 +134,7 @@
                     <i class="bi bi-phone"></i>
                     <input type="tel" id="phone" placeholder="输入手机号（用于找回密码）" onblur="checkField('phone')">
                 </div>
+                <div class="input-hint">11位手机号码，用于找回密码</div>
                 <div class="validation-msg" id="v-phone"></div>
             </div>
             <div class="form-group">
@@ -139,6 +143,7 @@
                     <i class="bi bi-lock"></i>
                     <input type="password" id="password" placeholder="密码不少于6位" required minlength="6">
                 </div>
+                <div class="input-hint">不少于6位，支持大小写字母、数字和特殊字符</div>
             </div>
             <div class="form-group">
                 <label>确认密码 <span style="color:var(--danger)">*</span></label>
@@ -146,6 +151,7 @@
                     <i class="bi bi-lock-fill"></i>
                     <input type="password" id="password2" placeholder="再次输入密码" required>
                 </div>
+                <div class="input-hint">请再次输入与上方一致的密码</div>
             </div>
             <button type="submit" class="btn-reg" id="regBtn"><i class="bi bi-person-plus"></i> 注册并开通标准版</button>
         </form>

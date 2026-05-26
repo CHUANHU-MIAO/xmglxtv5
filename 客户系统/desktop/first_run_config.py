@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 
 from PySide6.QtWidgets import (
     QApplication, QDialog, QVBoxLayout, QHBoxLayout, QLabel,
@@ -7,7 +8,17 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import Qt
 
-CONFIG_FILE = os.path.join(os.path.dirname(__file__), 'config.json')
+
+def _get_app_root():
+    config_dir = os.environ.get('DESKTOP_CONFIG_DIR', '')
+    if config_dir:
+        return config_dir
+    if getattr(sys, 'frozen', False):
+        return os.path.dirname(os.path.abspath(sys.executable))
+    return os.path.dirname(os.path.abspath(__file__))
+
+
+CONFIG_FILE = os.path.join(_get_app_root(), 'config.json')
 
 
 class FirstRunConfigDialog(QDialog):

@@ -1,0 +1,194 @@
+{% extends "base_desktop.html" %}
+
+{% block title %}编辑项目{% endblock %}
+
+{% block content %}
+<div class="container mt-5 py-4">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-8">
+            <div class="card form-card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-pencil-square text-primary"></i> 编辑项目信息</h5>
+                    <small class="text-muted">带 * 号为必填项。文件上传请在项目详情页进行。</small>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" action="/project/edit/{{ p.id }}">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="start_date" class="form-label">项目开始时间</label>
+                                    <input type="date" name="start_date" class="form-control" id="start_date" value="{{ p.start_date.strftime('%Y-%m-%d') if p.start_date else '' }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="name" class="form-label required">项目名称</label>
+                                    <input type="text" name="name" class="form-control" id="name" value="{{ p.name }}" placeholder="请输入项目全称" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="location" class="form-label">项目所在地</label>
+                                    <input type="text" name="location" class="form-control" id="location" value="{{ p.location or '' }}" placeholder="输入到县级XX市XX县">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="owner" class="form-label">业主单位</label>
+                                    <input type="text" name="owner" class="form-control" id="owner" value="{{ p.owner or '' }}" placeholder="请输入业主单位名称">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="total_investment" class="form-label">总投资（万元）</label>
+                                    <input type="number" name="total_investment" class="form-control" id="total_investment" value="{{ p.total_investment or '' }}" placeholder="0.00" step="0.01">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="service_content" class="form-label">服务内容</label>
+                                    <textarea name="service_content" class="form-control" id="service_content" rows="3">{{ p.service_content or '' }}</textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="contract_amount" class="form-label">合同金额（万元）</label>
+                                    <input type="number" name="contract_amount" class="form-control" id="contract_amount" value="{{ p.contract_amount or '' }}" placeholder="0.00" step="0.01">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="contract_status" class="form-label">合同情况</label>
+                                    <select name="contract_status" class="form-select" id="contract_status">
+                                        <option value="" {% if not p.contract_status %}selected{% endif %}>请选择</option>
+                                        <option value="已签订" {% if p.contract_status == '已签订' %}selected{% endif %}>已签订</option>
+                                        <option value="未签订" {% if p.contract_status == '未签订' %}selected{% endif %}>未签订</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="invoice_status" class="form-label">开票情况</label>
+                                    <select name="invoice_status" class="form-select" id="invoice_status">
+                                        <option value="" {% if not p.invoice_status %}selected{% endif %}>请选择</option>
+                                        <option value="已开票" {% if p.invoice_status == '已开票' %}selected{% endif %}>已开票</option>
+                                        <option value="未开票" {% if p.invoice_status == '未开票' %}selected{% endif %}>未开票</option>
+                                        <option value="部分开票" {% if p.invoice_status == '部分开票' %}selected{% endif %}>部分开票</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3 conditional-field" id="invoiced_amount_group" style="display:none;">
+                                    <label for="invoiced_amount" class="form-label">已开票金额（万元）</label>
+                                    <input type="number" name="invoiced_amount" class="form-control" id="invoiced_amount" value="{{ p.invoiced_amount or '' }}" placeholder="0.00" step="0.01">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="payment_status" class="form-label">结款情况</label>
+                                    <select name="payment_status" class="form-select" id="payment_status">
+                                        <option value="" {% if not p.payment_status %}selected{% endif %}>请选择</option>
+                                        <option value="已结款" {% if p.payment_status in ('已结款', '已结清') %}selected{% endif %}>已结款</option>
+                                        <option value="未结款" {% if p.payment_status in ('未结款', '未结', '未结算') %}selected{% endif %}>未结款</option>
+                                        <option value="部分结清" {% if p.payment_status == '部分结清' %}selected{% endif %}>部分结清</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3 conditional-field" id="settled_amount_group" style="display:none;">
+                                    <label for="settled_amount" class="form-label">已结清金额（万元）</label>
+                                    <input type="number" name="settled_amount" class="form-control" id="settled_amount" value="{{ p.settled_amount or '' }}" placeholder="0.00" step="0.01">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="payment_settlement_status" class="form-label">结算提成</label>
+                                    <select name="payment_settlement_status" class="form-select" id="payment_settlement_status">
+                                        <option value="未结提成" {% if p.payment_settlement_status == '未结提成' %}selected{% endif %}>未结提成</option>
+                                        <option value="已结提成" {% if p.payment_settlement_status == '已结提成' %}selected{% endif %}>已结提成</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="source" class="form-label">来源</label>
+                                    <input type="text" name="source" class="form-control" id="source" value="{{ p.source or '' }}" placeholder="如：李路敏等">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="owner_name" class="form-label">业主姓名</label>
+                                    <input type="text" name="owner_name" class="form-control" id="owner_name" value="{{ p.owner_name or '' }}" placeholder="请输入业主联系人姓名">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="owner_phone" class="form-label">业主电话</label>
+                                    <input type="tel" name="owner_phone" class="form-control" id="owner_phone" value="{{ p.owner_phone or '' }}" placeholder="请输入业主联系电话">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="remark" class="form-label">备注</label>
+                                    <textarea name="remark" class="form-control" id="remark" rows="3">{{ p.remark or '' }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="/project/detail/{{ p.id }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> 取消返回</a>
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle"></i> 保存修改</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-info-circle text-info"></i> 文件管理说明</h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0">文件上传功能仅在项目详情页提供。如需上传或管理项目附件，请前往 <a href="/project/detail/{{ p.id }}" class="text-primary">项目详情页</a>。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // 条件显示：开票情况 -> 已开票金额
+    const invoiceSelect = document.getElementById('invoice_status');
+    const invoicedGroup = document.getElementById('invoiced_amount_group');
+    if (invoiceSelect && invoicedGroup) {
+        function toggleInvoiced() {
+            invoicedGroup.style.display = invoiceSelect.value === '部分开票' ? 'block' : 'none';
+        }
+        invoiceSelect.addEventListener('change', toggleInvoiced);
+        // 初始状态
+        if (invoiceSelect.value === '部分开票') {
+            invoicedGroup.style.display = 'block';
+        }
+    }
+
+    // 条件显示：结款情况 -> 已结清金额
+    const paymentSelect = document.getElementById('payment_status');
+    const settledGroup = document.getElementById('settled_amount_group');
+    if (paymentSelect && settledGroup) {
+        function toggleSettled() {
+            settledGroup.style.display = paymentSelect.value === '部分结清' ? 'block' : 'none';
+        }
+        paymentSelect.addEventListener('change', toggleSettled);
+        // 初始状态
+        if (paymentSelect.value === '部分结清') {
+            settledGroup.style.display = 'block';
+        }
+    }
+
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const nameInput = document.getElementById('name');
+        if (!nameInput.value.trim()) {
+            e.preventDefault();
+            alert('项目名称是必填项，请填写项目名称！');
+            nameInput.focus();
+            return false;
+        }
+        const investmentInput = document.getElementById('total_investment');
+        if (investmentInput.value && parseFloat(investmentInput.value) < 0) {
+            e.preventDefault();
+            alert('投资金额不能为负数！');
+            investmentInput.focus();
+            return false;
+        }
+        const contractAmountInput = document.getElementById('contract_amount');
+        if (contractAmountInput.value && parseFloat(contractAmountInput.value) < 0) {
+            e.preventDefault();
+            alert('合同金额不能为负数！');
+            contractAmountInput.focus();
+            return false;
+        }
+        return true;
+    });
+</script>
+{% endblock %}

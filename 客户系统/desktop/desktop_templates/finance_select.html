@@ -1,0 +1,30 @@
+{% extends "base_desktop.html" %}
+
+{% block title %}财务测算 - 选择模式{% endblock %}
+
+{% block content %}
+<div class="container mt-4 py-3">
+    <div class="info-card">
+        <div class="info-header">
+            <i class="bi bi-calculator"></i> 财务测算
+            <small class="text-muted ms-2">{{ project.name }}</small>
+            <div class="float-end">
+                <a href="/project/detail/{{ project.id }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> 返回</a>
+            </div>
+        </div>
+        <div class="info-body text-center py-5">
+            <h5 class="mb-4">请选择测算模式</h5>
+            <div class="d-flex justify-content-center gap-4">
+                <a href="/project/{{ project.id }}/finance/bond" class="btn btn-lg px-5 py-3" style="background:var(--accent-primary);color:#fff;border-radius:12px;">
+                    <i class="bi bi-bank" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i>
+                    专项债财务测算
+                </a>
+                <a href="/project/{{ project.id }}/finance/normal" class="btn btn-lg px-5 py-3" style="background:var(--accent-blue);color:#fff;border-radius:12px;">
+                    <i class="bi bi-bar-chart" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i>
+                    一般项目财务测算
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

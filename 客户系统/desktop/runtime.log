@@ -1,0 +1,2573 @@
+[18:49:44.163] ===== 启动 =====
+[18:49:44.164] APP_ROOT=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop
+[18:49:44.164] frozen=False
+[18:49:44.165] sys.executable=C:\Users\Administrator\AppData\Local\Programs\Python\Python313\python.exe
+[18:49:44.165] 步骤1: 创建QApplication...
+[18:49:44.297] 步骤1: QApplication创建OK
+[18:49:44.317] first_run_config导入OK, CONFIG_FILE检查=True
+[18:49:44.318] 首次运行，弹出配置对话框...
+[18:49:52.741] run_first_run_config返回: 'C:/Users/Administrator/Desktop'
+[18:49:52.743] 用户选择了存储路径: C:/Users/Administrator/Desktop
+[18:49:52.744] DB_DIR=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_data
+[18:49:52.745] DATA_ROOT=
+[18:49:52.745] 步骤2: 导入Flask...
+[18:49:53.388] 步骤2: Flask导入OK
+[18:49:53.389] 步骤3: 创建Flask应用...
+[18:49:53.751] 步骤3: 创建OK
+[18:49:53.751] 步骤4: 注册app:// scheme + 安装handler...
+[18:49:53.816] 步骤4失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 289, in main
+    from PySide6.QtWebEngineWidgets import QWebEngineProfile
+ImportError: cannot import name 'QWebEngineProfile' from 'PySide6.QtWebEngineWidgets' (C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\site-packages\PySide6\QtWebEngineWidgets.pyd)
+
+[18:50:34.420] ===== 启动 =====
+[18:50:34.421] APP_ROOT=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop
+[18:50:34.421] frozen=False
+[18:50:34.422] sys.executable=C:\Users\Administrator\AppData\Local\Programs\Python\Python313\python.exe
+[18:50:34.422] 步骤1: 创建QApplication...
+[18:50:34.544] 步骤1: QApplication创建OK
+[18:50:34.563] first_run_config导入OK, CONFIG_FILE检查=True
+[18:50:34.564] 已有配置: 
+[18:50:34.565] DB_DIR=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_data
+[18:50:34.566] DATA_ROOT=
+[18:50:34.566] 步骤2: 导入Flask...
+[18:50:35.083] 步骤2: Flask导入OK
+[18:50:35.084] 步骤3: 创建Flask应用...
+[18:50:35.381] 步骤3: 创建OK
+[18:50:35.381] 步骤4: 注册app:// scheme + 安装handler...
+[18:50:36.068] 步骤4: scheme注册OK
+[18:50:36.068] 步骤5: 创建主窗口...
+[18:50:40.677] 步骤5: 主窗口已显示
+[18:50:40.678] 步骤6: 进入事件循环
+[18:51:56.497] ===== 启动 =====
+[18:51:56.497] APP_ROOT=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop
+[18:51:56.498] frozen=False
+[18:51:56.498] sys.executable=C:\Users\Administrator\AppData\Local\Programs\Python\Python313\python.exe
+[18:51:56.499] 步骤1: 创建QApplication...
+[18:51:56.609] 步骤1: QApplication创建OK
+[18:51:56.628] first_run_config导入OK, CONFIG_FILE检查=True
+[18:51:56.629] 首次运行，弹出配置对话框...
+[18:52:03.757] run_first_run_config返回: 'C:/Users/Administrator/Desktop'
+[18:52:03.758] 用户选择了存储路径: C:/Users/Administrator/Desktop
+[18:52:03.758] DB_DIR=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_data
+[18:52:03.759] DATA_ROOT=
+[18:52:03.759] 步骤2: 导入Flask...
+[18:52:04.178] 步骤2: Flask导入OK
+[18:52:04.178] 步骤3: 创建Flask应用...
+[18:52:04.436] 步骤3: 创建OK
+[18:52:04.437] 步骤4: 注册app:// scheme + 安装handler...
+[18:52:05.047] 步骤4: scheme注册OK
+[18:52:05.047] 步骤5: 创建主窗口...
+[18:52:07.216] 步骤5: 主窗口已显示
+[18:52:07.217] 步骤6: 进入事件循环
+[18:53:18.938] 事件循环结束, exit_code=0
+[18:53:18.938] ===== 退出 =====
+[18:54:25.239] ===== 启动 =====
+[18:54:25.239] APP_ROOT=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop
+[18:54:25.240] frozen=False
+[18:54:25.240] sys.executable=C:\Users\Administrator\AppData\Local\Programs\Python\Python313\python.exe
+[18:54:25.241] 步骤1: 创建QApplication...
+[18:54:25.366] 步骤1: QApplication创建OK
+[18:54:25.384] first_run_config导入OK, CONFIG_FILE检查=True
+[18:54:25.385] 已有配置: 
+[18:54:25.385] DB_DIR=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_data
+[18:54:25.386] DATA_ROOT=
+[18:54:25.386] 步骤2: 导入Flask...
+[18:54:25.971] 步骤2: Flask导入OK
+[18:54:25.971] 步骤3: 创建Flask应用...
+[18:54:26.274] 步骤3: 创建OK
+[18:54:26.275] 步骤4: 注册app:// scheme + 安装handler...
+[18:54:26.992] 步骤4: scheme注册OK
+[18:54:26.993] 步骤5: 创建主窗口...
+[18:54:29.003] 步骤5: 主窗口已显示
+[18:54:29.005] 步骤6: 进入事件循环
+[18:54:29.076] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:54:29.117] [scheme] 异常: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 204, in handle
+    job.reply(content_type.encode('utf-8'), reply_body)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'PySide6.QtWebEngineCore.QWebEngineUrlRequestJob.reply' called with wrong argument types:
+  PySide6.QtWebEngineCore.QWebEngineUrlRequestJob.reply(bytes, QByteArray)
+Supported signatures:
+  PySide6.QtWebEngineCore.QWebEngineUrlRequestJob.reply(contentType: PySide6.QtCore.QByteArray | bytes | bytearray | memoryview, device: PySide6.QtCore.QIODevice, /)
+
+[18:54:32.965] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:33.295] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:33.433] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:33.614] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:33.741] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:33.753] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:33.938] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:34.066] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:34.143] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:54:34.250] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:54:34.391] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:54:34.456] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:54:34.561] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:54:34.591] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:34.702] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:34.789] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:34.872] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:34.905] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:35.002] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:35.014] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:35.116] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:35.186] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:35.218] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:35.313] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:35.328] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:35.385] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:35.438] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:35.513] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:35.543] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:35.625] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:35.641] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:35.704] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:35.749] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:35.832] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:35.862] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:35.899] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:35.939] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:35.951] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:36.015] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:36.061] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:36.159] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:36.172] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:36.217] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:36.249] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:36.265] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:36.289] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:36.346] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:36.374] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:36.473] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:36.485] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:36.535] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:36.561] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:36.583] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:36.609] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:36.657] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:36.686] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:36.799] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:54:36.803] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:54:36.857] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:54:36.878] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:54:36.906] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:54:36.921] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:54:36.969] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:54:37.001] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:54:37.129] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:37.131] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:37.171] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:37.203] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:37.218] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:37.241] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:37.280] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:37.313] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:37.452] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:37.483] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:37.515] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:37.538] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:37.542] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:37.565] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:37.593] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:37.626] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:37.767] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:37.797] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:37.829] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:37.868] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:37.871] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:37.892] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:37.910] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:37.939] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:38.087] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:38.126] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:38.140] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:38.190] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:38.203] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:38.233] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:38.266] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:38.269] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:38.407] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:38.439] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:38.453] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:38.504] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:38.522] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:38.550] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:54:38.599] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:38.722] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:38.750] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:38.765] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:38.828] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:38.843] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:38.858] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:38.923] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:39.047] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:39.063] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:39.080] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:39.143] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:39.159] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:39.175] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:39.250] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:39.368] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:39.382] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:39.406] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:39.459] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:39.489] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:39.502] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:39.562] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:39.690] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:39.706] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:39.720] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:39.786] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:39.813] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:39.878] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:40.001] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:40.031] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:40.112] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:40.127] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:40.204] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:40.312] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:40.343] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:40.424] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:40.453] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:40.515] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:40.624] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:40.656] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:40.752] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:40.766] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:40.830] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:40.939] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:40.969] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:41.063] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:41.081] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:41.142] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:41.251] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:41.281] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:41.375] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:41.406] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:41.454] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:41.563] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:41.595] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:41.693] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:41.722] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:41.765] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:41.877] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:41.909] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:42.017] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:42.049] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:42.082] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:42.188] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:42.234] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:42.329] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:42.360] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:42.408] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:42.503] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:42.548] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:42.646] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:42.673] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:42.720] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:42.830] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:42.860] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:42.969] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:42.984] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:43.047] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:43.157] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:43.172] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:43.282] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:43.298] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:43.363] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:43.471] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:43.485] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:43.593] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:43.611] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:43.686] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:43.800] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:43.908] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:43.939] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:44.003] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:44.131] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:44.220] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:44.266] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:44.330] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:44.459] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:44.536] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:44.579] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:44.661] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:44.788] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:44.864] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:44.893] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:44.986] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:45.114] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:45.193] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:45.219] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:45.300] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:45.440] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:45.517] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:45.532] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:45.629] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:45.766] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:45.832] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:45.847] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:45.953] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:46.080] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:46.159] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:46.175] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:46.268] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:46.391] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:46.486] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:46.504] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:46.594] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:46.703] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:46.797] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:46.829] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:46.906] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:47.018] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:47.113] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:47.146] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:47.219] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:47.357] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:47.439] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:47.471] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:47.536] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:47.674] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:47.750] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:47.782] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:47.860] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:47.985] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:48.067] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:48.097] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:48.173] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:48.298] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:48.392] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:48.424] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:48.484] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:48.625] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:48.713] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:48.753] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:48.797] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:48.938] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:49.033] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:49.079] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:49.112] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:49.267] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:49.360] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:49.408] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:49.444] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:49.583] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:49.675] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:49.734] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:49.768] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:49.917] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:50.007] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:50.049] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:50.093] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:50.236] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:50.330] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:50.375] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:50.408] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:50.556] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:50.649] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:50.696] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:50.736] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:50.883] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:50.975] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:51.019] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:51.065] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:51.208] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:51.299] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:51.344] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:51.394] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:51.536] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:51.611] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:51.658] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:51.723] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:51.863] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:51.926] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:51.970] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:52.050] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:52.192] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:52.252] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:52.284] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:52.377] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:52.517] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:52.580] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:52.614] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:52.707] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:52.845] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:52.908] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:52.942] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:53.034] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:53.157] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:53.222] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:53.268] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:53.362] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:53.469] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:53.547] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:53.595] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:53.690] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:53.793] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:53.860] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:53.910] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:54.015] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:54.112] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:54.175] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:54.238] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:54:54.520] 事件循环结束, exit_code=0
+[18:54:54.521] ===== 退出 =====
+[18:55:30.139] ===== 启动 =====
+[18:55:30.139] APP_ROOT=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop
+[18:55:30.140] frozen=False
+[18:55:30.140] sys.executable=C:\Users\Administrator\AppData\Local\Programs\Python\Python313\python.exe
+[18:55:30.141] 步骤1: 创建QApplication...
+[18:55:30.269] 步骤1: QApplication创建OK
+[18:55:30.288] first_run_config导入OK, CONFIG_FILE检查=True
+[18:55:30.289] 首次运行，弹出配置对话框...
+[18:55:35.200] run_first_run_config返回: 'C:/Users/Administrator/Desktop'
+[18:55:35.201] 用户选择了存储路径: C:/Users/Administrator/Desktop
+[18:55:35.202] DB_DIR=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_data
+[18:55:35.203] DATA_ROOT=
+[18:55:35.204] 步骤2: 导入Flask...
+[18:55:35.805] 步骤2: Flask导入OK
+[18:55:35.805] 步骤3: 创建Flask应用...
+[18:55:36.151] 步骤3: 创建OK
+[18:55:36.152] 步骤4: 注册app:// scheme + 安装handler...
+[18:55:36.694] 步骤4: scheme注册OK
+[18:55:36.694] 步骤5: 创建主窗口...
+[18:55:38.812] 步骤5: 主窗口已显示
+[18:55:38.813] 步骤6: 进入事件循环
+[18:55:38.887] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:55:38.894] [scheme] 响应 status=200 size=8299
+[18:55:40.471] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:55:40.478] [scheme] 响应 status=200 size=8440
+[18:55:40.489] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:55:40.827] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:55:40.829] [scheme] 响应 status=200 size=8299
+[18:55:46.163] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:55:46.833] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:55:46.835] [scheme] 响应 status=200 size=8440
+[18:55:46.845] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:55:47.160] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:55:47.161] [scheme] 响应 status=200 size=8299
+[18:55:47.185] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:55:47.187] [scheme] 响应 status=200 size=8440
+[18:55:47.197] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:55:47.518] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:55:47.520] [scheme] 响应 status=200 size=8299
+[18:55:47.540] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:55:47.542] [scheme] 响应 status=200 size=8440
+[18:55:47.551] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:55:47.879] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:55:47.880] [scheme] 响应 status=200 size=8299
+[18:55:47.903] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:55:47.905] [scheme] 响应 status=200 size=8440
+[18:55:47.914] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:55:48.237] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:55:48.239] [scheme] 响应 status=200 size=8299
+[18:55:48.259] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:55:48.262] [scheme] 响应 status=200 size=8440
+[18:55:48.268] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:55:48.582] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:55:48.583] [scheme] 响应 status=200 size=8299
+[18:55:48.601] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:55:48.603] [scheme] 响应 status=200 size=8440
+[18:55:48.612] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:55:48.922] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:55:48.924] [scheme] 响应 status=200 size=8299
+[18:55:48.942] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:55:48.944] [scheme] 响应 status=200 size=8440
+[18:55:48.952] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:55:49.267] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:55:49.269] [scheme] 响应 status=200 size=8299
+[18:55:49.285] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:55:49.287] [scheme] 响应 status=200 size=8440
+[18:55:49.296] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:55:49.612] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:55:49.613] [scheme] 响应 status=200 size=8299
+[18:55:49.634] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:55:49.636] [scheme] 响应 status=200 size=8440
+[18:55:49.645] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:55:49.975] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:55:49.977] [scheme] 响应 status=200 size=8299
+[18:55:50.006] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:55:50.009] [scheme] 响应 status=200 size=8440
+[18:55:50.016] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:55:50.340] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:55:50.344] [scheme] 响应 status=200 size=8299
+[18:55:50.378] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:55:50.380] [scheme] 响应 status=200 size=8440
+[18:55:50.391] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:55:50.713] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:55:50.715] [scheme] 响应 status=200 size=8299
+[18:55:50.741] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:55:50.743] [scheme] 响应 status=200 size=8440
+[18:55:50.751] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:55:51.063] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:55:51.065] [scheme] 响应 status=200 size=8299
+[18:55:51.090] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:55:51.093] [scheme] 响应 status=200 size=8440
+[18:55:51.101] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:55:51.426] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:55:51.428] [scheme] 响应 status=200 size=8299
+[18:55:51.455] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:55:51.458] [scheme] 响应 status=200 size=8440
+[18:55:51.467] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:55:51.792] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:55:51.794] [scheme] 响应 status=200 size=8299
+[18:55:51.824] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:55:51.827] [scheme] 响应 status=200 size=8440
+[18:55:51.837] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:55:52.184] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:55:52.186] [scheme] 响应 status=200 size=8299
+[18:55:52.207] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:55:52.211] [scheme] 响应 status=200 size=8440
+[18:55:52.220] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:55:52.548] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:55:52.549] [scheme] 响应 status=200 size=8299
+[18:55:52.574] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:55:52.577] [scheme] 响应 status=200 size=8440
+[18:55:52.588] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:55:52.912] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:55:52.914] [scheme] 响应 status=200 size=8299
+[18:55:52.941] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:55:52.943] [scheme] 响应 status=200 size=8440
+[18:55:52.951] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:55:53.266] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:55:53.268] [scheme] 响应 status=200 size=8299
+[18:55:53.294] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:55:53.296] [scheme] 响应 status=200 size=8440
+[18:55:53.305] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:55:53.629] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:55:53.631] [scheme] 响应 status=200 size=8299
+[18:55:53.678] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:55:53.680] [scheme] 响应 status=200 size=8440
+[18:55:53.709] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:55:54.048] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:55:54.049] [scheme] 响应 status=200 size=8299
+[18:55:54.124] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:55:54.126] [scheme] 响应 status=200 size=8440
+[18:55:54.135] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:55:54.405] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:55:54.477] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:55:54.480] [scheme] 响应 status=200 size=8299
+[18:55:54.542] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:55:54.545] [scheme] 响应 status=200 size=8440
+[18:55:54.564] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:55:54.759] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:55:54.762] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:55:54.764] [scheme] 响应 status=200 size=8299
+[18:55:54.807] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:55:54.809] [scheme] 响应 status=200 size=8440
+[18:55:54.829] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:55:54.895] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:55:54.897] [scheme] 响应 status=200 size=8299
+[18:55:54.940] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:55:54.943] [scheme] 响应 status=200 size=8440
+[18:55:54.959] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:55:55.161] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:55:55.163] [scheme] 响应 status=200 size=8299
+[18:55:55.209] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:55:55.211] [scheme] 响应 status=200 size=8440
+[18:55:55.230] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:55:56.791] 事件循环结束, exit_code=0
+[18:55:56.792] ===== 退出 =====
+[18:56:33.711] ===== 启动 =====
+[18:56:33.711] APP_ROOT=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop
+[18:56:33.712] frozen=False
+[18:56:33.712] sys.executable=C:\Users\Administrator\AppData\Local\Programs\Python\Python313\python.exe
+[18:56:33.713] 步骤1: 创建QApplication...
+[18:56:33.835] 步骤1: QApplication创建OK
+[18:56:33.853] first_run_config导入OK, CONFIG_FILE检查=True
+[18:56:33.854] 已有配置: 
+[18:56:33.854] DB_DIR=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_data
+[18:56:33.855] DATA_ROOT=
+[18:56:33.855] 步骤2: 导入Flask...
+[18:56:34.342] 步骤2: Flask导入OK
+[18:56:34.342] 步骤3: 创建Flask应用...
+[18:56:34.640] 步骤3: 创建OK
+[18:56:34.641] 步骤4: 注册app:// scheme + 安装handler...
+[18:56:35.500] 步骤4: scheme注册OK
+[18:56:35.500] 步骤5: 创建主窗口...
+[18:56:37.641] 步骤5: 主窗口已显示
+[18:56:37.642] 步骤6: 进入事件循环
+[18:56:37.711] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:56:37.718] [scheme] 响应 status=200 size=8299
+[18:56:38.956] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:56:38.960] [scheme] POST body len=0 raw=b''
+[18:56:38.964] [scheme] 响应 status=200 size=8440
+[18:56:38.974] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:56:39.301] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:56:39.303] [scheme] 响应 status=200 size=8299
+[18:56:41.191] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:56:46.591] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:56:46.591] [scheme] POST body len=0 raw=b''
+[18:56:46.594] [scheme] 响应 status=200 size=8440
+[18:56:46.600] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:56:46.855] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:56:46.921] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:56:46.922] [scheme] 响应 status=200 size=8299
+[18:56:46.942] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:56:46.943] [scheme] POST body len=0 raw=b''
+[18:56:46.946] [scheme] 响应 status=200 size=8440
+[18:56:46.953] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:56:47.170] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:56:47.172] [scheme] 响应 status=200 size=8299
+[18:56:47.188] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:56:47.189] [scheme] POST body len=0 raw=b''
+[18:56:47.192] [scheme] 响应 status=200 size=8440
+[18:56:47.199] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:56:47.267] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:56:47.269] [scheme] 响应 status=200 size=8299
+[18:56:47.288] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:56:47.289] [scheme] POST body len=0 raw=b''
+[18:56:47.292] [scheme] 响应 status=200 size=8440
+[18:56:47.300] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:56:47.514] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:56:47.516] [scheme] 响应 status=200 size=8299
+[18:56:47.546] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:56:47.547] [scheme] POST body len=0 raw=b''
+[18:56:47.549] [scheme] 响应 status=200 size=8440
+[18:56:47.562] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:56:47.614] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:56:47.616] [scheme] 响应 status=200 size=8299
+[18:56:47.659] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:56:47.660] [scheme] POST body len=0 raw=b''
+[18:56:47.661] [scheme] 响应 status=200 size=8440
+[18:56:47.692] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:56:47.882] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:56:47.883] [scheme] 响应 status=200 size=8299
+[18:56:47.911] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:56:47.912] [scheme] POST body len=0 raw=b''
+[18:56:47.914] [scheme] 响应 status=200 size=8440
+[18:56:47.932] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:56:48.015] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:56:48.017] [scheme] 响应 status=200 size=8299
+[18:56:48.048] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:56:48.049] [scheme] POST body len=0 raw=b''
+[18:56:48.051] [scheme] 响应 status=200 size=8440
+[18:56:48.063] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:56:48.250] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:56:48.252] [scheme] 响应 status=200 size=8299
+[18:56:48.293] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:56:48.294] [scheme] POST body len=0 raw=b''
+[18:56:48.296] [scheme] 响应 status=200 size=8440
+[18:56:48.313] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:56:48.397] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:56:48.399] [scheme] 响应 status=200 size=8299
+[18:56:48.429] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:56:48.429] [scheme] POST body len=0 raw=b''
+[18:56:48.431] [scheme] 响应 status=200 size=8440
+[18:56:48.446] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:56:48.573] 事件循环结束, exit_code=0
+[18:56:48.574] ===== 退出 =====
+[18:59:09.401] ===== 启动 =====
+[18:59:09.401] APP_ROOT=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop
+[18:59:09.402] frozen=False
+[18:59:09.403] sys.executable=C:\Users\Administrator\AppData\Local\Programs\Python\Python313\python.exe
+[18:59:09.403] 步骤1: 创建QApplication...
+[18:59:09.533] 步骤1: QApplication创建OK
+[18:59:09.551] first_run_config导入OK, CONFIG_FILE检查=True
+[18:59:09.551] 首次运行，弹出配置对话框...
+[18:59:18.259] run_first_run_config返回: 'C:/Users/Administrator/Desktop'
+[18:59:18.260] 用户选择了存储路径: C:/Users/Administrator/Desktop
+[18:59:18.260] DB_DIR=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_data
+[18:59:18.261] DATA_ROOT=
+[18:59:18.262] 步骤2: 导入Flask...
+[18:59:19.006] 步骤2: Flask导入OK
+[18:59:19.007] 步骤3: 创建Flask应用...
+[18:59:19.321] 步骤3: 创建OK
+[18:59:19.322] 步骤4: 注册app:// scheme + 安装handler...
+[18:59:19.759] 步骤4: scheme注册OK
+[18:59:19.759] 步骤5: 创建主窗口...
+[18:59:21.621] 步骤5: 主窗口已显示
+[18:59:21.622] 步骤6: 进入事件循环
+[18:59:21.683] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:21.690] [scheme] 响应 status=200 size=8299
+[18:59:22.789] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:22.793] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:22.800] [scheme] 响应 status=200 size=8440
+[18:59:22.817] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:59:23.143] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:23.144] [scheme] 响应 status=200 size=8299
+[18:59:26.968] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:59:28.286] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:59:29.405] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:59:29.802] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:29.803] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:29.805] [scheme] 响应 status=200 size=8440
+[18:59:29.812] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:59:29.831] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:59:30.126] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:30.128] [scheme] 响应 status=200 size=8299
+[18:59:30.144] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:30.145] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:30.147] [scheme] 响应 status=200 size=8440
+[18:59:30.157] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:30.158] [scheme] 响应 status=200 size=8299
+[18:59:30.177] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:30.178] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:30.180] [scheme] 响应 status=200 size=8440
+[18:59:30.189] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:59:30.326] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:59:30.517] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:30.518] [scheme] 响应 status=200 size=8299
+[18:59:30.563] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:30.564] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:30.566] [scheme] 响应 status=200 size=8440
+[18:59:30.583] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:59:30.647] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:30.649] [scheme] 响应 status=200 size=8299
+[18:59:30.697] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:30.698] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:30.699] [scheme] 响应 status=200 size=8440
+[18:59:30.707] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:59:30.907] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:30.908] [scheme] 响应 status=200 size=8299
+[18:59:30.946] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:30.947] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:30.949] [scheme] 响应 status=200 size=8440
+[18:59:30.968] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:59:31.037] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:31.038] [scheme] 响应 status=200 size=8299
+[18:59:31.080] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:31.081] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:31.082] [scheme] 响应 status=200 size=8440
+[18:59:31.091] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:59:31.269] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:59:31.291] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:31.293] [scheme] 响应 status=200 size=8299
+[18:59:31.331] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:31.332] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:31.333] [scheme] 响应 status=200 size=8440
+[18:59:31.342] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:59:31.407] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:31.408] [scheme] 响应 status=200 size=8299
+[18:59:31.464] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:31.465] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:31.467] [scheme] 响应 status=200 size=8440
+[18:59:31.475] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:59:31.659] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:31.660] [scheme] 响应 status=200 size=8299
+[18:59:31.702] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:31.702] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:31.704] [scheme] 响应 status=200 size=8440
+[18:59:31.719] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:59:31.802] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:31.804] [scheme] 响应 status=200 size=8299
+[18:59:31.849] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:31.849] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:31.851] [scheme] 响应 status=200 size=8440
+[18:59:31.868] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:59:32.053] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:32.054] [scheme] 响应 status=200 size=8299
+[18:59:32.097] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:32.098] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:32.099] [scheme] 响应 status=200 size=8440
+[18:59:32.118] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:59:32.188] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:32.189] [scheme] 响应 status=200 size=8299
+[18:59:32.231] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:32.232] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:32.234] [scheme] 响应 status=200 size=8440
+[18:59:32.251] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:59:32.438] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:32.440] [scheme] 响应 status=200 size=8299
+[18:59:32.480] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:32.480] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:32.482] [scheme] 响应 status=200 size=8440
+[18:59:32.504] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:59:32.570] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:32.571] [scheme] 响应 status=200 size=8299
+[18:59:32.616] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:32.617] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:32.618] [scheme] 响应 status=200 size=8440
+[18:59:32.637] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:59:32.834] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:32.836] [scheme] 响应 status=200 size=8299
+[18:59:32.880] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:32.881] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:32.883] [scheme] 响应 status=200 size=8440
+[18:59:32.917] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:59:32.953] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:32.955] [scheme] 响应 status=200 size=8299
+[18:59:32.999] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:32.999] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:33.001] [scheme] 响应 status=200 size=8440
+[18:59:33.020] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:59:33.255] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:33.257] [scheme] 响应 status=200 size=8299
+[18:59:33.296] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:33.297] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:33.299] [scheme] 响应 status=200 size=8440
+[18:59:33.307] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:59:33.365] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:33.366] [scheme] 响应 status=200 size=8299
+[18:59:33.413] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:33.414] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:33.416] [scheme] 响应 status=200 size=8440
+[18:59:33.424] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[18:59:33.483] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:59:33.648] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:33.650] [scheme] 响应 status=200 size=8299
+[18:59:33.697] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:33.698] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:33.700] [scheme] 响应 status=200 size=8440
+[18:59:33.718] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:59:33.753] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:33.755] [scheme] 响应 status=200 size=8299
+[18:59:33.804] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:33.804] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:33.806] [scheme] 响应 status=200 size=8440
+[18:59:33.808] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:33.810] [scheme] 响应 status=200 size=8299
+[18:59:33.855] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:59:33.867] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:33.867] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:33.869] [scheme] 响应 status=200 size=8440
+[18:59:33.901] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[18:59:33.973] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:59:34.049] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:34.050] [scheme] 响应 status=200 size=8299
+[18:59:34.097] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:34.098] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:34.100] [scheme] 响应 status=200 size=8440
+[18:59:34.116] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:59:34.221] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:34.223] [scheme] 响应 status=200 size=8299
+[18:59:34.253] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:34.254] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:34.257] [scheme] 响应 status=200 size=8440
+[18:59:34.273] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:59:34.304] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:34.306] [scheme] 响应 status=200 size=8299
+[18:59:34.351] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:34.352] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:34.354] [scheme] 响应 status=200 size=8440
+[18:59:34.369] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:59:34.439] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:34.441] [scheme] 响应 status=200 size=8299
+[18:59:34.496] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:34.497] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:34.499] [scheme] 响应 status=200 size=8440
+[18:59:34.507] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:59:34.600] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:34.603] [scheme] 响应 status=200 size=8299
+[18:59:34.651] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:34.652] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:34.654] [scheme] 响应 status=200 size=8440
+[18:59:34.669] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:59:34.687] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:34.689] [scheme] 响应 status=200 size=8299
+[18:59:34.733] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:34.734] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:34.735] [scheme] 响应 status=200 size=8440
+[18:59:34.753] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:59:34.838] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:34.841] [scheme] 响应 status=200 size=8299
+[18:59:34.880] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:34.881] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:34.883] [scheme] 响应 status=200 size=8440
+[18:59:34.898] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:59:34.985] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:34.987] [scheme] 响应 status=200 size=8299
+[18:59:35.032] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:35.032] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:35.034] [scheme] 响应 status=200 size=8440
+[18:59:35.049] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:59:35.081] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:35.082] [scheme] 响应 status=200 size=8299
+[18:59:35.131] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:35.131] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:35.133] [scheme] 响应 status=200 size=8440
+[18:59:35.151] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:59:35.236] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:35.237] [scheme] 响应 status=200 size=8299
+[18:59:35.282] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:35.283] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:35.285] [scheme] 响应 status=200 size=8440
+[18:59:35.297] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:59:35.397] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:35.399] [scheme] 响应 status=200 size=8299
+[18:59:35.437] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:35.438] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:35.440] [scheme] 响应 status=200 size=8440
+[18:59:35.454] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:59:35.483] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:35.485] [scheme] 响应 status=200 size=8299
+[18:59:35.530] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:35.530] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:35.532] [scheme] 响应 status=200 size=8440
+[18:59:35.553] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:59:35.616] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:35.618] [scheme] 响应 status=200 size=8299
+[18:59:35.666] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:35.667] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:35.668] [scheme] 响应 status=200 size=8440
+[18:59:35.676] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:59:35.786] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:35.788] [scheme] 响应 status=200 size=8299
+[18:59:35.833] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:35.833] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:35.835] [scheme] 响应 status=200 size=8440
+[18:59:35.846] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:59:35.886] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:35.888] [scheme] 响应 status=200 size=8299
+[18:59:35.933] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:35.933] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:35.935] [scheme] 响应 status=200 size=8440
+[18:59:35.952] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:59:36.003] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:36.005] [scheme] 响应 status=200 size=8299
+[18:59:36.046] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:36.047] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:36.049] [scheme] 响应 status=200 size=8440
+[18:59:36.058] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:59:36.173] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:36.174] [scheme] 响应 status=200 size=8299
+[18:59:36.231] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:36.232] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:36.234] [scheme] 响应 status=200 size=8440
+[18:59:36.250] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:59:36.283] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:36.285] [scheme] 响应 status=200 size=8299
+[18:59:36.337] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:36.337] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:36.340] [scheme] 响应 status=200 size=8440
+[18:59:36.355] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:59:36.386] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:36.388] [scheme] 响应 status=200 size=8299
+[18:59:36.436] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[18:59:36.436] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[18:59:36.438] [scheme] 响应 status=200 size=8440
+[18:59:36.454] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[18:59:36.569] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[18:59:36.570] [scheme] 响应 status=200 size=8299
+[18:59:36.779] 事件循环结束, exit_code=0
+[18:59:36.780] ===== 退出 =====
+[19:00:41.793] ===== 启动 =====
+[19:00:41.793] APP_ROOT=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop
+[19:00:41.794] frozen=False
+[19:00:41.794] sys.executable=C:\Users\Administrator\AppData\Local\Programs\Python\Python313\python.exe
+[19:00:41.795] 步骤1: 创建QApplication...
+[19:00:41.923] 步骤1: QApplication创建OK
+[19:00:41.942] first_run_config导入OK, CONFIG_FILE检查=True
+[19:00:41.942] 已有配置: 
+[19:00:41.943] DB_DIR=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_data
+[19:00:41.943] DATA_ROOT=
+[19:00:41.944] 步骤2: 导入Flask...
+[19:00:42.456] 步骤2: Flask导入OK
+[19:00:42.456] 步骤3: 创建Flask应用...
+[19:00:42.760] 步骤3: 创建OK
+[19:00:42.761] 步骤4: 注册app:// scheme + 安装handler...
+[19:00:43.418] 步骤4: scheme注册OK
+[19:00:43.419] 步骤5: 创建主窗口...
+[19:00:47.370] 步骤5: 主窗口已显示
+[19:00:47.370] 步骤6: 进入事件循环
+[19:00:47.439] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[19:00:47.446] [scheme] 响应 status=200 size=8299
+[19:00:49.976] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:00:49.980] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[19:00:49.985] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 190, in handle
+    cookie_store.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:00:49.986] [scheme] 响应 status=200 size=8440
+[19:00:50.002] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:00:50.003] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 190, in handle
+    cookie_store.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:00:50.004] [scheme] 重定向到 app://app/auth/login?next=%2Fmy_projects
+[19:00:50.012] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fmy_projects
+[19:00:50.014] [scheme] 响应 status=200 size=8299
+[19:00:55.235] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:00:55.237] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 190, in handle
+    cookie_store.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:00:55.237] [scheme] 重定向到 app://app/auth/login?next=%2Fmy_projects
+[19:00:55.248] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fmy_projects
+[19:00:55.250] [scheme] 响应 status=200 size=8299
+[19:00:56.631] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:00:56.633] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 190, in handle
+    cookie_store.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:00:56.633] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:00:56.642] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:00:56.645] [scheme] 响应 status=200 size=8299
+[19:00:56.774] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:00:56.774] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[19:00:56.777] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 190, in handle
+    cookie_store.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:00:56.778] [scheme] 响应 status=200 size=8440
+[19:00:56.788] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:00:56.790] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 190, in handle
+    cookie_store.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:00:56.790] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:00:56.814] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:00:56.817] [scheme] 响应 status=200 size=8299
+[19:00:57.830] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[19:00:57.832] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 190, in handle
+    cookie_store.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:00:57.833] [scheme] 重定向到 app://app/auth/login?next=%2Fadmin%2Fdatabase
+[19:00:57.843] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fadmin%2Fdatabase
+[19:00:57.845] [scheme] 响应 status=200 size=8299
+[19:00:57.976] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:00:57.977] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[19:00:57.979] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 190, in handle
+    cookie_store.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:00:57.980] [scheme] 响应 status=200 size=8440
+[19:00:57.989] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[19:00:57.991] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 190, in handle
+    cookie_store.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:00:57.991] [scheme] 重定向到 app://app/auth/login?next=%2Fadmin%2Fdatabase
+[19:00:58.001] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fadmin%2Fdatabase
+[19:00:58.003] [scheme] 响应 status=200 size=8299
+[19:00:58.640] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:00:58.642] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 190, in handle
+    cookie_store.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:00:58.642] [scheme] 重定向到 app://app/auth/login?next=%2Fmy_projects
+[19:00:58.651] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fmy_projects
+[19:00:58.654] [scheme] 响应 status=200 size=8299
+[19:00:58.774] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:00:58.775] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[19:00:58.778] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 190, in handle
+    cookie_store.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:00:58.778] [scheme] 响应 status=200 size=8440
+[19:00:58.787] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:00:58.788] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 190, in handle
+    cookie_store.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:00:58.789] [scheme] 重定向到 app://app/auth/login?next=%2Fmy_projects
+[19:00:58.802] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fmy_projects
+[19:00:58.804] [scheme] 响应 status=200 size=8299
+[19:01:02.276] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[19:01:02.278] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 190, in handle
+    cookie_store.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:01:02.278] [scheme] 重定向到 app://app/auth/login?next=%2Fadmin%2Fdatabase
+[19:01:02.287] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fadmin%2Fdatabase
+[19:01:02.289] [scheme] 响应 status=200 size=8299
+[19:01:02.423] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:01:02.424] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[19:01:02.427] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 190, in handle
+    cookie_store.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:01:02.427] [scheme] 响应 status=200 size=8440
+[19:01:02.436] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[19:01:02.439] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 190, in handle
+    cookie_store.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:01:02.439] [scheme] 重定向到 app://app/auth/login?next=%2Fadmin%2Fdatabase
+[19:01:02.449] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fadmin%2Fdatabase
+[19:01:02.451] [scheme] 响应 status=200 size=8299
+[19:01:02.623] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:01:02.624] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 190, in handle
+    cookie_store.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:01:02.625] [scheme] 重定向到 app://app/auth/login?next=%2Fmy_projects
+[19:01:02.637] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fmy_projects
+[19:01:02.639] [scheme] 响应 status=200 size=8299
+[19:01:02.777] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:01:02.778] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[19:01:02.782] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 190, in handle
+    cookie_store.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:01:02.783] [scheme] 响应 status=200 size=8440
+[19:01:02.794] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:01:02.797] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 190, in handle
+    cookie_store.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:01:02.797] [scheme] 重定向到 app://app/auth/login?next=%2Fmy_projects
+[19:01:02.807] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fmy_projects
+[19:01:02.809] [scheme] 响应 status=200 size=8299
+[19:01:02.993] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:01:02.995] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 190, in handle
+    cookie_store.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:01:02.995] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:01:03.005] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:01:03.007] [scheme] 响应 status=200 size=8299
+[19:01:03.175] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:01:03.176] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[19:01:03.179] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 190, in handle
+    cookie_store.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:01:03.179] [scheme] 响应 status=200 size=8440
+[19:01:03.190] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:01:03.192] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 190, in handle
+    cookie_store.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:01:03.192] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:01:03.201] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:01:03.203] [scheme] 响应 status=200 size=8299
+[19:01:03.384] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[19:01:03.386] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 190, in handle
+    cookie_store.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:01:03.386] [scheme] 重定向到 app://app/auth/login?next=%2Fadmin%2Fdatabase
+[19:01:03.397] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fadmin%2Fdatabase
+[19:01:03.399] [scheme] 响应 status=200 size=8299
+[19:01:03.547] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:01:03.548] [scheme] POST body len=32 raw=b'username=admin&password=admin123'
+[19:01:03.552] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 190, in handle
+    cookie_store.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:01:03.553] [scheme] 响应 status=200 size=8440
+[19:01:03.564] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[19:01:03.565] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 190, in handle
+    cookie_store.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:01:03.566] [scheme] 重定向到 app://app/auth/login?next=%2Fadmin%2Fdatabase
+[19:01:03.575] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fadmin%2Fdatabase
+[19:01:03.577] [scheme] 响应 status=200 size=8299
+[19:02:07.608] ===== 启动 =====
+[19:02:07.608] APP_ROOT=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop
+[19:02:07.608] frozen=False
+[19:02:07.609] sys.executable=C:\Users\Administrator\AppData\Local\Programs\Python\Python313\python.exe
+[19:02:07.610] 步骤1: 创建QApplication...
+[19:02:07.734] 步骤1: QApplication创建OK
+[19:02:07.753] first_run_config导入OK, CONFIG_FILE检查=True
+[19:02:07.753] 首次运行，弹出配置对话框...
+[19:02:15.303] run_first_run_config返回: 'C:/Users/Administrator/Desktop'
+[19:02:15.304] 用户选择了存储路径: C:/Users/Administrator/Desktop
+[19:02:15.304] DB_DIR=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_data
+[19:02:15.305] DATA_ROOT=
+[19:02:15.305] 步骤2: 导入Flask...
+[19:02:16.000] 步骤2: Flask导入OK
+[19:02:16.001] 步骤3: 创建Flask应用...
+[19:02:16.317] 步骤3: 创建OK
+[19:02:16.317] 步骤4: 注册app:// scheme + 安装handler...
+[19:02:17.081] 步骤4: scheme注册OK
+[19:02:17.082] 步骤5: 创建主窗口...
+[19:02:19.184] 步骤5: 主窗口已显示
+[19:02:19.185] 步骤6: 进入事件循环
+[19:02:19.245] [scheme] handle被调用 method=b'GET' url=app://app/auth/login
+[19:02:19.251] [scheme] 响应 status=200 size=8299
+[19:02:20.248] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:20.252] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:20.258] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:20.259] [scheme] 响应 status=200 size=8440
+[19:02:20.278] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:02:20.279] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:20.280] [scheme] 重定向到 app://app/auth/login?next=%2Fmy_projects
+[19:02:20.292] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fmy_projects
+[19:02:20.294] [scheme] 响应 status=200 size=8299
+[19:02:23.737] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:02:23.738] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:23.739] [scheme] 重定向到 app://app/auth/login?next=%2Fmy_projects
+[19:02:23.747] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fmy_projects
+[19:02:23.749] [scheme] 响应 status=200 size=8299
+[19:02:30.463] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:30.464] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:30.465] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:30.466] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:30.467] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:30.469] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:30.470] [scheme] 响应 status=200 size=8440
+[19:02:30.482] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:30.484] [scheme] 响应 status=200 size=8299
+[19:02:30.612] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:30.613] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:30.616] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:30.617] [scheme] 响应 status=200 size=8440
+[19:02:30.630] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:30.631] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:30.632] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:30.643] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:30.645] [scheme] 响应 status=200 size=8299
+[19:02:30.664] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:30.664] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:30.666] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:30.667] [scheme] 响应 status=200 size=8440
+[19:02:30.676] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:30.678] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:30.678] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:30.687] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:30.689] [scheme] 响应 status=200 size=8299
+[19:02:30.707] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:30.708] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:30.710] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:30.711] [scheme] 响应 status=200 size=8440
+[19:02:30.719] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:30.721] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:30.722] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:30.729] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:30.732] [scheme] 响应 status=200 size=8299
+[19:02:30.754] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:30.754] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:30.757] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:30.758] [scheme] 响应 status=200 size=8440
+[19:02:30.766] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:30.767] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:30.767] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:30.776] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:30.778] [scheme] 响应 status=200 size=8299
+[19:02:30.796] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:30.797] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:30.799] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:30.800] [scheme] 响应 status=200 size=8440
+[19:02:30.809] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:30.810] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:30.811] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:30.819] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:30.823] [scheme] 响应 status=200 size=8299
+[19:02:30.843] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:30.843] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:30.846] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:30.846] [scheme] 响应 status=200 size=8440
+[19:02:30.855] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:30.857] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:30.857] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:30.875] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:30.877] [scheme] 响应 status=200 size=8299
+[19:02:30.909] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:30.910] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:30.912] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:30.913] [scheme] 响应 status=200 size=8440
+[19:02:30.927] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:30.929] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:30.929] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:30.954] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:30.956] [scheme] 响应 status=200 size=8299
+[19:02:30.990] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:30.991] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:30.993] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:30.993] [scheme] 响应 status=200 size=8440
+[19:02:31.008] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:31.010] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:31.010] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:31.023] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:31.025] [scheme] 响应 status=200 size=8299
+[19:02:31.072] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:31.073] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:31.075] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:31.076] [scheme] 响应 status=200 size=8440
+[19:02:31.093] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:31.094] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:31.095] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:31.106] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:31.108] [scheme] 响应 status=200 size=8299
+[19:02:31.152] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:31.153] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:31.155] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:31.156] [scheme] 响应 status=200 size=8440
+[19:02:31.175] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:31.176] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:31.177] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:31.190] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:31.191] [scheme] 响应 status=200 size=8299
+[19:02:31.240] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:31.241] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:31.243] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:31.243] [scheme] 响应 status=200 size=8440
+[19:02:31.258] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:31.260] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:31.261] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:31.273] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:31.274] [scheme] 响应 status=200 size=8299
+[19:02:31.322] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:31.323] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:31.325] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:31.325] [scheme] 响应 status=200 size=8440
+[19:02:31.343] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:31.344] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:31.344] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:31.357] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:31.358] [scheme] 响应 status=200 size=8299
+[19:02:31.394] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:31.404] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:31.406] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:31.406] [scheme] 响应 status=200 size=8440
+[19:02:31.414] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:31.416] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:31.416] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:31.426] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:31.428] [scheme] 响应 status=200 size=8299
+[19:02:31.469] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:31.470] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:31.473] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:31.473] [scheme] 响应 status=200 size=8440
+[19:02:31.492] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:31.493] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:31.494] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:31.506] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:31.508] [scheme] 响应 status=200 size=8299
+[19:02:31.548] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:31.549] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:31.551] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:31.552] [scheme] 响应 status=200 size=8440
+[19:02:31.562] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:31.564] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:31.564] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:31.579] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:31.581] [scheme] 响应 status=200 size=8299
+[19:02:31.622] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:31.623] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:31.625] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:31.625] [scheme] 响应 status=200 size=8440
+[19:02:31.645] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:31.646] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:31.647] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:31.660] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:31.661] [scheme] 响应 status=200 size=8299
+[19:02:31.708] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:31.708] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:31.710] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:31.711] [scheme] 响应 status=200 size=8440
+[19:02:31.727] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:31.728] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:31.728] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:31.739] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:31.741] [scheme] 响应 status=200 size=8299
+[19:02:31.777] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:31.778] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:31.780] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:31.781] [scheme] 响应 status=200 size=8440
+[19:02:31.797] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:31.799] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:31.800] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:31.824] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:31.826] [scheme] 响应 status=200 size=8299
+[19:02:31.863] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:31.863] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:31.865] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:31.866] [scheme] 响应 status=200 size=8440
+[19:02:31.879] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:31.880] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:31.881] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:31.907] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:31.909] [scheme] 响应 status=200 size=8299
+[19:02:31.944] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:31.945] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:31.947] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:31.948] [scheme] 响应 status=200 size=8440
+[19:02:31.961] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:31.963] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:31.963] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:31.990] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:31.992] [scheme] 响应 status=200 size=8299
+[19:02:32.027] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:32.028] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:32.030] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:32.031] [scheme] 响应 status=200 size=8440
+[19:02:32.044] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:32.048] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:32.049] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:32.074] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:32.078] [scheme] 响应 status=200 size=8299
+[19:02:32.126] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:32.127] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:32.130] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:32.131] [scheme] 响应 status=200 size=8440
+[19:02:32.147] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:32.152] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:32.153] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:32.173] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:32.175] [scheme] 响应 status=200 size=8299
+[19:02:32.224] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:32.225] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:32.227] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:32.228] [scheme] 响应 status=200 size=8440
+[19:02:32.244] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:32.246] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:32.246] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:32.258] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:32.260] [scheme] 响应 status=200 size=8299
+[19:02:32.294] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:32.295] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:32.298] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:32.298] [scheme] 响应 status=200 size=8440
+[19:02:32.311] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:32.312] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:32.312] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:32.338] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:32.340] [scheme] 响应 status=200 size=8299
+[19:02:32.373] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:32.374] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:32.376] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:32.377] [scheme] 响应 status=200 size=8440
+[19:02:32.392] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:32.393] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:32.394] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:32.407] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:32.409] [scheme] 响应 status=200 size=8299
+[19:02:32.498] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:32.499] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:32.501] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:32.502] [scheme] 响应 status=200 size=8440
+[19:02:32.519] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:32.521] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:32.522] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:32.536] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:32.539] [scheme] 响应 status=200 size=8299
+[19:02:32.589] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:32.589] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:32.592] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:32.592] [scheme] 响应 status=200 size=8440
+[19:02:32.637] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:32.639] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:32.640] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:32.688] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:32.690] [scheme] 响应 status=200 size=8299
+[19:02:32.772] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:32.773] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:32.775] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:32.775] [scheme] 响应 status=200 size=8440
+[19:02:32.807] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:32.808] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:32.809] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:32.828] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:32.830] [scheme] 响应 status=200 size=8299
+[19:02:32.853] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:32.854] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:32.856] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:32.857] [scheme] 响应 status=200 size=8440
+[19:02:32.865] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:02:32.866] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:32.866] [scheme] 重定向到 app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:32.876] [scheme] handle被调用 method=b'GET' url=app://app/auth/login?next=%2Fproject%2Fadd
+[19:02:32.878] [scheme] 响应 status=200 size=8299
+[19:02:32.895] [scheme] handle被调用 method=b'POST' url=app://app/auth/login
+[19:02:32.895] [scheme] POST body len=44 raw=b'csrf_token=&username=admin&password=admin123'
+[19:02:32.897] [scheme] cookie设置失败: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 196, in handle
+    _cookie_store_ref.setCookie(c, QUrl('app://app/'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libshiboken: Internal C++ object (PySide6.QtWebEngineCore.QWebEngineCookieStore) already deleted.
+
+[19:02:32.898] [scheme] 响应 status=200 size=8440
+[19:05:18.010] ===== 启动 =====
+[19:05:18.010] APP_ROOT=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop
+[19:05:18.011] frozen=False
+[19:05:18.011] sys.executable=C:\Users\Administrator\AppData\Local\Programs\Python\Python313\python.exe
+[19:05:18.012] 步骤1: 创建QApplication...
+[19:05:18.136] 步骤1: QApplication创建OK
+[19:05:18.155] first_run_config导入OK, CONFIG_FILE检查=True
+[19:05:18.156] 已有配置: 
+[19:05:18.156] DB_DIR=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_data
+[19:05:18.157] DATA_ROOT=
+[19:05:18.157] 步骤2: 导入Flask...
+[19:05:18.734] 步骤2: Flask导入OK
+[19:05:18.735] 步骤3: 创建Flask应用...
+[19:05:19.044] [login] 预登录成功, session_len=230
+[19:05:19.044] 步骤3: 创建OK
+[19:05:19.044] 步骤4: 注册app:// scheme + 安装handler...
+[19:05:19.747] 步骤4: scheme注册OK
+[19:05:19.748] 步骤5: 创建主窗口...
+[19:05:24.852] 步骤5: 主窗口已显示
+[19:05:24.853] 步骤6: 进入事件循环
+[19:05:24.909] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:05:24.934] [scheme] 响应 status=200 size=32491
+[19:05:24.953] [scheme] handle被调用 method=b'GET' url=app://app/static/style.css
+[19:05:24.955] [scheme] 响应 status=200 size=68682
+[19:05:24.956] [scheme] handle被调用 method=b'GET' url=app://app/static/app.js
+[19:05:24.958] [scheme] 响应 status=200 size=8879
+[19:05:31.551] ===== 启动 =====
+[19:05:31.552] APP_ROOT=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop
+[19:05:31.552] frozen=False
+[19:05:31.552] sys.executable=C:\Users\Administrator\AppData\Local\Programs\Python\Python313\python.exe
+[19:05:31.553] 步骤1: 创建QApplication...
+[19:05:31.659] 步骤1: QApplication创建OK
+[19:05:31.678] first_run_config导入OK, CONFIG_FILE检查=True
+[19:05:31.679] 首次运行，弹出配置对话框...
+[19:05:36.643] run_first_run_config返回: 'C:/Users/Administrator/Desktop'
+[19:05:36.643] 用户选择了存储路径: C:/Users/Administrator/Desktop
+[19:05:36.644] DB_DIR=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_data
+[19:05:36.644] DATA_ROOT=
+[19:05:36.645] 步骤2: 导入Flask...
+[19:05:37.132] 步骤2: Flask导入OK
+[19:05:37.132] 步骤3: 创建Flask应用...
+[19:05:37.443] [login] 预登录成功, session_len=230
+[19:05:37.444] 步骤3: 创建OK
+[19:05:37.445] 步骤4: 注册app:// scheme + 安装handler...
+[19:05:37.949] 步骤4: scheme注册OK
+[19:05:37.949] 步骤5: 创建主窗口...
+[19:05:39.755] 步骤5: 主窗口已显示
+[19:05:39.756] 步骤6: 进入事件循环
+[19:05:39.818] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:05:39.846] [scheme] 响应 status=200 size=32491
+[19:05:39.866] [scheme] handle被调用 method=b'GET' url=app://app/static/style.css
+[19:05:39.868] [scheme] 响应 status=200 size=68682
+[19:05:39.870] [scheme] handle被调用 method=b'GET' url=app://app/static/app.js
+[19:05:39.872] [scheme] 响应 status=200 size=8879
+[19:06:30.012] ===== 启动 =====
+[19:06:30.013] APP_ROOT=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop
+[19:06:30.013] frozen=False
+[19:06:30.013] sys.executable=C:\Users\Administrator\AppData\Local\Programs\Python\Python313\python.exe
+[19:06:30.014] 步骤1: 创建QApplication...
+[19:06:30.123] 步骤1: QApplication创建OK
+[19:06:30.142] first_run_config导入OK, CONFIG_FILE检查=True
+[19:06:30.143] 已有配置: 
+[19:06:30.143] DB_DIR=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_data
+[19:06:30.144] DATA_ROOT=
+[19:06:30.144] 步骤2: 导入Flask...
+[19:06:30.552] 步骤2: Flask导入OK
+[19:06:30.553] 步骤3: 创建Flask应用...
+[19:06:30.808] [login] 预登录成功, session_len=230
+[19:06:30.809] 步骤3: 创建OK
+[19:06:30.810] 步骤4: 注册app:// scheme + 安装handler...
+[19:06:31.354] 步骤4: scheme注册OK
+[19:06:31.355] 步骤5: 创建主窗口...
+[19:06:33.571] 步骤5: 主窗口已显示
+[19:06:33.571] 步骤6: 进入事件循环
+[19:06:33.626] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:06:33.651] [scheme] 响应 status=200 size=32491
+[19:06:33.669] [scheme] handle被调用 method=b'GET' url=app://app/static/style.css
+[19:06:33.671] [scheme] 响应 status=200 size=68682
+[19:06:33.672] [scheme] handle被调用 method=b'GET' url=app://app/static/app.js
+[19:06:33.673] [scheme] 响应 status=200 size=8879
+[19:08:39.548] ===== 启动 =====
+[19:08:39.548] APP_ROOT=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop
+[19:08:39.549] frozen=False
+[19:08:39.550] sys.executable=C:\Users\Administrator\AppData\Local\Programs\Python\Python313\python.exe
+[19:08:39.550] 步骤1: 创建QApplication...
+[19:08:39.676] 步骤1: QApplication创建OK
+[19:08:39.695] first_run_config导入OK, CONFIG_FILE检查=True
+[19:08:39.695] 首次运行，弹出配置对话框...
+[19:08:43.972] run_first_run_config返回: 'C:/Users/Administrator/Desktop'
+[19:08:43.973] 用户选择了存储路径: C:/Users/Administrator/Desktop
+[19:08:43.973] DB_DIR=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_data
+[19:08:43.974] DATA_ROOT=
+[19:08:43.975] 步骤2: 导入Flask...
+[19:08:44.667] 步骤2: Flask导入OK
+[19:08:44.667] 步骤3: 创建Flask应用...
+[19:08:44.977] [login] 预登录成功, session_len=230
+[19:08:44.977] 步骤3: 创建OK
+[19:08:44.977] 步骤4: 注册app:// scheme + 安装handler...
+[19:08:45.404] 步骤4: scheme注册OK
+[19:08:45.404] 步骤5: 创建主窗口...
+[19:08:47.332] 步骤5: 主窗口已显示
+[19:08:47.333] 步骤6: 进入事件循环
+[19:08:47.391] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:08:47.445] [scheme] 异常: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 193, in handle
+    buf.open(1)
+    ~~~~~~~~^^^
+TypeError: 'PySide6.QtCore.QBuffer.open' called with wrong argument types:
+  PySide6.QtCore.QBuffer.open(int)
+Supported signatures:
+  PySide6.QtCore.QBuffer.open(openMode: PySide6.QtCore.QIODeviceBase.OpenModeFlag, /)
+
+[19:08:52.019] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:08:52.022] [scheme] 异常: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 193, in handle
+    buf.open(1)
+    ~~~~~~~~^^^
+TypeError: 'PySide6.QtCore.QBuffer.open' called with wrong argument types:
+  PySide6.QtCore.QBuffer.open(int)
+Supported signatures:
+  PySide6.QtCore.QBuffer.open(openMode: PySide6.QtCore.QIODeviceBase.OpenModeFlag, /)
+
+[19:08:57.126] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:08:57.130] [scheme] 异常: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 193, in handle
+    buf.open(1)
+    ~~~~~~~~^^^
+TypeError: 'PySide6.QtCore.QBuffer.open' called with wrong argument types:
+  PySide6.QtCore.QBuffer.open(int)
+Supported signatures:
+  PySide6.QtCore.QBuffer.open(openMode: PySide6.QtCore.QIODeviceBase.OpenModeFlag, /)
+
+[19:08:57.548] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:08:57.551] [scheme] 异常: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 193, in handle
+    buf.open(1)
+    ~~~~~~~~^^^
+TypeError: 'PySide6.QtCore.QBuffer.open' called with wrong argument types:
+  PySide6.QtCore.QBuffer.open(int)
+Supported signatures:
+  PySide6.QtCore.QBuffer.open(openMode: PySide6.QtCore.QIODeviceBase.OpenModeFlag, /)
+
+[19:08:58.262] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[19:08:58.271] [scheme] 异常: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 193, in handle
+    buf.open(1)
+    ~~~~~~~~^^^
+TypeError: 'PySide6.QtCore.QBuffer.open' called with wrong argument types:
+  PySide6.QtCore.QBuffer.open(int)
+Supported signatures:
+  PySide6.QtCore.QBuffer.open(openMode: PySide6.QtCore.QIODeviceBase.OpenModeFlag, /)
+
+[19:08:58.767] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:08:58.770] [scheme] 异常: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 193, in handle
+    buf.open(1)
+    ~~~~~~~~^^^
+TypeError: 'PySide6.QtCore.QBuffer.open' called with wrong argument types:
+  PySide6.QtCore.QBuffer.open(int)
+Supported signatures:
+  PySide6.QtCore.QBuffer.open(openMode: PySide6.QtCore.QIODeviceBase.OpenModeFlag, /)
+
+[19:08:59.315] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:08:59.319] [scheme] 异常: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 193, in handle
+    buf.open(1)
+    ~~~~~~~~^^^
+TypeError: 'PySide6.QtCore.QBuffer.open' called with wrong argument types:
+  PySide6.QtCore.QBuffer.open(int)
+Supported signatures:
+  PySide6.QtCore.QBuffer.open(openMode: PySide6.QtCore.QIODeviceBase.OpenModeFlag, /)
+
+[19:08:59.667] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:08:59.670] [scheme] 异常: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 193, in handle
+    buf.open(1)
+    ~~~~~~~~^^^
+TypeError: 'PySide6.QtCore.QBuffer.open' called with wrong argument types:
+  PySide6.QtCore.QBuffer.open(int)
+Supported signatures:
+  PySide6.QtCore.QBuffer.open(openMode: PySide6.QtCore.QIODeviceBase.OpenModeFlag, /)
+
+[19:08:59.978] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:08:59.981] [scheme] 异常: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 193, in handle
+    buf.open(1)
+    ~~~~~~~~^^^
+TypeError: 'PySide6.QtCore.QBuffer.open' called with wrong argument types:
+  PySide6.QtCore.QBuffer.open(int)
+Supported signatures:
+  PySide6.QtCore.QBuffer.open(openMode: PySide6.QtCore.QIODeviceBase.OpenModeFlag, /)
+
+[19:09:00.857] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:09:00.860] [scheme] 异常: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 193, in handle
+    buf.open(1)
+    ~~~~~~~~^^^
+TypeError: 'PySide6.QtCore.QBuffer.open' called with wrong argument types:
+  PySide6.QtCore.QBuffer.open(int)
+Supported signatures:
+  PySide6.QtCore.QBuffer.open(openMode: PySide6.QtCore.QIODeviceBase.OpenModeFlag, /)
+
+[19:09:03.572] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:09:03.575] [scheme] 异常: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 193, in handle
+    buf.open(1)
+    ~~~~~~~~^^^
+TypeError: 'PySide6.QtCore.QBuffer.open' called with wrong argument types:
+  PySide6.QtCore.QBuffer.open(int)
+Supported signatures:
+  PySide6.QtCore.QBuffer.open(openMode: PySide6.QtCore.QIODeviceBase.OpenModeFlag, /)
+
+[19:09:04.035] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[19:09:04.038] [scheme] 异常: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 193, in handle
+    buf.open(1)
+    ~~~~~~~~^^^
+TypeError: 'PySide6.QtCore.QBuffer.open' called with wrong argument types:
+  PySide6.QtCore.QBuffer.open(int)
+Supported signatures:
+  PySide6.QtCore.QBuffer.open(openMode: PySide6.QtCore.QIODeviceBase.OpenModeFlag, /)
+
+[19:09:04.350] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:09:04.354] [scheme] 异常: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 193, in handle
+    buf.open(1)
+    ~~~~~~~~^^^
+TypeError: 'PySide6.QtCore.QBuffer.open' called with wrong argument types:
+  PySide6.QtCore.QBuffer.open(int)
+Supported signatures:
+  PySide6.QtCore.QBuffer.open(openMode: PySide6.QtCore.QIODeviceBase.OpenModeFlag, /)
+
+[19:09:04.992] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:09:04.994] [scheme] 异常: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 193, in handle
+    buf.open(1)
+    ~~~~~~~~^^^
+TypeError: 'PySide6.QtCore.QBuffer.open' called with wrong argument types:
+  PySide6.QtCore.QBuffer.open(int)
+Supported signatures:
+  PySide6.QtCore.QBuffer.open(openMode: PySide6.QtCore.QIODeviceBase.OpenModeFlag, /)
+
+[19:09:05.475] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:09:05.478] [scheme] 异常: Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_app.py", line 193, in handle
+    buf.open(1)
+    ~~~~~~~~^^^
+TypeError: 'PySide6.QtCore.QBuffer.open' called with wrong argument types:
+  PySide6.QtCore.QBuffer.open(int)
+Supported signatures:
+  PySide6.QtCore.QBuffer.open(openMode: PySide6.QtCore.QIODeviceBase.OpenModeFlag, /)
+
+[19:09:12.172] 事件循环结束, exit_code=0
+[19:09:12.173] ===== 退出 =====
+[19:09:38.535] ===== 启动 =====
+[19:09:38.535] APP_ROOT=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop
+[19:09:38.536] frozen=False
+[19:09:38.536] sys.executable=C:\Users\Administrator\AppData\Local\Programs\Python\Python313\python.exe
+[19:09:38.537] 步骤1: 创建QApplication...
+[19:09:38.661] 步骤1: QApplication创建OK
+[19:09:38.679] first_run_config导入OK, CONFIG_FILE检查=True
+[19:09:38.680] 已有配置: 
+[19:09:38.681] DB_DIR=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_data
+[19:09:38.681] DATA_ROOT=
+[19:09:38.682] 步骤2: 导入Flask...
+[19:09:39.163] 步骤2: Flask导入OK
+[19:09:39.164] 步骤3: 创建Flask应用...
+[19:09:39.466] [login] 预登录成功, session_len=230
+[19:09:39.466] 步骤3: 创建OK
+[19:09:39.467] 步骤4: 注册app:// scheme + 安装handler...
+[19:09:40.137] 步骤4: scheme注册OK
+[19:09:40.138] 步骤5: 创建主窗口...
+[19:09:43.619] 步骤5: 主窗口已显示
+[19:09:43.620] 步骤6: 进入事件循环
+[19:09:43.686] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:09:43.717] [scheme] 响应 status=200 size=32491
+[19:09:43.747] [scheme] handle被调用 method=b'GET' url=app://app/static/style.css
+[19:09:43.751] [scheme] 响应 status=200 size=68682
+[19:09:43.753] [scheme] handle被调用 method=b'GET' url=app://app/static/app.js
+[19:09:43.756] [scheme] 响应 status=200 size=8879
+[19:09:50.296] ===== 启动 =====
+[19:09:50.296] APP_ROOT=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop
+[19:09:50.296] frozen=False
+[19:09:50.297] sys.executable=C:\Users\Administrator\AppData\Local\Programs\Python\Python313\python.exe
+[19:09:50.297] 步骤1: 创建QApplication...
+[19:09:50.409] 步骤1: QApplication创建OK
+[19:09:50.428] first_run_config导入OK, CONFIG_FILE检查=True
+[19:09:50.429] 首次运行，弹出配置对话框...
+[19:09:55.362] run_first_run_config返回: 'C:/Users/Administrator/Desktop'
+[19:09:55.362] 用户选择了存储路径: C:/Users/Administrator/Desktop
+[19:09:55.363] DB_DIR=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_data
+[19:09:55.363] DATA_ROOT=
+[19:09:55.364] 步骤2: 导入Flask...
+[19:09:55.846] 步骤2: Flask导入OK
+[19:09:55.847] 步骤3: 创建Flask应用...
+[19:09:56.151] [login] 预登录成功, session_len=230
+[19:09:56.152] 步骤3: 创建OK
+[19:09:56.153] 步骤4: 注册app:// scheme + 安装handler...
+[19:09:56.602] 步骤4: scheme注册OK
+[19:09:56.603] 步骤5: 创建主窗口...
+[19:09:58.286] 步骤5: 主窗口已显示
+[19:09:58.286] 步骤6: 进入事件循环
+[19:09:58.348] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:09:58.379] [scheme] 响应 status=200 size=32491
+[19:09:58.400] [scheme] handle被调用 method=b'GET' url=app://app/static/style.css
+[19:09:58.403] [scheme] 响应 status=200 size=68682
+[19:09:58.405] [scheme] handle被调用 method=b'GET' url=app://app/static/app.js
+[19:09:58.408] [scheme] 响应 status=200 size=8879
+[19:10:33.252] ===== 启动 =====
+[19:10:33.252] APP_ROOT=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop
+[19:10:33.253] frozen=False
+[19:10:33.253] sys.executable=C:\Users\Administrator\AppData\Local\Programs\Python\Python313\python.exe
+[19:10:33.254] 步骤1: 创建QApplication...
+[19:10:33.373] 步骤1: QApplication创建OK
+[19:10:33.391] first_run_config导入OK, CONFIG_FILE检查=True
+[19:10:33.393] 已有配置: 
+[19:10:33.393] DB_DIR=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_data
+[19:10:33.394] DATA_ROOT=
+[19:10:33.394] 步骤2: 导入Flask...
+[19:10:33.878] 步骤2: Flask导入OK
+[19:10:33.878] 步骤3: 创建Flask应用...
+[19:10:34.174] [login] 预登录成功, session_len=230
+[19:10:34.174] 步骤3: 创建OK
+[19:10:34.175] 步骤4: 注册app:// scheme + 安装handler...
+[19:10:34.843] 步骤4: scheme注册OK
+[19:10:34.843] 步骤5: 创建主窗口...
+[19:10:39.162] 步骤5: 主窗口已显示
+[19:10:39.163] 步骤6: 进入事件循环
+[19:10:39.231] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:10:39.259] [scheme] 响应 status=200 size=32491
+[19:10:39.281] [scheme] handle被调用 method=b'GET' url=app://app/static/style.css
+[19:10:39.284] [scheme] 响应 status=200 size=68682
+[19:10:39.287] [scheme] handle被调用 method=b'GET' url=app://app/static/app.js
+[19:10:39.291] [scheme] 响应 status=200 size=8879
+[19:10:41.594] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:10:41.597] [scheme] 响应 status=200 size=32491
+[19:10:41.613] [scheme] handle被调用 method=b'GET' url=app://app/static/app.js
+[19:10:41.615] [scheme] 响应 status=200 size=8879
+[19:10:45.105] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:10:45.110] [scheme] 响应 status=200 size=11656
+[19:10:45.210] [scheme] handle被调用 method=b'GET' url=app://app/static/style.css
+[19:10:45.212] [scheme] 响应 status=200 size=68682
+[19:10:45.215] [scheme] handle被调用 method=b'GET' url=app://app/static/app.js
+[19:10:45.217] [scheme] 响应 status=200 size=8879
+[19:11:29.376] ===== 启动 =====
+[19:11:29.377] APP_ROOT=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop
+[19:11:29.377] frozen=False
+[19:11:29.377] sys.executable=C:\Users\Administrator\AppData\Local\Programs\Python\Python313\python.exe
+[19:11:29.378] 步骤1: 创建QApplication...
+[19:11:29.490] 步骤1: QApplication创建OK
+[19:11:29.508] first_run_config导入OK, CONFIG_FILE检查=True
+[19:11:29.508] 首次运行，弹出配置对话框...
+[19:11:34.230] run_first_run_config返回: 'C:/Users/Administrator/Desktop'
+[19:11:34.231] 用户选择了存储路径: C:/Users/Administrator/Desktop
+[19:11:34.231] DB_DIR=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_data
+[19:11:34.232] DATA_ROOT=
+[19:11:34.233] 步骤2: 导入Flask...
+[19:11:34.674] 步骤2: Flask导入OK
+[19:11:34.674] 步骤3: 创建Flask应用...
+[19:11:34.931] [login] 预登录成功, session_len=230
+[19:11:34.932] 步骤3: 创建OK
+[19:11:34.934] 步骤4: 注册app:// scheme + 安装handler...
+[19:11:35.365] 步骤4: scheme注册OK
+[19:11:35.366] 步骤5: 创建主窗口...
+[19:11:37.357] 步骤5: 主窗口已显示
+[19:11:37.358] 步骤6: 进入事件循环
+[19:11:37.414] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:11:37.437] [scheme] 响应 status=200 size=32491
+[19:11:37.457] [scheme] handle被调用 method=b'GET' url=app://app/static/style.css
+[19:11:37.459] [scheme] 响应 status=200 size=68682
+[19:11:37.460] [scheme] handle被调用 method=b'GET' url=app://app/static/app.js
+[19:11:37.461] [scheme] 响应 status=200 size=8879
+[19:11:48.424] ===== 启动 =====
+[19:11:48.424] APP_ROOT=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop
+[19:11:48.425] frozen=False
+[19:11:48.426] sys.executable=C:\Users\Administrator\AppData\Local\Programs\Python\Python313\python.exe
+[19:11:48.426] 步骤1: 创建QApplication...
+[19:11:48.534] 步骤1: QApplication创建OK
+[19:11:48.552] first_run_config导入OK, CONFIG_FILE检查=True
+[19:11:48.553] 已有配置: 
+[19:11:48.553] DB_DIR=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_data
+[19:11:48.554] DATA_ROOT=
+[19:11:48.554] 步骤2: 导入Flask...
+[19:11:48.988] 步骤2: Flask导入OK
+[19:11:48.989] 步骤3: 创建Flask应用...
+[19:11:49.248] [login] 预登录成功, session_len=230
+[19:11:49.248] 步骤3: 创建OK
+[19:11:49.249] 步骤4: 注册app:// scheme + 安装handler...
+[19:11:49.914] 步骤4: scheme注册OK
+[19:11:49.914] 步骤5: 创建主窗口...
+[19:11:51.849] 步骤5: 主窗口已显示
+[19:11:51.850] 步骤6: 进入事件循环
+[19:11:51.901] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:11:51.925] [scheme] 响应 status=200 size=32491
+[19:11:51.945] [scheme] handle被调用 method=b'GET' url=app://app/static/style.css
+[19:11:51.947] [scheme] 响应 status=200 size=68682
+[19:11:51.948] [scheme] handle被调用 method=b'GET' url=app://app/static/app.js
+[19:11:51.950] [scheme] 响应 status=200 size=8879
+[19:13:22.462] ===== 启动 =====
+[19:13:22.463] APP_ROOT=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop
+[19:13:22.463] frozen=False
+[19:13:22.464] sys.executable=C:\Users\Administrator\AppData\Local\Programs\Python\Python313\python.exe
+[19:13:22.464] 步骤1: 创建QApplication...
+[19:13:22.575] 步骤1: QApplication创建OK
+[19:13:22.595] first_run_config导入OK, CONFIG_FILE检查=True
+[19:13:22.596] 首次运行，弹出配置对话框...
+[19:13:28.674] run_first_run_config返回: 'C:/Users/Administrator/Desktop'
+[19:13:28.674] 用户选择了存储路径: C:/Users/Administrator/Desktop
+[19:13:28.675] DB_DIR=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_data
+[19:13:28.675] DATA_ROOT=
+[19:13:28.676] 步骤2: 导入Flask...
+[19:13:29.192] 步骤2: Flask导入OK
+[19:13:29.193] 步骤3: 创建Flask应用...
+[19:13:29.452] [login] 预登录成功, session_len=230
+[19:13:29.453] 步骤3: 创建OK
+[19:13:29.454] 步骤4: 注册app:// scheme + 安装handler...
+[19:13:29.949] 步骤4: scheme注册OK
+[19:13:29.949] 步骤5: 创建主窗口...
+[19:13:31.850] 步骤5: 主窗口已显示
+[19:13:31.851] 步骤6: 进入事件循环
+[19:13:31.905] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:13:31.928] [scheme] 响应 status=200 size=32491
+[19:13:31.949] [scheme] handle被调用 method=b'GET' url=app://app/static/style.css
+[19:13:31.951] [scheme] 响应 status=200 size=68682
+[19:13:31.952] [scheme] handle被调用 method=b'GET' url=app://app/static/app.js
+[19:13:31.953] [scheme] 响应 status=200 size=8879
+[19:13:36.114] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:13:36.117] [scheme] 响应 status=200 size=32491
+[19:13:42.085] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:13:42.089] [scheme] 响应 status=200 size=11656
+[19:13:42.200] [scheme] handle被调用 method=b'GET' url=app://app/static/style.css
+[19:13:42.202] [scheme] 响应 status=200 size=68682
+[19:13:42.203] [scheme] handle被调用 method=b'GET' url=app://app/static/app.js
+[19:13:42.204] [scheme] 响应 status=200 size=8879
+[19:13:43.029] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:13:43.032] [scheme] 响应 status=200 size=32491
+[19:13:43.132] [scheme] handle被调用 method=b'GET' url=app://app/static/style.css
+[19:13:43.134] [scheme] 响应 status=200 size=68682
+[19:13:43.136] [scheme] handle被调用 method=b'GET' url=app://app/static/app.js
+[19:13:43.137] [scheme] 响应 status=200 size=8879
+[19:13:43.944] [scheme] handle被调用 method=b'GET' url=app://app/admin/database
+[19:13:43.955] [scheme] 响应 status=200 size=7197
+[19:13:44.067] [scheme] handle被调用 method=b'GET' url=app://app/static/style.css
+[19:13:44.068] [scheme] 响应 status=200 size=68682
+[19:13:44.070] [scheme] handle被调用 method=b'GET' url=app://app/static/app.js
+[19:13:44.071] [scheme] 响应 status=200 size=8879
+[19:13:46.211] [scheme] handle被调用 method=b'GET' url=app://app/project/detail/4
+[19:13:46.236] [scheme] 响应 status=200 size=14503
+[19:13:46.316] [scheme] handle被调用 method=b'GET' url=app://app/static/style.css
+[19:13:46.318] [scheme] 响应 status=200 size=68682
+[19:13:46.322] [scheme] handle被调用 method=b'GET' url=app://app/static/app.js
+[19:13:46.323] [scheme] 响应 status=200 size=8879
+[19:13:47.828] [scheme] handle被调用 method=b'GET' url=app://app/project/4/investment
+[19:13:47.846] [scheme] 响应 status=200 size=143814
+[19:13:47.895] [scheme] handle被调用 method=b'GET' url=app://app/api/project/4/investment/load
+[19:13:47.900] [scheme] 响应 status=200 size=27
+[19:13:49.676] [scheme] handle被调用 method=b'POST' url=app://app/api/project/4/investment/save
+[19:13:49.680] [scheme] POST body len=2055 raw=b'{"data":[{"serial_number":"\xe4\xb8\x80","item_name":"\xe5\xbb\xba\xe8\xae\xbe\xe6\x8a\x95\xe8\xb5\x84","is_subtotal_row":true,"is_total_row":false,"building_cost":0,"installation_cost":0,"equipment_cost":0,"other_cost":0,"total":0,"unit":"","qu'
+[19:13:49.684] [scheme] 响应 status=415 size=215
+[19:13:59.555] [scheme] handle被调用 method=b'POST' url=app://app/api/project/4/investment/save
+[19:13:59.556] [scheme] POST body len=2345 raw=b'{"data":[{"serial_number":"\xe4\xb8\x80","item_name":"\xe5\xbb\xba\xe8\xae\xbe\xe6\x8a\x95\xe8\xb5\x84","is_subtotal_row":true,"is_total_row":false,"building_cost":500,"installation_cost":0,"equipment_cost":0,"other_cost":30,"total":530,"unit":"'
+[19:13:59.558] [scheme] 响应 status=415 size=215
+[19:14:06.279] [scheme] handle被调用 method=b'GET' url=app://app/project/detail/4
+[19:14:06.283] [scheme] 响应 status=200 size=14503
+[19:14:07.087] [scheme] handle被调用 method=b'GET' url=app://app/project/4/energy
+[19:14:07.098] [scheme] 响应 status=200 size=61521
+[19:14:08.353] [scheme] handle被调用 method=b'GET' url=app://app/api/energy/factors
+[19:14:08.356] [scheme] 响应 status=200 size=4397
+[19:14:08.367] [scheme] handle被调用 method=b'GET' url=app://app/api/project/4/energy/items
+[19:14:08.369] [scheme] 响应 status=200 size=27
+[19:14:08.371] [scheme] handle被调用 method=b'GET' url=app://app/api/project/4/energy/params
+[19:14:08.373] [scheme] 响应 status=200 size=27
+[19:14:08.374] [scheme] handle被调用 method=b'GET' url=app://app/api/project/4/energy/electricity
+[19:14:08.376] [scheme] 响应 status=200 size=27
+[19:14:16.215] [scheme] handle被调用 method=b'POST' url=app://app/api/project/4/energy/items
+[19:14:16.216] [scheme] POST body len=332 raw=b'[{"row_id":1,"name":"\xe7\x94\xb5\xe5\x8a\x9b","unit":"\xe4\xb8\x87kWh","annual_qty":0,"equivalent_coef":1.229,"equivalent_note":"\xe5\xbd\x93\xe9\x87\x8f\xe5\x80\xbc: 1.229 tce/\xe4\xb8\x87kWh","equivalent_coef_val":3.015,"equivalent_val_note":"\xe7\xad\x89\xe4\xbb\xb7\xe5\x80\xbc: 3.015 '
+[19:14:16.219] [scheme] 响应 status=415 size=215
+[19:14:17.967] [scheme] handle被调用 method=b'POST' url=app://app/api/project/4/energy/items
+[19:14:17.967] [scheme] POST body len=332 raw=b'[{"row_id":1,"name":"\xe7\x94\xb5\xe5\x8a\x9b","unit":"\xe4\xb8\x87kWh","annual_qty":0,"equivalent_coef":1.229,"equivalent_note":"\xe5\xbd\x93\xe9\x87\x8f\xe5\x80\xbc: 1.229 tce/\xe4\xb8\x87kWh","equivalent_coef_val":3.015,"equivalent_val_note":"\xe7\xad\x89\xe4\xbb\xb7\xe5\x80\xbc: 3.015 '
+[19:14:17.970] [scheme] 响应 status=415 size=215
+[19:14:19.203] [scheme] handle被调用 method=b'GET' url=app://app/api/project/4/energy/export
+[19:14:19.217] [scheme] 响应 status=200 size=5925
+[19:14:19.530] [scheme] handle被调用 method=b'GET' url=app://app/project/4/energy
+[19:14:19.533] [scheme] 响应 status=200 size=61521
+[19:14:19.558] [scheme] handle被调用 method=b'GET' url=app://app/api/energy/factors
+[19:14:19.561] [scheme] 响应 status=200 size=4397
+[19:14:19.582] [scheme] handle被调用 method=b'GET' url=app://app/api/project/4/energy/items
+[19:14:19.584] [scheme] 响应 status=200 size=27
+[19:14:19.586] [scheme] handle被调用 method=b'GET' url=app://app/api/project/4/energy/params
+[19:14:19.588] [scheme] 响应 status=200 size=27
+[19:14:19.590] [scheme] handle被调用 method=b'GET' url=app://app/api/project/4/energy/electricity
+[19:14:19.592] [scheme] 响应 status=200 size=27
+[19:14:23.988] [scheme] handle被调用 method=b'GET' url=app://app/project/detail/4
+[19:14:23.991] [scheme] 响应 status=200 size=14503
+[19:14:25.235] [scheme] handle被调用 method=b'GET' url=app://app/project/4/finance
+[19:14:25.239] [scheme] 响应 status=200 size=2298
+[19:14:25.870] [scheme] handle被调用 method=b'GET' url=app://app/project/4/finance/normal
+[19:14:25.893] [scheme] 响应 status=200 size=188849
+[19:14:25.950] [scheme] handle被调用 method=b'GET' url=app://app/api/project/4/investment/load
+[19:14:25.953] [scheme] 响应 status=200 size=27
+[19:14:25.981] [scheme] handle被调用 method=b'GET' url=app://app/api/project/4/finance/load?mode=normal
+[19:14:25.984] [scheme] 响应 status=200 size=29
+[19:14:27.724] [scheme] handle被调用 method=b'POST' url=app://app/api/project/4/finance/save
+[19:14:27.725] [scheme] POST body len=1180 raw=b'{"_finance_mode":"normal","fund":{"projectName":"3333","constructionStartYear":2023,"constructionEndYear":2026,"operationStartYear":2026,"operationEndYear":2045,"totalInvestment":0,"ownCapital":0,"sel'
+[19:14:27.728] [scheme] 响应 status=415 size=215
+[19:14:33.433] [scheme] handle被调用 method=b'GET' url=app://app/project/detail/4
+[19:14:33.436] [scheme] 响应 status=200 size=14503
+[19:14:33.565] [scheme] handle被调用 method=b'GET' url=app://app/static/style.css
+[19:14:33.567] [scheme] 响应 status=200 size=68682
+[19:14:33.598] [scheme] handle被调用 method=b'GET' url=app://app/static/app.js
+[19:14:33.600] [scheme] 响应 status=200 size=8879
+[19:14:34.031] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:14:34.033] [scheme] 响应 status=200 size=11656
+[19:14:34.153] [scheme] handle被调用 method=b'GET' url=app://app/static/style.css
+[19:14:34.155] [scheme] 响应 status=200 size=68682
+[19:14:34.157] [scheme] handle被调用 method=b'GET' url=app://app/static/app.js
+[19:14:34.158] [scheme] 响应 status=200 size=8879
+[19:14:41.169] [scheme] handle被调用 method=b'POST' url=app://app/project/add
+[19:14:41.170] [scheme] POST body len=286 raw=b'start_date=2026-03-26&name=3333&location=&owner=&total_investment=&service_content=&contract_amount=&contract_status=&invoice_status=&invoiced_amount=&payment_status=&settled_amount=&payment_settlemen'
+[19:14:41.186] [scheme] 响应 status=500 size=265
+[19:15:35.916] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:15:35.919] [scheme] 响应 status=200 size=32491
+[19:15:36.021] [scheme] handle被调用 method=b'GET' url=app://app/static/style.css
+[19:15:36.023] [scheme] 响应 status=200 size=68682
+[19:15:36.025] [scheme] handle被调用 method=b'GET' url=app://app/static/app.js
+[19:15:36.027] [scheme] 响应 status=200 size=8879
+[19:15:39.231] [scheme] handle被调用 method=b'GET' url=app://app/project/detail/1
+[19:15:39.235] [scheme] 响应 status=200 size=14537
+[19:15:41.090] [scheme] handle被调用 method=b'GET' url=app://app/project/1/investment
+[19:15:41.093] [scheme] 响应 status=200 size=143828
+[19:15:41.118] [scheme] handle被调用 method=b'GET' url=app://app/api/project/1/investment/load
+[19:15:41.121] [scheme] 响应 status=200 size=27
+[19:15:42.239] [scheme] handle被调用 method=b'POST' url=app://app/api/project/1/investment/save
+[19:15:42.240] [scheme] POST body len=2055 raw=b'{"data":[{"serial_number":"\xe4\xb8\x80","item_name":"\xe5\xbb\xba\xe8\xae\xbe\xe6\x8a\x95\xe8\xb5\x84","is_subtotal_row":true,"is_total_row":false,"building_cost":0,"installation_cost":0,"equipment_cost":0,"other_cost":0,"total":0,"unit":"","qu'
+[19:15:42.243] [scheme] 响应 status=415 size=215
+[19:15:43.731] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:15:43.733] [scheme] 响应 status=200 size=11656
+[19:15:43.838] [scheme] handle被调用 method=b'GET' url=app://app/static/style.css
+[19:15:43.840] [scheme] 响应 status=200 size=68682
+[19:15:43.844] [scheme] handle被调用 method=b'GET' url=app://app/static/app.js
+[19:15:43.845] [scheme] 响应 status=200 size=8879
+[19:15:51.487] 事件循环结束, exit_code=0
+[19:15:51.488] ===== 退出 =====
+[19:20:19.127] ===== 启动 =====
+[19:20:19.127] APP_ROOT=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop
+[19:20:19.128] frozen=False
+[19:20:19.129] sys.executable=C:\Users\Administrator\AppData\Local\Programs\Python\Python313\python.exe
+[19:20:19.129] 步骤1: 创建QApplication...
+[19:20:19.240] 步骤1: QApplication创建OK
+[19:20:19.257] first_run_config导入OK, CONFIG_FILE检查=True
+[19:20:19.258] 已有配置: 
+[19:20:19.259] DB_DIR=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_data
+[19:20:19.259] DATA_ROOT=
+[19:20:19.260] 步骤2: 导入Flask...
+[19:20:19.755] 步骤2: Flask导入OK
+[19:20:19.756] 步骤3: 创建Flask应用...
+[19:20:20.019] [login] 预登录成功, session_len=230
+[19:20:20.020] 步骤3: 创建OK
+[19:20:20.020] 步骤4: 注册app:// scheme + 安装handler...
+[19:20:20.628] 步骤4: scheme注册OK + 表单拦截JS已注入
+[19:20:20.629] 步骤5: 创建主窗口...
+[19:20:22.432] 步骤5: 主窗口已显示
+[19:20:22.433] 步骤6: 进入事件循环
+[19:20:22.486] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:20:22.511] [scheme] 响应 status=200 size=32491
+[19:20:22.528] [scheme] handle被调用 method=b'GET' url=app://app/static/style.css
+[19:20:22.530] [scheme] 响应 status=200 size=68682
+[19:20:22.531] [scheme] handle被调用 method=b'GET' url=app://app/static/app.js
+[19:20:22.532] [scheme] 响应 status=200 size=8879
+[19:20:26.547] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:20:26.550] [scheme] 响应 status=200 size=32491
+[19:20:32.425] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:20:32.431] [scheme] 响应 status=200 size=11656
+[19:20:32.547] [scheme] handle被调用 method=b'GET' url=app://app/static/style.css
+[19:20:32.549] [scheme] 响应 status=200 size=68682
+[19:20:32.551] [scheme] handle被调用 method=b'GET' url=app://app/static/app.js
+[19:20:32.553] [scheme] 响应 status=200 size=8879
+[19:20:39.810] [scheme] handle被调用 method=b'GET' url=app://app/project/add?_xf=1&start_date=2026-03-26&name=333&location=&owner=&total_investment=&service_content=&contract_amount=&contract_status=&invoice_status=&invoiced_amount=&payment_status=&settled_amount=&payment_settlement_status=未结提成&source=&owner_name=&owner_phone=&remark=
+[19:20:39.810] [scheme] _xf表单提交 body_len=93 fields=['start_date', 'name', 'payment_settlement_status']
+[19:20:39.838] [scheme] 重定向到 app://app/my_projects
+[19:20:39.846] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:20:39.850] [scheme] 响应 status=200 size=35420
+[19:20:44.349] [scheme] handle被调用 method=b'GET' url=app://app/project/detail/6
+[19:20:44.371] [scheme] 响应 status=200 size=14537
+[19:20:44.463] [scheme] handle被调用 method=b'GET' url=app://app/static/style.css
+[19:20:44.465] [scheme] 响应 status=200 size=68682
+[19:20:44.468] [scheme] handle被调用 method=b'GET' url=app://app/static/app.js
+[19:20:44.469] [scheme] 响应 status=200 size=8879
+[19:20:45.334] [scheme] handle被调用 method=b'GET' url=app://app/project/6/investment
+[19:20:45.351] [scheme] 响应 status=200 size=143813
+[19:20:45.381] [scheme] handle被调用 method=b'GET' url=app://app/api/project/6/investment/load
+[19:20:45.387] [scheme] 响应 status=200 size=27
+[19:20:57.264] [scheme] handle被调用 method=b'POST' url=app://app/api/project/6/investment/save
+[19:20:57.267] [scheme] POST body len=2377 raw=b'{"data":[{"serial_number":"\xe4\xb8\x80","item_name":"\xe5\xbb\xba\xe8\xae\xbe\xe6\x8a\x95\xe8\xb5\x84","is_subtotal_row":true,"is_total_row":false,"building_cost":11111,"installation_cost":0,"equipment_cost":0,"other_cost":666.66,"total":11777.'
+[19:20:57.269] [scheme] 响应 status=415 size=215
+[19:20:58.603] [scheme] handle被调用 method=b'POST' url=app://app/api/project/6/investment/save
+[19:20:58.605] [scheme] POST body len=2377 raw=b'{"data":[{"serial_number":"\xe4\xb8\x80","item_name":"\xe5\xbb\xba\xe8\xae\xbe\xe6\x8a\x95\xe8\xb5\x84","is_subtotal_row":true,"is_total_row":false,"building_cost":11111,"installation_cost":0,"equipment_cost":0,"other_cost":666.66,"total":11777.'
+[19:20:58.609] [scheme] 响应 status=415 size=215
+[19:20:59.411] [scheme] handle被调用 method=b'POST' url=app://app/api/project/6/investment/save
+[19:20:59.412] [scheme] POST body len=2377 raw=b'{"data":[{"serial_number":"\xe4\xb8\x80","item_name":"\xe5\xbb\xba\xe8\xae\xbe\xe6\x8a\x95\xe8\xb5\x84","is_subtotal_row":true,"is_total_row":false,"building_cost":11111,"installation_cost":0,"equipment_cost":0,"other_cost":666.66,"total":11777.'
+[19:20:59.415] [scheme] 响应 status=415 size=215
+[19:21:09.136] [scheme] handle被调用 method=b'GET' url=app://app/api/project/6/investment/export
+[19:21:09.145] [scheme] 响应 status=200 size=5204
+[19:21:09.467] [scheme] handle被调用 method=b'GET' url=app://app/project/6/investment
+[19:21:09.469] [scheme] 响应 status=200 size=143813
+[19:21:09.507] [scheme] handle被调用 method=b'GET' url=app://app/api/project/6/investment/load
+[19:21:09.510] [scheme] 响应 status=200 size=27
+[19:21:15.183] [scheme] handle被调用 method=b'GET' url=app://app/project/detail/6
+[19:21:15.187] [scheme] 响应 status=200 size=14537
+[19:21:16.333] [scheme] handle被调用 method=b'GET' url=app://app/project/6/energy
+[19:21:16.343] [scheme] 响应 status=200 size=61520
+[19:21:18.396] [scheme] handle被调用 method=b'GET' url=app://app/api/energy/factors
+[19:21:18.400] [scheme] 响应 status=200 size=4397
+[19:21:18.406] [scheme] handle被调用 method=b'GET' url=app://app/api/project/6/energy/items
+[19:21:18.409] [scheme] 响应 status=200 size=27
+[19:21:18.411] [scheme] handle被调用 method=b'GET' url=app://app/api/project/6/energy/params
+[19:21:18.414] [scheme] 响应 status=200 size=27
+[19:21:18.416] [scheme] handle被调用 method=b'GET' url=app://app/api/project/6/energy/electricity
+[19:21:18.419] [scheme] 响应 status=200 size=27
+[19:21:45.191] [scheme] handle被调用 method=b'POST' url=app://app/api/project/6/energy/items
+[19:21:45.192] [scheme] POST body len=339 raw=b'[{"row_id":2,"name":"\xe7\x94\xb5\xe5\x8a\x9b","unit":"\xe4\xb8\x87kWh","annual_qty":2025.7478,"equivalent_coef":1.229,"equivalent_note":"\xe5\xbd\x93\xe9\x87\x8f\xe5\x80\xbc: 1.229 tce/\xe4\xb8\x87kWh","equivalent_coef_val":3.015,"equivalent_val_note":"\xe7\xad\x89\xe4\xbb\xb7\xe5\x80\xbc'
+[19:21:45.195] [scheme] 响应 status=415 size=215
+[19:21:46.868] [scheme] handle被调用 method=b'POST' url=app://app/api/project/6/energy/items
+[19:21:46.868] [scheme] POST body len=339 raw=b'[{"row_id":2,"name":"\xe7\x94\xb5\xe5\x8a\x9b","unit":"\xe4\xb8\x87kWh","annual_qty":2025.7478,"equivalent_coef":1.229,"equivalent_note":"\xe5\xbd\x93\xe9\x87\x8f\xe5\x80\xbc: 1.229 tce/\xe4\xb8\x87kWh","equivalent_coef_val":3.015,"equivalent_val_note":"\xe7\xad\x89\xe4\xbb\xb7\xe5\x80\xbc'
+[19:21:46.871] [scheme] 响应 status=415 size=215
+[19:21:48.340] [scheme] handle被调用 method=b'GET' url=app://app/project/detail/6
+[19:21:48.344] [scheme] 响应 status=200 size=14537
+[19:21:49.168] [scheme] handle被调用 method=b'GET' url=app://app/project/6/energy
+[19:21:49.170] [scheme] 响应 status=200 size=61520
+[19:21:49.246] [scheme] handle被调用 method=b'GET' url=app://app/api/energy/factors
+[19:21:49.249] [scheme] 响应 status=200 size=4397
+[19:21:49.263] [scheme] handle被调用 method=b'GET' url=app://app/api/project/6/energy/items
+[19:21:49.265] [scheme] 响应 status=200 size=27
+[19:21:49.266] [scheme] handle被调用 method=b'GET' url=app://app/api/project/6/energy/params
+[19:21:49.268] [scheme] 响应 status=200 size=27
+[19:21:49.268] [scheme] handle被调用 method=b'GET' url=app://app/api/project/6/energy/electricity
+[19:21:49.270] [scheme] 响应 status=200 size=27
+[19:21:50.961] [scheme] handle被调用 method=b'POST' url=app://app/api/project/6/energy/items
+[19:21:50.962] [scheme] POST body len=332 raw=b'[{"row_id":1,"name":"\xe7\x94\xb5\xe5\x8a\x9b","unit":"\xe4\xb8\x87kWh","annual_qty":0,"equivalent_coef":1.229,"equivalent_note":"\xe5\xbd\x93\xe9\x87\x8f\xe5\x80\xbc: 1.229 tce/\xe4\xb8\x87kWh","equivalent_coef_val":3.015,"equivalent_val_note":"\xe7\xad\x89\xe4\xbb\xb7\xe5\x80\xbc: 3.015 '
+[19:21:50.964] [scheme] 响应 status=415 size=215
+[19:22:04.313] [scheme] handle被调用 method=b'GET' url=app://app/project/detail/6
+[19:22:04.316] [scheme] 响应 status=200 size=14537
+[19:22:05.070] [scheme] handle被调用 method=b'GET' url=app://app/project/6/finance
+[19:22:05.075] [scheme] 响应 status=200 size=2297
+[19:22:06.887] [scheme] handle被调用 method=b'GET' url=app://app/project/6/finance/bond
+[19:22:06.904] [scheme] 响应 status=200 size=105615
+[19:22:06.930] [scheme] handle被调用 method=b'GET' url=app://app/api/project/6/investment/load
+[19:22:06.933] [scheme] 响应 status=200 size=27
+[19:22:06.969] [scheme] handle被调用 method=b'GET' url=app://app/api/project/6/finance/load?mode=bond
+[19:22:06.972] [scheme] 响应 status=200 size=29
+[19:22:22.400] [scheme] handle被调用 method=b'POST' url=app://app/api/project/6/finance/save
+[19:22:22.401] [scheme] POST body len=1089 raw=b'{"_finance_mode":"bond","fund":{"projectName":"333","constructionStartYear":2023,"constructionEndYear":2028,"operationStartYear":2029,"operationEndYear":2045,"totalInvestment":0,"ownCapital":0,"selfFu'
+[19:22:22.403] [scheme] 响应 status=415 size=215
+[19:22:33.944] 事件循环结束, exit_code=0
+[19:22:33.946] ===== 退出 =====
+[19:25:57.999] ===== 启动 =====
+[19:25:57.999] APP_ROOT=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop
+[19:25:58.000] frozen=False
+[19:25:58.000] sys.executable=C:\Users\Administrator\AppData\Local\Programs\Python\Python313\python.exe
+[19:25:58.001] 步骤1: 创建QApplication...
+[19:25:58.113] 步骤1: QApplication创建OK
+[19:25:58.131] first_run_config导入OK, CONFIG_FILE检查=True
+[19:25:58.132] 首次运行，弹出配置对话框...
+[19:26:02.811] run_first_run_config返回: 'C:/Users/Administrator/Desktop'
+[19:26:02.811] 用户选择了存储路径: C:/Users/Administrator/Desktop
+[19:26:02.812] DB_DIR=C:\Users\Administrator\Desktop\xmglxtv5\客户系统\desktop\desktop_data
+[19:26:02.812] DATA_ROOT=
+[19:26:02.813] 步骤2: 导入Flask...
+[19:26:03.259] 步骤2: Flask导入OK
+[19:26:03.260] 步骤3: 创建Flask应用...
+[19:26:03.516] [login] 预登录成功, session_len=230
+[19:26:03.516] 步骤3: 创建OK
+[19:26:03.517] 步骤4: 注册app:// scheme + 安装handler...
+[19:26:03.908] 步骤4: scheme注册OK + 表单拦截JS已注入
+[19:26:03.909] 步骤5: 创建主窗口...
+[19:26:05.721] 步骤5: 主窗口已显示
+[19:26:05.721] 步骤6: 进入事件循环
+[19:26:05.773] [scheme] handle被调用 method=b'GET' url=app://app/my_projects
+[19:26:05.797] [scheme] 响应 status=200 size=35420
+[19:26:05.820] [scheme] handle被调用 method=b'GET' url=app://app/static/style.css
+[19:26:05.823] [scheme] 响应 status=200 size=68682
+[19:26:05.824] [scheme] handle被调用 method=b'GET' url=app://app/static/app.js
+[19:26:05.826] [scheme] 响应 status=200 size=8879
+[19:26:20.761] [scheme] handle被调用 method=b'GET' url=app://app/project/add
+[19:26:20.765] [scheme] 响应 status=200 size=11656
+[19:26:20.876] [scheme] handle被调用 method=b'GET' url=app://app/static/style.css
+[19:26:20.877] [scheme] 响应 status=200 size=68682
+[19:26:20.879] [scheme] handle被调用 method=b'GET' url=app://app/static/app.js
+[19:26:20.880] [scheme] 响应 status=200 size=8879
+[19:26:23.548] [scheme] handle被调用 method=b'GET' url=app://app/project/detail/5
+[19:26:23.570] [scheme] 响应 status=200 size=14515
+[19:26:23.654] [scheme] handle被调用 method=b'GET' url=app://app/static/style.css
+[19:26:23.656] [scheme] 响应 status=200 size=68682
+[19:26:23.657] [scheme] handle被调用 method=b'GET' url=app://app/static/app.js
+[19:26:23.659] [scheme] 响应 status=200 size=8879
+[19:26:24.697] [scheme] handle被调用 method=b'GET' url=app://app/project/5/investment
+[19:26:24.714] [scheme] 响应 status=200 size=143820
+[19:26:24.740] [scheme] handle被调用 method=b'GET' url=app://app/api/project/5/investment/load
+[19:26:24.745] [scheme] 响应 status=200 size=27
+[19:26:25.485] [scheme] handle被调用 method=b'POST' url=app://app/api/project/5/investment/save
+[19:26:25.488] [scheme] POST body len=2055 raw=b'{"data":[{"serial_number":"\xe4\xb8\x80","item_name":"\xe5\xbb\xba\xe8\xae\xbe\xe6\x8a\x95\xe8\xb5\x84","is_subtotal_row":true,"is_total_row":false,"building_cost":0,"installation_cost":0,"equipment_cost":0,"other_cost":0,"total":0,"unit":"","qu'
+[19:26:25.504] [scheme] 响应 status=200 size=54
+[19:26:30.204] [scheme] handle被调用 method=b'GET' url=app://app/api/project/5/investment/export
+[19:26:30.215] [scheme] 响应 status=200 size=5576
+[19:26:30.530] [scheme] handle被调用 method=b'GET' url=app://app/project/5/investment
+[19:26:30.533] [scheme] 响应 status=200 size=143820
+[19:26:30.555] [scheme] handle被调用 method=b'GET' url=app://app/api/project/5/investment/load
+[19:26:30.558] [scheme] 响应 status=200 size=2194
+[19:27:08.224] [scheme] handle被调用 method=b'GET' url=app://app/api/project/5/investment/export
+[19:27:08.234] [scheme] 响应 status=200 size=5577
+[19:27:08.553] [scheme] handle被调用 method=b'GET' url=app://app/project/5/investment
+[19:27:08.556] [scheme] 响应 status=200 size=143820
+[19:27:08.577] [scheme] handle被调用 method=b'GET' url=app://app/api/project/5/investment/load
+[19:27:08.580] [scheme] 响应 status=200 size=2194
+[19:27:15.187] [scheme] handle被调用 method=b'POST' url=app://app/api/project/5/investment/save
+[19:27:15.188] [scheme] POST body len=2055 raw=b'{"data":[{"serial_number":"\xe4\xb8\x80","item_name":"\xe5\xbb\xba\xe8\xae\xbe\xe6\x8a\x95\xe8\xb5\x84","is_subtotal_row":true,"is_total_row":false,"building_cost":0,"installation_cost":0,"equipment_cost":0,"other_cost":0,"total":0,"unit":"","qu'
+[19:27:15.201] [scheme] 响应 status=200 size=54
+[19:27:16.505] [scheme] handle被调用 method=b'GET' url=app://app/api/project/5/investment/export
+[19:27:16.515] [scheme] 响应 status=200 size=5576
+[19:27:16.827] [scheme] handle被调用 method=b'GET' url=app://app/project/5/investment
+[19:27:16.830] [scheme] 响应 status=200 size=143820
+[19:27:16.853] [scheme] handle被调用 method=b'GET' url=app://app/api/project/5/investment/load
+[19:27:16.856] [scheme] 响应 status=200 size=2194
+[19:27:29.249] [scheme] handle被调用 method=b'GET' url=app://app/project/detail/6
+[19:27:29.253] [scheme] 响应 status=200 size=14537
+[19:27:29.366] [scheme] handle被调用 method=b'GET' url=app://app/static/style.css
+[19:27:29.368] [scheme] 响应 status=200 size=68682
+[19:27:29.370] [scheme] handle被调用 method=b'GET' url=app://app/static/app.js
+[19:27:29.371] [scheme] 响应 status=200 size=8879
+[19:27:32.058] [scheme] handle被调用 method=b'GET' url=app://app/project/6/investment
+[19:27:32.061] [scheme] 响应 status=200 size=143813
+[19:27:32.110] [scheme] handle被调用 method=b'GET' url=app://app/api/project/6/investment/load
+[19:27:32.114] [scheme] 响应 status=200 size=27
+[19:27:40.377] [scheme] handle被调用 method=b'POST' url=app://app/api/project/6/investment/save
+[19:27:40.377] [scheme] POST body len=2377 raw=b'{"data":[{"serial_number":"\xe4\xb8\x80","item_name":"\xe5\xbb\xba\xe8\xae\xbe\xe6\x8a\x95\xe8\xb5\x84","is_subtotal_row":true,"is_total_row":false,"building_cost":11111,"installation_cost":0,"equipment_cost":0,"other_cost":666.66,"total":11777.'
+[19:27:40.392] [scheme] 响应 status=200 size=54
+[19:27:41.146] [scheme] handle被调用 method=b'GET' url=app://app/api/project/6/investment/export
+[19:27:41.155] [scheme] 响应 status=200 size=5644
+[19:27:41.467] [scheme] handle被调用 method=b'GET' url=app://app/project/6/investment
+[19:27:41.470] [scheme] 响应 status=200 size=143813
+[19:27:41.508] [scheme] handle被调用 method=b'GET' url=app://app/api/project/6/investment/load
+[19:27:41.511] [scheme] 响应 status=200 size=2516
+[19:28:03.318] 事件循环结束, exit_code=0
+[19:28:03.319] ===== 退出 =====

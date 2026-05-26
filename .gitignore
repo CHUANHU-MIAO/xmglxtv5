@@ -46,3 +46,9 @@ desktop_data/
 private_key.pem
 public_key.pem
 *.key
+
+# Desktop packaged exe
+客户系统/desktop/dist/
+客户系统/desktop/build/
+客户系统/desktop/*.spec
+客户系统/desktop/__pycache__/

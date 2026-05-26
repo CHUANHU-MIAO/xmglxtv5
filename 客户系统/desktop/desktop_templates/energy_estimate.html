@@ -1,0 +1,1138 @@
+{% extends "base_desktop.html" %}
+{% block title %}能耗估算{% endblock %}
+{% block extra_head %}
+<style>
+    .param-card { background: #f8f9fa; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .param-card .param-label { font-size: 0.85rem; color: #6c757d; margin-bottom: 4px; }
+    .param-card .param-input { border: 1px solid #dee2e6; border-radius: 4px; padding: 6px 10px; width: 100%; font-size: 0.9rem; }
+    .param-card .param-input:focus { border-color: #0d6efd; outline: none; box-shadow: 0 0 0 2px rgba(13,110,253,0.15); }
+    .energy-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .energy-table th { background: #e9ecef; padding: 8px 6px; text-align: center; font-weight: 600; white-space: nowrap; border: 1px solid #dee2e6; }
+    .energy-table td { padding: 4px 6px; text-align: center; border: 1px solid #dee2e6; vertical-align: middle; }
+    .energy-table .total-row { background: #fff3cd; font-weight: 600; }
+    .energy-table .subtotal-row { background: #e8f5e9; }
+    .energy-table input[type="number"], .energy-table input[type="text"], .energy-table select { width: 100%; border: 1px solid transparent; background: transparent; text-align: center; padding: 4px; font-size: 0.85rem; }
+    .energy-table input[type="number"]:focus, .energy-table input[type="text"]:focus, .energy-table select:focus { border-color: #0d6efd; outline: none; background: #fff; box-shadow: 0 0 0 2px rgba(13,110,253,0.1); }
+    .energy-table input.coef-modified { background: #fff3cd; }
+    .energy-table .delete-btn { color: #dc3545; cursor: pointer; border: none; background: none; font-size: 1.1rem; padding: 2px 6px; }
+    .energy-table .delete-btn:hover { background: #fee; border-radius: 4px; }
+    .chart-container { position: relative; height: 300px; margin-bottom: 20px; }
+    .badge-pass { background: #198754; color: #fff; padding: 2px 10px; border-radius: 10px; font-size: 0.8rem; }
+    .badge-fail { background: #dc3545; color: #fff; padding: 2px 10px; border-radius: 10px; font-size: 0.8rem; }
+    .collapse-toggle { cursor: pointer; user-select: none; }
+    .collapse-toggle:hover { opacity: 0.8; }
+    .save-indicator { font-size: 0.8rem; color: #6c757d; }
+    .save-indicator.saved { color: #198754; }
+    .energy-table .name-cell { min-width: 120px; }
+    .energy-table .unit-cell { min-width: 70px; }
+    .energy-table .qty-cell { min-width: 90px; }
+    .energy-table .coef-cell { min-width: 80px; }
+    .energy-table .tce-cell { min-width: 90px; }
+    .energy-table .price-cell { min-width: 80px; }
+    .energy-table .cost-cell { min-width: 90px; }
+    .energy-table .remark-cell { min-width: 120px; }
+    .energy-table .action-cell { min-width: 50px; }
+    .scheme-badge { background: #0d6efd; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; }
+    .coef-source { font-size: 0.7rem; color: #6c757d; display: block; }
+    .global-eq-control { background: #e8f4fd; border: 1px solid #b8d4fe; border-radius: 6px; padding: 10px 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .electricity-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .electricity-table th { background: #e9ecef; padding: 6px 4px; text-align: center; font-weight: 600; white-space: nowrap; border: 1px solid #dee2e6; }
+    .electricity-table td { padding: 3px 4px; text-align: center; border: 1px solid #dee2e6; vertical-align: middle; }
+    .electricity-table .elec-subtotal-row { background: #e8f5e9; }
+    .electricity-table .elec-subtotal-row td { font-weight: 600; }
+    .electricity-table .elec-factor-row { background: #fff8e1; }
+    .electricity-table .elec-factor-row td { font-weight: 500; }
+    .electricity-table .elec-total-row { background: #fff3cd; }
+    .electricity-table .elec-total-row td { font-weight: 700; }
+    .electricity-table .elec-comp-row { background: #e3f2fd; }
+    .electricity-table .elec-comp-row td { font-weight: 500; }
+    .electricity-table .elec-transformer-row { background: #e8f5e9; }
+    .electricity-table .elec-transformer-row td { font-weight: 600; }
+    .electricity-table input[type="number"], .electricity-table input[type="text"] { width: 100%; border: 1px solid transparent; background: transparent; text-align: center; padding: 3px; font-size: 0.82rem; }
+    .electricity-table input[type="number"]:focus, .electricity-table input[type="text"]:focus { border-color: #0d6efd; outline: none; background: #fff; box-shadow: 0 0 0 2px rgba(13,110,253,0.1); }
+    .electricity-table .calc-cell { font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+    .electricity-table .delete-btn { color: #dc3545; cursor: pointer; border: none; background: none; font-size: 1.1rem; padding: 2px 6px; border-radius: 4px; }
+    .electricity-table .delete-btn:hover { background: #fee; }
+    .electricity-table input.modified { background: #fff3cd; }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container mt-4 py-3">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-info alert-dismissible fade show" role="alert">{{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <input type="hidden" id="projectId" value="{{ project.id }}">
+
+    <!-- 标题与操作栏 -->
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <div>
+            <h4 class="mb-1"><i class="bi bi-lightning"></i> 能耗估算</h4>
+            <small class="text-muted">{{ project.name }}</small>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            {% if role != 'visitor' %}
+            <button class="btn btn-sm btn-outline-success" onclick="saveEnergyData()"><i class="bi bi-save"></i> 保存</button>
+            {% endif %}
+            <button class="btn btn-sm btn-outline-primary" onclick="exportEnergyData()"><i class="bi bi-file-earmark-excel"></i> 导出Excel</button>
+            <button class="btn btn-sm btn-outline-warning" onclick="resetCoefficients()"><i class="bi bi-arrow-counterclockwise"></i> 恢复默认系数</button>
+            <a href="/project/detail/{{ project.id }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left"></i> 返回项目</a>
+        </div>
+    </div>
+
+    <!-- 全局电力等价值系数控制 -->
+    <div class="global-eq-control">
+        <i class="bi bi-lightning-charge text-primary"></i>
+        <span class="fw-bold">电力等价值系数：</span>
+        <input type="number" id="globalElecValCoef" value="3.015" step="0.001" style="width:100px;border:1px solid #ced4da;border-radius:4px;padding:4px 8px;" onchange="syncGlobalElecCoef()">
+        <span class="text-muted" style="font-size:0.85rem;">tce/万kWh</span>
+        <label class="ms-2" style="font-size:0.85rem;">
+            <input type="checkbox" id="syncAllElec" checked> 同步到所有电力行
+        </label>
+        <span class="text-muted ms-2 save-indicator" id="saveIndicator"></span>
+    </div>
+
+    <!-- 用电负荷计算表 -->
+    <div class="card mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-lightning-charge"></i> 用电负荷计算表</span>
+            <div>
+                <button class="btn btn-sm btn-outline-secondary me-1" onclick="resetElectricityDefaults()" title="恢复默认系数"><i class="bi bi-arrow-counterclockwise"></i> 恢复默认</button>
+                <button class="btn btn-sm btn-success" onclick="addElectricityRow()"><i class="bi bi-plus-lg"></i> 添加用电项目</button>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="electricity-table" id="electricityTable">
+                    <thead>
+                        <tr>
+                            <th style="width:30px">序号</th>
+                            <th style="min-width:160px">负荷名称</th>
+                            <th style="width:65px">电压<br>(kV)</th>
+                            <th style="width:85px">用电密度值<br>(W/m²)</th>
+                            <th style="width:80px">用电数量<br>(m²)</th>
+                            <th style="width:80px">设备容量<br>工作(kW)</th>
+                            <th style="width:80px">设备容量<br>总计(kW)</th>
+                            <th style="width:70px">需用系数<br>KC</th>
+                            <th style="width:70px">cosφ</th>
+                            <th style="width:70px">tgφ</th>
+                            <th style="width:85px">有功功率<br>(kW)</th>
+                            <th style="width:85px">无功功率<br>(kvar)</th>
+                            <th style="width:85px">视在功率<br>(kVA)</th>
+                            <th style="width:80px">年利用<br>小时数</th>
+                            <th style="width:85px">电耗<br>(kW·h)</th>
+                            <th style="width:100px">备注</th>
+                            <th style="width:36px">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="electricityTableBody">
+                    </tbody>
+                    <tfoot>
+                        <tr class="elec-subtotal-row">
+                            <td></td>
+                            <td><strong>合计</strong></td>
+                            <td></td><td></td><td></td>
+                            <td id="sumWorkKw">0.00</td>
+                            <td id="sumTotalKw">0.00</td>
+                            <td></td><td></td><td></td>
+                            <td id="sumActiveKw">0.00</td>
+                            <td id="sumReactiveKvar">0.00</td>
+                            <td id="sumApparentKva">0.00</td>
+                            <td></td>
+                            <td id="sumPowerConsumption">0.00</td>
+                            <td></td><td></td>
+                        </tr>
+                        <tr class="elec-factor-row">
+                            <td></td>
+                            <td><strong>乘以同时系数</strong></td>
+                            <td></td><td></td><td></td><td></td><td></td>
+                            <td>Kp=<input type="number" id="kspFactor" value="0.90" step="0.01" min="0" max="1" onchange="updateElectricityTotals()" style="width:52px;text-align:center;border:1px solid #ced4da;border-radius:3px;padding:1px 2px;font-size:0.78rem;"></td>
+                            <td></td>
+                            <td>Kq=<input type="number" id="ksqFactor" value="0.93" step="0.01" min="0" max="1" onchange="updateElectricityTotals()" style="width:52px;text-align:center;border:1px solid #ced4da;border-radius:3px;padding:1px 2px;font-size:0.78rem;"></td>
+                            <td id="simActiveKw">0.00</td>
+                            <td id="simReactiveKvar">0.00</td>
+                            <td id="simApparentKva">0.00</td>
+                            <td></td><td></td><td></td>
+                        </tr>
+                        <tr class="elec-comp-row">
+                            <td></td>
+                            <td><strong>无功补偿</strong></td>
+                            <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                            <td></td>
+                            <td><input type="number" id="compensationKvar" value="0" step="0.01" min="0" onchange="updateElectricityTotals()" style="width:72px;text-align:center;border:1px solid #ced4da;border-radius:3px;padding:1px 2px;font-size:0.78rem;"> kvar</td>
+                            <td></td><td></td><td></td><td></td>
+                        </tr>
+                        <tr class="elec-total-row">
+                            <td></td>
+                            <td><strong>补偿后</strong></td>
+                            <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                            <td id="finalActiveKw">0.00</td>
+                            <td id="finalReactiveKvar">0.00</td>
+                            <td id="finalApparentKva">0.00</td>
+                            <td></td><td></td><td></td><td></td>
+                        </tr>
+                        <tr class="elec-transformer-row">
+                            <td colspan="17" id="transformerAdvice" style="text-align:left;padding:6px 10px;font-size:0.82rem;color:#0d6efd;"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="p-2 text-muted" style="font-size:0.75rem;">
+                <i class="bi bi-info-circle"></i> 工作功率=密度值×数量/1000 | 有功=总计×KC | 无功=有功×tgφ | 视在=√(有功²+无功²) | 电耗=有功×年利用小时数
+            </div>
+        </div>
+    </div>
+
+    <!-- 项目能源消耗估算表 -->
+    <div class="card mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-table"></i> 项目能源消耗估算表</span>
+            <button class="btn btn-sm btn-success" onclick="addEnergyRow()"><i class="bi bi-plus-lg"></i> 添加能源行</button>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="energy-table" id="energyTable">
+                    <thead>
+                        <tr>
+                            <th style="width:40px">序号</th>
+                            <th style="min-width:120px">能源/耗能工质名称</th>
+                            <th style="width:70px">计量单位</th>
+                            <th style="width:100px">年消耗量</th>
+                            <th style="width:90px">折标煤系数<br>(当量)</th>
+                            <th style="width:100px">当量值标准煤<br>(tce)</th>
+                            <th style="width:90px">折标煤系数<br>(等价)</th>
+                            <th style="width:100px">等价值标准煤<br>(tce)</th>
+                            <th style="width:80px">单价<br>(含税)</th>
+                            <th style="width:90px">年费用<br>(万元)</th>
+                            <th style="min-width:120px">消耗环节/备注</th>
+                            <th style="width:50px">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="energyTableBody">
+                    </tbody>
+                    <tfoot>
+                        <tr class="total-row">
+                            <td></td>
+                            <td><strong>合 计</strong></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td id="totalEqTce">0.00</td>
+                            <td></td>
+                            <td id="totalEvTce">0.00</td>
+                            <td></td>
+                            <td id="totalCost">0.00</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="p-2 text-muted" style="font-size:0.8rem;">
+                <i class="bi bi-info-circle"></i> 耗能工质（水、压缩空气等）默认不参与综合能耗合计。如需计入，可双击"纳入能耗"开关。
+            </div>
+        </div>
+    </div>
+
+    <!-- 能效指标对比分析表 -->
+    <div class="card mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-bar-chart-steps"></i> 能效指标对比分析</span>
+        </div>
+        <div class="card-body p-0">
+            <div style="background:#f8f9fa;padding:8px 12px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;font-size:0.82rem;border-bottom:1px solid #dee2e6;">
+                <span style="font-weight:600;color:#495057;">计算参数：</span>
+                <label style="margin:0;">建筑面积<input type="number" id="paramBuildingArea" step="1" min="0" onchange="calcBenchmarks()" style="width:80px;margin-left:4px;border:1px solid #ced4da;border-radius:4px;padding:2px 4px;text-align:center;"> m²</label>
+                <label style="margin:0;">年产值<input type="number" id="paramAnnualOutput" step="0.01" min="0" onchange="calcBenchmarks()" style="width:90px;margin-left:4px;border:1px solid #ced4da;border-radius:4px;padding:2px 4px;text-align:center;"> 万元</label>
+                <label style="margin:0;">产品产量<input type="number" id="paramProductQty" step="1" min="0" onchange="calcBenchmarks()" style="width:80px;margin-left:4px;border:1px solid #ced4da;border-radius:4px;padding:2px 4px;text-align:center;"></label>
+                <label style="margin:0;">单位<input type="text" id="paramProductUnit" placeholder="t" style="width:60px;margin-left:4px;border:1px solid #ced4da;border-radius:4px;padding:2px 4px;text-align:center;"></label>
+            </div>
+            <div class="table-responsive">
+                <table class="energy-table" id="benchmarkTable">
+                    <thead>
+                        <tr>
+                            <th style="width:40px">序号</th>
+                            <th>指标名称</th>
+                            <th style="width:80px">单位</th>
+                            <th style="width:100px">计算值</th>
+                            <th style="width:100px">对比基准值</th>
+                            <th style="width:80px">基准来源</th>
+                            <th style="width:80px">达标情况</th>
+                            <th>备注</th>
+                        </tr>
+                    </thead>
+                    <tbody id="benchmarkBody">
+                        <tr>
+                            <td>1</td>
+                            <td>单位建筑面积综合能耗(当量值)</td>
+                            <td>kgce/m²·a</td>
+                            <td id="bmAreaEq">-</td>
+                            <td><input type="number" class="benchmark-input" id="bmAreaEqStd" value="15.00" step="0.01" style="width:90px;"></td>
+                            <td>GB/T 51161</td>
+                            <td id="bmAreaEqResult">-</td>
+                            <td><input type="text" class="benchmark-remark" style="border:none;background:transparent;width:100%;" placeholder="可选备注"></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>单位产值综合能耗(等价值)</td>
+                            <td>tce/万元</td>
+                            <td id="bmOutputEv">-</td>
+                            <td><input type="number" class="benchmark-input" id="bmOutputEvStd" value="0.50" step="0.01" style="width:90px;"></td>
+                            <td>行业均值</td>
+                            <td id="bmOutputEvResult">-</td>
+                            <td><input type="text" class="benchmark-remark" style="border:none;background:transparent;width:100%;" placeholder="可选备注"></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>单位产值综合能耗(当量值)</td>
+                            <td>tce/万元</td>
+                            <td id="bmOutputEq">-</td>
+                            <td><input type="number" class="benchmark-input" id="bmOutputEqStd" value="0.40" step="0.01" style="width:90px;"></td>
+                            <td>行业均值</td>
+                            <td id="bmOutputEqResult">-</td>
+                            <td><input type="text" class="benchmark-remark" style="border:none;background:transparent;width:100%;" placeholder="可选备注"></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>单位产品综合能耗</td>
+                            <td class="product-unit">kgce/产品</td>
+                            <td id="bmProduct">-</td>
+                            <td><input type="number" class="benchmark-input" id="bmProductStd" value="0" step="0.01" style="width:90px;"></td>
+                            <td><input type="text" id="bmProductSource" style="border:none;background:transparent;width:100px;" placeholder="标准来源" value="企业标准"></td>
+                            <td id="bmProductResult">-</td>
+                            <td><input type="text" class="benchmark-remark" style="border:none;background:transparent;width:100%;" placeholder="可选备注"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 图表区 -->
+    <div class="row mb-3">
+        <div class="col-md-6 mb-3 mb-md-0">
+            <div class="card h-100">
+                <div class="card-header"><i class="bi bi-pie-chart"></i> 综合能耗结构（当量值）</div>
+                <div class="card-body">
+                    <div class="chart-container"><canvas id="pieChart"></canvas></div>
+                </div>
+                <div class="card-footer" id="pieLegend"></div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header"><i class="bi bi-bar-chart"></i> 各能源品种能耗对比</div>
+                <div class="card-body">
+                    <div class="chart-container"><canvas id="barChart"></canvas></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+    const ENERGY_COLORS = ['#0d6efd','#198754','#dc3545','#ffc107','#0dcaf0','#6610f2','#fd7e14','#20c997','#d63384','#6f42c1',
+                           '#e83e8c','#17a2b8','#28a745','#ff6b6b','#4ecdc4','#45b7d1','#96ceb4','#ffeaa7','#dfe6e9','#636e72'];
+    const DOUGHNUT_COLORS = ['#00d4aa','#3b82f6','#a78bfa','#f0a500','#ff6b6b','#00b894','#6c5ce7','#fd79a8','#0984e3','#00cec9'];
+    const CATEGORIES_ENERGY = ['能源', '耗能工质'];
+    let factorsData = [];
+    let energyRows = [];
+    let nextRowId = 1;
+    let pieChart = null;
+    let barChart = null;
+    let electricityRows = [];
+    let electricityNextId = 1;
+    let paramsDirty = false;
+
+    function getProjectId() { return parseInt(document.getElementById('projectId').value); }
+
+    function setSaveIndicator(text, isSaved) {
+        const el = document.getElementById('saveIndicator');
+        el.textContent = text;
+        el.className = 'ms-2 save-indicator' + (isSaved ? ' saved' : '');
+        if (isSaved) setTimeout(() => { el.textContent = ''; }, 3000);
+    }
+
+    async function loadFactors() {
+        try {
+            const r = await fetch('/api/energy/factors');
+            const d = await r.json();
+            if (d.success) factorsData = d.factors || [];
+        } catch (e) { console.error('加载系数失败:', e); }
+    }
+
+    async function loadEnergyData() {
+        const pid = getProjectId();
+        try {
+            const [itemsR, paramsR, elecR] = await Promise.all([
+                fetch(`/api/project/${pid}/energy/items`),
+                fetch(`/api/project/${pid}/energy/params`),
+                fetch(`/api/project/${pid}/energy/electricity`)
+            ]);
+            const itemsD = await itemsR.json();
+            const paramsD = await paramsR.json();
+            const elecD = await elecR.json();
+
+            if (paramsD.success && paramsD.data) {
+                const p = paramsD.data;
+                setParam('paramBuildingArea', p.building_area);
+                setParam('paramAnnualOutput', p.annual_output);
+                setParam('paramProductQty', p.product_qty);
+                setParam('paramProductUnit', p.product_unit);
+                if (p.global_elec_val_coef) document.getElementById('globalElecValCoef').value = p.global_elec_val_coef;
+            }
+
+            if (elecD.success && elecD.data) {
+                electricityRows = elecD.data.rows || [];
+                electricityNextId = electricityRows.length > 0 ? Math.max(...electricityRows.map(r => r.row_id || 0)) + 1 : 1;
+                if (elecD.data.simultaneous) {
+                    document.getElementById('kspFactor').value = elecD.data.simultaneous.ksp || 0.90;
+                    document.getElementById('ksqFactor').value = elecD.data.simultaneous.ksq || 0.93;
+                }
+                document.getElementById('compensationKvar').value = elecD.data.compensation_kvar || 0;
+                renderElectricityTable();
+            } else {
+                addElectricityRow();
+            }
+
+            if (itemsD.success && itemsD.data && itemsD.data.length > 0) {
+                energyRows = itemsD.data;
+                if (energyRows.length > 0) nextRowId = Math.max(...energyRows.map(r => r.row_id || 0)) + 1;
+                renderTable();
+                updateCharts();
+                calcBenchmarks();
+            } else {
+                addEnergyRow();
+            }
+        } catch (e) { console.error('加载数据失败:', e); addEnergyRow(); addElectricityRow(); }
+    }
+
+    function setParam(id, val) {
+        const el = document.getElementById(id);
+        if (el && val !== undefined && val !== null && val !== '') el.value = val;
+    }
+
+    function getFactor(name) {
+        return factorsData.find(f => f.name === name);
+    }
+
+    function getFactorUnit(name) {
+        const f = getFactor(name);
+        return f ? f.unit : '';
+    }
+
+    function addEnergyRow(factorName) {
+        var effectiveName = factorName || '电力';
+        var f = getFactor(effectiveName);
+        var row = {
+            row_id: nextRowId++,
+            name: f ? effectiveName : '',
+            unit: f ? f.unit : '',
+            annual_qty: 0,
+            equivalent_coef: f ? f.equivalent_coef : 0,
+            equivalent_note: f ? (f.equivalent_note || '') : '',
+            equivalent_coef_val: f ? (f.equivalent_coef_val || 0) : 0,
+            equivalent_val_note: f ? (f.equivalent_val_note || '') : '',
+            unit_price: 0,
+            remark: '',
+            include_in_total: true,
+            coef_modified: false,
+            coef_val_modified: false,
+            _power_auto: false
+        };
+        if (f && f.category === '耗能工质') row.include_in_total = false;
+        energyRows.push(row);
+        renderTable();
+        updateCharts();
+        calcBenchmarks();
+    }
+
+    function removeEnergyRow(rowId) {
+        if (energyRows.length <= 1) return;
+        energyRows = energyRows.filter(r => r.row_id !== rowId);
+        renderTable();
+        updateCharts();
+        calcBenchmarks();
+    }
+
+    function onFactorSelect(selectEl, rowId) {
+        const name = selectEl.value;
+        const row = energyRows.find(r => r.row_id === rowId);
+        if (!row) return;
+        if (!name) {
+            row.name = ''; row.unit = ''; row.equivalent_coef = 0; row.equivalent_coef_val = 0;
+            row.equivalent_note = ''; row.equivalent_val_note = ''; row.include_in_total = true; row.coef_modified = false; row.coef_val_modified = false;
+            row._power_auto = false;
+        } else {
+            const f = getFactor(name);
+            if (f) {
+                row.name = f.name;
+                row.unit = f.unit;
+                if (!row.coef_modified) row.equivalent_coef = f.equivalent_coef;
+                if (!row.coef_val_modified) row.equivalent_coef_val = f.equivalent_coef_val || 0;
+                row.equivalent_note = f.equivalent_note || '';
+                row.equivalent_val_note = f.equivalent_val_note || '';
+                if (f.category === '耗能工质' && !row._user_set_include) row.include_in_total = false;
+                else if (f.category === '能源') row.include_in_total = true;
+
+                if (f.name === '电力') {
+                    const elecSum = parseFloat(document.getElementById('sumPowerConsumption')?.textContent) || 0;
+                    row.annual_qty = parseFloat((elecSum / 10000).toFixed(4));
+                    row._power_auto = true;
+                }
+            }
+        }
+        renderTable();
+        updateCharts();
+        calcBenchmarks();
+    }
+
+    function onCoefChange(input, rowId, type) {
+        const row = energyRows.find(r => r.row_id === rowId);
+        if (!row) return;
+        const val = parseFloat(input.value) || 0;
+        if (type === 'eq') {
+            row.equivalent_coef = val;
+            row.coef_modified = true;
+        } else {
+            row.equivalent_coef_val = val;
+            row.coef_val_modified = true;
+        }
+        updateRowCalculations(rowId);
+        updateCharts();
+        calcBenchmarks();
+    }
+
+    function updateRowCalculations(rowId) {
+        const row = energyRows.find(r => r.row_id === rowId);
+        if (!row) return;
+        const qty = parseFloat(document.getElementById(`qty_${rowId}`)?.value) || 0;
+        row.annual_qty = qty;
+        row._power_auto = false;
+        const eqCoef = parseFloat(document.getElementById(`eqCoef_${rowId}`)?.value) || 0;
+        const evCoef = parseFloat(document.getElementById(`evCoef_${rowId}`)?.value) || 0;
+        const price = parseFloat(document.getElementById(`price_${rowId}`)?.value) || 0;
+        row.unit_price = price;
+        row.equivalent_coef = eqCoef;
+        row.equivalent_coef_val = evCoef;
+
+        const eqTce = qty * eqCoef;
+        const evTce = qty * evCoef;
+        const cost = qty * price / 10000;
+
+        document.getElementById(`eqTce_${rowId}`).textContent = eqTce.toFixed(2);
+        document.getElementById(`evTce_${rowId}`).textContent = evTce.toFixed(2);
+        document.getElementById(`cost_${rowId}`).textContent = cost.toFixed(2);
+
+        updateTotals();
+        updateCharts();
+        calcBenchmarks();
+    }
+
+    function updateTotals() {
+        const t = computeTotals();
+        document.getElementById('totalEqTce').textContent = t.totalEq.toFixed(2);
+        document.getElementById('totalEvTce').textContent = t.totalEv.toFixed(2);
+        document.getElementById('totalCost').textContent = t.totalCost.toFixed(2);
+        return t;
+    }
+
+    function computeTotals() {
+        let totalEq = 0, totalEv = 0, totalCost = 0;
+        energyRows.forEach(r => {
+            const qty = r.annual_qty || 0;
+            const eqCoef = r.equivalent_coef || 0;
+            const evCoef = r.equivalent_coef_val || 0;
+            const price = r.unit_price || 0;
+            if (r.include_in_total !== false) {
+                totalEq += qty * eqCoef;
+                totalEv += qty * evCoef;
+            }
+            totalCost += qty * price / 10000;
+        });
+        return { totalEq, totalEv, totalCost };
+    }
+
+    function updateTotalsDisplay() {
+        const t = computeTotals();
+        document.getElementById('totalEqTce').textContent = t.totalEq.toFixed(2);
+        document.getElementById('totalEvTce').textContent = t.totalEv.toFixed(2);
+        document.getElementById('totalCost').textContent = t.totalCost.toFixed(2);
+    }
+
+    function updateRowCalcForEnergyOnly(rowId) {
+        const row = energyRows.find(r => r.row_id === rowId);
+        if (!row) return;
+        const qty = row.annual_qty || 0;
+        const eqCoef = row.equivalent_coef || 0;
+        const evCoef = row.equivalent_coef_val || 0;
+        const price = row.unit_price || 0;
+        const eqTce = qty * eqCoef;
+        const evTce = qty * evCoef;
+        const cost = qty * price / 10000;
+        document.getElementById(`eqTce_${rowId}`).textContent = eqTce.toFixed(2);
+        document.getElementById(`evTce_${rowId}`).textContent = evTce.toFixed(2);
+        document.getElementById(`cost_${rowId}`).textContent = cost.toFixed(2);
+    }
+
+    function calcBenchmarks() {
+        const totals = updateTotals();
+        const area = parseFloat(document.getElementById('paramBuildingArea').value) || 0;
+        const output = parseFloat(document.getElementById('paramAnnualOutput').value) || 0;
+        const productQty = parseFloat(document.getElementById('paramProductQty').value) || 0;
+
+        if (area > 0) {
+            const v = totals.totalEq * 1000 / area;
+            document.getElementById('bmAreaEq').textContent = v.toFixed(2);
+            const std = parseFloat(document.getElementById('bmAreaEqStd').value) || 0;
+            const el = document.getElementById('bmAreaEqResult');
+            if (std > 0) { el.innerHTML = v <= std ? '<span class="badge-pass">达标</span>' : '<span class="badge-fail">未达标</span>'; }
+            else el.textContent = '-';
+        } else { document.getElementById('bmAreaEq').textContent = '-'; }
+
+        if (output > 0) {
+            const v = totals.totalEv / output;
+            document.getElementById('bmOutputEv').textContent = v.toFixed(4);
+            const std = parseFloat(document.getElementById('bmOutputEvStd').value) || 0;
+            const el = document.getElementById('bmOutputEvResult');
+            if (std > 0) { el.innerHTML = v <= std ? '<span class="badge-pass">达标</span>' : '<span class="badge-fail">未达标</span>'; }
+            else el.textContent = '-';
+
+            const v2 = totals.totalEq / output;
+            document.getElementById('bmOutputEq').textContent = v2.toFixed(4);
+            const std2 = parseFloat(document.getElementById('bmOutputEqStd').value) || 0;
+            const el2 = document.getElementById('bmOutputEqResult');
+            if (std2 > 0) { el2.innerHTML = v2 <= std2 ? '<span class="badge-pass">达标</span>' : '<span class="badge-fail">未达标</span>'; }
+            else el2.textContent = '-';
+        } else {
+            document.getElementById('bmOutputEv').textContent = '-';
+            document.getElementById('bmOutputEq').textContent = '-';
+        }
+
+        if (productQty > 0 && totals.totalEq > 0) {
+            const v = totals.totalEq * 1000 / productQty;
+            document.getElementById('bmProduct').textContent = v.toFixed(2);
+            const std = parseFloat(document.getElementById('bmProductStd').value) || 0;
+            const el = document.getElementById('bmProductResult');
+            if (std > 0) { el.innerHTML = v <= std ? '<span class="badge-pass">达标</span>' : '<span class="badge-fail">未达标</span>'; }
+            else el.textContent = '-';
+
+            const unit = document.getElementById('paramProductUnit').value || '产品';
+            document.querySelector('.product-unit').textContent = `kgce/${unit}`;
+        } else {
+            document.getElementById('bmProduct').textContent = '-';
+        }
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('energyTableBody');
+        tbody.innerHTML = '';
+        energyRows.forEach((row, idx) => {
+            const tr = document.createElement('tr');
+            const eqTce = (row.annual_qty || 0) * (row.equivalent_coef || 0);
+            const evTce = (row.annual_qty || 0) * (row.equivalent_coef_val || 0);
+            const cost = (row.annual_qty || 0) * (row.unit_price || 0) / 10000;
+            const isUtility = row.name && getFactor(row.name)?.category === '耗能工质';
+
+            tr.innerHTML = `
+                <td>${idx + 1}</td>
+                <td>
+                    <select class="name-cell" onchange="onFactorSelect(this, ${row.row_id})">
+                        <option value="">-- 选择能源 --</option>
+                        ${factorsData.map(f =>
+                            `<option value="${f.name}" ${f.name === row.name ? 'selected' : ''}>${f.name}</option>`
+                        ).join('')}
+                        <option value="__custom__" ${row.name && !getFactor(row.name) ? 'selected' : ''}>自定义...</option>
+                    </select>
+                    ${row.name && !getFactor(row.name) ? `<input type="text" class="name-cell" value="${row.name}" style="display:none;">` : ''}
+                </td>
+                <td class="unit-cell">${row.unit || '-'}</td>
+                <td><input type="number" class="qty-cell" id="qty_${row.row_id}" value="${row.annual_qty || ''}" step="0.01" min="0"
+                    onchange="updateRowCalculations(${row.row_id})" onfocus="this.select()" placeholder="输入年用量"></td>
+                <td>
+                    <input type="number" class="coef-cell coef-input" id="eqCoef_${row.row_id}" value="${row.equivalent_coef || ''}" step="0.0001"
+                        onchange="onCoefChange(this, ${row.row_id}, 'eq')" ${row.coef_modified ? 'style="background:#fff3cd;"' : ''}>
+                    ${row.equivalent_note ? `<span class="coef-source" title="${row.equivalent_note}">GB/T 2589</span>` : ''}
+                </td>
+                <td class="tce-cell fw-bold" id="eqTce_${row.row_id}">${eqTce.toFixed(2)}</td>
+                <td>
+                    <input type="number" class="coef-cell coef-input" id="evCoef_${row.row_id}" value="${row.equivalent_coef_val || ''}" step="0.0001"
+                        onchange="onCoefChange(this, ${row.row_id}, 'ev')" ${row.coef_val_modified ? 'style="background:#fff3cd;"' : ''}>
+                    ${row.equivalent_val_note ? `<span class="coef-source" title="${row.equivalent_val_note}">参考值</span>` : ''}
+                </td>
+                <td class="tce-cell fw-bold" id="evTce_${row.row_id}">${evTce.toFixed(2)}</td>
+                <td><input type="number" class="price-cell" id="price_${row.row_id}" value="${row.unit_price || ''}" step="0.0001" min="0"
+                    onchange="updateRowCalculations(${row.row_id})" onfocus="this.select()" placeholder="元/单位"></td>
+                <td class="cost-cell fw-bold" id="cost_${row.row_id}">${cost.toFixed(2)}</td>
+                <td>
+                    <input type="text" class="remark-cell" id="remark_${row.row_id}" value="${row.remark || ''}"
+                        onchange="energyRows.find(r=>r.row_id===${row.row_id}).remark=this.value" placeholder="如：空调系统">
+                    ${isUtility ? `<br><small style="font-size:0.7rem;color:#6c757d"><label><input type="checkbox" onchange="toggleIncludeTotal(${row.row_id},this.checked)" ${row.include_in_total !== false ? 'checked' : ''}> 纳入能耗</label></small>` : ''}
+                </td>
+                <td><button class="delete-btn" onclick="removeEnergyRow(${row.row_id})" ${energyRows.length <= 1 ? 'disabled style="opacity:0.3"' : ''}><i class="bi bi-trash"></i></button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+        updateTotals();
+    }
+
+    function toggleIncludeTotal(rowId, checked) {
+        const row = energyRows.find(r => r.row_id === rowId);
+        if (row) { row.include_in_total = checked; row._user_set_include = true; updateTotals(); calcBenchmarks(); updateCharts(); }
+    }
+
+    function syncGlobalElecCoef() {
+        const val = parseFloat(document.getElementById('globalElecValCoef').value) || 3.015;
+        const syncAll = document.getElementById('syncAllElec').checked;
+        energyRows.forEach(row => {
+            if (row.name === '电力') {
+                row.equivalent_coef_val = val;
+                row.coef_val_modified = true;
+                if (syncAll) {
+                    const input = document.getElementById(`evCoef_${row.row_id}`);
+                    if (input) { input.value = val; input.style.background = '#fff3cd'; }
+                }
+            }
+        });
+        renderTable();
+        updateCharts();
+        calcBenchmarks();
+        setSaveIndicator('⚡ 电力等价值系数已更新', true);
+    }
+
+    function resetCoefficients() {
+        energyRows.forEach(row => {
+            const f = getFactor(row.name);
+            if (f) {
+                row.equivalent_coef = f.equivalent_coef;
+                row.equivalent_coef_val = f.equivalent_coef_val || 0;
+                row.coef_modified = false;
+                row.coef_val_modified = false;
+            }
+        });
+        renderTable();
+        updateCharts();
+        calcBenchmarks();
+        setSaveIndicator('已恢复为标准系数', true);
+    }
+
+    function updateCharts() {
+        updatePieChart();
+        updateBarChart();
+    }
+
+    function updatePieChart() {
+        const labels = [];
+        const data = [];
+        const colors = [];
+        energyRows.forEach((row, i) => {
+            const qty = row.annual_qty || 0;
+            const coef = row.equivalent_coef || 0;
+            const tce = qty * coef;
+            if (tce > 0.001 && row.include_in_total !== false) {
+                labels.push(row.name || '自定义');
+                data.push(parseFloat(tce.toFixed(2)));
+                colors.push(DOUGHNUT_COLORS[i % DOUGHNUT_COLORS.length]);
+            }
+        });
+
+        const ctx = document.getElementById('pieChart').getContext('2d');
+        if (pieChart) pieChart.destroy();
+        if (data.length === 0) {
+            pieChart = null;
+            document.getElementById('pieLegend').innerHTML = '';
+            return;
+        }
+        pieChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 2, borderColor: '#fff', hoverBorderWidth: 3 }] },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                cutout: '50%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(255,255,255,0.95)',
+                        titleColor: '#1a2332',
+                        bodyColor: '#5a6b7a',
+                        borderColor: 'rgba(0,180,170,0.3)',
+                        borderWidth: 1,
+                        padding: 12,
+                        callbacks: {
+                            label: function(ctx) {
+                                return ` ${ctx.label}: ${ctx.raw.toFixed(2)} tce (${ctx.parsed !== undefined ? ((ctx.raw / data.reduce((a,b)=>a+b,0))*100).toFixed(1) : '?'}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        const total = data.reduce((a, b) => a + b, 0);
+        const legendEl = document.getElementById('pieLegend');
+        legendEl.innerHTML = '';
+        legendEl.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;padding:8px 12px;';
+        labels.forEach((label, i) => {
+            const pct = total > 0 ? (data[i] / total * 100).toFixed(1) : 0;
+            const item = document.createElement('div');
+            item.style.cssText = 'display:flex;align-items:center;gap:6px;font-size:11px;color:#5a6b7a;';
+            const dot = document.createElement('span');
+            dot.style.cssText = `display:inline-block;width:10px;height:10px;background:${colors[i]};border-radius:50%;flex-shrink:0;`;
+            item.appendChild(dot);
+            item.appendChild(document.createTextNode(`${label} ${data[i]}tce (${pct}%)`));
+            legendEl.appendChild(item);
+        });
+    }
+
+    function updateBarChart() {
+        const labels = [];
+        const eqData = [];
+        const evData = [];
+        const colors = [];
+        energyRows.forEach((row, i) => {
+            const qty = row.annual_qty || 0;
+            const eqTce = qty * (row.equivalent_coef || 0);
+            const evTce = qty * (row.equivalent_coef_val || 0);
+            if (eqTce > 0.001 || evTce > 0.001) {
+                labels.push(row.name || '自定义');
+                eqData.push(parseFloat(eqTce.toFixed(2)));
+                evData.push(parseFloat(evTce.toFixed(2)));
+                colors.push(ENERGY_COLORS[i % ENERGY_COLORS.length]);
+            }
+        });
+
+        const ctx = document.getElementById('barChart').getContext('2d');
+        if (barChart) barChart.destroy();
+        if (labels.length === 0) { barChart = null; return; }
+        barChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [
+                    { label: '当量值(tce)', data: eqData, backgroundColor: '#0d6efd', borderRadius: 4 },
+                    { label: '等价值(tce)', data: evData, backgroundColor: '#ffc107', borderRadius: 4 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true, title: { display: true, text: '标准煤 (tce)' } },
+                    x: { grid: { display: false } }
+                },
+                plugins: {
+                    legend: { position: 'top', labels: { font: { size: 11 } } }
+                }
+            }
+        });
+    }
+
+    async function saveEnergyData() {
+        const pid = getProjectId();
+        const btn = event?.target || document.querySelector('.btn-outline-success');
+        const origText = btn?.innerHTML || '';
+        if (btn) btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> 保存中...';
+
+        energyRows.forEach(row => {
+            const qtyEl = document.getElementById(`qty_${row.row_id}`);
+            const priceEl = document.getElementById(`price_${row.row_id}`);
+            const remarkEl = document.getElementById(`remark_${row.row_id}`);
+            if (qtyEl) row.annual_qty = parseFloat(qtyEl.value) || 0;
+            if (priceEl) row.unit_price = parseFloat(priceEl.value) || 0;
+            if (remarkEl) row.remark = remarkEl.value || '';
+        });
+
+        try {
+            const r = await fetch(`/api/project/${pid}/energy/items`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(energyRows)
+            });
+            const d = await r.json();
+            if (!d.success) throw new Error(d.message);
+
+            const params = {
+                building_area: document.getElementById('paramBuildingArea').value || '',
+                annual_output: document.getElementById('paramAnnualOutput').value || '',
+                product_qty: document.getElementById('paramProductQty').value || '',
+                product_unit: document.getElementById('paramProductUnit').value || '',
+                global_elec_val_coef: document.getElementById('globalElecValCoef').value || ''
+            };
+            await fetch(`/api/project/${pid}/energy/params`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(params)
+            });
+
+            const electricityData = {
+                rows: electricityRows,
+                simultaneous: {
+                    ksp: parseFloat(document.getElementById('kspFactor').value) || 0.90,
+                    ksq: parseFloat(document.getElementById('ksqFactor').value) || 0.93
+                },
+                compensation_kvar: parseFloat(document.getElementById('compensationKvar').value) || 0
+            };
+            await fetch(`/api/project/${pid}/energy/electricity`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(electricityData)
+            });
+
+            setSaveIndicator('已保存', true);
+        } catch (e) {
+            setSaveIndicator('保存失败: ' + e.message, false);
+        }
+        if (btn) btn.innerHTML = origText;
+    }
+
+    function exportEnergyData() {
+        const pid = getProjectId();
+        window.location.href = `/api/project/${pid}/energy/export`;
+    }
+
+    function addElectricityRow() {
+        const row = {
+            row_id: electricityNextId++,
+            name: '',
+            voltage: 0.38,
+            density: 0,
+            density_qty: 0,
+            work_kw: 0,
+            total_kw: 0,
+            kc: 0.75,
+            cos_phi: 0.90,
+            tg_phi: 0.48,
+            active_kw: 0,
+            reactive_kvar: 0,
+            apparent_kva: 0,
+            annual_hours: 2190,
+            power_consumption: 0,
+            remark: ''
+        };
+        electricityRows.push(row);
+        renderElectricityTable();
+    }
+
+    function removeElectricityRow(rowId) {
+        if (electricityRows.length <= 1) return;
+        electricityRows = electricityRows.filter(r => r.row_id !== rowId);
+        renderElectricityTable();
+    }
+
+    function calcElectricityRow(rowId) {
+        const row = electricityRows.find(r => r.row_id === rowId);
+        if (!row) return;
+
+        const density = parseFloat(document.getElementById(`eDensity_${rowId}`)?.value) || 0;
+        const densityQty = parseFloat(document.getElementById(`eDensityQty_${rowId}`)?.value) || 0;
+        const workKw = parseFloat(document.getElementById(`eWorkKw_${rowId}`)?.value) || 0;
+        const totalKw = parseFloat(document.getElementById(`eTotalKw_${rowId}`)?.value) || 0;
+        const kc = parseFloat(document.getElementById(`eKc_${rowId}`)?.value) || 0;
+        const cosPhi = parseFloat(document.getElementById(`eCos_${rowId}`)?.value) || 0.90;
+        const annualHours = parseFloat(document.getElementById(`eAnnualHours_${rowId}`)?.value) || 0;
+
+        const autoKw = parseFloat((density * densityQty / 1000).toFixed(2));
+        const prevAuto = row._auto_kw || 0;
+        const prevManual = row._manual_kw_override || false;
+
+        const isDensityChanged = (density !== (row.density || 0)) || (densityQty !== (row.density_qty || 0));
+        const workManualChanged = workKw !== 0 && workKw !== prevAuto && !isDensityChanged;
+
+        if (isDensityChanged && !prevManual) {
+            document.getElementById(`eWorkKw_${rowId}`).value = autoKw || '';
+            document.getElementById(`eTotalKw_${rowId}`).value = autoKw || '';
+            row._auto_kw = autoKw;
+            row._manual_kw_override = false;
+        } else if (workManualChanged) {
+            row._manual_kw_override = true;
+        }
+
+        const finalWorkKw = parseFloat(document.getElementById(`eWorkKw_${rowId}`)?.value) || 0;
+        const finalTotalKw = parseFloat(document.getElementById(`eTotalKw_${rowId}`)?.value) || 0;
+
+        const tgPhi = cosPhi > 0 ? Math.sin(Math.acos(Math.min(cosPhi, 0.999))) / cosPhi : 0;
+        const activeKw = finalTotalKw * kc;
+        const reactiveKvar = activeKw * tgPhi;
+        const apparentKva = cosPhi > 0 ? activeKw / cosPhi : 0;
+        const powerConsumption = activeKw * annualHours;
+
+        row.voltage = parseFloat(document.getElementById(`eVoltage_${rowId}`)?.value) || 0.38;
+        row.density = density;
+        row.density_qty = densityQty;
+        row.work_kw = finalWorkKw;
+        row.total_kw = finalTotalKw;
+        row.kc = kc;
+        row.cos_phi = cosPhi;
+        row.tg_phi = tgPhi;
+        row.active_kw = activeKw;
+        row.reactive_kvar = reactiveKvar;
+        row.apparent_kva = apparentKva;
+        row.annual_hours = annualHours;
+        row.power_consumption = powerConsumption;
+        row.remark = document.getElementById(`eRemark_${rowId}`)?.value || '';
+
+        document.getElementById(`eTgPhi_${rowId}`).textContent = tgPhi.toFixed(2);
+        document.getElementById(`eActiveKw_${rowId}`).textContent = activeKw.toFixed(2);
+        document.getElementById(`eReactiveKvar_${rowId}`).textContent = reactiveKvar.toFixed(2);
+        document.getElementById(`eApparentKva_${rowId}`).textContent = apparentKva.toFixed(2);
+        document.getElementById(`ePowerConsumption_${rowId}`).textContent = powerConsumption.toFixed(2);
+
+        updateElectricityTotals();
+    }
+
+    function updateElectricityTotals() {
+        let sumWorkKw = 0, sumTotalKw = 0, sumActiveKw = 0, sumReactiveKvar = 0, sumApparentKva = 0, sumPowerConsumption = 0;
+
+        electricityRows.forEach(r => {
+            const totalKw = r.total_kw || (r.density || 0) * (r.density_qty || 0) / 1000;
+            const activeKw = totalKw * (r.kc || 0);
+            const tgPhi = (r.cos_phi || 0.90) > 0 ? Math.sin(Math.acos(Math.min(r.cos_phi || 0.90, 0.999))) / (r.cos_phi || 0.90) : 0;
+            const reactiveKvar = activeKw * tgPhi;
+            const apparentKva = (r.cos_phi || 0.90) > 0 ? activeKw / (r.cos_phi || 0.90) : 0;
+            const powerConsumption = activeKw * (r.annual_hours || 0);
+
+            sumWorkKw += r.work_kw || (r.density || 0) * (r.density_qty || 0) / 1000;
+            sumTotalKw += totalKw;
+            sumActiveKw += activeKw;
+            sumReactiveKvar += reactiveKvar;
+            sumApparentKva += apparentKva;
+            sumPowerConsumption += powerConsumption;
+        });
+
+        document.getElementById('sumWorkKw').textContent = sumWorkKw.toFixed(2);
+        document.getElementById('sumTotalKw').textContent = sumTotalKw.toFixed(2);
+        document.getElementById('sumActiveKw').textContent = sumActiveKw.toFixed(2);
+        document.getElementById('sumReactiveKvar').textContent = sumReactiveKvar.toFixed(2);
+        document.getElementById('sumApparentKva').textContent = sumApparentKva.toFixed(2);
+        document.getElementById('sumPowerConsumption').textContent = sumPowerConsumption.toFixed(2);
+
+        energyRows.forEach(r => {
+            if (r.name === '电力' && r._power_auto) {
+                r.annual_qty = parseFloat((sumPowerConsumption / 10000).toFixed(4));
+                const qtyEl = document.getElementById(`qty_${r.row_id}`);
+                if (qtyEl) qtyEl.value = r.annual_qty;
+                updateRowCalcForEnergyOnly(r.row_id);
+            }
+        });
+        updateTotalsDisplay();
+
+        const ksp = parseFloat(document.getElementById('kspFactor').value) || 0.90;
+        const ksq = parseFloat(document.getElementById('ksqFactor').value) || 0.93;
+        const simActive = sumActiveKw * ksp;
+        const simReactive = sumReactiveKvar * ksq;
+        const simApparent = Math.sqrt(simActive * simActive + simReactive * simReactive);
+
+        document.getElementById('simActiveKw').textContent = simActive.toFixed(2);
+        document.getElementById('simReactiveKvar').textContent = simReactive.toFixed(2);
+        document.getElementById('simApparentKva').textContent = simApparent.toFixed(2);
+
+        const compensation = parseFloat(document.getElementById('compensationKvar').value) || 0;
+        const finalActive = simActive;
+        const finalReactive = Math.max(0, simReactive - compensation);
+        const finalApparent = Math.sqrt(finalActive * finalActive + finalReactive * finalReactive);
+
+        document.getElementById('finalActiveKw').textContent = finalActive.toFixed(2);
+        document.getElementById('finalReactiveKvar').textContent = finalReactive.toFixed(2);
+        document.getElementById('finalApparentKva').textContent = finalApparent.toFixed(2);
+
+        const recommendedKva = Math.ceil(finalApparent / 50) * 50;
+        if (finalApparent > 0) {
+            const options = [];
+            let base = recommendedKva;
+            while (base < recommendedKva * 1.5) {
+                if (base >= 50) options.push(base);
+                base += base < 200 ? 50 : (base < 500 ? 100 : 200);
+                if (options.length >= 4) break;
+            }
+            document.getElementById('transformerAdvice').innerHTML =
+                `<i class="bi bi-info-circle-fill me-1"></i>补偿后视在功率 ${finalApparent.toFixed(2)} kVA，建议选用 <strong>${recommendedKva} kVA</strong> 变压器（可选: ${options.join(' / ')} kVA）`;
+        } else {
+            document.getElementById('transformerAdvice').innerHTML = '';
+        }
+        calcBenchmarks();
+        updateCharts();
+    }
+
+    function resetElectricityDefaults() {
+        electricityRows.forEach(row => {
+            row.kc = 0.75;
+            row.cos_phi = 0.90;
+            row.tg_phi = 0.48;
+        });
+        document.getElementById('kspFactor').value = '0.90';
+        document.getElementById('ksqFactor').value = '0.93';
+        document.getElementById('compensationKvar').value = '0';
+        renderElectricityTable();
+    }
+
+    function renderElectricityTable() {
+        const tbody = document.getElementById('electricityTableBody');
+        tbody.innerHTML = '';
+        electricityRows.forEach((row, idx) => {
+            const density = row.density || 0;
+            const densityQty = row.density_qty || 0;
+            const workKw = row.work_kw || density * densityQty / 1000;
+            const totalKw = row.total_kw || workKw;
+            const kc = row.kc || 0;
+            const cosPhi = row.cos_phi || 0.90;
+            const tgPhi = cosPhi > 0 ? Math.sin(Math.acos(Math.min(cosPhi, 0.999))) / cosPhi : 0;
+            const activeKw = totalKw * kc;
+            const reactiveKvar = activeKw * tgPhi;
+            const apparentKva = cosPhi > 0 ? activeKw / cosPhi : 0;
+            const annualHours = row.annual_hours || 0;
+            const powerConsumption = activeKw * annualHours;
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${idx + 1}</td>
+                <td><input type="text" id="eName_${row.row_id}" value="${row.name || ''}" placeholder="如：室内照明"
+                    onchange="electricityRows.find(r=>r.row_id===${row.row_id}).name=this.value" style="text-align:left;"></td>
+                <td>
+                    <select id="eVoltage_${row.row_id}" onchange="electricityRows.find(r=>r.row_id===${row.row_id}).voltage=parseFloat(this.value)" style="width:100%;border:1px solid transparent;text-align:center;font-size:0.82rem;">
+                        <option value="0.22" ${row.voltage === 0.22 ? 'selected' : ''}>0.22</option>
+                        <option value="0.38" ${row.voltage === 0.38 ? 'selected' : ''}>0.38</option>
+                        <option value="10" ${row.voltage === 10 ? 'selected' : ''}>10</option>
+                    </select>
+                </td>
+                <td><input type="number" id="eDensity_${row.row_id}" value="${row.density || ''}" step="0.01" min="0"
+                    onchange="calcElectricityRow(${row.row_id})" onfocus="this.select()" placeholder="W/m²"></td>
+                <td><input type="number" id="eDensityQty_${row.row_id}" value="${row.density_qty || ''}" step="0.01" min="0"
+                    onchange="calcElectricityRow(${row.row_id})" onfocus="this.select()" placeholder="m²"></td>
+                <td><input type="number" id="eWorkKw_${row.row_id}" value="${workKw || ''}" step="0.01" min="0"
+                    onchange="calcElectricityRow(${row.row_id})" onfocus="this.select()" placeholder="kW"></td>
+                <td><input type="number" id="eTotalKw_${row.row_id}" value="${totalKw || ''}" step="0.01" min="0"
+                    onchange="calcElectricityRow(${row.row_id})" onfocus="this.select()" placeholder="kW"></td>
+                <td><input type="number" id="eKc_${row.row_id}" value="${row.kc || ''}" step="0.01" min="0" max="1"
+                    onchange="calcElectricityRow(${row.row_id})" onfocus="this.select()" class="${row.kc !== 0.75 ? 'modified' : ''}"></td>
+                <td><input type="number" id="eCos_${row.row_id}" value="${row.cos_phi || ''}" step="0.01" min="0" max="1"
+                    onchange="calcElectricityRow(${row.row_id})" onfocus="this.select()" class="${row.cos_phi !== 0.90 ? 'modified' : ''}"></td>
+                <td class="calc-cell" id="eTgPhi_${row.row_id}">${tgPhi.toFixed(2)}</td>
+                <td class="calc-cell" id="eActiveKw_${row.row_id}">${activeKw.toFixed(2)}</td>
+                <td class="calc-cell" id="eReactiveKvar_${row.row_id}">${reactiveKvar.toFixed(2)}</td>
+                <td class="calc-cell" id="eApparentKva_${row.row_id}">${apparentKva.toFixed(2)}</td>
+                <td><input type="number" id="eAnnualHours_${row.row_id}" value="${row.annual_hours || ''}" step="1" min="0"
+                    onchange="calcElectricityRow(${row.row_id})" onfocus="this.select()" placeholder="h"></td>
+                <td class="calc-cell" id="ePowerConsumption_${row.row_id}">${powerConsumption.toFixed(2)}</td>
+                <td><input type="text" id="eRemark_${row.row_id}" value="${row.remark || ''}" placeholder="用途"
+                    onchange="electricityRows.find(r=>r.row_id===${row.row_id}).remark=this.value" style="text-align:left;font-size:0.75rem;"></td>
+                <td><button class="delete-btn" onclick="removeElectricityRow(${row.row_id})" ${electricityRows.length <= 1 ? 'disabled style="opacity:0.3"' : ''}><i class="bi bi-trash"></i></button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+        updateElectricityTotals();
+    }
+
+    async function init() {
+        await loadFactors();
+        await loadEnergyData();
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+</script>
+{% endblock %}

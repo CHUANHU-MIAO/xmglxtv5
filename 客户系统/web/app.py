@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from web.config import Config
 from web.extensions import db, login_manager
 import os
@@ -10,6 +10,9 @@ def create_app():
 
     if app.config.get('DESKTOP_MODE'):
         os.makedirs(app.config['DESKTOP_DATA_DIR'], exist_ok=True)
+        desktop_templates = os.path.join(app.config['BASEDIR'], 'desktop', 'desktop_templates')
+        if os.path.isdir(desktop_templates):
+            app.jinja_loader.searchpath.insert(0, desktop_templates)
     else:
         os.makedirs(os.path.join(app.config['BASEDIR'], 'instance'), exist_ok=True)
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -35,6 +38,12 @@ def create_app():
     app.register_blueprint(admin_bp)
     app.register_blueprint(files_bp)
     app.register_blueprint(estimation_bp)
+
+    if app.config.get('DESKTOP_MODE'):
+        @app.route('/shutdown')
+        def shutdown():
+            request.environ.get('werkzeug.server.shutdown')()
+            return 'shutting down'
 
     @app.context_processor
     def inject_version():

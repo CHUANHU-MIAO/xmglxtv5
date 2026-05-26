@@ -2,65 +2,34 @@ import json
 import os
 import sys
 import re
+import sqlite3
 
 from PySide6.QtCore import QUrl, Qt, QTimer, QSize, QPoint, QRect
 from PySide6.QtGui import QAction, QIcon, QFont, QPixmap, QImage
-from PySide6.QtWebEngineCore import QWebEngineScript
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWidgets import (
     QApplication, QCheckBox, QDialog, QFormLayout, QHBoxLayout, QLabel,
     QLineEdit, QMainWindow, QMessageBox, QPushButton,
     QVBoxLayout, QWidget, QSizePolicy, QFrame, QScrollArea,
-    QInputDialog, QMenu, QSplitter, QListWidget, QListWidgetItem,
-    QToolTip,
+    QInputDialog, QMenu, QSplitter,
 )
 
 from desktop.subscription import SubscriptionClient
 
-CONFIG_FILE = os.path.join(os.path.dirname(__file__), 'config.json')
-FLASK_BASE = 'http://127.0.0.1:5005'
 
-LOGIN_JS = """
-(function() {
-    var u = document.querySelector('input[name="username"]');
-    var p = document.querySelector('input[name="password"]');
-    var f = document.querySelector('form');
-    if (u && p && f) {
-        u.value = 'admin';
-        p.value = 'admin123';
-        f.submit();
-    }
-})();
-"""
+def _get_app_root():
+    config_dir = os.environ.get('DESKTOP_CONFIG_DIR', '')
+    if config_dir:
+        return config_dir
+    if getattr(sys, 'frozen', False):
+        return os.path.dirname(os.path.abspath(sys.executable))
+    return os.path.dirname(os.path.abspath(__file__))
 
-HIDE_NAV_AND_ATTACH_JS = """
-(function() {
-    try {
-        var n = document.querySelector('nav.navbar');
-        if (n) { n.style.display = 'none'; }
-        document.querySelectorAll('.info-card').forEach(function(c) {
-            var h = c.querySelector('.info-header');
-            if (h && h.textContent.indexOf('\u9879\u76ee\u9644\u4ef6') > -1) { c.style.display = 'none'; }
-        });
-    } catch(e) {}
-})();
-"""
 
-GET_PROJECTS_JS = """
-(function() {
-    return fetch('/api/projects/search?per_page=200')
-        .then(function(r) { return r.json(); })
-        .then(function(d) {
-            if (d.success) {
-                return JSON.stringify(d.rows.map(function(p) {
-                    return {id: p.id, name: p.name, start_date: p.start_date || ''};
-                }));
-            }
-            return '[]';
-        })
-        .catch(function() { return '[]'; });
-})();
-"""
+APP_ROOT = _get_app_root()
+CONFIG_FILE = os.path.join(APP_ROOT, 'config.json')
+FLASK_BASE = 'app://app'
+DB_PATH = os.path.join(APP_ROOT, 'desktop_data', 'desktop_system.db')
 
 ADD_PROJECT_FORM_JS = """
 (function() {
@@ -70,10 +39,6 @@ ADD_PROJECT_FORM_JS = """
     }
     return JSON.stringify({found: false});
 })();
-"""
-
-GET_PAGE_URL_JS = """
-(function() { return window.location.href; })();
 """
 
 SUBSCRIPTION_LIMITS = {
@@ -446,12 +411,12 @@ class EstimateStudioWindow(QMainWindow):
         self.resize(1400, 900)
         self._logged_in = False
         self._web_authenticated = False
-        self.projects = []
         self._pending_nav = None
         self._current_project_id = None
         self._subscription_level = 'standard'
         self._max_projects = 5
         self._subscription_client = None
+        self.projects = []
         self._view_mode = 'tree'
         self._sort_mode = 'time'
         self._setup_ui()
@@ -514,7 +479,6 @@ class EstimateStudioWindow(QMainWindow):
         sep2.setStyleSheet('color: #dee2e6;')
         sidebar_layout.addWidget(sep2)
 
-        # ====== View Controls ======
         view_ctrl = QWidget()
         view_ctrl.setStyleSheet('padding: 0px;')
         view_layout = QHBoxLayout(view_ctrl)
@@ -551,16 +515,15 @@ class EstimateStudioWindow(QMainWindow):
             }
         ''')
         self.btn_sort_toggle.clicked.connect(self._toggle_sort_mode)
+        self.btn_sort_toggle.setVisible(False)
         view_layout.addWidget(self.btn_sort_toggle)
 
         sidebar_layout.addWidget(view_ctrl)
 
-        # Project list label
         self.projects_label = QLabel('项 目')
         self.projects_label.setStyleSheet('font-size: 11px; color: #adb5bd; padding: 2px 8px 2px 8px; font-weight: 600;')
         sidebar_layout.addWidget(self.projects_label)
 
-        # Scrollable project list
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -585,29 +548,7 @@ class EstimateStudioWindow(QMainWindow):
         self.web_view = QWebEngineView()
         self.web_view.setStyleSheet('border: none;')
         self.web_view.loadFinished.connect(self._on_page_loaded)
-        self._setup_global_scripts()
         main_layout.addWidget(self.web_view)
-
-    def _setup_global_scripts(self):
-        script = QWebEngineScript()
-        script.setName('desktop_hide_nav')
-        script.setSourceCode('''
-(function() {
-    try {
-        var s = document.getElementById('desktop-hide-nav');
-        if (!s) {
-            s = document.createElement('style');
-            s.id = 'desktop-hide-nav';
-            s.textContent = 'nav.navbar{display:none!important}.page-content{padding-top:0!important}body{padding-top:0!important}';
-            var h = document.head || document.documentElement;
-            if (h) h.appendChild(s);
-        }
-    } catch(e) {}
-})();
-''')
-        script.setInjectionPoint(QWebEngineScript.DocumentCreation)
-        script.setWorldId(QWebEngineScript.MainWorld)
-        self.web_view.page().scripts().insert(script)
 
     def _show_login_dialog(self):
         self._subscription_client = SubscriptionClient()
@@ -634,28 +575,15 @@ class EstimateStudioWindow(QMainWindow):
         self._max_projects = limits['max_projects']
         expire = sub.get('expire_date', '未知')
         label = limits['label']
-        self.user_label.setText(f'用户: {username}')
+        self.user_label.setText(f'用户：{username}')
         self.user_label.setStyleSheet('font-size: 11px; color: #1e293b; font-weight: 600; padding: 0px 8px 2px 8px;')
-        expire_text = expire if expire != '未知' and expire else '永久'
-        self.sub_label.setText(f'{label} | 上限 {self._max_projects} 个 | 到期 {expire_text}')
-
-    def _get_project_count(self):
-        return len(self.projects)
-
-    def _check_project_limit(self):
-        count = self._get_project_count()
-        if count >= self._max_projects:
-            limits = SUBSCRIPTION_LIMITS.get(self._subscription_level, SUBSCRIPTION_LIMITS['standard'])
-            QMessageBox.warning(self, '项目数量已达上限',
-                f'您的当前订阅（{limits["label"]}）最多允许 {self._max_projects} 个项目。\n'
-                f'当前已有 {count} 个项目。\n\n'
-                '请升级订阅以创建更多项目。')
-            return False
-        return True
+        expire_text = expire if expire != '未知' else '永久'
+        self.sub_label.setText(f'{label} | 到期 {expire_text}')
 
     def _init_web_view(self):
-        self._pending_nav = 'list'
-        self.web_view.load(QUrl(f'{FLASK_BASE}/auth/login'))
+        self._pending_nav = 'search'
+        self._extract_projects()
+        self.web_view.load(QUrl(f'{FLASK_BASE}/my_projects'))
 
     def _navigate_to(self, target):
         for btn in [self.btn_add, self.btn_search, self.btn_files]:
@@ -665,18 +593,9 @@ class EstimateStudioWindow(QMainWindow):
             return
 
         self._pending_nav = target
-
-        if target == 'add' and not self._check_project_limit():
-            self._pending_nav = None
-            return
-
-        if self._web_authenticated:
-            url = self._target_url(target)
-            if url:
-                self.web_view.load(QUrl(url))
-            return
-
-        self.web_view.load(QUrl(f'{FLASK_BASE}/auth/login'))
+        url = self._target_url(target)
+        if url:
+            self.web_view.load(QUrl(url))
 
     def _target_url(self, target):
         if target == 'add':
@@ -692,57 +611,32 @@ class EstimateStudioWindow(QMainWindow):
             return f'{FLASK_BASE}/project/detail/{target}'
         return None
 
-    def _get_project_buttons(self):
-        buttons = []
-        for i in range(self.project_list_layout.count()):
-            w = self.project_list_layout.itemAt(i).widget()
-            if isinstance(w, ProjectNavButton):
-                buttons.append(w)
-        return buttons
-
-    def _on_project_click(self, project_id):
-        self._navigate_to(project_id)
-
     def _on_page_loaded(self, ok):
         if not ok:
-            QTimer.singleShot(800, lambda: self.web_view.reload())
+            QTimer.singleShot(300, lambda: self.web_view.reload())
             return
         url = self.web_view.url().toString()
-
-        self.web_view.page().runJavaScript(HIDE_NAV_AND_ATTACH_JS)
-
-        if '/auth/login' in url and self._logged_in and not getattr(self, '_login_attempted', False):
-            self._login_attempted = True
-            self.web_view.page().runJavaScript(LOGIN_JS)
-        elif '/auth/login' in url:
-            pass
-        else:
-            self._login_attempted = False
-            self._web_authenticated = True
-            self.web_view.page().runJavaScript(GET_PAGE_URL_JS, self._on_check_current_url)
+        self._web_authenticated = True
+        self._update_subscription_info()
+        self._on_check_current_url(url)
 
     def _on_check_current_url(self, url):
-        if not url:
-            return
         if '/my_projects' in url:
-            QTimer.singleShot(300, self._extract_projects)
-        elif '/project/detail/' in url:
-            pass
+            QTimer.singleShot(200, self._extract_projects)
         elif '/project/add' in url:
-            QTimer.singleShot(400, self._on_add_project_page_loaded)
+            QTimer.singleShot(200, self._on_add_project_page_loaded)
         else:
-            QTimer.singleShot(500, self._extract_projects)
+            QTimer.singleShot(200, self._extract_projects)
 
     def _extract_projects(self):
-        self.web_view.page().runJavaScript(GET_PROJECTS_JS, self._on_projects_data)
-
-    def _on_projects_data(self, json_str):
-        if not json_str:
-            return
         try:
-            data = json.loads(json_str)
-            if not isinstance(data, list):
-                data = []
+            conn = sqlite3.connect(DB_PATH)
+            cursor = conn.execute(
+                'SELECT id, name, start_date FROM projects WHERE is_valid = 1 ORDER BY start_date DESC'
+            )
+            rows = cursor.fetchall()
+            conn.close()
+            data = [{'id': r[0], 'name': r[1], 'start_date': r[2] or ''} for r in rows]
             self._update_project_list(data)
         except Exception:
             pass
@@ -759,8 +653,6 @@ class EstimateStudioWindow(QMainWindow):
             self._build_tree_view()
         else:
             self._build_list_view()
-
-        self._update_subscription_info()
 
     def _clear_project_list(self):
         while self.project_list_layout.count() > 0:
@@ -821,20 +713,10 @@ class EstimateStudioWindow(QMainWindow):
         if self._view_mode == 'tree':
             self._view_mode = 'list'
             self.btn_view_toggle.setText('📋 项目清单')
-            QToolTip.showText(
-                self.btn_view_toggle.mapToGlobal(QPoint(0, self.btn_view_toggle.height())),
-                '当前视图：项目清单（列表模式）',
-                self.btn_view_toggle, QRect(), 2000
-            )
             self.btn_sort_toggle.setVisible(True)
         else:
             self._view_mode = 'tree'
             self.btn_view_toggle.setText('📅 时间序列')
-            QToolTip.showText(
-                self.btn_view_toggle.mapToGlobal(QPoint(0, self.btn_view_toggle.height())),
-                '当前视图：时间序列（按年/月分类）',
-                self.btn_view_toggle, QRect(), 2000
-            )
             self.btn_sort_toggle.setVisible(False)
 
         if self.projects:
@@ -844,22 +726,15 @@ class EstimateStudioWindow(QMainWindow):
         if self._sort_mode == 'time':
             self._sort_mode = 'name'
             self.btn_sort_toggle.setText('🔤 按名称')
-            QToolTip.showText(
-                self.btn_sort_toggle.mapToGlobal(QPoint(0, self.btn_sort_toggle.height())),
-                '当前排序：按项目名称首字母',
-                self.btn_sort_toggle, QRect(), 2000
-            )
         else:
             self._sort_mode = 'time'
             self.btn_sort_toggle.setText('⏱ 按时间')
-            QToolTip.showText(
-                self.btn_sort_toggle.mapToGlobal(QPoint(0, self.btn_sort_toggle.height())),
-                '当前排序：按开始时间',
-                self.btn_sort_toggle, QRect(), 2000
-            )
 
         if self._view_mode == 'list' and self.projects:
             self._update_project_list(self.projects)
+
+    def _on_project_click(self, project_id):
+        self._navigate_to(project_id)
 
     def _on_add_project_page_loaded(self):
         self.web_view.page().runJavaScript(ADD_PROJECT_FORM_JS, self._on_check_add_form)
