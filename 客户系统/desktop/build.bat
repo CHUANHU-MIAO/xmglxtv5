@@ -15,14 +15,14 @@ if %errorlevel% neq 0 (
 )
 
 :: 检查 Inno Setup 编译器
-set ISCC_PATH="D:\Inno Setup 6\ISCC.exe"
-if not exist %ISCC_PATH% (
-    set ISCC_PATH="C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+set ISCC_PATH=D:\Inno Setup 6\ISCC.exe
+if not exist "%ISCC_PATH%" (
+    set ISCC_PATH=C:\Program Files (x86)\Inno Setup 6\ISCC.exe
 )
-if not exist %ISCC_PATH% (
-    set ISCC_PATH="C:\Program Files\Inno Setup 6\ISCC.exe"
+if not exist "%ISCC_PATH%" (
+    set ISCC_PATH=C:\Program Files\Inno Setup 6\ISCC.exe
 )
-if not exist %ISCC_PATH% (
+if not exist "%ISCC_PATH%" (
     echo [警告] 未找到 Inno Setup 编译器 (ISCC.exe)
     echo 请安装 Inno Setup: https://jrsoftware.org/isinfo.php
     echo 将跳过生成安装包步骤
@@ -93,7 +93,7 @@ echo [3/3] 使用 Inno Setup 生成安装包...
 if "%SKIP_ISS%"=="1" (
     echo [跳过] 未找到 Inno Setup，请手动运行 setup.iss
 ) else (
-    %ISCC_PATH% setup.iss
+    "%ISCC_PATH%" setup.iss
     if %errorlevel% neq 0 (
         echo [警告] Inno Setup 编译失败，请检查 setup.iss 配置
     ) else (
