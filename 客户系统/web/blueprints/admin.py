@@ -78,6 +78,31 @@ def user_delete(user_id):
     return redirect(url_for('admin.users'))
 
 
+@admin_bp.route('/user/edit/<int:user_id>', methods=['POST'])
+@login_required
+@admin_required
+def user_edit(user_id):
+    user = User.query.get_or_404(user_id)
+    new_username = request.form.get('username', '').strip()
+    new_password = request.form.get('password', '').strip()
+
+    if not new_username:
+        flash('用户名不能为空')
+        return redirect(url_for('admin.users'))
+
+    existing = User.query.filter(User.username == new_username, User.id != user_id).first()
+    if existing:
+        flash('用户名已存在')
+        return redirect(url_for('admin.users'))
+
+    user.username = new_username
+    if new_password:
+        user.set_password(new_password)
+    db.session.commit()
+    flash('用户信息修改成功')
+    return redirect(url_for('admin.users'))
+
+
 @admin_bp.route('/projects')
 @login_required
 @admin_required

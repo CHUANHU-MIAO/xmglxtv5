@@ -168,7 +168,7 @@ sudo nginx -t && sudo systemctl reload nginx
 ## 八、Gunicorn 系统服务
 
 ```bash
-sudo tee /etc/systemd/system/项目管理系统.service > /dev/null <<EOF
+sudo tee /etc/systemd/system/xmglxtv5.service > /dev/null <<EOF
 [Unit]
 Description=项目管理系统 V5.0.1
 After=network.target
@@ -190,9 +190,9 @@ EOF
 
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl start 项目管理系统
-sudo systemctl enable 项目管理系统
-sudo systemctl status 项目管理系统
+sudo systemctl start xmglxtv5
+sudo systemctl enable xmglxtv5
+sudo systemctl status xmglxtv5
 ```
 
 状态应为 `active (running)`。
@@ -260,13 +260,13 @@ sudo systemctl enable 订阅管理后台
 
 ```bash
 # 状态
-sudo systemctl status 项目管理系统
+sudo systemctl status xmglxtv5
 
 # 重启
-sudo systemctl restart 项目管理系统
+sudo systemctl restart xmglxtv5
 
 # 日志
-sudo journalctl -u 项目管理系统 --no-pager -n 50
+sudo journalctl -u xmglxtv5 --no-pager -n 50
 
 # 备份数据库
 cp /opt/xmglxtv5/客户系统/instance/system.db /opt/backup/system-$(date +%Y%m%d).db
@@ -286,7 +286,7 @@ cd /opt/xmglxtv5/客户系统 && python3 -m venv venv && source venv/bin/activat
 cd /opt/xmglxtv5/客户系统 && source venv/bin/activate && python app.py
 
 # 生产模式运行
-sudo systemctl start 项目管理系统
+sudo systemctl start xmglxtv5
 
 # 迁移数据
 cd /opt/xmglxtv5 && python3 一键迁移数据.py -y
@@ -297,11 +297,11 @@ cd /opt/xmglxtv5 && python3 一键迁移数据.py -y
 
 | 现象 | 解决 |
 |------|------|
-| 服务无法启动 | `sudo journalctl -u 项目管理系统 -n 30` |
+| 服务无法启动 | `sudo journalctl -u xmglxtv5 -n 30` |
 | `ImportError` | 确认 `WorkingDirectory=/opt/xmglxtv5/客户系统` |
 | `unable to open database file` | `mkdir -p /opt/xmglxtv5/客户系统/instance && chown xazx:xazx /opt/xmglxtv5/客户系统/instance` |
 | 413 上传过大 | Nginx `client_max_body_size` 调大 |
-| 502 Bad Gateway | `sudo systemctl restart 项目管理系统` |
+| 502 Bad Gateway | `sudo systemctl restart xmglxtv5` |
 | 授权失败 | 重新运行 `license_generator.py --auto-deploy` |
 | 静态文件 404 | Nginx `alias` 指向 `/opt/xmglxtv5/客户系统/web/static/` |
 

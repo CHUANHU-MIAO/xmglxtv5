@@ -67,7 +67,7 @@
             <div class="table-responsive mt-4">
                 <table class="table table-hover">
                     <thead>
-                        <tr><th>ID</th><th>用户名</th><th>角色</th><th>密码</th><th width="120">操作</th></tr>
+                        <tr><th>ID</th><th>用户名</th><th>角色</th><th>密码</th><th width="160">操作</th></tr>
                     </thead>
                     <tbody>
                         {% for u in users %}
@@ -78,17 +78,50 @@
                             <td><code style="color:var(--text-muted);font-family:var(--font-mono);font-size:0.82rem;">******</code></td>
                             <td>
                                 {% if u.username != 'admin' %}
+                                <button type="button" class="btn btn-outline-primary btn-sm me-1" onclick="openEditModal({{ u.id }}, '{{ u.username|e }}')">
+                                    <i class="bi bi-pencil-square"></i> 编辑
+                                </button>
                                 <form method="post" action="/admin/user/delete/{{ u.id }}" style="display:inline;" onsubmit="return confirm('确定删除用户【{{ u.username }}】吗？删除后该账号将无法登录！');">
                                     <button type="submit" class="delete-btn"><i class="bi bi-trash"></i> 删除</button>
                                 </form>
                                 {% else %}
-                                <span class="text-muted" style="font-size:0.8rem;">系统管理员</span>
+                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="openEditModal({{ u.id }}, '{{ u.username|e }}')">
+                                    <i class="bi bi-pencil-square"></i> 编辑
+                                </button>
                                 {% endif %}
                             </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editUserModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-pencil-square text-primary"></i> 修改用户信息</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="editUserForm" method="post">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">用户名</label>
+                            <input type="text" class="form-control" id="editUsername" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">新密码</label>
+                            <input type="password" class="form-control" id="editPassword" name="password" placeholder="留空则不修改密码">
+                            <small class="text-muted">密码不设限制，留空保持原密码不变</small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-primary">保存修改</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -140,6 +173,23 @@
             const match = !keyword || name.includes(keyword) || owner.includes(keyword) || location.includes(keyword);
             item.style.display = match ? '' : 'none';
         });
+    });
+
+    function openEditModal(userId, username) {
+        document.getElementById('editUserForm').action = '/admin/user/edit/' + userId;
+        document.getElementById('editUsername').value = username;
+        document.getElementById('editPassword').value = '';
+        var modal = new bootstrap.Modal(document.getElementById('editUserModal'));
+        modal.show();
+    }
+
+    document.getElementById('editUserForm').addEventListener('submit', function(e) {
+        var username = document.getElementById('editUsername').value.trim();
+        if (!username) {
+            e.preventDefault();
+            alert('用户名不能为空');
+            return false;
+        }
     });
 </script>
 {% endblock %}
