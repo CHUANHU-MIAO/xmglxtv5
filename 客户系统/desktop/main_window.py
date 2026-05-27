@@ -54,7 +54,8 @@ class SubscriptionDialog(QDialog):
         self.client = client
         self.setWindowTitle('咨询项目管理系统')
         self.setFixedSize(400, 440)
-        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
+        self.setWindowFlag(Qt.WindowCloseButtonHint, True)
+        self.setWindowFlag(Qt.WindowContextHelpButtonHint, False)
         self._setup_ui()
         self._load_saved_credentials()
 
@@ -160,6 +161,14 @@ class SubscriptionDialog(QDialog):
         self.remember_pwd_cb.setStyleSheet('font-size: 12px; color: #64748b;')
         remember_layout.addWidget(self.remember_pwd_cb)
 
+        remember_layout.addSpacing(12)
+
+        self.forgot_pwd_label = QLabel('找回密码')
+        self.forgot_pwd_label.setCursor(Qt.PointingHandCursor)
+        self.forgot_pwd_label.setStyleSheet('font-size: 12px; color: #0d6efd;')
+        self.forgot_pwd_label.mousePressEvent = self._on_forgot_password
+        remember_layout.addWidget(self.forgot_pwd_label)
+
         remember_layout.addStretch()
         body_layout.addLayout(remember_layout)
 
@@ -246,6 +255,10 @@ class SubscriptionDialog(QDialog):
     def _on_register(self):
         import webbrowser
         webbrowser.open(f'{self.client.server_url}/register')
+
+    def _on_forgot_password(self, event):
+        import webbrowser
+        webbrowser.open(f'{self.client.server_url}/forgot-password')
 
 
 class NavButton(QPushButton):
