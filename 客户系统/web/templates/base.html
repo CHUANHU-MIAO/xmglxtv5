@@ -14,7 +14,7 @@
     <!-- 顶部导航栏 -->
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="/">
+            <a class="navbar-brand" href="{{ url_for('projects.index') }}">
                 <i class="bi bi-building"></i> 项目管理系统
                 {% if system_version %}<small class="ms-1" style="font-size:0.6em;opacity:0.7;">{{ system_version }}</small>{% endif %}
             </a>
@@ -24,7 +24,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link {% if active_page == 'home' %}active{% endif %}" href="/">
+                        <a class="nav-link {% if active_page == 'home' %}active{% endif %}" href="{{ url_for('projects.index') }}">
                             <i class="bi bi-house-door"></i> 首页
                         </a>
                     </li>

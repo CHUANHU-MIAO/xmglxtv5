@@ -1,4 +1,5 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, url_for
+from sqlalchemy import text
 from web.config import Config
 from web.extensions import db, login_manager
 import os
@@ -35,6 +36,10 @@ def create_app():
 
     @app.route('/')
     def landing():
+        from flask_login import current_user
+        if current_user.is_authenticated:
+            from web.blueprints.projects import index as projects_index
+            return projects_index()
         return render_template('landing.html')
 
     app.register_blueprint(auth_bp)
@@ -55,6 +60,12 @@ def create_app():
 
     with app.app_context():
         db.create_all()
+
+        db.session.execute(text('CREATE INDEX IF NOT EXISTS idx_projects_is_valid ON projects (is_valid)'))
+        db.session.execute(text('CREATE INDEX IF NOT EXISTS idx_projects_start_date ON projects (start_date)'))
+        db.session.execute(text('CREATE INDEX IF NOT EXISTS idx_projects_updated_at ON projects (updated_at)'))
+        db.session.execute(text('CREATE INDEX IF NOT EXISTS idx_projects_user_id ON projects (user_id)'))
+        db.session.commit()
 
         if not User.query.filter_by(username='admin').first():
             admin = User(username='admin', role='admin')
