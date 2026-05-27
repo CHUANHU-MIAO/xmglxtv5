@@ -103,13 +103,6 @@
             </div>
             {% endif %}
 
-            <div class="storage-info">
-                <i class="bi bi-folder"></i>
-                <strong>文件存储位置：</strong>数据库/{{ p.id }}-{{ p.name }}/
-                <span class="badge contract-badge">合同文件</span>/
-                <span class="badge report-badge">成果文件</span>
-            </div>
-
             <!-- 文件上传表单 -->
             {% if role != 'visitor' %}
             <div class="mt-4 pt-3 border-top" style="border-color:var(--border-color) !important;">

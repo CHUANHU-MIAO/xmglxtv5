@@ -1,10 +1,19 @@
 import os
 import datetime
+import re
 from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, current_app
 from flask_login import login_required, current_user
-from werkzeug.utils import secure_filename
 from web.models import Project, Attachment, Log
 from web.extensions import db
+
+
+def safe_filename(filename):
+    filename = filename.replace('\\', '/')
+    filename = os.path.basename(filename)
+    filename = filename.strip('. ')
+    filename = re.sub(r'[<>:"|?*]', '_', filename)
+    return filename
+
 
 files_bp = Blueprint('files', __name__, url_prefix='/files')
 
@@ -48,7 +57,7 @@ def upload(project_id):
     for file in file_list:
         if file.filename == '':
             continue
-        filename = secure_filename(file.filename)
+        filename = safe_filename(file.filename)
         save_path = os.path.join(project_folder, filename)
         file.save(save_path)
 
@@ -77,7 +86,7 @@ def upload(project_id):
         flash(f'成功上传 {uploaded_count} 个文件')
     else:
         flash('没有选择文件')
-    return redirect(url_for('files.file_viewer', project_id=project_id))
+    return redirect(url_for('projects.project_detail', project_id=project_id))
 
 
 @files_bp.route('/download/<int:project_id>/<filename>')
@@ -110,4 +119,4 @@ def delete(project_id, filename):
     db.session.commit()
 
     flash('文件已删除')
-    return redirect(url_for('files.file_viewer', project_id=project_id))
+    return redirect(url_for('projects.project_detail', project_id=project_id))
