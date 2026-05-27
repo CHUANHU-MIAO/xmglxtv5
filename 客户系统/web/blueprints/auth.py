@@ -17,7 +17,7 @@ def login():
             login_user(user)
             user.last_active_time = datetime.datetime.utcnow()
             db.session.commit()
-            return redirect(url_for('projects.index'))
+            return redirect(url_for('projects.my_projects'))
         flash('用户名或密码错误')
     else:
         cutoff = datetime.datetime.utcnow() - datetime.timedelta(days=365)
