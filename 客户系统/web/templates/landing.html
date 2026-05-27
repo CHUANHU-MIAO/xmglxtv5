@@ -148,6 +148,46 @@
             box-shadow: 0 6px 25px rgba(124, 181, 24, 0.4);
         }
 
+        .nav-download-btn {
+            position: relative;
+        }
+
+        .nav-download-tooltip {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%) translateY(5px);
+            background: var(--gray-900);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+        }
+
+        .nav-download-tooltip::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-bottom-color: var(--gray-900);
+        }
+
+        .nav-download-btn:hover .nav-download-tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
         .nav-cta svg {
             width: 18px;
             height: 18px;
@@ -1038,6 +1078,830 @@
             color: var(--gray-500);
         }
 
+        /* 系统下载 */
+        .system-download {
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 50%, var(--primary-light) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .system-download::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        .system-download-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .system-download-content {
+            color: white;
+        }
+
+        .system-download-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: white;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .system-download-badge svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .system-download-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1.3;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .system-download-subtitle {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1.5rem;
+        }
+
+        .system-download-desc {
+            font-size: 1.05rem;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .system-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .system-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .system-feature-item svg {
+            width: 20px;
+            height: 20px;
+            color: var(--accent-light);
+            flex-shrink: 0;
+        }
+
+        .system-feature-text {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.95);
+            font-weight: 500;
+        }
+
+        .system-download-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-light));
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(124, 181, 24, 0.4);
+        }
+
+        .btn-download:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(124, 181, 24, 0.5);
+        }
+
+        .btn-download svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .btn-download-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-download-outline:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .system-download-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .system-mockup {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .mockup-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mockup-dots {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .mockup-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .mockup-dot.red { background: #ff5f57; }
+        .mockup-dot.yellow { background: #febc2e; }
+        .mockup-dot.green { background: #28c840; }
+
+        .mockup-title {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-left: auto;
+        }
+
+        .mockup-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .mockup-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .mockup-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .mockup-icon svg {
+            width: 20px;
+            height: 20px;
+            color: white;
+        }
+
+        .mockup-text {
+            flex: 1;
+        }
+
+        .mockup-text-line {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            margin-bottom: 6px;
+        }
+
+        .mockup-text-line.short {
+            width: 60%;
+        }
+
+        .mockup-status {
+            padding: 0.25rem 0.75rem;
+            background: rgba(124, 181, 24, 0.3);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--accent-light);
+            font-weight: 600;
+        }
+
+        /* 企业服务器端板块 */
+        .enterprise-section {
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, var(--gray-900) 0%, var(--gray-800) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .enterprise-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2l4 3.5-4 3.5zM0 20h20v2H0v-2zm0-6h20v2H0v-2z'/%3E%3C/g%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        .enterprise-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .enterprise-content {
+            color: white;
+        }
+
+        .enterprise-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, rgba(124, 181, 24, 0.2), rgba(139, 195, 74, 0.1));
+            border: 1px solid rgba(124, 181, 24, 0.3);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--accent-light);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .enterprise-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1.3;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .enterprise-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .enterprise-desc {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.75);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .enterprise-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .enterprise-feature {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .enterprise-feature-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .enterprise-feature-icon svg {
+            width: 18px;
+            height: 18px;
+            color: white;
+        }
+
+        .enterprise-feature-text h4 {
+            font-size: 0.95rem;
+            color: white;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .enterprise-feature-text p {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.4;
+        }
+
+        .enterprise-contact {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .enterprise-contact-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .enterprise-contact-icon svg {
+            width: 22px;
+            height: 22px;
+            color: white;
+        }
+
+        .enterprise-contact-text {
+            flex: 1;
+        }
+
+        .enterprise-contact-label {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .enterprise-contact-phone {
+            font-size: 1.25rem;
+            color: white;
+            font-weight: 700;
+        }
+
+        .enterprise-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .enterprise-dashboard {
+            width: 100%;
+            max-width: 480px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 1.5rem;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dashboard-title {
+            font-size: 1rem;
+            color: white;
+            font-weight: 600;
+        }
+
+        .dashboard-badge {
+            padding: 0.25rem 0.75rem;
+            background: rgba(124, 181, 24, 0.2);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--accent-light);
+            font-weight: 600;
+        }
+
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .dashboard-stat {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .dashboard-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-light);
+        }
+
+        .dashboard-stat-label {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .dashboard-chart {
+            height: 80px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding: 0.5rem;
+            gap: 0.5rem;
+        }
+
+        .chart-bar {
+            width: 100%;
+            background: linear-gradient(180deg, var(--accent-green), var(--primary-blue));
+            border-radius: 4px 4px 0 0;
+            opacity: 0.8;
+        }
+
+        /* 个人桌面端板块 */
+        .desktop-section {
+            padding: 6rem 2rem;
+            background: linear-gradient(180deg, var(--gray-50) 0%, var(--white) 50%, var(--gray-100) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .desktop-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .desktop-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .desktop-app-preview {
+            width: 100%;
+            max-width: 450px;
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--gray-200);
+        }
+
+        .app-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .app-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .app-icon svg {
+            width: 20px;
+            height: 20px;
+            color: white;
+        }
+
+        .app-title {
+            font-size: 1rem;
+            color: var(--gray-800);
+            font-weight: 600;
+        }
+
+        .app-subtitle {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+        }
+
+        .app-sidebar {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .app-nav {
+            width: 140px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .app-nav-item {
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: var(--gray-600);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .app-nav-item.active {
+            background: linear-gradient(135deg, rgba(30, 90, 150, 0.1), rgba(74, 144, 217, 0.1));
+            color: var(--primary-blue);
+            font-weight: 500;
+        }
+
+        .app-nav-item svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .app-content {
+            flex: 1;
+            background: var(--gray-50);
+            border-radius: 8px;
+            padding: 1rem;
+            min-height: 150px;
+        }
+
+        .app-content-title {
+            font-size: 0.85rem;
+            color: var(--gray-800);
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .app-project-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .app-project-item {
+            padding: 0.5rem 0.75rem;
+            background: white;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: var(--gray-700);
+            border: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .app-project-status {
+            padding: 0.15rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+
+        .app-project-status.green { background: rgba(124, 181, 24, 0.15); color: var(--accent-green); }
+        .app-project-status.blue { background: rgba(30, 90, 150, 0.15); color: var(--primary-blue); }
+
+        .desktop-content {
+            color: var(--gray-800);
+        }
+
+        .desktop-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, rgba(124, 181, 24, 0.1), rgba(74, 144, 217, 0.1));
+            border: 1px solid rgba(124, 181, 24, 0.2);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--accent-green);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .desktop-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1.3;
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+        }
+
+        .desktop-subtitle {
+            font-size: 1.2rem;
+            color: var(--gray-600);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .desktop-desc {
+            font-size: 1rem;
+            color: var(--gray-600);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .desktop-pricing {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, rgba(124, 181, 24, 0.08), rgba(74, 144, 217, 0.08));
+            border-radius: 12px;
+            border: 1px solid rgba(124, 181, 24, 0.15);
+        }
+
+        .pricing-free {
+            text-align: center;
+        }
+
+        .pricing-free-label {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+        }
+
+        .pricing-free-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--accent-green);
+        }
+
+        .pricing-divider {
+            width: 1px;
+            height: 50px;
+            background: var(--gray-300);
+        }
+
+        .pricing-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .pricing-feature-tag {
+            padding: 0.35rem 0.75rem;
+            background: white;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--gray-700);
+            border: 1px solid var(--gray-200);
+        }
+
+        .desktop-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .desktop-feature {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid var(--gray-200);
+        }
+
+        .desktop-feature svg {
+            width: 20px;
+            height: 20px;
+            color: var(--accent-green);
+            flex-shrink: 0;
+        }
+
+        .desktop-feature span {
+            font-size: 0.9rem;
+            color: var(--gray-700);
+            font-weight: 500;
+        }
+
+        .desktop-download {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-desktop-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-light));
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(124, 181, 24, 0.4);
+        }
+
+        .btn-desktop-download:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(124, 181, 24, 0.5);
+        }
+
+        .btn-desktop-download svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .desktop-download-note {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+        }
+
+        @media (max-width: 968px) {
+            .system-download-container {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .system-download-title {
+                font-size: 2rem;
+            }
+
+            .system-features {
+                grid-template-columns: 1fr;
+            }
+
+            .system-mockup {
+                max-width: 400px;
+            }
+        }
+
         /* 联系我们 */
         .contact {
             padding: 6rem 2rem;
@@ -1404,6 +2268,15 @@
                 <span class="nav-logo-text">鑫奥工程咨询</span>
             </a>
             <div class="nav-links">
+                <a href="#download" class="nav-cta nav-download-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    下载项目管理系统桌面端
+                    <span class="nav-download-tooltip">咨询电话：17631020218</span>
+                </a>
                 <a href="#about" class="nav-link">关于我们</a>
                 <a href="#services" class="nav-link">服务范围</a>
                 <a href="#portfolio" class="nav-link">成功案例</a>
@@ -1966,6 +2839,444 @@
                     </div>
                     <h3 class="credential-title">18项专业备案</h3>
                     <p class="credential-desc">全国投资项目在线审批监管平台备案</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 系统下载 -->
+    <section class="system-download" id="download">
+        <div class="system-download-container">
+            <div class="system-download-content scroll-animate">
+                <div class="system-download-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                    </svg>
+                    专业工程管理软件
+                </div>
+                <h2 class="system-download-title">项目管理系统</h2>
+                <p class="system-download-subtitle">让项目管理更高效、更智能</p>
+                <p class="system-download-desc">
+                    专为工程咨询企业打造的全流程项目管理平台，涵盖项目立项、进度跟踪、费用核算、文档管理等核心功能，
+                    助力企业实现数字化转型，提升项目管理效率与质量。
+                </p>
+                <div class="system-features">
+                    <div class="system-feature-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        <span class="system-feature-text">项目全生命周期管理</span>
+                    </div>
+                    <div class="system-feature-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                        <span class="system-feature-text">智能费用核算系统</span>
+                    </div>
+                    <div class="system-feature-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        <span class="system-feature-text">文档资料云端管理</span>
+                    </div>
+                    <div class="system-feature-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        <span class="system-feature-text">进度实时跟踪监控</span>
+                    </div>
+                    <div class="system-feature-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <span class="system-feature-text">多用户协同办公</span>
+                    </div>
+                    <div class="system-feature-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                            <polyline points="17 6 23 6 23 12"></polyline>
+                        </svg>
+                        <span class="system-feature-text">数据统计分析报表</span>
+                    </div>
+                </div>
+                <div class="system-download-buttons">
+                </div>
+            </div>
+            <div class="system-download-visual scroll-animate">
+                <div class="system-mockup">
+                    <div class="mockup-header">
+                        <div class="mockup-dots">
+                            <div class="mockup-dot red"></div>
+                            <div class="mockup-dot yellow"></div>
+                            <div class="mockup-dot green"></div>
+                        </div>
+                        <span class="mockup-title">项目管理系统</span>
+                    </div>
+                    <div class="mockup-content">
+                        <div class="mockup-row">
+                            <div class="mockup-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                                </svg>
+                            </div>
+                            <div class="mockup-text">
+                                <div class="mockup-text-line"></div>
+                                <div class="mockup-text-line short"></div>
+                            </div>
+                            <span class="mockup-status">进行中</span>
+                        </div>
+                        <div class="mockup-row">
+                            <div class="mockup-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                                </svg>
+                            </div>
+                            <div class="mockup-text">
+                                <div class="mockup-text-line"></div>
+                                <div class="mockup-text-line short"></div>
+                            </div>
+                            <span class="mockup-status">已完成</span>
+                        </div>
+                        <div class="mockup-row">
+                            <div class="mockup-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                            </div>
+                            <div class="mockup-text">
+                                <div class="mockup-text-line"></div>
+                                <div class="mockup-text-line short"></div>
+                            </div>
+                            <span class="mockup-status">待审核</span>
+                        </div>
+                        <div class="mockup-row">
+                            <div class="mockup-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                </svg>
+                            </div>
+                            <div class="mockup-text">
+                                <div class="mockup-text-line"></div>
+                                <div class="mockup-text-line short"></div>
+                            </div>
+                            <span class="mockup-status">已归档</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 企业Web服务器端 -->
+    <section class="enterprise-section" id="enterprise">
+        <div class="enterprise-container">
+            <div class="enterprise-content scroll-animate">
+                <div class="enterprise-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                        <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                        <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                        <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                        <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                    </svg>
+                    企业级部署方案
+                </div>
+                <h2 class="enterprise-title">企业Web服务器端</h2>
+                <p class="enterprise-subtitle">多用户协同 · 集中管理 · 数据安全</p>
+                <p class="enterprise-desc">
+                    部署在企业自有服务器，支持多用户协同办公，管理员可分配权限、访客可查看指定项目。
+                    所有数据集中存储在企业内部，完全自主可控，适合团队协作与运营管理。
+                </p>
+                <div class="enterprise-features">
+                    <div class="enterprise-feature">
+                        <div class="enterprise-feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                        </div>
+                        <div class="enterprise-feature-text">
+                            <h4>多用户权限管理</h4>
+                            <p>管理员/工程师/访客三级角色</p>
+                        </div>
+                    </div>
+                    <div class="enterprise-feature">
+                        <div class="enterprise-feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="20" x2="18" y2="10"></line>
+                                <line x1="12" y1="20" x2="12" y2="4"></line>
+                                <line x1="6" y1="20" x2="6" y2="14"></line>
+                            </svg>
+                        </div>
+                        <div class="enterprise-feature-text">
+                            <h4>数据统计仪表盘</h4>
+                            <p>项目趋势、地区分布、收支分析</p>
+                        </div>
+                    </div>
+                    <div class="enterprise-feature">
+                        <div class="enterprise-feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            </svg>
+                        </div>
+                        <div class="enterprise-feature-text">
+                            <h4>数据安全可控</h4>
+                            <p>企业服务器部署，数据私有化</p>
+                        </div>
+                    </div>
+                    <div class="enterprise-feature">
+                        <div class="enterprise-feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                        </div>
+                        <div class="enterprise-feature-text">
+                            <h4>运营管理功能</h4>
+                            <p>收支记录、利润分析、项目核算</p>
+                        </div>
+                    </div>
+                    <div class="enterprise-feature">
+                        <div class="enterprise-feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                            </svg>
+                        </div>
+                        <div class="enterprise-feature-text">
+                            <h4>标准文件库</h4>
+                            <p>建设标准分类管理、下载统计</p>
+                        </div>
+                    </div>
+                    <div class="enterprise-feature">
+                        <div class="enterprise-feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                <line x1="1" y1="10" x2="23" y2="10"></line>
+                            </svg>
+                        </div>
+                        <div class="enterprise-feature-text">
+                            <h4>项目批量导入导出</h4>
+                            <p>Excel批量导入，一键导出报表</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="enterprise-contact">
+                    <div class="enterprise-contact-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                        </svg>
+                    </div>
+                    <div class="enterprise-contact-text">
+                        <div class="enterprise-contact-label">部署咨询热线</div>
+                        <div class="enterprise-contact-phone">17631020218</div>
+                    </div>
+                </div>
+            </div>
+            <div class="enterprise-visual scroll-animate">
+                <div class="enterprise-dashboard">
+                    <div class="dashboard-header">
+                        <span class="dashboard-title">管理后台</span>
+                        <span class="dashboard-badge">管理员视图</span>
+                    </div>
+                    <div class="dashboard-stats">
+                        <div class="dashboard-stat">
+                            <div class="dashboard-stat-value">156</div>
+                            <div class="dashboard-stat-label">项目总数</div>
+                        </div>
+                        <div class="dashboard-stat">
+                            <div class="dashboard-stat-value">12</div>
+                            <div class="dashboard-stat-label">团队成员</div>
+                        </div>
+                        <div class="dashboard-stat">
+                            <div class="dashboard-stat-value">¥2.8亿</div>
+                            <div class="dashboard-stat-label">总投资额</div>
+                        </div>
+                    </div>
+                    <div class="dashboard-chart">
+                        <div class="chart-bar" style="height: 40%"></div>
+                        <div class="chart-bar" style="height: 60%"></div>
+                        <div class="chart-bar" style="height: 45%"></div>
+                        <div class="chart-bar" style="height: 80%"></div>
+                        <div class="chart-bar" style="height: 65%"></div>
+                        <div class="chart-bar" style="height: 90%"></div>
+                        <div class="chart-bar" style="height: 70%"></div>
+                        <div class="chart-bar" style="height: 55%"></div>
+                        <div class="chart-bar" style="height: 85%"></div>
+                        <div class="chart-bar" style="height: 75%"></div>
+                        <div class="chart-bar" style="height: 95%"></div>
+                        <div class="chart-bar" style="height: 60%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 个人免费桌面端 -->
+    <section class="desktop-section" id="desktop">
+        <div class="desktop-container">
+            <div class="desktop-visual scroll-animate">
+                <div class="desktop-app-preview">
+                    <div class="app-header">
+                        <div class="app-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                <line x1="8" y1="21" x2="16" y2="21"></line>
+                                <line x1="12" y1="17" x2="12" y2="21"></line>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="app-title">鑫奥项目管理</div>
+                            <div class="app-subtitle">桌面端 v5.0.1</div>
+                        </div>
+                    </div>
+                    <div class="app-sidebar">
+                        <div class="app-nav">
+                            <div class="app-nav-item active">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                </svg>
+                                我的项目
+                            </div>
+                            <div class="app-nav-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                                搜索
+                            </div>
+                            <div class="app-nav-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                </svg>
+                                文件
+                            </div>
+                            <div class="app-nav-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H12a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V12a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                                </svg>
+                                设置
+                            </div>
+                        </div>
+                        <div class="app-content">
+                            <div class="app-content-title">近期项目</div>
+                            <div class="app-project-list">
+                                <div class="app-project-item">
+                                    <span>某县水网综合治理工程</span>
+                                    <span class="app-project-status green">进行中</span>
+                                </div>
+                                <div class="app-project-item">
+                                    <span>开发区污水处理PPP项目</span>
+                                    <span class="app-project-status blue">已完成</span>
+                                </div>
+                                <div class="app-project-item">
+                                    <span>棚户区改造可行性研究</span>
+                                    <span class="app-project-status green">进行中</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="desktop-content scroll-animate">
+                <div class="desktop-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    个人工程师专属
+                </div>
+                <h2 class="desktop-title">个人免费桌面端</h2>
+                <p class="desktop-subtitle">本地运行 · 数据私有 · 开箱即用</p>
+                <p class="desktop-desc">
+                    安装在个人电脑上，无需服务器，所有数据存储在本地。
+                    内置投资估算、能耗计算、财务分析等专业工具，助力工程师高效完成项目测算工作。
+                </p>
+                <div class="desktop-pricing">
+                    <div class="pricing-free">
+                        <div class="pricing-free-label">标准版</div>
+                        <div class="pricing-free-value">免费</div>
+                    </div>
+                    <div class="pricing-divider"></div>
+                    <div class="pricing-features">
+                        <span class="pricing-feature-tag">10个项目</span>
+                        <span class="pricing-feature-tag">基础能耗计算</span>
+                        <span class="pricing-feature-tag">本地数据存储</span>
+                        <span class="pricing-feature-tag">可升级专业版</span>
+                    </div>
+                </div>
+                <div class="desktop-features">
+                    <div class="desktop-feature">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        <span>投资估算表编制</span>
+                    </div>
+                    <div class="desktop-feature">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        <span>能耗折标煤计算</span>
+                    </div>
+                    <div class="desktop-feature">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        <span>用电负荷计算</span>
+                    </div>
+                    <div class="desktop-feature">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        <span>NPV/IRR财务分析</span>
+                    </div>
+                    <div class="desktop-feature">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        <span>专项债财务测算</span>
+                    </div>
+                    <div class="desktop-feature">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        <span>Excel导出报表</span>
+                    </div>
+                </div>
+                <div class="desktop-download">
+                    <a href="/static/Zjxmgl_v5.0.1_Setup.exe" class="btn-desktop-download" download>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        下载项目管理系统桌面端
+                    </a>
                 </div>
             </div>
         </div>
