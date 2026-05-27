@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 from web.config import Config
 from web.extensions import db, login_manager
 import os
@@ -38,6 +38,10 @@ def create_app():
     app.register_blueprint(admin_bp)
     app.register_blueprint(files_bp)
     app.register_blueprint(estimation_bp)
+
+    @app.route('/')
+    def landing():
+        return render_template('landing.html')
 
     if app.config.get('DESKTOP_MODE'):
         @app.route('/shutdown')
