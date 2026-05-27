@@ -1,4 +1,4 @@
-import json
+﻿import json
 import os
 import sys
 import re
@@ -52,7 +52,7 @@ class SubscriptionDialog(QDialog):
     def __init__(self, client, parent=None):
         super().__init__(parent)
         self.client = client
-        self.setWindowTitle('Estimate Studio')
+        self.setWindowTitle('咨询项目管理系统')
         self.setFixedSize(400, 440)
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
         self._setup_ui()
@@ -88,7 +88,7 @@ class SubscriptionDialog(QDialog):
         icon_label.setStyleSheet('font-size: 32px; background: transparent;')
         header_layout.addWidget(icon_label)
 
-        title = QLabel('Estimate Studio')
+        title = QLabel('咨询项目管理系统')
         title.setAlignment(Qt.AlignCenter)
         title.setStyleSheet('font-size: 20px; font-weight: 700; color: #ffffff; background: transparent; letter-spacing: 0.3px;')
         header_layout.addWidget(title)
@@ -403,10 +403,10 @@ class YearGroupWidget(QWidget):
         self.header.setText(self.header.text().replace('▶' if not self._expanded else '▼', arrow))
 
 
-class EstimateStudioWindow(QMainWindow):
+class ZjxmglWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('Estimate Studio')
+        self.setWindowTitle('咨询项目管理系统')
         self.setMinimumSize(1200, 800)
         self.resize(1400, 900)
         self._logged_in = False
@@ -438,7 +438,7 @@ class EstimateStudioWindow(QMainWindow):
         sidebar_layout.setSpacing(2)
 
         # Brand
-        brand = QLabel('Estimate Studio')
+        brand = QLabel('咨询项目管理系统')
         brand.setStyleSheet('font-size: 17px; font-weight: 700; color: #0d6efd; padding: 8px 8px 4px 8px;')
         sidebar_layout.addWidget(brand)
 
@@ -753,7 +753,7 @@ class EstimateStudioWindow(QMainWindow):
 
 def run_desktop_app():
     app = QApplication(sys.argv)
-    app.setApplicationName('Estimate Studio')
+    app.setApplicationName('咨询项目管理系统')
     window = EstimateStudioWindow()
     window.show()
     sys.exit(app.exec())

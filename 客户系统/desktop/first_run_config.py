@@ -1,4 +1,4 @@
-import json
+﻿import json
 import os
 import sys
 
@@ -24,7 +24,7 @@ CONFIG_FILE = os.path.join(_get_app_root(), 'config.json')
 class FirstRunConfigDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle('Estimate Studio - 初始配置')
+        self.setWindowTitle('咨询项目管理系统 - 初始配置')
         self.setFixedSize(560, 300)
         self._data_root = ''
         self._setup_ui()
@@ -34,7 +34,7 @@ class FirstRunConfigDialog(QDialog):
         layout.setSpacing(16)
         layout.setContentsMargins(32, 28, 32, 28)
 
-        title = QLabel('欢迎使用 Estimate Studio')
+        title = QLabel('欢迎使用 咨询项目管理系统')
         title.setAlignment(Qt.AlignCenter)
         title.setStyleSheet('font-size: 20px; font-weight: 700; color: #0d6efd;')
         layout.addWidget(title)

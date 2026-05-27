@@ -1,7 +1,7 @@
-@echo off
+﻿@echo off
 chcp 65001 >nul
 echo ============================================
-echo  Estimate Studio 构建脚本
+echo  咨询项目管理系统 构建脚本
 echo ============================================
 echo.
 
@@ -28,7 +28,7 @@ echo.
 
 :: 打包 GUI 版本（有窗口）
 pyinstaller --onedir --windowed --noconfirm ^
-    --name "EstimateStudio" ^
+    --name "Zjxmgl" ^
     --add-data "..\web;web" ^
     --add-data "..\core;core" ^
     --add-data "..\app.py;." ^

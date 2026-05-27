@@ -1,4 +1,4 @@
-import io
+﻿import io
 import json
 import os
 import re
@@ -12,7 +12,7 @@ from urllib.parse import parse_qs, urlencode
 
 os.environ['DESKTOP_MODE'] = 'true'
 
-MUTEX_NAME = 'EstimateStudio_SingleInstance'
+MUTEX_NAME = 'Zjxmgl_SingleInstance'
 
 
 def get_app_root():
@@ -297,7 +297,7 @@ def main():
     try:
         from PySide6.QtWidgets import QApplication, QMessageBox
         app = QApplication(sys.argv)
-        app.setApplicationName('Estimate Studio')
+        app.setApplicationName('咨询项目管理系统')
         log('步骤1: QApplication创建OK')
     except Exception as e:
         log(f'步骤1失败: {traceback.format_exc()}')
