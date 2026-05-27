@@ -1,4 +1,4 @@
-﻿import io
+import io
 import json
 import os
 import re
@@ -417,8 +417,8 @@ def main():
 
     log('步骤5: 创建主窗口...')
     try:
-        from desktop.main_window import EstimateStudioWindow
-        window = EstimateStudioWindow()
+        from desktop.main_window import ZjxmglWindow
+        window = ZjxmglWindow()
         window.show()
         log('步骤5: 主窗口已显示')
     except Exception:

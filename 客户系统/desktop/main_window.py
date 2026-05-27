@@ -1,4 +1,4 @@
-﻿import json
+import json
 import os
 import sys
 import re
@@ -754,6 +754,6 @@ class ZjxmglWindow(QMainWindow):
 def run_desktop_app():
     app = QApplication(sys.argv)
     app.setApplicationName('咨询项目管理系统')
-    window = EstimateStudioWindow()
+    window = ZjxmglWindow()
     window.show()
     sys.exit(app.exec())
