@@ -200,7 +200,7 @@ sudo systemctl enable 订阅管理后台
 sudo systemctl status 项目管理系统
 sudo systemctl restart 项目管理系统
 sudo journalctl -u 项目管理系统 --no-pager -n 50
-
+更新：cd /opt/xmglxtv5 && git pull origin main && sudo systemctl restart xmglxtv5
 cp /opt/xmglxtv5/客户系统/instance/system.db /opt/backup/system-$(date +%Y%m%d).db
 rsync -av /data/上传的文件/ /opt/backup/上传的文件/
 
