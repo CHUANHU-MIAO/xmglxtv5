@@ -193,6 +193,42 @@
             height: 18px;
         }
 
+        .nav-hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 8px;
+            z-index: 1001;
+        }
+
+        .nav-hamburger span {
+            display: block;
+            width: 24px;
+            height: 2.5px;
+            background: var(--gray-700);
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled .nav-hamburger span {
+            background: var(--gray-800);
+        }
+
+        .nav-hamburger.active span:nth-child(1) {
+            transform: translateY(7.5px) rotate(45deg);
+        }
+
+        .nav-hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .nav-hamburger.active span:nth-child(3) {
+            transform: translateY(-7.5px) rotate(-45deg);
+        }
+
         /* Hero 区域 */
         .hero {
             min-height: 100vh;
@@ -1883,25 +1919,6 @@
             color: var(--gray-500);
         }
 
-        @media (max-width: 968px) {
-            .system-download-container {
-                grid-template-columns: 1fr;
-                gap: 3rem;
-            }
-
-            .system-download-title {
-                font-size: 2rem;
-            }
-
-            .system-features {
-                grid-template-columns: 1fr;
-            }
-
-            .system-mockup {
-                max-width: 400px;
-            }
-        }
-
         /* 联系我们 */
         .contact {
             padding: 6rem 2rem;
@@ -2209,11 +2226,19 @@
 
         @media (max-width: 768px) {
             .hero-title {
-                font-size: 2.5rem;
+                font-size: 2rem;
+            }
+
+            .hero-description {
+                font-size: 1rem;
             }
 
             .section-title {
-                font-size: 2rem;
+                font-size: 1.7rem;
+            }
+
+            .section-subtitle {
+                font-size: 0.95rem;
             }
 
             .features-grid,
@@ -2227,12 +2252,153 @@
                 grid-template-columns: 1fr;
             }
 
+            .hero-stats {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .hero-buttons .btn-primary,
+            .hero-buttons .btn-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .hero-logo {
+                max-width: 180px;
+            }
+
+            .nav-hamburger {
+                display: flex;
+            }
+
             .nav-links {
-                display: none;
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 75%;
+                max-width: 320px;
+                height: 100vh;
+                flex-direction: column;
+                background: white;
+                padding: 5rem 2rem 2rem;
+                gap: 1.2rem;
+                transition: right 0.35s ease;
+                box-shadow: -5px 0 30px rgba(0, 0, 0, 0.15);
+                overflow-y: auto;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-link {
+                font-size: 1.05rem;
+                padding: 0.5rem 0;
+            }
+
+            .nav-cta {
+                width: 100%;
+                justify-content: center;
+                font-size: 0.95rem;
+            }
+
+            .navbar {
+                padding: 0.75rem 1rem;
+            }
+
+            .nav-logo-text {
+                font-size: 1rem;
+            }
+
+            .nav-logo img {
+                height: 32px;
+            }
+
+            .system-download-container,
+            .enterprise-container,
+            .desktop-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .system-download-title,
+            .enterprise-title,
+            .desktop-title {
+                font-size: 1.8rem;
+            }
+
+            .system-download-subtitle,
+            .enterprise-subtitle,
+            .desktop-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .system-download-visual {
+                order: -1;
+            }
+
+            .system-mockup {
+                max-width: 360px;
+                margin: 0 auto;
+            }
+
+            .enterprise-visual {
+                order: -1;
+            }
+
+            .enterprise-dashboard {
+                max-width: 380px;
+                margin: 0 auto;
+            }
+
+            .desktop-visual {
+                order: -1;
+            }
+
+            .desktop-app-preview {
+                max-width: 360px;
+                margin: 0 auto;
+            }
+
+            .desktop-pricing {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .pricing-divider {
+                width: 100%;
+                height: 1px;
+            }
+
+            .desktop-download {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .desktop-download-note {
+                font-size: 0.8rem;
+            }
+
+            .enterprise-features {
+                grid-template-columns: 1fr;
+            }
+
+            .enterprise-contact {
+                flex-direction: column;
+                align-items: flex-start;
+                text-align: left;
             }
 
             .footer-content {
                 grid-template-columns: 1fr;
+                gap: 2rem;
             }
 
             .footer-bottom {
@@ -2241,8 +2407,262 @@
                 text-align: center;
             }
 
+            .footer-legal {
+                flex-direction: column;
+                gap: 0.5rem;
+                align-items: center;
+            }
+
             .process-step {
                 flex: 0 0 100%;
+            }
+
+            .about-title {
+                font-size: 1.8rem;
+            }
+
+            .contact-title {
+                font-size: 1.5rem;
+            }
+
+            .contact-wrapper {
+                padding: 0;
+            }
+
+            .portfolio-grid {
+                gap: 1rem;
+            }
+
+            .portfolio-amount {
+                font-size: 1.2rem;
+            }
+
+            .dashboard-stats {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.5rem;
+            }
+
+            .dashboard-stat-value {
+                font-size: 1.2rem;
+            }
+
+            .dashboard-chart {
+                height: 60px;
+            }
+
+            .mobile-menu-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.4);
+                z-index: 999;
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.35s ease;
+            }
+
+            .mobile-menu-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 1.7rem;
+            }
+
+            .hero-description {
+                font-size: 0.9rem;
+            }
+
+            .hero-badge {
+                font-size: 0.75rem;
+                padding: 0.4rem 0.8rem;
+            }
+
+            .hero-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+
+            .stat-number {
+                font-size: 1.8rem;
+            }
+
+            .stat-label {
+                font-size: 0.8rem;
+            }
+
+            .hero-logo {
+                max-width: 140px;
+            }
+
+            .hero {
+                min-height: auto;
+                padding: 6rem 0 3rem;
+            }
+
+            .hero-container {
+                padding: 0 1rem;
+            }
+
+            .features,
+            .about,
+            .services,
+            .portfolio,
+            .credentials,
+            .process,
+            .contact,
+            .system-download,
+            .enterprise-section,
+            .desktop-section {
+                padding: 3rem 1rem;
+            }
+
+            .section-header {
+                margin-bottom: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.4rem;
+            }
+
+            .section-subtitle {
+                font-size: 0.85rem;
+            }
+
+            .system-download-title,
+            .enterprise-title,
+            .desktop-title {
+                font-size: 1.5rem;
+            }
+
+            .system-download-subtitle,
+            .enterprise-subtitle,
+            .desktop-subtitle {
+                font-size: 1rem;
+            }
+
+            .system-download-desc,
+            .enterprise-desc,
+            .desktop-desc {
+                font-size: 0.9rem;
+            }
+
+            .system-features {
+                grid-template-columns: 1fr;
+            }
+
+            .system-mockup {
+                border-radius: 12px;
+                padding: 1rem;
+            }
+
+            .enterprise-dashboard {
+                padding: 1rem;
+            }
+
+            .desktop-app-preview {
+                padding: 1rem;
+            }
+
+            .desktop-features {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-free-value {
+                font-size: 1.5rem;
+            }
+
+            .pricing-features {
+                gap: 0.35rem;
+            }
+
+            .pricing-feature-tag {
+                font-size: 0.7rem;
+                padding: 0.25rem 0.6rem;
+            }
+
+            .btn-primary,
+            .btn-secondary,
+            .btn-desktop-download,
+            .btn-download,
+            .btn-download-outline {
+                padding: 0.8rem 1.2rem;
+                font-size: 0.9rem;
+            }
+
+            .footer {
+                padding: 2.5rem 1rem 1.5rem;
+            }
+
+            .footer-brand-text {
+                font-size: 1rem;
+            }
+
+            .footer-description {
+                font-size: 0.85rem;
+            }
+
+            .footer-title {
+                font-size: 1rem;
+            }
+
+            .footer-links a {
+                font-size: 0.9rem;
+            }
+
+            .footer-bottom {
+                margin-top: 2rem;
+                padding-top: 1.5rem;
+            }
+
+            .footer-copyright {
+                font-size: 0.8rem;
+            }
+
+            .nav-logo-text {
+                font-size: 0.9rem;
+            }
+
+            .nav-links {
+                width: 85%;
+                max-width: none;
+            }
+
+            .about-title {
+                font-size: 1.5rem;
+            }
+
+            .about-description {
+                font-size: 0.9rem;
+            }
+
+            .contact-title {
+                font-size: 1.3rem;
+            }
+
+            .contact-value {
+                font-size: 0.95rem;
+            }
+
+            .app-sidebar {
+                flex-direction: column;
+            }
+
+            .app-nav {
+                width: 100%;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 0.35rem;
+            }
+
+            .app-nav-item {
+                font-size: 0.7rem;
+                padding: 0.35rem 0.5rem;
             }
         }
 
@@ -2267,7 +2687,12 @@
                 <img src="/static/素材/logo.png" alt="鑫奥工程咨询" onerror="this.style.display='none'">
                 <span class="nav-logo-text">鑫奥工程咨询</span>
             </a>
-            <div class="nav-links">
+            <button class="nav-hamburger" id="hamburgerBtn" aria-label="菜单">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links" id="navLinks">
                 <a href="#download" class="nav-cta nav-download-btn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -3429,6 +3854,31 @@
     </footer>
 
     <script>
+        var hamburgerBtn = document.getElementById('hamburgerBtn');
+        var navLinks = document.getElementById('navLinks');
+        var overlay = document.createElement('div');
+        overlay.className = 'mobile-menu-overlay';
+        document.body.appendChild(overlay);
+
+        function toggleMenu() {
+            hamburgerBtn.classList.toggle('active');
+            navLinks.classList.toggle('active');
+            overlay.classList.toggle('active');
+            document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+        }
+
+        hamburgerBtn.addEventListener('click', toggleMenu);
+        overlay.addEventListener('click', toggleMenu);
+
+        var navLinkItems = navLinks.querySelectorAll('a');
+        navLinkItems.forEach(function(link) {
+            link.addEventListener('click', function() {
+                if (navLinks.classList.contains('active')) {
+                    toggleMenu();
+                }
+            });
+        });
+
         // 导航栏滚动效果
         window.addEventListener('scroll', function() {
             const navbar = document.getElementById('navbar');
