@@ -1,4 +1,4 @@
-; Estimate Studio 安装脚本
+﻿; Estimate Studio 安装脚本
 ; 使用 Inno Setup 编译: https://jrsoftware.org/isinfo.php
 
 #define MyAppName "Estimate Studio"
@@ -22,12 +22,10 @@ SolidCompression=yes
 WizardStyle=modern
 PrivilegesRequired=admin
 DisableDirPage=no
-DirLabel=选择系统安装路径
 DisableFinishedPage=no
 LicenseFile=license.txt
 
 [Languages]
-Name: "chinese"; MessagesFile: "compiler:Languages\Chinese.isl"
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Tasks]
