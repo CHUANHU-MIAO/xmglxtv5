@@ -36,10 +36,6 @@ def create_app():
 
     @app.route('/')
     def landing():
-        from flask_login import current_user
-        if current_user.is_authenticated:
-            from web.blueprints.projects import index as projects_index
-            return projects_index()
         return render_template('landing.html')
 
     app.register_blueprint(auth_bp)
