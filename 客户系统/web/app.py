@@ -33,15 +33,15 @@ def create_app():
     from web.blueprints.files import files_bp
     from web.blueprints.estimation import estimation_bp
 
+    @app.route('/')
+    def landing():
+        return render_template('landing.html')
+
     app.register_blueprint(auth_bp)
     app.register_blueprint(projects_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(files_bp)
     app.register_blueprint(estimation_bp)
-
-    @app.route('/')
-    def landing():
-        return render_template('landing.html')
 
     if app.config.get('DESKTOP_MODE'):
         @app.route('/shutdown')
