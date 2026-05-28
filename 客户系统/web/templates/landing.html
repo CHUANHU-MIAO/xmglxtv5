@@ -2707,7 +2707,7 @@
                 <a href="#portfolio" class="nav-link">成功案例</a>
                 <a href="#credentials" class="nav-link">资质荣誉</a>
                 <a href="#contact" class="nav-link">联系我们</a>
-                <a href="/auth/login" class="nav-cta">
+                <a href="{% if current_user.is_authenticated %}/home{% else %}/auth/login{% endif %}" class="nav-cta">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
@@ -3840,7 +3840,7 @@
                     <li><a href="#portfolio">成功案例</a></li>
                     <li><a href="#credentials">资质荣誉</a></li>
                     <li><a href="#contact">联系我们</a></li>
-                    <li><a href="/auth/login">项目管理</a></li>
+                    <li><a href="{% if current_user.is_authenticated %}/home{% else %}/auth/login{% endif %}">项目管理</a></li>
                 </ul>
             </div>
         </div>

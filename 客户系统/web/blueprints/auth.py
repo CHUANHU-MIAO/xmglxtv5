@@ -17,7 +17,7 @@ def login():
             login_user(user)
             user.last_active_time = datetime.datetime.utcnow()
             db.session.commit()
-            return redirect(url_for('projects.index'))
+            return redirect('/home')
         flash('用户名或密码错误')
     else:
         cutoff = datetime.datetime.utcnow() - datetime.timedelta(days=365)
@@ -66,6 +66,6 @@ def change_password():
             current_user.set_password(new_pw)
             db.session.commit()
             flash('密码修改成功')
-            return redirect(url_for('projects.index'))
+            return redirect('/home')
         flash('原密码错误')
     return render_template('change_password.html', role=current_user.role)

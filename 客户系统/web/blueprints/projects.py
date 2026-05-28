@@ -19,7 +19,7 @@ PROVINCES = [
 ]
 
 
-@projects_bp.route('/')
+@projects_bp.route('/home')
 @login_required
 def index():
     page = request.args.get('page', 1, type=int)
