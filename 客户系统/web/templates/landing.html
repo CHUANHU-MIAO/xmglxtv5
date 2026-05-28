@@ -1503,6 +1503,60 @@
             background: rgba(255, 255, 255, 0.08);
             border-radius: 12px;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            flex: 1;
+            min-width: 240px;
+        }
+
+        .btn-demo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-light));
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(124, 181, 24, 0.3);
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .btn-demo-enterprise {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-light));
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(124, 181, 24, 0.3);
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .btn-demo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(124, 181, 24, 0.4);
+        }
+
+        .btn-demo-enterprise:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(124, 181, 24, 0.4);
+        }
+
+        .btn-demo svg,
+        .btn-demo-enterprise svg {
+            width: 20px;
+            height: 20px;
         }
 
         .enterprise-contact-icon {
@@ -1538,8 +1592,38 @@
 
         .enterprise-visual {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
+            gap: 1.5rem;
+        }
+
+        .btn-demo-inline {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-light));
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(124, 181, 24, 0.3);
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .btn-demo-inline:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(124, 181, 24, 0.4);
+        }
+
+        .btn-demo-inline svg {
+            width: 20px;
+            height: 20px;
         }
 
         .enterprise-dashboard {
@@ -3551,6 +3635,14 @@
                         <div class="chart-bar" style="height: 60%"></div>
                     </div>
                 </div>
+                <a href="http://121.43.152.108:5005/" target="_blank" rel="noopener noreferrer" class="btn-demo-inline">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                    </svg>
+                    演示系统体验入口
+                </a>
             </div>
         </div>
     </section>
@@ -3845,7 +3937,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p class="footer-copyright">© 河北鑫奥工程咨询有限公司 版权所有 | 冀ICP备2026018034号</p>
+            <p class="footer-copyright">© 河北鑫奥工程咨询有限公司 版权所有 | <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" class="footer-beian">冀ICP备2026018034号-1</a></p>
             <div class="footer-legal">
                 <a href="#">隐私政策</a>
                 <a href="#">使用条款</a>
