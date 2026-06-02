@@ -40,7 +40,10 @@ def create_app():
 
     @app.route('/wentian')
     def wentian():
-        return render_template('wentian.html')
+        import os
+        file_path = os.path.join(app.root_path, 'templates', 'wentian.html')
+        with open(file_path, 'r', encoding='utf-8') as f:
+            return f.read()
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(projects_bp)
