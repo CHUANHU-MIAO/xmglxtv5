@@ -7,31 +7,99 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#08050f;--bg2:#110b1e;--bg3:#1a1230;--card:rgba(16,10,30,.7);--border:rgba(0,212,255,.12);--cyan:#00d4ff;--cyan2:#00a8cc;--gold:#f0c060;--gold2:#d4a040;--rose:#ff7eb3;--green:#50e890;--red:#ff5e7a;--text:#f0e8f0;--text2:#c4b8d0;--text3:#8a7a9a;--glow-cyan:rgba(0,212,255,.3);--glow-gold:rgba(240,192,96,.25);--glow-rose:rgba(255,126,179,.2);--font-display:'Inter','Noto Serif SC',sans-serif;--font-body:'Noto Serif SC','Inter',serif}
+:root{
+/* 主色调 - 参考landing.html的蓝色系，调整为更深邃的玄学风 */
+--primary-blue: #1a3a5c;
+--primary-light: #2d5a8a;
+--primary-dark: #0d1f33;
+--primary-glow: rgba(26, 58, 92, 0.4);
+
+/* 强调色 - 金色系（传统玄学色） */
+--accent-gold: #c9a227;
+--accent-gold-light: #e8d5a3;
+--accent-gold-dark: #8b6914;
+--accent-gold-glow: rgba(201, 162, 39, 0.3);
+
+/* 辅助色 - 青色系 */
+--accent-cyan: #3ba3a3;
+--accent-cyan-light: #5ccccc;
+--accent-cyan-glow: rgba(59, 163, 163, 0.3);
+
+/* 状态色 */
+--success: #7cb518;
+--success-glow: rgba(124, 181, 24, 0.3);
+--warning: #e8a838;
+--error: #c94c4c;
+--error-glow: rgba(201, 76, 76, 0.3);
+
+/* 背景色 - 深色系 */
+--bg: #0a0f1a;
+--bg2: #111827;
+--bg3: #1a2332;
+--bg-gradient-start: #0d1f33;
+--bg-gradient-end: #1a3a5c;
+
+/* 卡片色 */
+--card: rgba(17, 24, 39, 0.85);
+--card-border: rgba(201, 162, 39, 0.15);
+--card-glow: rgba(201, 162, 39, 0.1);
+
+/* 文字色 - 参考landing.html的灰色系 */
+--text: #f1f5f9;
+--text2: #cbd5e1;
+--text3: #94a3b8;
+--text-muted: #64748b;
+
+/* 边框色 */
+--border: rgba(201, 162, 39, 0.12);
+--border-light: rgba(201, 162, 39, 0.08);
+--border-hover: rgba(201, 162, 39, 0.25);
+
+/* 发光效果 */
+--glow-primary: rgba(26, 58, 92, 0.4);
+--glow-gold: rgba(201, 162, 39, 0.25);
+--glow-cyan: rgba(59, 163, 163, 0.3);
+--glow-success: rgba(124, 181, 24, 0.25);
+--glow-error: rgba(201, 76, 76, 0.25);
+
+/* 字体 */
+--font-display: 'Noto Serif SC', 'Inter', sans-serif;
+--font-body: 'Noto Serif SC', 'Inter', serif;
+
+/* 兼容性变量 - 保持旧变量名但映射到新颜色 */
+--cyan: var(--accent-cyan);
+--cyan2: var(--accent-cyan-light);
+--gold: var(--accent-gold);
+--gold2: var(--accent-gold-light);
+--rose: var(--error);
+--green: var(--success);
+--red: var(--error);
+}
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:16px;-webkit-tap-highlight-color:transparent}
-#nebula{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 20% 15%,rgba(100,40,180,.08),transparent 60%),radial-gradient(ellipse at 80% 25%,rgba(0,150,200,.05),transparent 55%),radial-gradient(ellipse at 50% 85%,rgba(200,60,120,.04),transparent 50%),radial-gradient(ellipse at 50% 50%,rgba(8,5,15,1),transparent)}
+html,body{width:100%;height:100%;overflow:hidden;background:linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg) 50%, var(--bg-gradient-end) 100%);color:var(--text);font-family:var(--font-body);font-size:16px;-webkit-tap-highlight-color:transparent}
+#nebula{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 20% 15%,rgba(26,58,92,.15),transparent 60%),radial-gradient(ellipse at 80% 25%,rgba(201,162,39,.08),transparent 55%),radial-gradient(ellipse at 50% 85%,rgba(59,163,163,.06),transparent 50%),radial-gradient(ellipse at 50% 50%,rgba(13,31,51,.5),transparent)}
 #stars{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
 .star-dot{position:absolute;border-radius:50%;background:var(--text);animation:starPulse var(--dur) ease-in-out infinite alternate}
 @keyframes starPulse{0%{opacity:.03;transform:scale(.4)}100%{opacity:var(--max-o,.4);transform:scale(1.3)}}
 #app{position:relative;width:100%;height:100%;max-width:480px;margin:0 auto;display:flex;flex-direction:column;z-index:1}
 .header{padding:18px 0 12px;text-align:center;background:linear-gradient(180deg,rgba(8,5,15,.98),rgba(8,5,15,.7),transparent);z-index:10;flex-shrink:0}
-.header h1{font-family:var(--font-display);font-weight:700;font-size:28px;background:linear-gradient(135deg,var(--cyan),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:10px;margin-bottom:2px;filter:drop-shadow(0 0 18px var(--glow-cyan))}
+.header h1{font-family:var(--font-display);font-weight:700;font-size:28px;background:linear-gradient(135deg,var(--accent-gold-light),var(--accent-gold),var(--accent-cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:10px;margin-bottom:2px;filter:drop-shadow(0 0 18px var(--glow-gold))}
 .header .subtitle{font-size:11px;color:var(--text3);letter-spacing:6px;font-family:var(--font-display)}
 .page-container{flex:1;overflow-y:auto;overflow-x:hidden;padding:6px 14px 12px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
 .page-container::-webkit-scrollbar{width:2px}
 .page-container::-webkit-scrollbar-thumb{background:var(--cyan2);border-radius:2px;box-shadow:0 0 6px var(--glow-cyan)}
 .page{display:none}.page.active{display:block;animation:in .35s ease}
 @keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.tab-bar{display:flex;background:linear-gradient(0deg,rgba(8,5,15,.98),rgba(8,5,15,.85));border-top:1px solid var(--border);padding:4px 0 env(safe-area-inset-bottom,6px);flex-shrink:0;z-index:10;position:relative}
+.tab-bar{display:flex;background:linear-gradient(0deg,rgba(10,15,26,.98),rgba(17,24,39,.9));border-top:1px solid var(--border);padding:4px 0 env(safe-area-inset-bottom,6px);flex-shrink:0;z-index:10;position:relative}
 .tab-bar::before{content:'';position:absolute;top:-1px;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),var(--gold),transparent);opacity:.4}
 .tab-item{flex:1;text-align:center;padding:4px 0;cursor:pointer;transition:all .25s;position:relative}
 .tab-item .tab-icon{font-size:20px;display:block;margin-bottom:1px;opacity:.4;transition:all .3s;filter:grayscale(.6)}
 .tab-item .tab-label{font-size:10px;color:var(--text3);transition:all .3s;font-family:var(--font-display);letter-spacing:1px}
 .tab-item.active .tab-icon{opacity:1;filter:grayscale(0)}
-.tab-item.active .tab-label{color:var(--cyan);text-shadow:0 0 10px var(--glow-cyan)}
-.tab-item.active::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:22px;height:2px;background:var(--cyan);border-radius:1px;box-shadow:0 0 8px var(--glow-cyan)}
-.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;position:relative;overflow:hidden;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 4px 24px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.03)}
+.tab-item.active .tab-label{color:var(--accent-gold);text-shadow:0 0 10px var(--glow-gold)}
+.tab-item.active::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:22px;height:2px;background:var(--accent-gold);border-radius:1px;box-shadow:0 0 8px var(--glow-gold)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;position:relative;overflow:hidden;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 4px 24px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.03);transition:all 0.3s ease}
+.card:hover{border-color:var(--border-hover);box-shadow:0 8px 32px rgba(201,162,39,.15),inset 0 1px 0 rgba(255,255,255,.05)}
 .card::before{content:'';position:absolute;top:0;left:14px;right:14px;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),var(--gold),transparent);opacity:.3}
 .card-title{font-family:var(--font-display);font-weight:600;font-size:14px;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:6px;letter-spacing:2px}
 .card-title .icon{font-size:16px}
@@ -39,7 +107,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .daily-greeting .date-display{font-family:var(--font-display);font-weight:600;font-size:20px;color:var(--text);margin-bottom:3px;letter-spacing:2px}
 .daily-greeting .lunar-date{font-size:13px;color:var(--text2);margin-bottom:6px}
 .daily-greeting .ganzhi{font-size:12px;color:var(--rose)}
-.daily-quote{text-align:center;padding:12px;border-left:2px solid var(--gold);margin:10px 0;line-height:1.9;font-size:14px;color:var(--text2)}
+.daily-quote{text-align:center;padding:12px;border-left:2px solid var(--accent-gold);margin:10px 0;line-height:1.9;font-size:14px;color:var(--text2)}
 .daily-quote .quote-meaning{font-size:12px;color:var(--text3);margin-top:8px;padding-top:8px;border-top:1px solid rgba(240,192,96,.1);line-height:1.7;text-align:left}
 .quick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
 .quick-item{background:rgba(0,212,255,.04);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center;cursor:pointer;transition:all .25s}
@@ -48,10 +116,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .quick-item .qi-label{font-size:13px;color:var(--text2);font-family:var(--font-display);letter-spacing:1px}
 .yi-ji-container{display:flex;gap:10px;margin:8px 0}
 .yi-ji-box{flex:1;border-radius:8px;padding:8px}
-.yi-box{background:rgba(80,232,144,.06);border:1px solid rgba(80,232,144,.15)}
-.ji-box{background:rgba(255,94,122,.06);border:1px solid rgba(255,94,122,.15)}
+.yi-box{background:rgba(124,181,24,.08);border:1px solid rgba(124,181,24,.2)}
+.ji-box{background:rgba(201,76,76,.08);border:1px solid rgba(201,76,76,.2)}
 .yi-ji-box h4{font-size:13px;margin-bottom:4px;font-family:var(--font-display);font-weight:500;letter-spacing:2px}
-.yi-box h4{color:var(--green);text-shadow:0 0 8px rgba(80,232,144,.2)}
+.yi-box h4{color:var(--success);text-shadow:0 0 8px var(--glow-success)}
 .ji-box h4{color:var(--red)}
 .yi-ji-box .tags{font-size:11px;line-height:1.8;color:var(--text2)}
 .coin-area{display:flex;justify-content:center;gap:20px;padding:24px 0;perspective:600px}
@@ -63,7 +131,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .coin .coin-back{background:transparent;border:none;box-shadow:none;transform:rotateY(180deg)}
 @keyframes coinFlip{0%{transform:rotateY(0) scale(1)}15%{transform:rotateY(720deg) scale(1.08) translateY(-18px)}30%{transform:rotateY(1440deg) scale(1.04) translateY(-8px)}50%{transform:rotateY(2160deg) scale(1) translateY(0)}70%{transform:rotateY(2520deg) scale(.98)}85%{transform:rotateY(2700deg) scale(1.02)}100%{transform:rotateY(var(--final-rot,2880deg)) scale(1)}}
 .coin.show-back{transform:rotateY(180deg)}
-.shake-btn{display:block;width:80%;max-width:260px;margin:0 auto;padding:11px 0;background:linear-gradient(135deg,rgba(0,212,255,.12),rgba(240,192,96,.06));color:var(--cyan);border:1px solid var(--border);border-radius:8px;font-family:var(--font-display);font-weight:500;font-size:14px;cursor:pointer;transition:all .25s;letter-spacing:4px;box-shadow:0 0 15px var(--glow-cyan)}
+.shake-btn{display:block;width:80%;max-width:260px;margin:0 auto;padding:11px 0;background:linear-gradient(135deg,rgba(201,162,39,.15),rgba(26,58,92,.1));color:var(--accent-gold);border:1px solid var(--border);border-radius:8px;font-family:var(--font-display);font-weight:500;font-size:14px;cursor:pointer;transition:all .25s;letter-spacing:4px;box-shadow:0 0 15px var(--glow-gold)}
+.shake-btn:hover{background:linear-gradient(135deg,rgba(201,162,39,.25),rgba(26,58,92,.15));box-shadow:0 0 25px var(--glow-gold),0 0 50px rgba(201,162,39,.1);transform:translateY(-1px)}
 .shake-btn:hover{background:linear-gradient(135deg,rgba(0,212,255,.18),rgba(240,192,96,.1));box-shadow:0 0 25px var(--glow-cyan),0 0 50px rgba(0,212,255,.08)}
 .shake-btn:active{transform:scale(.96)}
 .shake-btn:disabled{opacity:.3;cursor:not-allowed;transform:none;box-shadow:none}
@@ -109,7 +178,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .cal-header{text-align:center;font-size:11px;color:var(--cyan);padding:5px 0;font-family:var(--font-display);font-weight:500}
 .cal-day{text-align:center;padding:7px 3px;border-radius:8px;font-size:12px;cursor:pointer;transition:all .2s;position:relative}
 .cal-day:hover{background:rgba(0,212,255,.08)}
-.cal-day.today{border:1px solid var(--cyan);box-shadow:0 0 10px var(--glow-cyan);color:var(--cyan)}
+.cal-day.today{border:1px solid var(--accent-gold);box-shadow:0 0 10px var(--glow-gold);color:var(--accent-gold)}
 .cal-day.jiari{background:rgba(80,232,144,.06);border:1px solid rgba(80,232,144,.12)}
 .cal-day.jiari::after{content:'吉';position:absolute;top:1px;right:2px;font-size:7px;color:var(--green)}
 .cal-day.xiong{background:rgba(255,94,122,.04);border:1px solid rgba(255,94,122,.1)}
@@ -134,7 +203,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .sub-tabs{display:flex;gap:5px;margin-bottom:14px;overflow-x:auto;padding-bottom:3px}
 .sub-tabs::-webkit-scrollbar{display:none}
 .sub-tab{padding:5px 12px;background:rgba(0,212,255,.04);border:1px solid var(--border);border-radius:6px;color:var(--text3);font-size:12px;cursor:pointer;white-space:nowrap;transition:all .25s;flex-shrink:0;font-family:var(--font-display);letter-spacing:1px}
-.sub-tab.active{background:rgba(0,212,255,.12);border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 8px var(--glow-cyan)}
+.sub-tab.active{background:rgba(201,162,39,.15);border-color:var(--accent-gold);color:var(--accent-gold);box-shadow:0 0 8px var(--glow-gold)}
 .sub-tab:hover{background:rgba(0,212,255,.08);border-color:var(--cyan);color:var(--text)}
 .info-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(0,212,255,.04);font-size:13px}
 .info-row .ir-label{color:var(--text3)}.info-row .ir-value{color:var(--gold)}
@@ -145,8 +214,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 .liuren-cell.highlight{background:rgba(255,126,179,.08);border-color:rgba(255,126,179,.2);box-shadow:0 0 8px var(--glow-rose)}
 .progress-dots{display:flex;justify-content:center;gap:6px;margin:10px 0}
 .progress-dot{width:8px;height:8px;border-radius:2px;background:rgba(0,212,255,.1);border:1px solid var(--border);transition:all .25s;transform:rotate(45deg)}
-.progress-dot.filled{background:var(--cyan);box-shadow:0 0 6px var(--glow-cyan);border-color:var(--cyan)}
-.progress-dot.current{background:var(--rose);box-shadow:0 0 10px var(--glow-rose);border-color:var(--rose);animation:pulse .8s ease-in-out infinite}
+.progress-dot.filled{background:var(--accent-gold);box-shadow:0 0 6px var(--glow-gold);border-color:var(--accent-gold)}
+.progress-dot.current{background:var(--accent-cyan);box-shadow:0 0 10px var(--glow-cyan);border-color:var(--accent-cyan);animation:pulse .8s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
 .toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(8,5,15,.96);border:1px solid var(--cyan);color:var(--cyan);padding:14px 28px;border-radius:10px;font-size:14px;z-index:1000;pointer-events:none;animation:toastAnim 2s ease forwards;text-align:center;box-shadow:0 0 30px var(--glow-cyan);font-family:var(--font-display);letter-spacing:3px}
 @keyframes toastAnim{0%{opacity:0;transform:translate(-50%,-50%) scale(.85)}15%{opacity:1;transform:translate(-50%,-50%) scale(1)}85%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(.9)}}
@@ -305,8 +374,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 
 /* Enhanced Sub Tab Transition */
 .sub-tab{transition:all .3s cubic-bezier(.4,0,.2,1)}
-.sub-tab.active{position:relative;overflow:hidden}
-.sub-tab.active::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:var(--cyan);box-shadow:0 0 6px var(--glow-cyan)}
+.sub-tab.active{position:relative;overflow:hidden;background:rgba(201,162,39,.15);border-color:var(--accent-gold);color:var(--accent-gold);box-shadow:0 0 8px var(--glow-gold)}
+.sub-tab.active::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:var(--accent-gold);box-shadow:0 0 6px var(--glow-gold)}
 
 /* Daily Quote Enhancement */
 .daily-quote{position:relative;background:rgba(240,192,96,.02);border-radius:0 8px 8px 0}
@@ -401,30 +470,33 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 <div class="card">
 <div class="card-title"><span class="icon">✦</span>快捷入口</div>
 <div class="quick-grid">
-<div class="quick-item" onclick="switchTab(1);switchSubTab('divination','coin')"><span class="qi-icon">🪙</span><span class="qi-label">金钱卦</span></div>
-<div class="quick-item" onclick="switchTab(1);switchSubTab('divination','meihua')"><span class="qi-icon">🌸</span><span class="qi-label">梅花易数</span></div>
+<div class="quick-item" onclick="switchTab(1);switchSubTab('divination','coin',document.querySelector('#divSubTabs .sub-tab[data-sub=\'coin\']'))"><span class="qi-icon">🪙</span><span class="qi-label">金钱卦</span></div>
+<div class="quick-item" onclick="switchTab(1);switchSubTab('divination','liuyao',document.querySelector('#divSubTabs .sub-tab[data-sub=\'liuyao\']'))"><span class="qi-icon">☰</span><span class="qi-label">六爻排盘</span></div>
 <div class="quick-item" onclick="switchTab(2)"><span class="qi-icon">👂</span><span class="qi-label">民俗预测</span></div>
 <div class="quick-item" onclick="switchTab(3)"><span class="qi-icon">📅</span><span class="qi-label">黄道吉日</span></div>
 </div>
 </div>
-<div class="card">
-<div class="card-title"><span class="icon">☯</span>太极</div>
-<div class="taiji-wrap">
-<svg class="taiji-svg" viewBox="0 0 100 100">
-<circle cx="50" cy="50" r="46" fill="none" stroke="var(--cyan2)" stroke-width="1" opacity=".6"/>
-<path d="M50,4 A46,46 0 0,1 50,96 A23,23 0 0,1 50,50 A23,23 0 0,0 50,4" fill="url(#tg)"/>
-<circle cx="50" cy="25" r="5" fill="var(--bg)"/><circle cx="50" cy="75" r="5" fill="var(--cyan2)"/>
-</svg>
-<div class="taiji-text">道生一 · 一生二 · 二生三 · 三生万物</div>
+<div class="card" id="dailyFortuneCard">
+<div class="card-title"><span class="icon">✨</span>今日运势</div>
+<div id="dailyFortuneContent">
+<div style="text-align:center;padding:20px 0">
+<div style="font-size:48px;margin-bottom:10px">🔮</div>
+<div style="font-size:14px;color:var(--text2);margin-bottom:16px;line-height:1.6">
+每日仅限一次<br>点击揭晓今日运势
+</div>
+<button class="shake-btn" onclick="generateDailyFortune()" id="dailyFortuneBtn">查看今日运势</button>
+<div id="dailyFortuneStatus" style="margin-top:10px;font-size:12px;color:var(--text3)"></div>
+</div>
 </div>
 </div>
 </div>
 <div class="page" id="page-divination">
 <div class="sub-tabs" id="divSubTabs">
-<div class="sub-tab active" data-sub="coin" onclick="switchSubTab('divination','coin')">金钱卦</div>
-<div class="sub-tab" data-sub="meihua" onclick="switchSubTab('divination','meihua')">梅花易数</div>
-<div class="sub-tab" data-sub="liuyao" onclick="switchSubTab('divination','liuyao')">六爻排盘</div>
-<div class="sub-tab" data-sub="liuren" onclick="switchSubTab('divination','liuren')">大小六壬</div>
+<div class="sub-tab active" data-sub="coin" onclick="switchSubTab('divination','coin',this)">金钱卦</div>
+<div class="sub-tab" data-sub="liuyao" onclick="switchSubTab('divination','liuyao',this)">六爻排盘</div>
+<div class="sub-tab" data-sub="liuren" onclick="switchSubTab('divination','liuren',this)">大六壬</div>
+<div class="sub-tab" data-sub="xiaoliuren" onclick="switchSubTab('divination','xiaoliuren',this)">小六壬</div>
+<div class="sub-tab" data-sub="meihua" onclick="switchSubTab('divination','meihua',this)">梅花易数</div>
 </div>
 <div class="sub-page active" id="sub-coin">
 <div class="card">
@@ -476,22 +548,115 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 <button class="shake-btn" onclick="doLiuren()" style="margin-bottom:14px">起课</button>
 <div id="liurenContent"><div style="text-align:center;padding:16px;color:var(--text3)">点击"起课"进行大六壬排盘</div></div>
 </div>
+<div class="card">
+<div class="card-title"><span class="icon">📖</span>大六壬说明</div>
+<div style="font-size:13px;color:var(--text2);line-height:1.8">
+<p style="margin-bottom:10px"><strong style="color:var(--cyan)">【大六壬简介】</strong></p>
+<p style="margin-bottom:10px">大六壬是中国古代三大秘术（奇门、六壬、太乙）之一，与奇门遁甲、太乙神数并称"三式"。它以阴阳五行、天干地支为基础，通过四课三传来推演事物发展。</p>
+<p style="margin-bottom:10px"><strong style="color:var(--gold)">【十二天将】</strong></p>
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0">
+<div style="background:rgba(0,212,255,.05);padding:8px;border-radius:6px;border-left:2px solid var(--cyan)"><strong>贵人</strong>：吉神之首，主贵人相助、逢凶化吉</div>
+<div style="background:rgba(255,126,179,.05);padding:8px;border-radius:6px;border-left:2px solid var(--rose)"><strong>腾蛇</strong>：凶神，主虚惊、怪异、缠绕</div>
+<div style="background:rgba(255,94,122,.05);padding:8px;border-radius:6px;border-left:2px solid var(--red)"><strong>朱雀</strong>：凶神，主口舌是非、文书官司</div>
+<div style="background:rgba(80,232,144,.05);padding:8px;border-radius:6px;border-left:2px solid var(--green)"><strong>六合</strong>：吉神，主和合、婚姻、合作</div>
+<div style="background:rgba(240,192,96,.05);padding:8px;border-radius:6px;border-left:2px solid var(--gold)"><strong>勾陈</strong>：凶神，主阻滞、田土、牢狱</div>
+<div style="background:rgba(0,212,255,.05);padding:8px;border-radius:6px;border-left:2px solid var(--cyan)"><strong>青龙</strong>：吉神，主财喜、喜庆、事业</div>
+<div style="background:rgba(255,126,179,.05);padding:8px;border-radius:6px;border-left:2px solid var(--rose)"><strong>天空</strong>：凶神，主空亡、虚假、破财</div>
+<div style="background:rgba(255,94,122,.05);padding:8px;border-radius:6px;border-left:2px solid var(--red)"><strong>白虎</strong>：凶神，主刑伤、疾病、丧事</div>
+<div style="background:rgba(240,192,96,.05);padding:8px;border-radius:6px;border-left:2px solid var(--gold)"><strong>太常</strong>：吉神，主衣禄、饮食、赏赐</div>
+<div style="background:rgba(255,126,179,.05);padding:8px;border-radius:6px;border-left:2px solid var(--rose)"><strong>玄武</strong>：凶神，主盗贼、暗昧、小人</div>
+<div style="background:rgba(0,212,255,.05);padding:8px;border-radius:6px;border-left:2px solid var(--cyan)"><strong>太阴</strong>：吉神，主阴私、阴谋、暗中相助</div>
+<div style="background:rgba(80,232,144,.05);padding:8px;border-radius:6px;border-left:2px solid var(--green)"><strong>天后</strong>：吉神，主恩泽、庇佑、女性贵人</div>
+</div>
+<p style="margin-bottom:10px"><strong style="color:var(--gold)">【四课三传】</strong></p>
+<p style="margin-bottom:10px"><strong>四课</strong>：根据日干支排出的四组干支组合，代表事物的起始状态。</p>
+<p style="margin-bottom:10px"><strong>三传</strong>：初传、中传、末传，代表事物发展的三个阶段。</p>
+<p style="margin-bottom:10px"><strong>初传</strong>（发用）：事物的开端<br><strong>中传</strong>（中传）：事物的发展<br><strong>末传</strong>（末传）：事物的结果</p>
+</div>
+</div>
+</div>
+<div class="sub-page" id="sub-xiaoliuren" style="display:none">
+<div class="card">
+<div class="card-title"><span class="icon">🎯</span>小六壬</div>
+<div style="text-align:center;font-size:12px;color:var(--text3);margin-bottom:10px">诸葛马前课 · 掐指一算 · 简易占卜</div>
+<div style="display:flex;gap:10px;margin-bottom:14px">
+<select id="xlrMonth" style="flex:1;padding:10px;background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px">
+<option value="1">正月</option><option value="2">二月</option><option value="3">三月</option>
+<option value="4">四月</option><option value="5">五月</option><option value="6">六月</option>
+<option value="7">七月</option><option value="8">八月</option><option value="9">九月</option>
+<option value="10">十月</option><option value="11">十一月</option><option value="12">十二月</option>
+</select>
+<select id="xlrDay" style="flex:1;padding:10px;background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px">
+<option value="1">初一</option><option value="2">初二</option><option value="3">初三</option><option value="4">初四</option><option value="5">初五</option>
+<option value="6">初六</option><option value="7">初七</option><option value="8">初八</option><option value="9">初九</option><option value="10">初十</option>
+<option value="11">十一</option><option value="12">十二</option><option value="13">十三</option><option value="14">十四</option><option value="15">十五</option>
+<option value="16">十六</option><option value="17">十七</option><option value="18">十八</option><option value="19">十九</option><option value="20">二十</option>
+<option value="21">廿一</option><option value="22">廿二</option><option value="23">廿三</option><option value="24">廿四</option><option value="25">廿五</option>
+<option value="26">廿六</option><option value="27">廿七</option><option value="28">廿八</option><option value="29">廿九</option><option value="30">三十</option>
+</select>
+<select id="xlrHour" style="flex:1;padding:10px;background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px">
+<option value="1">子时(23-1)</option><option value="2">丑时(1-3)</option><option value="3">寅时(3-5)</option>
+<option value="4">卯时(5-7)</option><option value="5">辰时(7-9)</option><option value="6">巳时(9-11)</option>
+<option value="7">午时(11-13)</option><option value="8">未时(13-15)</option><option value="9">申时(15-17)</option>
+<option value="10">酉时(17-19)</option><option value="11">戌时(19-21)</option><option value="12">亥时(21-23)</option>
+</select>
+</div>
+<button class="shake-btn" onclick="doXiaoLiuren()" style="margin-bottom:14px">掐指一算</button>
+<div id="xiaoliurenContent"><div style="text-align:center;padding:16px;color:var(--text3)">选择月日时后点击"掐指一算"</div></div>
+</div>
+<div class="card">
+<div class="card-title"><span class="icon">📖</span>小六壬说明</div>
+<div style="font-size:13px;color:var(--text2);line-height:1.8">
+<p style="margin-bottom:10px"><strong style="color:var(--cyan)">【小六壬简介】</strong></p>
+<p style="margin-bottom:10px">小六壬，又称"诸葛马前课"，相传为诸葛亮行军打仗时所创。它是一种简便易行的占卜方法，只需根据农历月、日、时推算，即可得知吉凶。</p>
+<p style="margin-bottom:10px"><strong style="color:var(--gold)">【六神含义】</strong></p>
+<div style="display:grid;grid-template-columns:repeat(1,1fr);gap:10px;margin:10px 0">
+<div style="background:rgba(80,232,144,.1);padding:12px;border-radius:8px;border-left:3px solid var(--green)">
+<strong style="color:var(--green);font-size:15px">🍀 大安</strong>
+<p style="margin-top:6px">大吉之象。主事情顺利、平安无事、心想事成。求财可得，寻人可见，失物可寻。</p>
+</div>
+<div style="background:rgba(255,126,179,.1);padding:12px;border-radius:8px;border-left:3px solid var(--rose)">
+<strong style="color:var(--rose);font-size:15px">⏳ 留连</strong>
+<p style="margin-top:6px">小凶之象。主事情拖延、犹豫不决、进展缓慢。宜静不宜动，需耐心等待时机。</p>
+</div>
+<div style="background:rgba(80,232,144,.1);padding:12px;border-radius:8px;border-left:3px solid var(--green)">
+<strong style="color:var(--green);font-size:15px">⚡ 速喜</strong>
+<p style="margin-top:6px">中吉之象。主事情进展迅速、喜事临门、好消息将至。宜主动出击，把握机会。</p>
+</div>
+<div style="background:rgba(255,94,122,.1);padding:12px;border-radius:8px;border-left:3px solid var(--red)">
+<strong style="color:var(--red);font-size:15px">💢 赤口</strong>
+<p style="margin-top:6px">中凶之象。主口舌是非、争吵纠纷、官非诉讼。宜谨言慎行，避免冲突。</p>
+</div>
+<div style="background:rgba(0,212,255,.1);padding:12px;border-radius:8px;border-left:3px solid var(--cyan)">
+<strong style="color:var(--cyan);font-size:15px">🌟 小吉</strong>
+<p style="margin-top:6px">小吉之象。主事情有小利、平稳发展、虽无大喜但也无大忧。宜守成不宜冒进。</p>
+</div>
+<div style="background:rgba(138,122,154,.2);padding:12px;border-radius:8px;border-left:3px solid var(--text3)">
+<strong style="color:var(--text3);font-size:15px">🌫️ 空亡</strong>
+<p style="margin-top:6px">大凶之象。主事情落空、徒劳无功、希望渺茫。宜放弃或改日再议，不宜强求。</p>
+</div>
+</div>
+<p style="margin-bottom:10px"><strong style="color:var(--gold)">【推算方法】</strong></p>
+<p style="margin-bottom:10px">从大安起月，月上起日，日上起时，最后落在哪个神上即为结果。</p>
+<p style="margin-bottom:10px">六神顺序：大安→留连→速喜→赤口→小吉→空亡→大安（循环）</p>
+</div>
+</div>
 </div>
 </div>
 <div class="page" id="page-folk">
 <div class="sub-tabs" id="folkSubTabs">
-<div class="sub-tab active" data-sub="ear" onclick="switchSubTab('folk','ear')">耳鸣</div>
-<div class="sub-tab" data-sub="eye" onclick="switchSubTab('folk','eye')">眼跳</div>
-<div class="sub-tab" data-sub="face" onclick="switchSubTab('folk','face')">面跳</div>
-<div class="sub-tab" data-sub="sneeze" onclick="switchSubTab('folk','sneeze')">打喷嚏</div>
-<div class="sub-tab" data-sub="heart" onclick="switchSubTab('folk','heart')">心惊</div>
-<div class="sub-tab" data-sub="hand" onclick="switchSubTab('folk','hand')">手心痒</div>
-<div class="sub-tab" data-sub="hiccup" onclick="switchSubTab('folk','hiccup')">打嗝</div>
-<div class="sub-tab" data-sub="foot" onclick="switchSubTab('folk','foot')">脚底痒</div>
-<div class="sub-tab" data-sub="lip" onclick="switchSubTab('folk','lip')">唇跳</div>
-<div class="sub-tab" data-sub="dream" onclick="switchSubTab('folk','dream')">梦兆</div>
+<div class="sub-tab active" data-sub="ear" onclick="switchSubTab('folk','ear',this)">耳鸣</div>
+<div class="sub-tab" data-sub="eye" onclick="switchSubTab('folk','eye',this)">眼跳</div>
+<div class="sub-tab" data-sub="face" onclick="switchSubTab('folk','face',this)">面跳</div>
+<div class="sub-tab" data-sub="sneeze" onclick="switchSubTab('folk','sneeze',this)">打喷嚏</div>
+<div class="sub-tab" data-sub="heart" onclick="switchSubTab('folk','heart',this)">心惊</div>
+<div class="sub-tab" data-sub="hand" onclick="switchSubTab('folk','hand',this)">手心痒</div>
+<div class="sub-tab" data-sub="hiccup" onclick="switchSubTab('folk','hiccup',this)">打嗝</div>
+<div class="sub-tab" data-sub="foot" onclick="switchSubTab('folk','foot',this)">脚底痒</div>
+<div class="sub-tab" data-sub="lip" onclick="switchSubTab('folk','lip',this)">唇跳</div>
+<div class="sub-tab" data-sub="dream" onclick="switchSubTab('folk','dream',this)">梦兆</div>
 </div>
-<div class="sub-page active" id="sub-ear"><div class="card"><div class="card-title"><span class="icon">👂</span>耳鸣预测</div><div class="folk-selector"><select id="earSide"><option value="left">左耳</option><option value="right">右耳</option></select><select id="earTime"><option value="zi">子时 (23-1)</option><option value="chou">丑时 (1-3)</option><option value="yin">寅时 (3-5)</option><option value="mao">卯时 (5-7)</option><option value="chen">辰时 (7-9)</option><option value="si">巳时 (9-11)</option><option value="wu">午时 (11-13)</option><option value="wei">未时 (13-15)</option><option value="shen">申时 (15-17)</option><option value="you">酉时 (17-19)</option><option value="xu">戌时 (19-21)</option><option value="hai">亥时 (21-23)</option></select></div><button class="shake-btn" onclick="doFolkPredict('ear')">查询</button><div id="earResult"></div></div></div>
+<div class="sub-page active" id="sub-ear" style="display:block"><div class="card"><div class="card-title"><span class="icon">👂</span>耳鸣预测</div><div class="folk-selector"><select id="earSide"><option value="left">左耳</option><option value="right">右耳</option></select><select id="earTime"><option value="zi">子时 (23-1)</option><option value="chou">丑时 (1-3)</option><option value="yin">寅时 (3-5)</option><option value="mao">卯时 (5-7)</option><option value="chen">辰时 (7-9)</option><option value="si">巳时 (9-11)</option><option value="wu">午时 (11-13)</option><option value="wei">未时 (13-15)</option><option value="shen">申时 (15-17)</option><option value="you">酉时 (17-19)</option><option value="xu">戌时 (19-21)</option><option value="hai">亥时 (21-23)</option></select></div><button class="shake-btn" onclick="doFolkPredict('ear')">查询</button><div id="earResult"></div></div></div>
 <div class="sub-page" id="sub-eye" style="display:none"><div class="card"><div class="card-title"><span class="icon">👁</span>眼跳预测</div><div class="folk-selector"><select id="eyeSide"><option value="left">左眼</option><option value="right">右眼</option></select><select id="eyeTime"><option value="zi">子时 (23-1)</option><option value="chou">丑时 (1-3)</option><option value="yin">寅时 (3-5)</option><option value="mao">卯时 (5-7)</option><option value="chen">辰时 (7-9)</option><option value="si">巳时 (9-11)</option><option value="wu">午时 (11-13)</option><option value="wei">未时 (13-15)</option><option value="shen">申时 (15-17)</option><option value="you">酉时 (17-19)</option><option value="xu">戌时 (19-21)</option><option value="hai">亥时 (21-23)</option></select></div><button class="shake-btn" onclick="doFolkPredict('eye')">查询</button><div id="eyeResult"></div></div></div>
 <div class="sub-page" id="sub-face" style="display:none"><div class="card"><div class="card-title"><span class="icon">😊</span>面部跳动预测</div><div class="folk-selector"><select id="facePart"><option value="left_eyebrow">左眉</option><option value="right_eyebrow">右眉</option><option value="left_eyelid">左眼皮</option><option value="right_eyelid">右眼皮</option><option value="nose">鼻</option><option value="left_cheek">左脸</option><option value="right_cheek">右脸</option><option value="mouth">嘴</option><option value="chin">下巴</option></select><select id="faceTime"><option value="zi">子时 (23-1)</option><option value="chou">丑时 (1-3)</option><option value="yin">寅时 (3-5)</option><option value="mao">卯时 (5-7)</option><option value="chen">辰时 (7-9)</option><option value="si">巳时 (9-11)</option><option value="wu">午时 (11-13)</option><option value="wei">未时 (13-15)</option><option value="shen">申时 (15-17)</option><option value="you">酉时 (17-19)</option><option value="xu">戌时 (19-21)</option><option value="hai">亥时 (21-23)</option></select></div><button class="shake-btn" onclick="doFolkPredict('face')">查询</button><div id="faceResult"></div></div></div>
 <div class="sub-page" id="sub-sneeze" style="display:none"><div class="card"><div class="card-title"><span class="icon">🤧</span>打喷嚏预测</div><div class="folk-selector"><select id="sneezeGender"><option value="male">男</option><option value="female">女</option></select><select id="sneezeTime"><option value="zi">子时 (23-1)</option><option value="chou">丑时 (1-3)</option><option value="yin">寅时 (3-5)</option><option value="mao">卯时 (5-7)</option><option value="chen">辰时 (7-9)</option><option value="si">巳时 (9-11)</option><option value="wu">午时 (11-13)</option><option value="wei">未时 (13-15)</option><option value="shen">申时 (15-17)</option><option value="you">酉时 (17-19)</option><option value="xu">戌时 (19-21)</option><option value="hai">亥时 (21-23)</option></select></div><button class="shake-btn" onclick="doFolkPredict('sneeze')">查询</button><div id="sneezeResult"></div></div></div>
@@ -532,7 +697,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 <div class="tab-item" onclick="switchTab(4)"><span class="tab-icon">📖</span><span class="tab-label">文化</span></div>
 </div>
 </div>
-<svg width="0" height="0"><defs><linearGradient id="tg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="var(--cyan)"/><stop offset="100%" stop-color="var(--gold)"/></linearGradient></defs></svg>
+<svg width="0" height="0"><defs><linearGradient id="tg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="var(--accent-cyan)"/><stop offset="100%" stop-color="var(--accent-gold)"/></linearGradient></defs></svg>
 <script>
 // ========== Stars ==========
 (function(){
@@ -633,10 +798,690 @@ var meihuaMode='number';
 function setMeihuaMode(mode,btn){meihuaMode=mode;document.querySelectorAll('#sub-meihua .btn-sm').forEach(function(b){b.classList.remove('active')});btn.classList.add('active');document.getElementById('mhNumberInput').style.display=mode==='number'?'flex':'none';document.getElementById('mhTimeInfo').style.display=mode==='time'?'block':'none';document.getElementById('mhWordInput').style.display=mode==='word'?'block':'none';if(mode==='time'){var now=new Date();var h=now.getHours();var sc=diZhi[Math.floor((h+1)/2)%12];document.getElementById('mhTimeInfo').innerHTML='当前时间：'+now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日 '+sc+'时<br>将以年月日时起卦'}}
 function doMeihua(){var upper,lower,dongYao;if(meihuaMode==='number'){var n1=parseInt(document.getElementById('mhNum1').value)||0;var n2=parseInt(document.getElementById('mhNum2').value)||0;if(n1<1||n2<1){showToast('请输入有效的数字');return}upper=n1%8;lower=n2%8;dongYao=(n1+n2)%6}else if(meihuaMode==='time'){var now=new Date();var y=now.getFullYear(),m=now.getMonth()+1,d=now.getDate();upper=(y+m+d)%8;lower=(y+m+d+now.getHours())%8;dongYao=(y+m+d+now.getHours())%6}else{var word=document.getElementById('mhWord').value.trim();if(!word){showToast('请输入汉字');return}var len=word.length;upper=len%8;lower=(len+1)%8;dongYao=(len+1)%6}if(upper===0)upper=8;if(lower===0)lower=8;var syms=['','☰','☱','☲','☳','☴','☵','☶','☷'];var names=['','乾','兑','离','震','巽','坎','艮','坤'];var uS=syms[upper],lS=syms[lower],uN=names[upper],lN=names[lower];var guaIdx=-1;for(var i=0;i<gua64.length;i++){if(gua64[i].symbol===uS+lS){guaIdx=i;break}}if(guaIdx===-1)guaIdx=0;var gua=gua64[guaIdx];var baGuaWX={'乾':'金','兑':'金','离':'火','震':'木','巽':'木','坎':'水','艮':'土','坤':'土'};var uWX=baGuaWX[uN],lWX=baGuaWX[lN];var wXS={'金':'水','水':'木','木':'火','火':'土','土':'金'};var wXK={'金':'木','木':'土','土':'水','水':'火','火':'金'};var tiYong='';if(wXS[uWX]===lWX)tiYong='上卦'+uN+'（'+uWX+'）生下卦'+lN+'（'+lWX+'），用生体，大吉';else if(wXS[lWX]===uWX)tiYong='下卦'+lN+'（'+lWX+'）生上卦'+uN+'（'+uWX+'），体生用，泄气';else if(wXK[uWX]===lWX)tiYong='上卦'+uN+'（'+uWX+'）克下卦'+lN+'（'+lWX+'），用克体，凶';else if(wXK[lWX]===uWX)tiYong='下卦'+lN+'（'+lWX+'）克上卦'+uN+'（'+uWX+'），体克用，吉';else if(uWX===lWX)tiYong='上下同属'+uWX+'，比和，吉';else tiYong='上卦'+uN+'（'+uWX+'）与下卦'+lN+'（'+lWX+'）无生克关系';var dongLabels=['初','二','三','四','五','上'];document.getElementById('meihuaResult').innerHTML='<div class="card gua-result"><div style="font-size:12px;color:var(--text3);margin-bottom:4px;font-family:var(--font-display);letter-spacing:2px">◈ 本卦</div><div class="gua-name">'+gua.full+'</div><div style="font-size:18px;margin:6px 0">'+gua.symbol+'</div><div style="font-size:13px;color:var(--text2);margin-bottom:6px">上卦：'+uS+uN+'（'+uWX+'）· 下卦：'+lS+lN+'（'+lWX+'）</div><div class="gua-desc">'+(gua.desc.replace(/\n/g,'<br>'))+'</div>'+(gua.fortune?(function(){var fc='fortune-ping';if(gua.fortune.indexOf('\u5927\u5409')>=0)fc='fortune-daji';else if(gua.fortune.indexOf('\u5409')>=0)fc='fortune-ji';else if(gua.fortune.indexOf('\u5C0F\u5409')>=0)fc='fortune-xiaoji';else if(gua.fortune.indexOf('\u51F6')>=0)fc='fortune-xiong';return '<div style="text-align:center;margin:10px 0"><span class="fortune-badge '+fc+'">'+gua.fortune+'</span></div>'})():'')+(gua.tuanCi?'<div class="citext-section"><div class="ci-label">\u25C6 \u5F56\u8F9E</div>'+gua.tuanCi+'</div>':'')+(gua.xiangCi?'<div class="citext-section"><div class="ci-label">\u25C6 \u8C61\u8F9E</div>'+gua.xiangCi+'</div>':'')+(gua.yaoCi&&gua.yaoCi.length?'<div class="yaoci-section"><div class="yaoci-title">\u25C6 \u723E\u8F9E</div>'+gua.yaoCi.map(function(y){return '<div class="yaoci-item">'+y+'</div>'}).join('')+'</div>':'')+(gua.advice?'<div class="advice-section"><div class="advice-title">\u25C6 \u5B9E\u7528\u5EFA\u8BAE</div><div class="advice-item">'+gua.advice+'</div></div>':'')+'<div style="margin-top:10px;padding:10px;background:rgba(0,0,0,.25);border-left:2px solid rgba(0,212,255,.3);border-radius:6px"><div style="font-size:12px;color:var(--cyan);margin-bottom:3px;font-family:var(--font-display);letter-spacing:1px">▣ 体用分析</div><div style="font-size:13px;line-height:1.7;color:var(--text2)">'+tiYong+'</div></div><div style="margin-top:6px;font-size:12px;color:var(--text3)">动爻：第'+dongLabels[dongYao]+'爻</div></div>'}
 
+// ========== 今日运势 ==========
+var dailyFortuneData = null;
+var dailyFortuneUsed = false;
+
+// 生成唯一设备标识（基于浏览器指纹）
+function getDeviceId() {
+var nav = window.navigator;
+var screen = window.screen;
+var deviceId = [
+nav.userAgent,
+nav.language,
+screen.colorDepth,
+screen.width + 'x' + screen.height,
+new Date().getTimezoneOffset()
+].join('|');
+// 简单哈希
+var hash = 0;
+for (var i = 0; i < deviceId.length; i++) {
+var char = deviceId.charCodeAt(i);
+hash = ((hash << 5) - hash) + char;
+hash = hash & hash;
+}
+return 'device_' + Math.abs(hash).toString(16);
+}
+
+// 获取今天的日期字符串
+function getTodayString() {
+var now = new Date();
+return now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate();
+}
+
+// 获取下次重置时间
+function getNextResetTime() {
+var now = new Date();
+var tomorrow = new Date(now);
+tomorrow.setDate(tomorrow.getDate() + 1);
+tomorrow.setHours(0, 0, 0, 0);
+return tomorrow.getTime();
+}
+
+// 检查今日运势状态
+function checkDailyFortuneStatus() {
+var deviceId = getDeviceId();
+var today = getTodayString();
+var storageKey = 'dailyFortune_' + deviceId + '_' + today;
+var savedData = localStorage.getItem(storageKey);
+
+if (savedData) {
+try {
+dailyFortuneData = JSON.parse(savedData);
+dailyFortuneUsed = true;
+displayDailyFortune(dailyFortuneData, false);
+return true;
+} catch (e) {
+console.error('解析存储数据失败', e);
+}
+}
+return false;
+}
+
+// 保存今日运势
+function saveDailyFortune(data) {
+var deviceId = getDeviceId();
+var today = getTodayString();
+var storageKey = 'dailyFortune_' + deviceId + '_' + today;
+localStorage.setItem(storageKey, JSON.stringify(data));
+
+// 设置过期时间（明天0点自动过期）
+var expireKey = 'dailyFortune_expire_' + deviceId;
+localStorage.setItem(expireKey, getNextResetTime().toString());
+}
+
+// 清理过期数据
+function cleanupExpiredFortune() {
+var deviceId = getDeviceId();
+var expireKey = 'dailyFortune_expire_' + deviceId;
+var expireTime = localStorage.getItem(expireKey);
+if (expireTime) {
+var now = new Date().getTime();
+if (now > parseInt(expireTime)) {
+// 已过期，清理所有今日运势数据
+var keys = Object.keys(localStorage);
+for (var i = 0; i < keys.length; i++) {
+if (keys[i].startsWith('dailyFortune_' + deviceId)) {
+localStorage.removeItem(keys[i]);
+}
+}
+}
+}
+}
+
+// 生成今日运势（自动摇金钱卦）
+function generateDailyFortune() {
+if (dailyFortuneUsed) {
+showToast('今日运势已生成，请明日再来');
+return;
+}
+
+// 清理过期数据
+cleanupExpiredFortune();
+
+// 检查是否已存在
+if (checkDailyFortuneStatus()) {
+return;
+}
+
+// 禁用按钮
+document.getElementById('dailyFortuneBtn').disabled = true;
+document.getElementById('dailyFortuneBtn').textContent = '正在摇卦...';
+document.getElementById('dailyFortuneStatus').textContent = '心中默念所问之事...';
+
+// 模拟摇卦过程（直接生成6爻结果）
+setTimeout(function() {
+var yaoResults = [];
+for (var i = 0; i < 6; i++) {
+// 随机生成爻（2=少阴，3=少阳，6=老阴，9=老阳）
+var rand = Math.random();
+if (rand < 0.25) yaoResults.push(6);      // 老阴（动爻变阳）
+else if (rand < 0.50) yaoResults.push(9); // 老阳（动爻变阴）
+else if (rand < 0.75) yaoResults.push(7); // 少阳（阳爻）
+else yaoResults.push(8);                   // 少阴（阴爻）
+}
+
+// 获取卦象信息
+var guaIdx = getGuaIndex(yaoResults);
+var gua = gua64[guaIdx];
+
+// 计算变卦
+var hasDong = false;
+var bianYao = yaoResults.map(function(v) {
+if (v === 6) { hasDong = true; return 7; }
+if (v === 9) { hasDong = true; return 8; }
+return v;
+});
+
+var bianGuaIdx = hasDong ? getGuaIndex(bianYao) : -1;
+var bianGua = bianGuaIdx >= 0 ? gua64[bianGuaIdx] : null;
+
+// 生成六爻排盘数据
+var now = new Date();
+var y = now.getFullYear(), m = now.getMonth() + 1, d = now.getDate();
+var dayGZ = getDayGanZhi(y, m, d);
+var dayGanIdx = tianGan.indexOf(dayGZ[0]);
+
+// 世应位置
+var shiYingPos = [[0,3],[1,4],[2,5],[3,0],[4,1],[5,2],[0,3],[1,4]];
+var seIdx = guaIdx % 8;
+var sp = shiYingPos[seIdx][0], yp = shiYingPos[seIdx][1];
+
+// 组装数据
+var fortuneData = {
+yaoResults: yaoResults,
+gua: gua,
+bianGua: bianGua,
+hasDong: hasDong,
+dayGZ: dayGZ,
+shiPos: sp,
+yingPos: yp,
+generateTime: now.getTime()
+};
+
+// 保存并显示
+dailyFortuneData = fortuneData;
+dailyFortuneUsed = true;
+saveDailyFortune(fortuneData);
+displayDailyFortune(fortuneData, true);
+
+showToast('今日运势已生成');
+}, 1500);
+}
+
+// 显示今日运势
+function displayDailyFortune(data, isNew) {
+var yaoResults = data.yaoResults;
+var gua = data.gua;
+var bianGua = data.bianGua;
+var hasDong = data.hasDong;
+var dayGZ = data.dayGZ;
+var sp = data.shiPos;
+var yp = data.yingPos;
+
+var h = '<div style="padding:10px 0">';
+
+// 卦名和运势标签
+h += '<div style="text-align:center;margin-bottom:16px">';
+h += '<div style="font-family:var(--font-display);font-weight:700;font-size:24px;background:linear-gradient(135deg,var(--cyan),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px">' + gua.full + '</div>';
+h += '<div style="font-size:16px;margin-bottom:8px">' + gua.symbol + '</div>';
+if (gua.fortune) {
+var fortuneColor = gua.fortune === '大吉' ? 'var(--green)' : 
+                   gua.fortune === '吉' ? 'var(--cyan)' :
+                   gua.fortune === '小吉' ? '#7ec8e3' :
+                   gua.fortune === '平' ? 'var(--text2)' : 'var(--red)';
+h += '<div style="display:inline-block;padding:4px 16px;background:' + fortuneColor + '20;border:1px solid ' + fortuneColor + '60;border-radius:12px;color:' + fortuneColor + ';font-size:14px;font-weight:600">今日运势：' + gua.fortune + '</div>';
+}
+h += '</div>';
+
+// 六爻展示
+h += '<div style="background:rgba(0,0,0,.2);padding:12px;border-radius:10px;margin-bottom:14px">';
+h += '<div style="font-size:12px;color:var(--gold);margin-bottom:10px;font-family:var(--font-display)">◆ 六爻排盘（' + dayGZ + '日）</div>';
+var labels = ['上', '五', '四', '三', '二', '初'];
+var liuQinMap = ['父母', '兄弟', '子孙', '妻财', '官鬼'];
+for (var i = 5; i >= 0; i--) {
+var v = yaoResults[i];
+var isYang = (v === 7 || v === 9);
+var isDong = (v === 6 || v === 9);
+var gi = (tianGan.indexOf(dayGZ[0]) + i) % 10;
+var zi = (i * 2 + 2) % 12;
+var sy = i === sp ? '世' : (i === yp ? '应' : '');
+var dg = isDong ? '动' : '';
+var qin = liuQinMap[i % 5];
+
+h += '<div style="display:flex;align-items:center;padding:5px 0;border-bottom:1px solid rgba(0,212,255,.05);font-size:13px;' + (isDong ? 'color:var(--rose)' : '') + '">';
+h += '<span style="width:28px;color:var(--text3);font-size:11px">' + labels[i] + '</span>';
+h += '<span style="width:28px;color:var(--cyan);font-size:12px">' + tianGan[gi] + '</span>';
+h += '<span style="width:28px;color:var(--text)">' + diZhi[zi] + '</span>';
+h += '<span style="width:36px;color:var(--rose);font-size:12px">' + qin + '</span>';
+h += '<div style="flex:1;display:flex;gap:5px;justify-content:center">';
+if (isYang) {
+h += '<div style="height:5px;border-radius:2px;width:100%;background:' + (isDong ? 'var(--rose)' : 'var(--cyan)') + ';box-shadow:0 0 6px ' + (isDong ? 'var(--glow-rose)' : 'var(--glow-cyan)') + '"></div>';
+} else {
+h += '<div style="height:5px;border-radius:2px;width:40%;background:' + (isDong ? 'var(--rose)' : 'var(--cyan)') + ';box-shadow:0 0 6px ' + (isDong ? 'var(--glow-rose)' : 'var(--glow-cyan)') + '"></div>';
+h += '<div style="height:5px;border-radius:2px;width:40%;background:' + (isDong ? 'var(--rose)' : 'var(--cyan)') + ';box-shadow:0 0 6px ' + (isDong ? 'var(--glow-rose)' : 'var(--glow-cyan)') + '"></div>';
+}
+h += '</div>';
+h += '<span style="width:28px;font-size:11px;' + (sy ? 'color:var(--cyan)' : '') + '">' + sy + '</span>';
+h += '<span style="width:28px;font-size:11px;color:var(--rose)">' + dg + '</span>';
+h += '</div>';
+}
+h += '</div>';
+
+// 卦辞解释
+if (gua.yuan) {
+h += '<div style="background:rgba(240,192,96,.08);padding:12px;border-radius:10px;margin-bottom:14px;border-left:2px solid var(--gold)">';
+h += '<div style="font-size:12px;color:var(--gold);margin-bottom:8px;font-family:var(--font-display)">◆ 卦辞</div>';
+h += '<div style="font-size:13px;color:var(--text2);line-height:1.8">' + gua.yuan + '</div>';
+h += '</div>';
+}
+
+// 白话解析
+if (gua.desc) {
+h += '<div style="background:rgba(0,212,255,.05);padding:12px;border-radius:10px;margin-bottom:14px;border-left:2px solid var(--cyan)">';
+h += '<div style="font-size:12px;color:var(--cyan);margin-bottom:8px;font-family:var(--font-display)">◆ 运势详解</div>';
+h += '<div style="font-size:13px;color:var(--text2);line-height:1.8;white-space:pre-wrap">' + gua.desc.replace(/\n/g, '<br>') + '</div>';
+h += '</div>';
+}
+
+// 变卦（如果有动爻）
+if (hasDong && bianGua) {
+h += '<div style="background:rgba(255,126,179,.08);padding:12px;border-radius:10px;margin-bottom:14px;border-left:2px solid var(--rose)">';
+h += '<div style="font-size:12px;color:var(--rose);margin-bottom:8px;font-family:var(--font-display)">◆ 变卦（之卦）：' + bianGua.full + '</div>';
+h += '<div style="font-size:13px;color:var(--text2);line-height:1.8">' + bianGua.symbol + ' ' + (bianGua.desc ? bianGua.desc.substring(0, 100) + '...' : '') + '</div>';
+h += '</div>';
+}
+
+// 实用建议
+if (gua.advice) {
+h += '<div style="display:grid;grid-template-columns:repeat(1,1fr);gap:10px;margin-bottom:14px">';
+var advices = gua.advice.split('。');
+for (var j = 0; j < advices.length; j++) {
+var adv = advices[j].trim();
+if (adv) {
+var icon = adv.indexOf('事业') >= 0 ? '💼' : adv.indexOf('感情') >= 0 ? '💕' : adv.indexOf('健康') >= 0 ? '🏃' : '✨';
+var color = adv.indexOf('事业') >= 0 ? 'var(--cyan)' : adv.indexOf('感情') >= 0 ? 'var(--rose)' : adv.indexOf('健康') >= 0 ? 'var(--green)' : 'var(--gold)';
+h += '<div style="background:rgba(0,0,0,.15);padding:10px;border-radius:8px;border-left:2px solid ' + color + '">';
+h += '<div style="font-size:12px;color:' + color + ';margin-bottom:4px">' + icon + ' ' + adv.substring(0, 2) + '</div>';
+h += '<div style="font-size:12px;color:var(--text2)">' + adv + '</div>';
+h += '</div>';
+}
+}
+h += '</div>';
+}
+
+// 提示信息
+h += '<div style="text-align:center;padding:10px;background:rgba(0,0,0,.2);border-radius:8px">';
+if (isNew) {
+h += '<div style="font-size:12px;color:var(--green)">✓ 今日运势已生成</div>';
+} else {
+h += '<div style="font-size:12px;color:var(--text3)">今日运势已生成，明日0点后可重新测算</div>';
+}
+var nextReset = getNextResetTime();
+var resetTime = new Date(nextReset);
+h += '<div style="font-size:11px;color:var(--text3);margin-top:4px">下次重置：' + resetTime.getHours() + ':00</div>';
+h += '</div>';
+
+h += '</div>';
+
+document.getElementById('dailyFortuneContent').innerHTML = h;
+}
+
+// 页面加载时检查今日运势状态
+function initDailyFortune() {
+cleanupExpiredFortune();
+checkDailyFortuneStatus();
+}
+
 // ========== 六壬 ==========
 var shiErTianJiang=['贵人','腾蛇','朱雀','六合','勾陈','青龙','天空','白虎','太常','玄武','太阴','天后'];
 var shiErGong=['大吉','功曹','太冲','天罡','太乙','胜光','小吉','传送','从魁','河魁','登明','神后'];
-function doLiuren(){var now=new Date();var y=now.getFullYear(),m=now.getMonth()+1,d=now.getDate();var dayGZ=getDayGanZhi(y,m,d);var zhiIdx=diZhi.indexOf(dayGZ[1]);var seed=(y*366+m*31+d)%12;var jiang=[];for(var i=0;i<12;i++)jiang.push(shiErTianJiang[(seed+i)%12]);var ke=[];for(var i=0;i<4;i++)ke.push({zhi:diZhi[(zhiIdx+i*3)%12],jiang:shiErTianJiang[(seed+i*3)%12]});var chuan=[];for(var i=0;i<3;i++)chuan.push({zhi:diZhi[(zhiIdx+i*4+1)%12],jiang:shiErTianJiang[(seed+i*4+1)%12],gong:shiErGong[(seed+i*4+1)%12]});var h='<div style="text-align:center;margin-bottom:10px"><span style="font-size:13px;color:var(--text3);font-family:var(--font-display)">日干支：</span><span style="color:var(--cyan);font-family:var(--font-display)">'+dayGZ+'</span></div><div style="font-size:13px;color:var(--gold);margin-bottom:8px;font-family:var(--font-display);letter-spacing:1px;text-shadow:0 0 6px var(--glow-gold)">▣ 十二天将分布</div><div class="liuren-grid">';for(var i=0;i<12;i++){var isHL=chuan.some(function(c){return c.zhi===diZhi[i]});h+='<div class="liuren-cell '+(isHL?'highlight':'')+'"><div class="lc-name">'+jiang[i]+'</div><div class="lc-zhi">'+diZhi[i]+'</div></div>'}h+='</div><div style="font-size:13px;color:var(--gold);margin:10px 0 6px;font-family:var(--font-display);letter-spacing:1px;text-shadow:0 0 6px var(--glow-gold)">▣ 四课</div><div class="liuyao-pan">';for(var i=0;i<4;i++)h+='<div class="liuyao-row"><span class="ly-pos">第'+(i+1)+'课</span><span class="ly-gan">'+ke[i].zhi+'</span><span class="ly-qin">'+ke[i].jiang+'</span></div>';h+='</div><div style="font-size:13px;color:var(--gold);margin:10px 0 6px;font-family:var(--font-display);letter-spacing:1px;text-shadow:0 0 6px var(--glow-gold)">▣ 三传</div><div class="liuyao-pan">';for(var i=0;i<3;i++)h+='<div class="liuyao-row" style="border-left:2px solid var(--rose)"><span class="ly-pos">'+['初传','中传','末传'][i]+'</span><span class="ly-gan">'+chuan[i].zhi+'</span><span class="ly-qin">'+chuan[i].jiang+'</span><span class="ly-shi">'+chuan[i].gong+'</span></div>';h+='</div>';document.getElementById('liurenContent').innerHTML=h}
+
+// 十二天将详细解释
+var tianJiangExplain = {
+'贵人': {
+ type: '吉',
+ color: 'var(--green)',
+ desc: '吉神之首，代表最高权威和贵人相助',
+ meaning: '有贵人扶持，逢凶化吉，诸事顺利。主得长辈、上司或有权势者帮助。',
+ shiye: '事业上有贵人提携，易得领导赏识，升职加薪有望。',
+ ganqing: '感情上有媒人牵线，或得长辈支持，婚姻美满。',
+ caifu: '财运亨通，易得意外之财，投资有贵人指点。'
+},
+'腾蛇': {
+ type: '凶',
+ color: 'var(--rose)',
+ desc: '凶神，主虚惊、怪异、缠绕',
+ meaning: '多虚惊怪异之事，事情缠绕不清，易有口舌是非。主惊恐、疑虑、纠缠。',
+ shiye: '事业多波折，计划易变，需防小人暗算，谨慎行事。',
+ ganqing: '感情多纠葛，易有第三者插足，或有纠缠不清的关系。',
+ caifu: '财运不稳，易有意外损失，投资需谨慎，防被骗。'
+},
+'朱雀': {
+ type: '凶',
+ color: 'var(--red)',
+ desc: '凶神，主口舌是非、文书官司',
+ meaning: '易有口舌是非、文书诉讼、言语冲突。主官司、争吵、信息不畅。',
+ shiye: '事业易有口舌之争，与同事上司关系紧张，注意言行。',
+ ganqing: '感情易有争吵，沟通不畅，需多包容理解。',
+ caifu: '财运受损，易因口舌破财，签约需谨慎，防合同纠纷。'
+},
+'六合': {
+ type: '吉',
+ color: 'var(--green)',
+ desc: '吉神，主和合、婚姻、合作',
+ meaning: '主和合、团聚、合作顺利。凡事和谐，人际关系良好，婚姻美满。',
+ shiye: '事业合作顺利，团队精神好，项目推进无障碍。',
+ ganqing: '感情和合，单身者易遇良缘，已婚者家庭和睦。',
+ caifu: '财运稳定，合作生财，合伙经营有利可图。'
+},
+'勾陈': {
+ type: '凶',
+ color: 'var(--gold)',
+ desc: '凶神，主阻滞、田土、牢狱',
+ meaning: '主事情阻滞、拖延，易有田土纠纷或牢狱之灾。主阻碍、延迟、纠缠。',
+ shiye: '事业受阻，计划难推进，需耐心等待时机，不宜冒进。',
+ ganqing: '感情发展缓慢，或有阻碍，需时间磨合。',
+ caifu: '财运阻滞，资金回笼慢，不宜大额投资。'
+},
+'青龙': {
+ type: '吉',
+ color: 'var(--cyan)',
+ desc: '吉神，主财喜、喜庆、事业',
+ meaning: '主财喜、喜庆之事，事业顺利，财源广进。主吉祥、成功、发展。',
+ shiye: '事业蒸蒸日上，财运亨通，升职加薪，创业成功。',
+ ganqing: '感情甜蜜，易有喜事临门，如订婚、结婚等。',
+ caifu: '财运大旺，正财偏财皆旺，投资获利，财源广进。'
+},
+'天空': {
+ type: '凶',
+ color: 'var(--text3)',
+ desc: '凶神，主空亡、虚假、破财',
+ meaning: '主事情落空、虚假不实、破财损耗。主空亡、失望、徒劳。',
+ shiye: '事业易落空，计划难实现，需防虚假合作，脚踏实地。',
+ ganqing: '感情易有虚假，需防被骗，不宜轻信承诺。',
+ caifu: '财运不佳，易破财，投资易亏损，保守理财为宜。'
+},
+'白虎': {
+ type: '凶',
+ color: 'var(--red)',
+ desc: '凶神，主刑伤、疾病、丧事',
+ meaning: '主刑伤、疾病、血光之灾、丧事。主凶险、伤害、死亡。',
+ shiye: '事业有风险，需防意外伤害，注意安全，不宜冒险。',
+ ganqing: '感情易有伤害，需防分手或离别，多关心对方。',
+ caifu: '财运受损，易有意外支出，注意身体健康，防因病破财。'
+},
+'太常': {
+ type: '吉',
+ color: 'var(--gold)',
+ desc: '吉神，主衣禄、饮食、赏赐',
+ meaning: '主衣禄丰足、饮食享受、得到赏赐。主福禄、享受、安定。',
+ shiye: '事业稳定，收入有保障，工作环境舒适，待遇优厚。',
+ ganqing: '感情稳定，生活安逸，享受家庭生活乐趣。',
+ caifu: '财运平稳，收入稳定，衣食无忧，有积蓄。'
+},
+'玄武': {
+ type: '凶',
+ color: 'var(--rose)',
+ desc: '凶神，主盗贼、暗昧、小人',
+ meaning: '主盗贼、暗昧不明、小人作祟。主阴险、欺骗、暗中破坏。',
+ shiye: '事业需防小人暗算，注意保密，防商业机密泄露。',
+ ganqing: '感情需防第三者，或有隐秘之事，需坦诚沟通。',
+ caifu: '财运不佳，易被盗或被骗，注意财物安全，防投资陷阱。'
+},
+'太阴': {
+ type: '吉',
+ color: 'var(--cyan)',
+ desc: '吉神，主阴私、阴谋、暗中相助',
+ meaning: '主暗中相助、阴谋策划、私密之事。主隐秘、智慧、暗中保护。',
+ shiye: '事业有暗中贵人相助，适合幕后策划，不宜锋芒毕露。',
+ ganqing: '感情细腻，适合暗恋或私密交往，女性贵人相助。',
+ caifu: '财运暗藏，有暗财可得，适合隐秘投资或副业。'
+},
+'天后': {
+ type: '吉',
+ color: 'var(--green)',
+ desc: '吉神，主恩泽、庇佑、女性贵人',
+ meaning: '主恩泽庇佑、女性贵人相助、母性关怀。主保护、滋养、恩惠。',
+ shiye: '事业得女性贵人相助，适合从事女性相关行业，发展顺利。',
+ ganqing: '感情得女性长辈支持，女性主动追求，婚姻幸福。',
+ caifu: '财运有女性贵人带来，适合与女性合作，收益稳定。'
+}
+};
+
+// 十二地支解释
+var diZhiExplain = {
+'子': { wuxing: '水', desc: '主智慧、流动、变化', yinYang: '阳' },
+'丑': { wuxing: '土', desc: '主收藏、积蓄、稳定', yinYang: '阴' },
+'寅': { wuxing: '木', desc: '主生发、开始、进取', yinYang: '阳' },
+'卯': { wuxing: '木', desc: '主生长、发展、柔和', yinYang: '阴' },
+'辰': { wuxing: '土', desc: '主变化、转折、包容', yinYang: '阳' },
+'巳': { wuxing: '火', desc: '主热情、光明、上升', yinYang: '阴' },
+'午': { wuxing: '火', desc: '主旺盛、巅峰、光明', yinYang: '阳' },
+'未': { wuxing: '土', desc: '主收获、成熟、内敛', yinYang: '阴' },
+'申': { wuxing: '金', desc: '主收敛、决断、变革', yinYang: '阳' },
+'酉': { wuxing: '金', desc: '主收获、成就、圆满', yinYang: '阴' },
+'戌': { wuxing: '土', desc: '主收藏、守护、忠诚', yinYang: '阳' },
+'亥': { wuxing: '水', desc: '主终结、蕴藏、等待', yinYang: '阴' }
+};
+
+// 小六壬六神数据
+var xiaoLiuRenShen = [
+{
+name: '大安',
+icon: '🍀',
+color: 'var(--green)',
+fortune: '大吉',
+desc: '大安为吉神，代表平安、顺利、稳定。',
+detail: '事情会按照预期顺利进行，不会有大的波折。求财可得，寻人可见，失物可寻。此时宜主动出击，把握机会。',
+shiYe: '事业平稳发展，适合推进计划，会有贵人相助。',
+ganQing: '感情稳定和睦，单身者有望遇到合适对象。',
+jianKang: '身体健康，精神饱满，注意保持规律作息。'
+},
+{
+name: '留连',
+icon: '⏳',
+color: 'var(--rose)',
+fortune: '小凶',
+desc: '留连为凶神，代表拖延、犹豫、停滞。',
+detail: '事情进展缓慢，容易遇到阻碍和拖延。此时不宜急躁，需要耐心等待时机。宜静不宜动，凡事三思而后行。',
+shiYe: '事业发展受阻，计划难以推进，宜暂缓行动。',
+ganQing: '感情发展缓慢，或有误会需要澄清，需多沟通。',
+jianKang: '身体略有不适，注意调养，不宜过度劳累。'
+},
+{
+name: '速喜',
+icon: '⚡',
+color: 'var(--green)',
+fortune: '中吉',
+desc: '速喜为吉神，代表快速、喜事、好消息。',
+detail: '事情会快速有结果，好消息即将到来。适合主动出击，把握机会。求婚嫁、求财利、寻人均有喜讯。',
+shiYe: '事业进展迅速，机会来临，宜积极把握。',
+ganQing: '感情发展迅速，或有喜事临门，宜主动表达。',
+jianKang: '身体恢复迅速，精力充沛，适宜运动锻炼。'
+},
+{
+name: '赤口',
+icon: '💢',
+color: 'var(--red)',
+fortune: '中凶',
+desc: '赤口为凶神，代表口舌、是非、争吵。',
+detail: '容易发生口角纠纷，言语不慎会惹祸。宜谨言慎行，避免与人争执。不宜谈判签约，易有文书之灾。',
+shiYe: '事业易有口舌是非，与同事上司关系紧张，宜低调。',
+ganQing: '感情易有争吵，需多包容理解，避免言语伤害。',
+jianKang: '注意口腔、咽喉健康，避免上火，多喝水。'
+},
+{
+name: '小吉',
+icon: '🌟',
+color: 'var(--cyan)',
+fortune: '小吉',
+desc: '小吉为吉神，代表小利、平顺、安稳。',
+detail: '事情有小利，虽无大喜但也无大忧。适合守成，不宜冒进。凡事循序渐进，终有收获。',
+shiYe: '事业平稳，有小收获，宜按部就班，不宜激进。',
+ganQing: '感情平顺，细水长流，宜用心经营维护。',
+jianKang: '身体无大碍，注意日常保健，适度运动。'
+},
+{
+name: '空亡',
+icon: '🌫️',
+color: 'var(--text3)',
+fortune: '大凶',
+desc: '空亡为凶神，代表落空、徒劳、无望。',
+detail: '事情容易落空，希望渺茫，徒劳无功。此时宜放弃或改日再议，不宜强求。求财难得，寻人不见，失物难寻。',
+shiYe: '事业难有进展，计划易落空，宜暂停或改变方向。',
+ganQing: '感情难有结果，或有分离之象，需理性面对。',
+jianKang: '身体虚弱，精神不振，需多休息调养。'
+}
+];
+
+function doXiaoLiuren(){
+var month = parseInt(document.getElementById('xlrMonth').value);
+var day = parseInt(document.getElementById('xlrDay').value);
+var hour = parseInt(document.getElementById('xlrHour').value);
+
+// 小六壬算法：从大安(0)起月，月上起日，日上起时
+// 六神顺序：大安(0)、留连(1)、速喜(2)、赤口(3)、小吉(4)、空亡(5)
+var resultIndex = (month + day + hour - 3) % 6;
+var shen = xiaoLiuRenShen[resultIndex];
+
+var h = '<div style="text-align:center;padding:20px 0">';
+h += '<div style="font-size:48px;margin-bottom:10px">' + shen.icon + '</div>';
+h += '<div style="font-family:var(--font-display);font-weight:700;font-size:28px;color:' + shen.color + ';text-shadow:0 0 20px ' + shen.color + ';margin-bottom:6px">' + shen.name + '</div>';
+h += '<div style="font-size:14px;color:var(--text2);margin-bottom:16px">' + shen.desc + '</div>';
+h += '<div style="display:inline-block;padding:6px 20px;background:' + shen.color + '20;border:1px solid ' + shen.color + '60;border-radius:20px;color:' + shen.color + ';font-size:16px;font-weight:600;margin-bottom:16px">' + shen.fortune + '</div>';
+h += '</div>';
+
+h += '<div style="background:rgba(0,0,0,.2);padding:16px;border-radius:10px;margin-bottom:16px">';
+h += '<div style="font-size:13px;color:var(--gold);margin-bottom:8px;font-family:var(--font-display)">◆ 详细解读</div>';
+h += '<div style="font-size:13px;color:var(--text2);line-height:1.8">' + shen.detail + '</div>';
+h += '</div>';
+
+h += '<div style="display:grid;grid-template-columns:repeat(1,1fr);gap:10px">';
+h += '<div style="background:rgba(0,212,255,.05);padding:12px;border-radius:8px;border-left:2px solid var(--cyan)">';
+h += '<div style="font-size:12px;color:var(--cyan);margin-bottom:4px">💼 事业</div>';
+h += '<div style="font-size:13px;color:var(--text2)">' + shen.shiYe + '</div>';
+h += '</div>';
+h += '<div style="background:rgba(255,126,179,.05);padding:12px;border-radius:8px;border-left:2px solid var(--rose)">';
+h += '<div style="font-size:12px;color:var(--rose);margin-bottom:4px">💕 感情</div>';
+h += '<div style="font-size:13px;color:var(--text2)">' + shen.ganQing + '</div>';
+h += '</div>';
+h += '<div style="background:rgba(80,232,144,.05);padding:12px;border-radius:8px;border-left:2px solid var(--green)">';
+h += '<div style="font-size:12px;color:var(--green);margin-bottom:4px">🏃 健康</div>';
+h += '<div style="font-size:13px;color:var(--text2)">' + shen.jianKang + '</div>';
+h += '</div>';
+h += '</div>';
+
+document.getElementById('xiaoliurenContent').innerHTML = h;
+}
+
+function doLiuren(){
+var now=new Date();
+var y=now.getFullYear(),m=now.getMonth()+1,d=now.getDate();
+var dayGZ=getDayGanZhi(y,m,d);
+var zhiIdx=diZhi.indexOf(dayGZ[1]);
+var seed=(y*366+m*31+d)%12;
+
+var jiang=[];
+for(var i=0;i<12;i++)jiang.push(shiErTianJiang[(seed+i)%12]);
+
+var ke=[];
+for(var i=0;i<4;i++)ke.push({zhi:diZhi[(zhiIdx+i*3)%12],jiang:shiErTianJiang[(seed+i*3)%12]});
+
+var chuan=[];
+for(var i=0;i<3;i++)chuan.push({zhi:diZhi[(zhiIdx+i*4+1)%12],jiang:shiErTianJiang[(seed+i*4+1)%12],gong:shiErGong[(seed+i*4+1)%12]});
+
+// 分析吉凶
+var jiXiongCount={ji:0,xiang:0,ping:0};
+var chuanJiXiang=chuan.map(function(c){
+var tj=tianJiangExplain[c.jiang];
+if(tj.type==='吉')jiXiongCount.ji++;
+else if(tj.type==='凶')jiXiongCount.xiang++;
+else jiXiongCount.ping++;
+return {name:c.jiang,type:tj.type,color:tj.color};
+});
+
+var overallFortune='平';
+var fortuneColor='var(--text2)';
+if(jiXiongCount.ji>=2&&jiXiongCount.xiang===0){overallFortune='大吉';fortuneColor='var(--green)';}
+else if(jiXiongCount.ji>=1){overallFortune='吉';fortuneColor='var(--cyan)';}
+else if(jiXiongCount.xiang>=2){overallFortune='凶';fortuneColor='var(--red)';}
+else if(jiXiongCount.xiang>=1){overallFortune='小凶';fortuneColor='var(--rose)';}
+
+var h='<div style="padding:10px 0">';
+
+// 日干支和总体运势
+h+='<div style="text-align:center;margin-bottom:16px">';
+h+='<div style="font-size:13px;color:var(--text3);margin-bottom:6px">日干支</div>';
+h+='<div style="font-family:var(--font-display);font-weight:600;font-size:22px;color:var(--cyan);text-shadow:0 0 10px var(--glow-cyan);margin-bottom:10px">'+dayGZ+'</div>';
+h+='<div style="display:inline-block;padding:6px 20px;background:'+fortuneColor+'20;border:1px solid '+fortuneColor+'60;border-radius:20px;color:'+fortuneColor+';font-size:16px;font-weight:600">今日运势：'+overallFortune+'</div>';
+h+='</div>';
+
+// 三传分析（最重要）
+h+='<div style="background:rgba(0,0,0,.2);padding:14px;border-radius:10px;margin-bottom:14px">';
+h+='<div style="font-size:13px;color:var(--gold);margin-bottom:12px;font-family:var(--font-display)">◆ 三传分析（事物发展）</div>';
+var chuanNames=['初传（开端）','中传（发展）','末传（结果）'];
+for(var i=0;i<3;i++){
+var c=chuan[i];
+var tj=tianJiangExplain[c.jiang];
+var dz=diZhiExplain[c.zhi];
+h+='<div style="background:rgba(0,0,0,.15);padding:12px;border-radius:8px;margin-bottom:10px;border-left:3px solid '+tj.color+'">';
+h+='<div style="display:flex;align-items:center;margin-bottom:8px">';
+h+='<span style="font-size:12px;color:var(--text3);width:70px">'+chuanNames[i]+'</span>';
+h+='<span style="font-family:var(--font-display);font-weight:600;font-size:16px;color:'+tj.color+'">'+c.jiang+'</span>';
+h+='<span style="margin-left:8px;padding:2px 8px;background:'+tj.color+'20;border-radius:4px;color:'+tj.color+';font-size:11px">'+tj.type+'</span>';
+h+='</div>';
+h+='<div style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:6px">'+tj.desc+'</div>';
+h+='<div style="font-size:12px;color:var(--text3)">临'+c.zhi+'（'+dz.wuxing+'）- '+dz.desc+'</div>';
+h+='</div>';
+}
+h+='</div>';
+
+// 四课分析
+h+='<div style="background:rgba(0,212,255,.05);padding:14px;border-radius:10px;margin-bottom:14px">';
+h+='<div style="font-size:13px;color:var(--cyan);margin-bottom:10px;font-family:var(--font-display)">◆ 四课分析（起始状态）</div>';
+h+='<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">';
+for(var i=0;i<4;i++){
+var k=ke[i];
+var tj=tianJiangExplain[k.jiang];
+h+='<div style="background:rgba(0,0,0,.15);padding:10px;border-radius:6px;text-align:center">';
+h+='<div style="font-size:11px;color:var(--text3);margin-bottom:4px">第'+(i+1)+'课</div>';
+h+='<div style="font-family:var(--font-display);font-weight:600;color:'+tj.color+'">'+k.jiang+'</div>';
+h+='<div style="font-size:12px;color:var(--text2)">'+k.zhi+'</div>';
+h+='</div>';
+}
+h+='</div>';
+h+='</div>';
+
+// 十二天将分布
+h+='<div style="background:rgba(240,192,96,.05);padding:14px;border-radius:10px;margin-bottom:14px">';
+h+='<div style="font-size:13px;color:var(--gold);margin-bottom:10px;font-family:var(--font-display)">◆ 十二天将分布</div>';
+h+='<div class="liuren-grid">';
+for(var i=0;i<12;i++){
+var isHL=chuan.some(function(c){return c.zhi===diZhi[i]});
+var tj=tianJiangExplain[jiang[i]];
+h+='<div class="liuren-cell '+(isHL?'highlight':'')+'" style="border-color:'+tj.color+'30">';
+h+='<div class="lc-name" style="color:'+tj.color+'">'+jiang[i]+'</div>';
+h+='<div class="lc-zhi">'+diZhi[i]+'</div>';
+h+='</div>';
+}
+h+='</div>';
+h+='</div>';
+
+// 详细解读
+h+='<div style="background:rgba(0,0,0,.2);padding:14px;border-radius:10px;margin-bottom:14px">';
+h+='<div style="font-size:13px;color:var(--cyan);margin-bottom:12px;font-family:var(--font-display)">◆ 详细解读</div>';
+
+// 初传详解
+var chuChuan=chuan[0];
+var chuTJ=tianJiangExplain[chuChuan.jiang];
+h+='<div style="margin-bottom:12px">';
+h+='<div style="font-size:12px;color:var(--gold);margin-bottom:6px">【开端】'+chuChuan.jiang+'临'+chuChuan.zhi+'</div>';
+h+='<div style="font-size:12px;color:var(--text2);line-height:1.7">'+chuTJ.meaning+'</div>';
+h+='</div>';
+
+// 末传详解
+var moChuan=chuan[2];
+var moTJ=tianJiangExplain[moChuan.jiang];
+h+='<div style="margin-bottom:12px">';
+h+='<div style="font-size:12px;color:var(--gold);margin-bottom:6px">【结果】'+moChuan.jiang+'临'+moChuan.zhi+'</div>';
+h+='<div style="font-size:12px;color:var(--text2);line-height:1.7">'+moTJ.meaning+'</div>';
+h+='</div>';
+h+='</div>';
+
+// 各方面建议
+h+='<div style="background:rgba(0,0,0,.15);padding:14px;border-radius:10px">';
+h+='<div style="font-size:13px;color:var(--gold);margin-bottom:12px;font-family:var(--font-display)">◆ 运势建议</div>';
+h+='<div style="display:grid;grid-template-columns:repeat(1,1fr);gap:10px">';
+
+// 事业建议
+var shiYeTJ=tianJiangExplain[chuan[1].jiang];
+h+='<div style="background:rgba(0,212,255,.08);padding:12px;border-radius:8px;border-left:2px solid var(--cyan)">';
+h+='<div style="font-size:12px;color:var(--cyan);margin-bottom:6px">💼 事业工作</div>';
+h+='<div style="font-size:12px;color:var(--text2);line-height:1.6">'+shiYeTJ.shiye+'</div>';
+h+='</div>';
+
+// 感情建议
+var ganQingTJ=tianJiangExplain[chuan[0].jiang];
+h+='<div style="background:rgba(255,126,179,.08);padding:12px;border-radius:8px;border-left:2px solid var(--rose)">';
+h+='<div style="font-size:12px;color:var(--rose);margin-bottom:6px">💕 感情人际</div>';
+h+='<div style="font-size:12px;color:var(--text2);line-height:1.6">'+ganQingTJ.ganqing+'</div>';
+h+='</div>';
+
+// 财运建议
+var caiFuTJ=tianJiangExplain[chuan[2].jiang];
+h+='<div style="background:rgba(240,192,96,.08);padding:12px;border-radius:8px;border-left:2px solid var(--gold)">';
+h+='<div style="font-size:12px;color:var(--gold);margin-bottom:6px">💰 财运投资</div>';
+h+='<div style="font-size:12px;color:var(--text2);line-height:1.6">'+caiFuTJ.caifu+'</div>';
+h+='</div>';
+
+h+='</div>';
+h+='</div>';
+
+h+='</div>';
+
+document.getElementById('liurenContent').innerHTML=h;
+}
 
 // ========== 民俗 ==========
 var earPredict={left:{zi:'有人请客吃饭',chou:'有人思念你',yin:'有人请你赴宴',mao:'有喜事临门',chen:'有远客来访',si:'有财运到来',wu:'有人请饮酒',wei:'有好事发生',shen:'有争吵之事',you:'有人请你赴约',xu:'有虚惊之事',hai:'有人请你帮忙'},right:{zi:'有人暗算你',chou:'有人争吵',yin:'有女客来访',mao:'有纠纷之事',chen:'有损失之事',si:'有凶事发生',wu:'有人来借钱',wei:'有小人作祟',shen:'有朋友来访',you:'有人议是非',xu:'有女客相访',hai:'有人设宴款待'}};
@@ -673,9 +1518,34 @@ function renderCulture(){var data=getCultureData();var source=getCultureName();i
 function culturePrev(){cultureIdx=-1;renderCulture()}
 function cultureNext(){cultureIdx=-1;renderCulture()}
 function switchTab(idx){var pages=document.querySelectorAll('.page');pages.forEach(function(p,i){p.classList.toggle('active',i===idx)});var tabs=document.querySelectorAll('.tab-item');tabs.forEach(function(t,i){t.classList.toggle('active',i===idx)})}
-function switchSubTab(parent,sub){var pages=document.getElementById('page-'+parent).querySelectorAll('.sub-page');pages.forEach(function(p){p.style.display='none'});document.getElementById('sub-'+sub).style.display='block';var tabs=document.getElementById(parent+'SubTabs').querySelectorAll('.sub-tab');tabs.forEach(function(t){t.classList.remove('active');if(t.getAttribute('data-sub')===sub)t.classList.add('active')})}
+function switchSubTab(parent,sub,btn){
+// 隐藏所有sub-page
+var pages=document.getElementById('page-'+parent).querySelectorAll('.sub-page');
+for(var i=0;i<pages.length;i++){
+pages[i].style.display='none';
+pages[i].classList.remove('active');
+}
+// 显示当前sub-page
+var targetPage=document.getElementById('sub-'+sub);
+if(targetPage){
+targetPage.style.display='block';
+targetPage.classList.add('active');
+}
+// 移除所有tab的active类 - 使用parentNode确保找到正确的容器
+if(btn && btn.parentNode){
+var siblings=btn.parentNode.children;
+for(var i=0;i<siblings.length;i++){
+if(siblings[i].classList.contains('sub-tab')){
+siblings[i].classList.remove('active');
+}
+}
+// 给当前点击的tab添加active类
+btn.classList.add('active');
+}
+}
 function showToast(msg){var t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(function(){t.remove()},2000)}
-initCoinProgress();initHome();initCalendar();renderCulture();
+initCoinProgress();initHome();initCalendar();renderCulture();initXiaoLiurenDefaults();initDailyFortune();
+function initXiaoLiurenDefaults(){var now=new Date();var lunar=solarToLunar(now.getFullYear(),now.getMonth()+1,now.getDate());document.getElementById('xlrMonth').value=lunar.month;document.getElementById('xlrDay').value=lunar.day;document.getElementById('xlrHour').value=(Math.floor((now.getHours()+1)/2)%12)+1;}
 </script>
 </body>
 </html>
