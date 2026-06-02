@@ -38,6 +38,10 @@ def create_app():
     def landing():
         return render_template('landing.html')
 
+    @app.route('/wentian')
+    def wentian():
+        return render_template('wentian.html')
+
     app.register_blueprint(auth_bp)
     app.register_blueprint(projects_bp)
     app.register_blueprint(admin_bp)
