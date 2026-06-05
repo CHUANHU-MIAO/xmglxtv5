@@ -1,5 +1,6 @@
 from datetime import datetime
-from sqlalchemy import extract, func
+from collections import defaultdict
+from sqlalchemy import extract, func, or_, and_
 from web.extensions import db
 from web.models import User, Project
 
@@ -109,3 +110,29 @@ def search_projects(keyword, page=1, per_page=20):
             )
         )
     return query.order_by(Project.create_time.desc()).paginate(page=page, per_page=per_page, error_out=False)
+
+
+def find_duplicate_groups(user_id):
+    """检测项目中的重复项。
+
+    规则：项目名称相同 且 服务内容相同 → 视为重复项目。
+    user_id 为 None 时检测所有用户（管理员视角）。
+    返回：每个重复组的列表，每组包含多个 Project 对象。
+    """
+    query = Project.query.filter_by(is_valid=1)
+    if user_id is not None:
+        query = query.filter_by(user_id=user_id)
+    projects = query.all()
+
+    groups = defaultdict(list)
+    for p in projects:
+        key = (p.name.strip() if p.name else '', (p.service_content or '').strip())
+        groups[key].append(p)
+
+    # 只保留数量 > 1 的组，按组内最早创建时间排序
+    duplicates = {k: v for k, v in groups.items() if len(v) > 1}
+    sorted_duplicates = dict(
+        sorted(duplicates.items(),
+               key=lambda item: min(p.create_time or datetime.min for p in item[1]))
+    )
+    return sorted_duplicates

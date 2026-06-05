@@ -12,6 +12,90 @@
         </a>
     </div>
 
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ 'warning' if category == 'warning' else 'info' }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% if dup_groups %}
+    <!-- 重复项目警告 -->
+    <div class="card border-warning mb-4" id="dupWarningCard">
+        <div class="card-header bg-warning bg-opacity-10 d-flex justify-content-between align-items-center">
+            <h6 class="mb-0 text-warning">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                检测到 <strong>{{ dup_groups|length }}</strong> 组重复项目（共 {{ dup_total_extra }} 条重复记录）
+            </h6>
+            <div class="d-flex gap-2">
+                {% if not show_duplicates %}
+                <a href="{{ url_for('projects.my_projects', year=filter_year, month=filter_month, settlement=filter_settlement, show_duplicates=1) }}" class="btn btn-sm btn-warning">
+                    <i class="bi bi-funnel"></i> 只看重复项目
+                </a>
+                {% else %}
+                <a href="{{ url_for('projects.my_projects', year=filter_year, month=filter_month, settlement=filter_settlement, show_duplicates=0) }}" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> 返回全部项目
+                </a>
+                <form method="POST" action="{{ url_for('projects.my_projects_recheck') }}" class="d-inline">
+                    <input type="hidden" name="year" value="{{ filter_year }}">
+                    <input type="hidden" name="month" value="{{ filter_month }}">
+                    <input type="hidden" name="settlement" value="{{ filter_settlement }}">
+                    <button type="submit" class="btn btn-sm btn-success">
+                        <i class="bi bi-check-circle"></i> 修正完成，重新检测
+                    </button>
+                </form>
+                {% endif %}
+                <button class="btn btn-sm btn-outline-secondary" type="button" onclick="document.getElementById('dupDetail').classList.toggle('d-none');">
+                    <i class="bi bi-chevron-down"></i> 展开/收起
+                </button>
+            </div>
+        </div>
+        <div class="card-body {% if not show_duplicates %}d-none{% endif %}" id="dupDetail">
+            {% for key, proj_list in dup_groups.items() %}
+            <div class="dup-group mb-3 p-3 border rounded" style="background:rgba(253,203,110,0.05);">
+                <div class="fw-bold text-dark mb-2">
+                    <i class="bi bi-folder-symlink text-warning"></i>
+                    第{{ loop.index }}组：{{ key[0] or '(无名称)' }}
+                    {% if key[1] %}<span class="text-muted" style="font-weight:normal;">（服务内容：{{ key[1]|truncate(40) }}）</span>{% endif %}
+                    <span class="badge bg-warning text-dark ms-2">{{ proj_list|length }} 条重复</span>
+                </div>
+                <table class="table table-sm table-borderless mb-0" style="font-size:13px;">
+                    <thead><tr>
+                        <th>ID</th><th>项目名称</th><th>开始时间</th><th>业主单位</th><th>合同金额(万元)</th><th>操作</th>
+                    </tr></thead>
+                    <tbody>
+                    {% for p in proj_list %}
+                    <tr>
+                        <td><span class="badge bg-secondary">{{ p.id }}</span></td>
+                        <td><a href="/project/detail/{{ p.id }}" target="_blank">{{ p.name|truncate(20) }}</a></td>
+                        <td>{{ p.start_date.strftime('%Y-%m-%d') if p.start_date else '-' }}</td>
+                        <td>{{ (p.owner or '-')|truncate(15) }}</td>
+                        <td>{{ p.contract_amount if p.contract_amount else '-' }}</td>
+                        <td>
+                            <a href="/project/edit/{{ p.id }}{% if show_duplicates %}?from_dup=1{% endif %}" class="btn btn-sm btn-outline-secondary" title="编辑"><i class="bi bi-pencil"></i></a>
+                            <form method="post" action="/project/delete" class="d-inline" onsubmit="return confirm('确定要删除项目【{{ p.name }}】吗？');">
+                                <input type="hidden" name="id" value="{{ p.id }}">
+                                {% if show_duplicates %}<input type="hidden" name="redirect_dup" value="1">{% endif %}
+                                <input type="hidden" name="year" value="{{ filter_year }}">
+                                <input type="hidden" name="month" value="{{ filter_month }}">
+                                <input type="hidden" name="settlement" value="{{ filter_settlement }}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="删除"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
     <!-- 筛选说明 -->
     <div class="date-info">
         <i class="bi bi-info-circle"></i>
@@ -150,9 +234,10 @@
                                 <div class="action-buttons">
                                     <a href="/project/detail/{{ project.id }}" class="btn-action btn-view" title="查看详情"><i class="bi bi-eye"></i></a>
                                     {% if role != 'visitor' %}
-                                    <a href="/project/edit/{{ project.id }}" class="btn-action btn-edit" title="编辑项目"><i class="bi bi-pencil"></i></a>
+                                    <a href="/project/edit/{{ project.id }}{% if show_duplicates %}?from_dup=1{% endif %}" class="btn-action btn-edit" title="编辑项目"><i class="bi bi-pencil"></i></a>
                                     <form method="post" action="/project/delete" class="d-inline" onsubmit="return confirm('确定要删除项目【{{ project.name }}】吗？此操作不可撤销！');">
                                         <input type="hidden" name="id" value="{{ project.id }}">
+                                        {% if show_duplicates %}<input type="hidden" name="redirect_dup" value="1">{% endif %}
                                         <button type="submit" class="btn-action btn-delete" title="删除项目"><i class="bi bi-trash"></i></button>
                                     </form>
                                     {% endif %}
@@ -383,11 +468,22 @@
                                 msg += '<br>...还有 ' + (data.errors.length - 5) + ' 行错误';
                             }
                         }
-                        showToast(msg, data.errors && data.errors.length > 0 ? 'warning' : 'success');
+                        if (data.duplicates && data.duplicates.group_count > 0) {
+                            msg += '<br><br><strong>⚠ 重复项目提醒：</strong>检测到 ' + data.duplicates.group_count + ' 组重复项目';
+                            var dupGroups = data.duplicates.groups;
+                            for (var i = 0; i < Math.min(dupGroups.length, 3); i++) {
+                                var g = dupGroups[i];
+                                msg += '<br>· <em>' + g.name + '</em>（' + g.count + '条重复，ID: #' + g.project_ids.join(', #') + '）';
+                            }
+                            if (dupGroups.length > 3) {
+                                msg += '<br>· ...还有 ' + (dupGroups.length - 3) + ' 组';
+                            }
+                        }
+                        showToast(msg, (data.errors && data.errors.length > 0) || (data.duplicates && data.duplicates.group_count > 0) ? 'warning' : 'success');
                         // 刷新页面
                         setTimeout(function() {
                             location.reload();
-                        }, data.errors && data.errors.length > 0 ? 3000 : 1000);
+                        }, (data.errors && data.errors.length > 0) || (data.duplicates && data.duplicates.group_count > 0) ? 4000 : 1000);
                     } else {
                         showToast(data.message || '上传失败', 'danger');
                     }

@@ -26,6 +26,9 @@ Thumbs.db
 # Claude AI workspace
 .claude/
 
+# WorkBuddy workspace
+.workbuddy/
+
 # Config (local)
 config.json
 

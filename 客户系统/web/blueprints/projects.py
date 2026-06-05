@@ -336,11 +336,16 @@ def project_add():
         db.session.add(log)
         db.session.commit()
 
-        from web.services.project_service import invalidate_project_stats_cache
+        from web.services.project_service import invalidate_project_stats_cache, find_duplicate_groups
         invalidate_project_stats_cache()
 
+        duplicates = find_duplicate_groups(current_user.id)
         flash('项目创建成功')
+        if duplicates:
+            dup_count = sum(len(v) for v in duplicates.values()) - len(duplicates)
+            flash(f'⚠ 检测到 {len(duplicates)} 组重复项目（共 {dup_count} 条重复记录），请检查核对', 'warning')
         return redirect(url_for('projects.my_projects'))
+
 
     return render_template('project_add.html', provinces=PROVINCES, role=current_user.role)
 
@@ -378,6 +383,25 @@ def my_projects():
     month_names = {1: '一月', 2: '二月', 3: '三月', 4: '四月', 5: '五月', 6: '六月',
                    7: '七月', 8: '八月', 9: '九月', 10: '十月', 11: '十一月', 12: '十二月'}
 
+    from web.services.project_service import find_duplicate_groups
+    if current_user.role == 'admin':
+        dup_groups = find_duplicate_groups(None)
+    elif current_user.role == 'visitor':
+        dup_groups = {}
+    else:
+        dup_groups = find_duplicate_groups(current_user.id)
+
+    dup_total_extra = sum(len(v) for v in dup_groups.values()) - len(dup_groups) if dup_groups else 0
+
+    # 展示重复模式：当启用且存在重复时，只展示重复项目
+    show_duplicates = request.args.get('show_duplicates', '0') == '1'
+    if show_duplicates and dup_groups:
+        dup_ids = set()
+        for proj_list in dup_groups.values():
+            for p in proj_list:
+                dup_ids.add(p.id)
+        projects = [p for p in projects if p.id in dup_ids]
+
     return render_template('my_projects.html',
                            projects=projects,
                            role=current_user.role,
@@ -386,7 +410,36 @@ def my_projects():
                            month_names=month_names,
                            filter_year=filter_year,
                            filter_month=filter_month,
-                           filter_settlement=filter_settlement)
+                           filter_settlement=filter_settlement,
+                           dup_groups=dup_groups,
+                           dup_total_extra=dup_total_extra,
+                           show_duplicates=show_duplicates)
+
+
+@projects_bp.route('/my_projects/recheck', methods=['POST'])
+@login_required
+def my_projects_recheck():
+    """用户修正完成后重新检测重复"""
+    from web.services.project_service import find_duplicate_groups
+
+    year = request.form.get('year', 'all')
+    month = request.form.get('month', 'all')
+    settlement = request.form.get('settlement', 'all')
+
+    if current_user.role == 'admin':
+        dup_groups = find_duplicate_groups(None)
+    elif current_user.role != 'visitor':
+        dup_groups = find_duplicate_groups(current_user.id)
+    else:
+        dup_groups = {}
+
+    if dup_groups:
+        flash(f'仍有 {len(dup_groups)} 组重复项目未处理，请继续修正', 'warning')
+        return redirect(url_for('projects.my_projects', show_duplicates=1,
+                                year=year, month=month, settlement=settlement))
+    else:
+        flash('所有重复项目已处理完毕，返回默认视图')
+        return redirect(url_for('projects.my_projects'))
 
 
 @projects_bp.route('/export_my_projects')
@@ -630,19 +683,41 @@ def batch_upload():
 
     db.session.commit()
 
-    from web.services.project_service import invalidate_project_stats_cache
+    from web.services.project_service import invalidate_project_stats_cache, find_duplicate_groups
     invalidate_project_stats_cache()
+
+    duplicates = find_duplicate_groups(current_user.id)
+    dup_warning = None
+    if duplicates:
+        dup_groups = []
+        for (name, svc), projs in duplicates.items():
+            dup_groups.append({
+                'name': name,
+                'service_content': svc,
+                'project_ids': [p.id for p in projs],
+                'project_names': [p.name for p in projs],
+                'count': len(projs)
+            })
+        dup_warning = {
+            'group_count': len(duplicates),
+            'total_extra': sum(len(v) for v in duplicates.values()) - len(duplicates),
+            'groups': dup_groups
+        }
 
     message = f'成功导入 {success_count} 条项目'
     if errors:
         message += f'，{len(errors)} 条失败'
 
-    return jsonify({
+    result = {
         'success': True,
         'message': message,
         'errors': errors if errors else [],
         'count': success_count
-    })
+    }
+    if dup_warning:
+        result['duplicates'] = dup_warning
+        result['message'] += f'；检测到 {dup_warning["group_count"]} 组重复项目'
+    return jsonify(result)
 
 
 @projects_bp.route('/project/edit/<int:project_id>', methods=['GET', 'POST'])
@@ -655,6 +730,7 @@ def project_edit(project_id):
         return redirect(url_for('projects.project_detail', project_id=project.id))
 
     if request.method == 'POST':
+        from_dup = request.form.get('from_dup') == '1'
         project.name = request.form.get('name')
         project.description = request.form.get('description')
         project.location = request.form.get('location')
@@ -684,9 +760,12 @@ def project_edit(project_id):
 
         db.session.commit()
         flash('项目更新成功')
+        if from_dup:
+            return redirect(url_for('projects.my_projects', show_duplicates=1))
         return redirect(url_for('projects.project_detail', project_id=project.id))
 
-    return render_template('project_edit.html', p=project, role=current_user.role)
+    from_dup = request.args.get('from_dup') == '1'
+    return render_template('project_edit.html', p=project, role=current_user.role, from_dup=from_dup)
 
 
 @projects_bp.route('/project/update_settlement', methods=['POST'])
@@ -723,6 +802,7 @@ def update_settlement():
 @login_required
 def project_delete_by_form():
     project_id = request.form.get('id')
+    redirect_dup = request.form.get('redirect_dup') == '1'
     if project_id:
         project = Project.query.get_or_404(int(project_id))
         if current_user.id == project.user_id or current_user.role == 'admin':
@@ -732,6 +812,8 @@ def project_delete_by_form():
             flash('项目已删除')
         else:
             flash('没有权限删除该项目')
+    if redirect_dup:
+        return redirect(url_for('projects.my_projects', show_duplicates=1))
     return redirect(url_for('projects.my_projects'))
 
 
