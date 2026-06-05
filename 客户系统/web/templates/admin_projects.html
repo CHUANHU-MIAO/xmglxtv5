@@ -156,6 +156,7 @@
                             {% if payment_group != 'received' and payment_status != 'received' %}
                             <th>未结账款(万元)</th>
                             {% endif %}
+                            <th>项目支出(万元)</th>
                             <th>发票情况</th>
                             <th>业主联系人</th>
                             <th>联系电话</th>
@@ -238,6 +239,14 @@
                                 {% endif %}
                             </td>
                             {% endif %}
+                            <td>
+                                {% set exp = project._expense|float if project._expense else 0 %}
+                                {% if exp > 0 %}
+                                <span class="text-danger fw-bold">{{ "%.2f"|format(exp / 10000) }}</span>
+                                {% else %}
+                                <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
                             <td>
                                 {% if project.invoice_status %}
                                 <span class="badge {% if project.invoice_status == '已开票' %}bg-success{% elif project.invoice_status == '部分开票' %}bg-info{% elif project.invoice_status == '未开票' %}bg-warning{% else %}bg-secondary{% endif %}">
@@ -420,7 +429,7 @@
         }
         var html = '<div class="card-body p-0"><div class="table-responsive"><table class="table table-hover mb-0 project-table"><thead><tr>' +
             '<th>项目开始时间</th><th>项目名称</th><th>总投资(万元)</th><th>合同金额(万元)</th><th>合同情况</th><th>结款状态</th>' +
-            '<th>已结账款(万元)</th><th>未结账款(万元)</th><th>发票情况</th><th>业主联系人</th><th>联系电话</th><th>操作</th></tr></thead><tbody>';
+            '<th>已结账款(万元)</th><th>未结账款(万元)</th><th>项目支出(万元)</th><th>发票情况</th><th>业主联系人</th><th>联系电话</th><th>操作</th></tr></thead><tbody>';
         for (var i = 0; i < rows.length; i++) {
             var r = rows[i];
             var pStatusClass = '';
@@ -445,6 +454,7 @@
                 '<td><span class="' + pStatusClass + '">' + pStatus + '</span></td>' +
                 '<td class="amount-value amount-settled">' + r.received_amt.toFixed(2) + '</td>' +
                 '<td class="amount-value amount-receivable">' + r.receivable_amt.toFixed(2) + '</td>' +
+                '<td>' + (r.project_expense > 0 ? '<span class="text-danger fw-bold">' + (r.project_expense / 10000).toFixed(2) + '</span>' : '<span class="text-muted">-</span>') + '</td>' +
                 '<td><span class="badge ' + invClass + '">' + (r.invoice_status || '<span class="text-muted">-</span>') + '</span></td>' +
                 '<td>' + escapeHtml(r.owner_name) + '</td>' +
                 '<td>' + escapeHtml(r.owner_phone) + '</td>' +

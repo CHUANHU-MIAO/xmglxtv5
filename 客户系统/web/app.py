@@ -22,7 +22,7 @@ def create_app():
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
 
-    from web.models import User, EnergyFactor, Project
+    from web.models import User, EnergyFactor, Project, PettyCash
 
     @login_manager.user_loader
     def load_user(user_id):

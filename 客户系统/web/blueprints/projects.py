@@ -212,6 +212,19 @@ def api_projects_search():
 
     pagination = query.order_by(Project.updated_at.desc()).paginate(page=page, per_page=per_page, error_out=False)
 
+    expense_map = {}
+    if context == 'admin':
+        from web.models import FundRecord
+        from sqlalchemy import func
+        expense_rows = db.session.query(
+            FundRecord.project_id,
+            func.sum(FundRecord.amount)
+        ).filter(
+            FundRecord.project_id.in_([p.id for p in pagination.items]),
+            FundRecord.expense_type == '项目支出'
+        ).group_by(FundRecord.project_id).all()
+        expense_map = {int(r[0]): float(r[1] or 0) for r in expense_rows}
+
     rows = []
     for p in pagination.items:
         contract_amt = float(p.contract_amount or 0)
@@ -240,7 +253,8 @@ def api_projects_search():
             'start_date_full': p.start_date.strftime('%Y-%m-%d') if p.start_date else '',
             'location': p.location or '-',
             'received_amt': settled_amt,
-            'receivable_amt': receivable_amt
+            'receivable_amt': receivable_amt,
+            'project_expense': expense_map.get(p.id, 0)
         })
 
     return jsonify({

@@ -4,7 +4,7 @@ import datetime
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, send_from_directory, current_app, send_file
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
-from web.models import User, Project, FundRecord, StandardFile, Log
+from web.models import User, Project, FundRecord, StandardFile, Log, PettyCash
 from web.extensions import db
 from sqlalchemy import func, or_
 
@@ -20,6 +20,18 @@ def admin_required(f):
             return redirect(url_for('projects.index'))
         return f(*args, **kwargs)
     return decorated_function
+
+
+def _get_project_expenses():
+    """获取所有项目的支出汇总字典 {project_id: total_expense}"""
+    rows = db.session.query(
+        FundRecord.project_id,
+        func.sum(FundRecord.amount)
+    ).filter(
+        FundRecord.project_id.isnot(None),
+        FundRecord.expense_type == '项目支出'
+    ).group_by(FundRecord.project_id).all()
+    return {int(r[0]): float(r[1] or 0) for r in rows}
 
 
 @admin_bp.route('/users', methods=['GET', 'POST'])
@@ -153,6 +165,10 @@ def projects():
 
     projects_paginated = query.order_by(Project.start_date.desc()).paginate(page=page, per_page=20, error_out=False)
 
+    expense_map = _get_project_expenses()
+    for p in projects_paginated.items:
+        p._expense = expense_map.get(p.id, 0)
+
     all_contract_statuses = sorted(set(
         s[0] for s in db.session.query(Project.contract_status).filter(Project.contract_status.isnot(None)).distinct()
     ))
@@ -246,6 +262,8 @@ def projects_export():
 
     projects_list = query.order_by(Project.start_date.desc()).all()
 
+    expense_map = _get_project_expenses()
+
     from openpyxl import Workbook
     from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 
@@ -254,9 +272,9 @@ def projects_export():
     ws.title = '项目列表'
 
     headers = [
-        '序号', '项目名称', '业主单位', '项目所在地', '总投资(万元)', '合同金额(万元)',
-        '合同情况', '开票情况', '已开票金额(万元)', '结款情况', '已结清金额(万元)',
-        '结算提成', '来源', '业主姓名', '业主电话', '服务内容', '备注', '编制人', '开始时间'
+        '序号', '项目开始时间', '项目名称', '总投资(万元)', '合同金额(万元)',
+        '合同情况', '结款状态', '已结账款(万元)', '未结账款(万元)',
+        '项目支出(万元)', '发票情况', '业主联系人', '联系电话', '编制人'
     ]
 
     header_fill = PatternFill(start_color='4472C4', end_color='4472C4', fill_type='solid')
@@ -278,33 +296,34 @@ def projects_export():
         cell.border = thin_border
 
     for row_idx, p in enumerate(projects_list, 2):
+        contract_amt = float(p.contract_amount or 0)
+        settled_amt = float(p.settled_amount or 0)
+        if p.payment_status in ('已结款', '已结清') and settled_amt == 0:
+            settled_amt = contract_amt
+        receivable_amt = max(0, contract_amt - settled_amt)
+        exp_amount = expense_map.get(p.id, 0)
         data_row = [
             row_idx - 1,
+            p.start_date.strftime('%Y-%m-%d') if p.start_date else '',
             p.name or '',
-            p.owner or '',
-            p.location or '',
-            p.total_investment,
-            p.contract_amount,
+            p.total_investment or '',
+            p.contract_amount or '',
             p.contract_status or '',
-            p.invoice_status or '',
-            p.invoiced_amount,
             p.payment_status or '',
-            p.settled_amount,
-            p.payment_settlement_status or '',
-            p.source or '',
+            f'{settled_amt:.2f}' if settled_amt else '',
+            f'{receivable_amt:.2f}' if receivable_amt else '',
+            f'{exp_amount / 10000:.2f}' if exp_amount else '',
+            p.invoice_status or '',
             p.owner_name or '',
             p.owner_phone or '',
-            p.service_content or '',
-            p.remark or '',
-            p.author or '',
-            p.start_date.strftime('%Y-%m-%d') if p.start_date else ''
+            p.author or ''
         ]
         for col_idx, value in enumerate(data_row, 1):
             cell = ws.cell(row=row_idx, column=col_idx, value=value)
             cell.alignment = cell_alignment
             cell.border = thin_border
 
-    col_widths = [6, 28, 22, 18, 14, 14, 10, 10, 14, 10, 14, 10, 12, 10, 14, 20, 20, 10, 12]
+    col_widths = [6, 14, 28, 14, 14, 10, 10, 14, 14, 14, 10, 12, 14, 10]
     for col_idx, width in enumerate(col_widths, 1):
         ws.column_dimensions[ws.cell(row=1, column=col_idx).column_letter].width = width
 
@@ -338,6 +357,41 @@ def project_delete(project_id):
 @admin_required
 def operations():
     if request.method == 'POST':
+        form_type = request.form.get('form_type', 'expense')
+
+        if form_type == 'petty_cash':
+            amount = request.form.get('amount', type=float)
+            method = request.form.get('method', '微信')
+            received_time_str = request.form.get('received_time')
+            remark = request.form.get('remark', '')
+
+            if not amount or amount <= 0:
+                flash('请输入有效金额')
+                return redirect(url_for('admin.operations'))
+            if not received_time_str:
+                flash('请选择收到时间')
+                return redirect(url_for('admin.operations'))
+
+            try:
+                received_time = datetime.datetime.strptime(received_time_str, '%Y-%m-%d')
+            except ValueError:
+                flash('日期格式无效')
+                return redirect(url_for('admin.operations'))
+
+            record = PettyCash(
+                amount=amount,
+                method=method,
+                received_time=received_time,
+                remark=remark,
+                create_time=datetime.datetime.utcnow(),
+                create_user=current_user.username
+            )
+            db.session.add(record)
+            db.session.commit()
+            flash('备用金记录添加成功')
+            return redirect(url_for('admin.operations'))
+
+        # 原有支出记录逻辑
         amount = request.form.get('amount', type=float)
         expense_type = request.form.get('expense_type', '运营支出')
         project_id = request.form.get('project_id', type=int)
@@ -456,8 +510,11 @@ def operations():
         month_expenses_list.append(month_expense_wan)
         month_profits.append(round(month_revenue - month_expense_wan, 2))
 
+    petty_cash_list = PettyCash.query.order_by(PettyCash.received_time.desc()).all()
+
     return render_template('admin_operations.html',
                            expense_list=expense_list,
+                           petty_cash_list=petty_cash_list,
                            total_revenue=round(float(total_revenue or 0), 2),
                            total_expenses=round(total_expenses, 2),
                            received=round(received, 2),

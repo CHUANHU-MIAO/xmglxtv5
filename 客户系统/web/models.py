@@ -116,6 +116,18 @@ class FundRecord(db.Model):
     project = db.relationship('Project', backref=db.backref('fund_records', lazy='dynamic'))
 
 
+class PettyCash(db.Model):
+    """备用金记录 — 仅做记录，不参与计算"""
+    __tablename__ = 'petty_cash'
+    id = db.Column(db.Integer, primary_key=True)
+    received_time = db.Column(db.DateTime, nullable=False)
+    method = db.Column(db.String(20), nullable=False)  # 微信 / 现金 / 银行卡
+    amount = db.Column(db.Float, nullable=False)
+    remark = db.Column(db.Text)
+    create_time = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    create_user = db.Column(db.String(50))
+
+
 class EnergyFactor(db.Model):
     __tablename__ = 'energy_factors'
     id = db.Column(db.Integer, primary_key=True)
