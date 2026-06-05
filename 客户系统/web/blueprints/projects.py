@@ -572,8 +572,18 @@ def batch_upload():
                         try:
                             start_date = datetime.datetime.strptime(date_val.strip(), '%Y/%m/%d').date()
                         except ValueError:
-                            errors.append(f'第{row_idx}行: 日期格式错误')
-                            continue
+                            try:
+                                start_date = datetime.datetime.strptime(date_val.strip(), '%Y年%m月%d日').date()
+                            except ValueError:
+                                errors.append(f'第{row_idx}行: 日期格式错误')
+                                continue
+                elif isinstance(date_val, (int, float)):
+                    # Excel 序列号日期（如 46143 = 2026-05-01）
+                    try:
+                        start_date = (datetime.datetime(1899, 12, 30) + datetime.timedelta(days=int(date_val))).date()
+                    except Exception:
+                        errors.append(f'第{row_idx}行: 日期格式错误')
+                        continue
 
             def get_float(field_name):
                 idx = col_index.get(field_name)
