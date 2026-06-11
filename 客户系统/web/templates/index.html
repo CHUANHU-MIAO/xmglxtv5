@@ -162,7 +162,46 @@
                     <li class="page-item {% if not projects.has_prev %}disabled{% endif %}">
                         <a class="page-link" href="?page={{ projects.prev_num }}&keyword={{ keyword|urlencode }}">上一页</a>
                     </li>
-                    <li class="page-item active"><span class="page-link">{{ projects.page }}</span></li>
+                    {% set current_page = projects.page %}
+                    {% set total_pages = projects.pages %}
+                    {% if total_pages <= 10 %}
+                        {% for p in range(1, total_pages + 1) %}
+                            <li class="page-item {% if p == current_page %}active{% endif %}">
+                                <a class="page-link" href="?page={{ p }}&keyword={{ keyword|urlencode }}">{{ p }}</a>
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        {% set start = [current_page - 4, 1] | max %}
+                        {% set end = [current_page + 4, total_pages] | min %}
+                        {% if end - start < 8 %}
+                            {% if start == 1 %}
+                                {% set end = [start + 8, total_pages] | min %}
+                            {% else %}
+                                {% set start = [end - 8, 1] | max %}
+                            {% endif %}
+                        {% endif %}
+                        {% if start > 1 %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1&keyword={{ keyword|urlencode }}">1</a>
+                            </li>
+                            {% if start > 2 %}
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            {% endif %}
+                        {% endif %}
+                        {% for p in range(start, end + 1) %}
+                            <li class="page-item {% if p == current_page %}active{% endif %}">
+                                <a class="page-link" href="?page={{ p }}&keyword={{ keyword|urlencode }}">{{ p }}</a>
+                            </li>
+                        {% endfor %}
+                        {% if end < total_pages %}
+                            {% if end < total_pages - 1 %}
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            {% endif %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ total_pages }}&keyword={{ keyword|urlencode }}">{{ total_pages }}</a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
                     <li class="page-item {% if not projects.has_next %}disabled{% endif %}">
                         <a class="page-link" href="?page={{ projects.next_num }}&keyword={{ keyword|urlencode }}">下一页</a>
                     </li>
@@ -245,11 +284,66 @@
     function renderPagination(pg) {
         var container = document.getElementById('paginationContainer');
         if (pg.total_pages <= 1) { container.innerHTML = ''; return; }
-        var params = currentKeyword ? '&keyword=' + encodeURIComponent(currentKeyword) : '';
+
+        var current = pg.current_page;
+        var total = pg.total_pages;
+        var pages = [];
+
+        if (total <= 10) {
+            // 总页数 <= 10，显示所有页码
+            for (var i = 1; i <= total; i++) {
+                pages.push(i);
+            }
+        } else {
+            // 总页数 > 10，显示当前页附近的页码
+            var start = Math.max(1, current - 4);
+            var end = Math.min(total, current + 4);
+
+            // 确保显示至少 9 个页码
+            if (end - start < 8) {
+                if (start === 1) {
+                    end = Math.min(total, start + 8);
+                } else {
+                    start = Math.max(1, end - 8);
+                }
+            }
+
+            // 添加第一页和省略号
+            if (start > 1) {
+                pages.push(1);
+                if (start > 2) {
+                    pages.push('...');
+                }
+            }
+
+            // 添加中间页码
+            for (var i = start; i <= end; i++) {
+                pages.push(i);
+            }
+
+            // 添加省略号和最后一页
+            if (end < total) {
+                if (end < total - 1) {
+                    pages.push('...');
+                }
+                pages.push(total);
+            }
+        }
+
         var html = '<div class="card-footer"><nav class="d-flex justify-content-center"><ul class="pagination mb-0">';
         html += '<li class="page-item' + (!pg.has_prev ? ' disabled' : '') + '">';
         html += '<a class="page-link" href="javascript:void(0)" onclick="doSearch(' + pg.prev_num + ')">上一页</a></li>';
-        html += '<li class="page-item active"><span class="page-link">' + pg.current_page + '</span></li>';
+
+        for (var i = 0; i < pages.length; i++) {
+            if (pages[i] === '...') {
+                html += '<li class="page-item disabled"><span class="page-link">...</span></li>';
+            } else if (pages[i] === current) {
+                html += '<li class="page-item active"><span class="page-link">' + pages[i] + '</span></li>';
+            } else {
+                html += '<li class="page-item"><a class="page-link" href="javascript:void(0)" onclick="doSearch(' + pages[i] + ')">' + pages[i] + '</a></li>';
+            }
+        }
+
         html += '<li class="page-item' + (!pg.has_next ? ' disabled' : '') + '">';
         html += '<a class="page-link" href="javascript:void(0)" onclick="doSearch(' + pg.next_num + ')">下一页</a></li>';
         html += '<li class="page-item disabled"><span class="page-link">共 ' + pg.total_pages + ' 页</span></li>';
