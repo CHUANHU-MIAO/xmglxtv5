@@ -225,6 +225,15 @@ def api_projects_search():
         ).group_by(FundRecord.project_id).all()
         expense_map = {int(r[0]): float(r[1] or 0) for r in expense_rows}
 
+    # 查询附件数量
+    project_ids = [p.id for p in pagination.items]
+    attachment_counts = {}
+    if project_ids:
+        from web.models import Attachment
+        attachments = Attachment.query.filter(Attachment.project_id.in_(project_ids)).all()
+        for att in attachments:
+            attachment_counts[att.project_id] = attachment_counts.get(att.project_id, 0) + 1
+
     rows = []
     for p in pagination.items:
         contract_amt = float(p.contract_amount or 0)
@@ -254,7 +263,8 @@ def api_projects_search():
             'location': p.location or '-',
             'received_amt': settled_amt,
             'receivable_amt': receivable_amt,
-            'project_expense': expense_map.get(p.id, 0)
+            'project_expense': expense_map.get(p.id, 0),
+            'has_attachment': attachment_counts.get(p.id, 0) > 0
         })
 
     return jsonify({
@@ -391,6 +401,15 @@ def my_projects():
 
     projects = query.order_by(Project.updated_at.desc()).all()
 
+    # 查询每个项目是否有成果文件
+    project_ids = [p.id for p in projects]
+    attachment_counts = {}
+    if project_ids:
+        from web.models import Attachment
+        attachments = Attachment.query.filter(Attachment.project_id.in_(project_ids)).all()
+        for att in attachments:
+            attachment_counts[att.project_id] = attachment_counts.get(att.project_id, 0) + 1
+
     now = datetime.datetime.now()
     years = list(range(now.year, now.year - 5, -1))
     months = list(range(1, 13))
@@ -427,7 +446,8 @@ def my_projects():
                            filter_settlement=filter_settlement,
                            dup_groups=dup_groups,
                            dup_total_extra=dup_total_extra,
-                           show_duplicates=show_duplicates)
+                           show_duplicates=show_duplicates,
+                           attachment_counts=attachment_counts)
 
 
 @projects_bp.route('/my_projects/recheck', methods=['POST'])

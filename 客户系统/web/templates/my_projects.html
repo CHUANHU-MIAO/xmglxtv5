@@ -2,6 +2,27 @@
 
 {% block title %}我的项目{% endblock %}
 
+{% block extra_head %}
+<style>
+    .project-name-link {
+        color: #10b981;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s;
+    }
+    .project-name-link:hover {
+        color: #059669;
+        text-decoration: underline;
+    }
+    .project-name-link.has-attachment {
+        color: #374151;
+    }
+    .project-name-link.has-attachment:hover {
+        color: #111827;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container mt-5 py-4">
     <!-- 页面标题 -->
@@ -207,7 +228,7 @@
                                 {% endif %}
                             </td>
                             <td>
-                                <a href="/project/detail/{{ project.id }}" class="project-name-link" title="点击查看项目详情">
+                                <a href="/project/detail/{{ project.id }}" class="project-name-link {% if attachment_counts.get(project.id, 0) > 0 %}has-attachment{% endif %}" title="点击查看项目详情">
                                     {{ (project.name or '无标题')|truncate(15) }}
                                 </a>
                             </td>
@@ -379,10 +400,11 @@
         for (var i = 0; i < rows.length; i++) {
             var r = rows[i];
             var settleClass = r.payment_settlement_status === '已结提成' ? 'badge-settled' : 'badge-unsettled';
+            var nameClass = r.has_attachment ? 'project-name-link has-attachment' : 'project-name-link';
             html += '<tr>' +
                 '<td><span class="badge bg-primary">' + r.id + '</span></td>' +
                 '<td>' + (r.start_date ? '<span class="text-primary fw-bold">' + r.start_date + '</span>' : '<span class="text-warning">未设置</span>') + '</td>' +
-                '<td><a href="/project/detail/' + r.id + '" class="project-name-link">' + escapeHtml(r.name).substring(0, 15) + '</a></td>' +
+                '<td><a href="/project/detail/' + r.id + '" class="' + nameClass + '">' + escapeHtml(r.name).substring(0, 15) + '</a></td>' +
                 '<td>' + escapeHtml(r.owner).substring(0, 10) + '</td>' +
                 '<td>' + (r.total_investment ? '<strong class="text-success">' + r.total_investment + '</strong>' : '<span class="text-muted">-</span>') + '</td>' +
                 {% if role != 'visitor' %}
