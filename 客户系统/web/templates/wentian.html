@@ -476,6 +476,29 @@ html,body{width:100%;height:100%;overflow:hidden;background:linear-gradient(135d
 <div class="quick-item" onclick="switchTab(3)"><span class="qi-icon">📅</span><span class="qi-label">黄道吉日</span></div>
 </div>
 </div>
+<div class="card" id="dailyJinnangCard">
+<div class="card-title"><span class="icon">🎁</span>今日锦囊</div>
+<div id="dailyJinnangContent">
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
+<div style="background:rgba(0,0,0,.15);padding:10px;border-radius:8px;text-align:center">
+<div style="font-size:11px;color:var(--text3);margin-bottom:4px">👔 五行穿衣</div>
+<div id="jnClothes" style="font-size:13px;color:var(--text2);line-height:1.6">加载中...</div>
+</div>
+<div style="background:rgba(0,0,0,.15);padding:10px;border-radius:8px;text-align:center">
+<div style="font-size:11px;color:var(--text3);margin-bottom:4px">🧭 财神方位</div>
+<div id="jnCaishen" style="font-size:22px;margin:6px 0;font-family:var(--font-display)">加载中...</div>
+</div>
+<div style="background:rgba(0,0,0,.15);padding:10px;border-radius:8px;text-align:center">
+<div style="font-size:11px;color:var(--text3);margin-bottom:4px">🔢 幸运数字</div>
+<div id="jnLuckyNum" style="font-size:22px;font-weight:700;background:linear-gradient(135deg,var(--cyan),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-family:var(--font-display)">加载中...</div>
+</div>
+<div style="background:rgba(0,0,0,.15);padding:10px;border-radius:8px;text-align:center">
+<div style="font-size:11px;color:var(--text3);margin-bottom:4px">⏰ 今日吉时</div>
+<div id="jnJishi" style="font-size:12px;color:var(--text2);line-height:1.6">加载中...</div>
+</div>
+</div>
+</div>
+</div>
 <div class="card" id="dailyFortuneCard">
 <div class="card-title"><span class="icon">✨</span>今日运势</div>
 <div id="dailyFortuneContent">
@@ -497,6 +520,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:linear-gradient(135d
 <div class="sub-tab" data-sub="liuren" onclick="switchSubTab('divination','liuren',this)">大六壬</div>
 <div class="sub-tab" data-sub="xiaoliuren" onclick="switchSubTab('divination','xiaoliuren',this)">小六壬</div>
 <div class="sub-tab" data-sub="meihua" onclick="switchSubTab('divination','meihua',this)">梅花易数</div>
+<div class="sub-tab" data-sub="zhuge" onclick="switchSubTab('divination','zhuge',this)">🎯 诸葛神数</div>
 </div>
 <div class="sub-page active" id="sub-coin">
 <div class="card">
@@ -643,6 +667,32 @@ html,body{width:100%;height:100%;overflow:hidden;background:linear-gradient(135d
 </div>
 </div>
 </div>
+<div class="sub-page" id="sub-zhuge" style="display:none">
+<div class="card">
+<div class="card-title"><span class="icon">🎯</span>诸葛神数 · 灵签</div>
+<div style="text-align:center;font-size:12px;color:var(--text3);margin-bottom:10px">心中默念所问之事，然后点击抽签</div>
+<div style="text-align:center;padding:10px 0" id="zhugeArea">
+<div style="width:60px;height:80px;margin:0 auto 8px;background:linear-gradient(135deg,#6b3a1f,#8b5a2b,#6b3a1f);border:2px solid var(--gold);border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;box-shadow:0 4px 15px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.1)" id="zhugeTube" onclick="drawZhuge()">
+<div style="font-family:var(--font-display);font-size:18px;color:var(--accent-gold-light);writing-mode:vertical-lr;letter-spacing:6px">灵签</div>
+</div>
+<div style="font-size:11px;color:var(--text3)">点击签筒抽取灵签</div>
+</div>
+<button class="shake-btn" onclick="drawZhuge()" id="zhugeBtn">抽取灵签</button>
+<div id="zhugeResult"></div>
+</div>
+<div class="card">
+<div class="card-title"><span class="icon">📖</span>诸葛神数说明</div>
+<div style="font-size:13px;color:var(--text2);line-height:1.8">
+<p style="margin-bottom:10px"><strong style="color:var(--cyan)">【诸葛神数简介】</strong></p>
+<p style="margin-bottom:10px">诸葛神数，又称"诸葛神签"，相传为三国时期诸葛亮所创，共384签。每签有签诗一首，以四言或七言为主，配以典故和解签文字。</p>
+<p style="margin-bottom:10px"><strong style="color:var(--gold)">【使用方法】</strong></p>
+<p style="margin-bottom:10px">心中默念所问之事，集中精神，然后点击"抽取灵签"。心诚则灵，不可儿戏。</p>
+<p style="margin-bottom:10px"><strong style="color:var(--gold)">【签诗解读】</strong></p>
+<p style="margin-bottom:10px">签诗多用隐喻和典故，需结合所问之事灵活解读。上上签主大吉大利，中签主平稳，下签主波折，但塞翁失马焉知非福。</p>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div class="page" id="page-folk">
 <div class="sub-tabs" id="folkSubTabs">
@@ -653,6 +703,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:linear-gradient(135d
 <div class="sub-tab" data-sub="heart" onclick="switchSubTab('folk','heart',this)">心惊</div>
 <div class="sub-tab" data-sub="hand" onclick="switchSubTab('folk','hand',this)">手心痒</div>
 <div class="sub-tab" data-sub="hiccup" onclick="switchSubTab('folk','hiccup',this)">打嗝</div>
+<div class="sub-tab" data-sub="dog" onclick="switchSubTab('folk','dog',this)">🐕 犬吠</div>
+<div class="sub-tab" data-sub="magpie" onclick="switchSubTab('folk','magpie',this)">🐦 鹊噪</div>
+<div class="sub-tab" data-sub="spark" onclick="switchSubTab('folk','spark',this)">🔥 灯花</div>
 <div class="sub-tab" data-sub="foot" onclick="switchSubTab('folk','foot',this)">脚底痒</div>
 <div class="sub-tab" data-sub="lip" onclick="switchSubTab('folk','lip',this)">唇跳</div>
 <div class="sub-tab" data-sub="dream" onclick="switchSubTab('folk','dream',this)">梦兆</div>
@@ -666,8 +719,11 @@ html,body{width:100%;height:100%;overflow:hidden;background:linear-gradient(135d
 <div class="sub-page" id="sub-hiccup" style="display:none"><div class="card"><div class="card-title"><span class="icon">😮</span>打嗝预测</div><div class="folk-selector"><select id="hiccupTime"><option value="zi">子时 (23-1)</option><option value="chou">丑时 (1-3)</option><option value="yin">寅时 (3-5)</option><option value="mao">卯时 (5-7)</option><option value="chen">辰时 (7-9)</option><option value="si">巳时 (9-11)</option><option value="wu">午时 (11-13)</option><option value="wei">未时 (13-15)</option><option value="shen">申时 (15-17)</option><option value="you">酉时 (17-19)</option><option value="xu">戌时 (19-21)</option><option value="hai">亥时 (21-23)</option></select></div><button class="shake-btn" onclick="doFolkPredict('hiccup')">查询</button><div id="hiccupResult"></div></div></div>
 <div class="sub-page" id="sub-foot" style="display:none"><div class="card"><div class="card-title"><span class="icon">🦶</span>脚底发痒预测</div><div class="folk-selector"><select id="footSide"><option value="left">左脚</option><option value="right">右脚</option></select><select id="footTime"><option value="zi">子时 (23-1)</option><option value="chou">丑时 (1-3)</option><option value="yin">寅时 (3-5)</option><option value="mao">卯时 (5-7)</option><option value="chen">辰时 (7-9)</option><option value="si">巳时 (9-11)</option><option value="wu">午时 (11-13)</option><option value="wei">未时 (13-15)</option><option value="shen">申时 (15-17)</option><option value="you">酉时 (17-19)</option><option value="xu">戌时 (19-21)</option><option value="hai">亥时 (21-23)</option></select></div><button class="shake-btn" onclick="doFolkPredict('foot')">查询</button><div id="footResult"></div></div></div>
 <div class="sub-page" id="sub-lip" style="display:none"><div class="card"><div class="card-title"><span class="icon">👄</span>嘴唇跳动预测</div><div class="folk-selector"><select id="lipPart"><option value="upper">上唇</option><option value="lower">下唇</option></select><select id="lipTime"><option value="zi">子时 (23-1)</option><option value="chou">丑时 (1-3)</option><option value="yin">寅时 (3-5)</option><option value="mao">卯时 (5-7)</option><option value="chen">辰时 (7-9)</option><option value="si">巳时 (9-11)</option><option value="wu">午时 (11-13)</option><option value="wei">未时 (13-15)</option><option value="shen">申时 (15-17)</option><option value="you">酉时 (17-19)</option><option value="xu">戌时 (19-21)</option><option value="hai">亥时 (21-23)</option></select></div><button class="shake-btn" onclick="doFolkPredict('lip')">查询</button><div id="lipResult"></div></div></div>
-<div class="sub-page" id="sub-dream" style="display:none"><div class="card"><div class="card-title"><span class="icon">🌙</span>梦兆预测 · 周公解梦</div><div class="dream-selector"><select id="dreamType"><option value="water">梦见水/江河/大海</option><option value="fire">梦见火/火焰/火灾</option><option value="snake">梦见蛇</option><option value="dragon">梦见龙</option><option value="fly">梦见飞行/飞翔</option><option value="fall">梦见跌落/坠落</option><option value="death">梦见死亡/丧事</option><option value="marry">梦见结婚/婚礼</option><option value="baby">梦见婴儿/小孩</option><option value="teeth">梦见掉牙/拔牙</option><option value="chase">梦见被追赶</option><option value="money">梦见捡钱/发财</option><option value="house">梦见房屋/搬家</option><option value="rain">梦见下雨/暴雨</option><option value="snow">梦见下雪/冰雪</option><option value="flower">梦见花开/花落</option><option value="bird">梦见鸟/凤凰</option><option value="cat">梦见猫/狗</option><option value="exam">梦见考试/考场</option><option value="hair">梦见头发/白发</option></select></div><button class="shake-btn" onclick="doFolkPredict('dream')">解梦</button><div id="dreamResult"></div></div></div>
-</div>
+<div class="sub-page" id="sub-dog" style="display:none"><div class="card"><div class="card-title"><span class="icon">🐕</span>犬吠预测 · 玉匣记</div><div class="folk-selector"><select id="dogTime"><option value="zi">子时 (23-1)</option><option value="chou">丑时 (1-3)</option><option value="yin">寅时 (3-5)</option><option value="mao">卯时 (5-7)</option><option value="chen">辰时 (7-9)</option><option value="si">巳时 (9-11)</option><option value="wu">午时 (11-13)</option><option value="wei">未时 (13-15)</option><option value="shen">申时 (15-17)</option><option value="you">酉时 (17-19)</option><option value="xu">戌时 (19-21)</option><option value="hai">亥时 (21-23)</option></select></div><button class="shake-btn" onclick="doFolkPredict('dog')">查询</button><div id="dogResult"></div></div><div class="card"><div class="card-title"><span class="icon">📖</span>犬吠法说明</div><div style="font-size:12px;color:var(--text2);line-height:1.8">《玉匣记·犬吠法》：犬吠有灵，不同时辰的狗叫声预示不同吉凶。</div></div></div>
+<div class="sub-page" id="sub-magpie" style="display:none"><div class="card"><div class="card-title"><span class="icon">🐦</span>鹊噪预测 · 玉匣记</div><div class="folk-selector"><select id="magpieTime"><option value="zi">子时 (23-1)</option><option value="chou">丑时 (1-3)</option><option value="yin">寅时 (3-5)</option><option value="mao">卯时 (5-7)</option><option value="chen">辰时 (7-9)</option><option value="si">巳时 (9-11)</option><option value="wu">午时 (11-13)</option><option value="wei">未时 (13-15)</option><option value="shen">申时 (15-17)</option><option value="you">酉时 (17-19)</option><option value="xu">戌时 (19-21)</option><option value="hai">亥时 (21-23)</option></select></div><button class="shake-btn" onclick="doFolkPredict('magpie')">查询</button><div id="magpieResult"></div></div><div class="card"><div class="card-title"><span class="icon">📖</span>鹊噪法说明</div><div style="font-size:12px;color:var(--text2);line-height:1.8">《玉匣记·鹊噪法》：喜鹊报喜，灵鹊通神。不同时辰鹊叫预兆各异。</div></div></div>
+<div class="sub-page" id="sub-spark" style="display:none"><div class="card"><div class="card-title"><span class="icon">🔥</span>灯花预测 · 玉匣记</div><div class="folk-selector"><select id="sparkTime"><option value="zi">子时 (23-1)</option><option value="chou">丑时 (1-3)</option><option value="yin">寅时 (3-5)</option><option value="mao">卯时 (5-7)</option><option value="chen">辰时 (7-9)</option><option value="si">巳时 (9-11)</option><option value="wu">午时 (11-13)</option><option value="wei">未时 (13-15)</option><option value="shen">申时 (15-17)</option><option value="you">酉时 (17-19)</option><option value="xu">戌时 (19-21)</option><option value="hai">亥时 (21-23)</option></select></div><button class="shake-btn" onclick="doFolkPredict('spark')">查询</button><div id="sparkResult"></div></div><div class="card"><div class="card-title"><span class="icon">📖</span>灯花法说明</div><div style="font-size:12px;color:var(--text2);line-height:1.8">《玉匣记·灯花法》：灯烛爆火花，亦有吉凶之兆。</div></div></div>
+<div class="sub-page" id="sub-dream" style="display:none"><div class="card"><div class="card-title"><span class="icon">🌙</span>梦兆预测 · 周公解梦</div><div style="text-align:center;font-size:12px;color:var(--text3);margin-bottom:10px">共100+条目 · 输入梦境关键字自动匹配</div><div style="position:relative;margin-bottom:10px"><input type="text" id="dreamSearch" placeholder="输入关键词，如：水、蛇、飞、考试、鱼、鬼..." oninput="searchDream()" style="width:100%;padding:12px 16px;background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font-body);font-size:14px;outline:none;transition:all .25s" onfocus="this.style.borderColor='var(--cyan)';this.style.boxShadow='0 0 12px var(--glow-cyan)'" onblur="this.style.borderColor='var(--border)';this.style.boxShadow='none'"></div><div id="dreamSuggestions" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px"><span style="font-size:11px;color:var(--text3)">热门：</span><span class="btn-sm" onclick="quickDream('水')" style="font-size:10px;padding:3px 8px">水</span><span class="btn-sm" onclick="quickDream('蛇')" style="font-size:10px;padding:3px 8px">蛇</span><span class="btn-sm" onclick="quickDream('飞')" style="font-size:10px;padding:3px 8px">飞</span><span class="btn-sm" onclick="quickDream('考试')" style="font-size:10px;padding:3px 8px">考试</span><span class="btn-sm" onclick="quickDream('鱼')" style="font-size:10px;padding:3px 8px">鱼</span><span class="btn-sm" onclick="quickDream('血')" style="font-size:10px;padding:3px 8px">血</span><span class="btn-sm" onclick="quickDream('鬼')" style="font-size:10px;padding:3px 8px">鬼</span><span class="btn-sm" onclick="quickDream('钱')" style="font-size:10px;padding:3px 8px">钱</span></div><div id="dreamResult"></div></div><div class="card"><div class="card-title"><span class="icon">📖</span>周公解梦说明</div><div style="font-size:12px;color:var(--text2);line-height:1.8">共<strong style="color:var(--cyan)">100+</strong>条目，数据源自《周公解梦》。输入关键字即可搜索匹配内容。</div></div></div>
+
 <div class="page" id="page-auspicious">
 <div class="card"><div class="card-title"><span class="icon">📅</span>黄道吉日查询</div><div class="cal-nav"><button onclick="calPrev()">◀</button><div class="cal-month" id="calMonth"></div><button onclick="calNext()">▶</button></div><div class="calendar-grid" id="calGrid"></div><div id="calDetail"></div></div>
 </div>
@@ -750,9 +806,48 @@ function getNaYin(ganZhi){var ganIdx=tianGan.indexOf(ganZhi[0]);var zhiIdx=diZhi
 function getErShiBaXiu(y,m,d){var base=new Date(1900,0,1);var target=new Date(y,m-1,d);var diff=Math.floor((target-base)/86400000);return erShiBaXiu[((diff%28)+28)%28]}
 var yiList=['嫁娶','出行','搬家','动土','开市','祭祀','祈福','求嗣','纳采','修造','入宅','安葬','破土','启钻','除服','成服','冠笄','竖柱','上梁','开仓','纳财','出货','纳畜','牧养','求财','入学','安床','裁衣','交易','立券'];
 var jiList=['嫁娶','出行','搬家','动土','开市','安葬','破土','上梁','入宅','修造','祈福','纳采','开仓','纳财','出货','交易','立券','安床','裁衣','合帐','入殓','移柩','造庙','造桥','掘井','栽种','开渠','放水','行丧','作灶'];
-function getDailyYiJi(y,m,d){var seed=(y*10000+m*100+d)%97;var yi=[],ji=[];for(var i=0;i<yiList.length;i++){if((seed*(i+1)*7+i*13)%5>=2)yi.push(yiList[i])}for(var i=0;i<jiList.length;i++){if((seed*(i+1)*11+i*17)%5>=3&&yi.indexOf(jiList[i])<0)ji.push(jiList[i])}return{yi:yi.slice(0,8),ji:ji.slice(0,6)}}
-var zhiRiShenSha=['青龙','明堂','金匮','天德','玉堂','司命','天刑','朱雀','白虎','天牢','玄武','勾陈'];
-function getZhiRi(y,m,d){var base=new Date(1900,0,1);var target=new Date(y,m-1,d);var diff=Math.floor((target-base)/86400000);return zhiRiShenSha[((diff%12)+12)%12]}
+// ========== 建除十二神（真实算法，替代伪随机） ==========
+// 建除十二神：建除满平定执破危成收开闭
+// 黄道六神：除、执、危、定、成、开
+// 黑道六神：建、满、平、破、收、闭
+// 算法：月建地支 → 日支偏移 → 十二神
+var jianChuNames=['建','除','满','平','定','执','破','危','成','收','开','闭'];
+var jianChuDetails={
+'建':{type:'黑道',color:'#d85848',desc:'建为岁君，诸神之帅。此日万物初生，不宜大事。',yi:['祭祀','祈福'],ji:['动土','修造','开市','嫁娶','出行','入宅']},
+'除':{type:'黄道',color:'#7ee090',desc:'除旧布新，黄道吉日。宜除旧迎新，万事可成。',yi:['嫁娶','出行','治病','除服','祭祀','扫舍','纳采'],ji:['求官','上任','开仓']},
+'满':{type:'黑道',color:'#d85848',desc:'满为盈满，物极必反。祈福尚可，大事不宜。',yi:['祈福','开市','交易','祭祀','纳财'],ji:['动土','安葬','就医','搬家','出行']},
+'平':{type:'黑道',color:'#d85848',desc:'平为平常，无吉无凶。宜循序渐进，不宜冒进。',yi:['修造','动土','出行','嫁娶','裁衣'],ji:['开仓','出货','安葬']},
+'定':{type:'黄道',color:'#7ee090',desc:'定为稳定，黄道吉日。宜定盟约、冠笄入学。',yi:['冠笄','入学','嫁娶','祭祀','纳采','安床','祈福'],ji:['诉讼','远行','开仓']},
+'执':{type:'黄道',color:'#7ee090',desc:'执为掌握主动，黄道吉日。宜修造嫁娶，主动出击。',yi:['修造','嫁娶','捕捉','纳采','祈福','祭祀'],ji:['开市','交易','入宅']},
+'破':{type:'黑道',color:'#d85848',desc:'破为冲破，大事不宜。只宜破屋坏垣之事。',yi:['破屋','坏垣','求医'],ji:['嫁娶','开市','出行','入宅','修造','动土','安床']},
+'危':{type:'黄道',color:'#7ee090',desc:'危中藏机，黄道吉日。化险为夷，安床修造吉。',yi:['安床','修造','祭祀','纳财','祈福'],ji:['出行','开市','嫁娶']},
+'成':{type:'黄道',color:'#7ee090',desc:'成万事可成，大吉之日！诸事皆宜，百无禁忌。',yi:['嫁娶','开市','入宅','出行','修造','纳采','安床','裁衣','求财'],ji:['诉讼']},
+'收':{type:'黑道',color:'#d85848',desc:'收为收敛，只宜纳财。大事不宜，宜守不宜攻。',yi:['纳财','捕捉','入殓','祭祀','纳畜'],ji:['出行','嫁娶','安床','开市','修造']},
+'开':{type:'黄道',color:'#7ee090',desc:'开为开通，大吉之日！宜开创、出行、开市。',yi:['嫁娶','出行','开市','入宅','求财','纳采','交易','修造'],ji:['安葬']},
+'闭':{type:'黑道',color:'#d85848',desc:'闭为闭塞，百事不宜。只宜安葬破土等阴事。',yi:['安葬','破土','补垣','祭祀','启钻'],ji:['开市','出行','嫁娶','入宅','求财']}
+};
+function getJianChu(y,m,d){
+ var lunar=solarToLunar(y,m,d);
+ var yueJianZhi=(lunar.month+1)%12; // 寅=0,卯=1,...,丑=11
+ var dayGZ=getDayGanZhi(y,m,d);
+ var dayZhiIdx=diZhi.indexOf(dayGZ[1]);
+ var offset=(dayZhiIdx-yueJianZhi+12)%12;
+ return jianChuNames[offset];
+}
+function getDailyYiJi(y,m,d){
+ var jc=getJianChu(y,m,d);
+ var d=jianChuDetails[jc];
+ return {yi:d.yi, ji:d.ji};
+}
+function getZhiRi(y,m,d){
+ var jc=getJianChu(y,m,d);
+ var d=jianChuDetails[jc];
+ return jc+' （'+(d.type==='黄道'?'黄道吉日':'黑道日')+'）';
+}
+function getJianChuDetail(y,m,d){
+ var jc=getJianChu(y,m,d);
+ return jianChuDetails[jc];
+}
 
 // ========== 经典语录 ==========
 var daoDeJing=[{chapter:1,text:'道可道，非常道；名可名，非常名。无名天地之始，有名万物之母。',meaning:'可以说出来的道，就不是永恒不变的道；可以叫出来的名，就不是永恒不变的名。无名是天地的开始，有名是万物的根源。'},{chapter:2,text:'天下皆知美之为美，斯恶已。皆知善之为善，斯不善已。',meaning:'天下人都知道美之所以为美，丑的观念也就产生了；都知道善之所以为善，不善的观念也就产生了。'},{chapter:3,text:'不尚贤，使民不争；不贵难得之货，使民不为盗；不见可欲，使民心不乱。',meaning:'不推崇有才德的人，使百姓不争功名；不看重稀有财物，使百姓不偷盗；不显耀引起欲望的事物，使百姓心不被扰乱。'},{chapter:4,text:'道冲，而用之或不盈。渊兮，似万物之宗。',meaning:'道是空虚无形的，但它的作用却无穷无尽。它深邃莫测，像是万物的本源。'},{chapter:5,text:'天地不仁，以万物为刍狗；圣人不仁，以百姓为刍狗。',meaning:'天地没有偏爱，把万物当作祭祀用的草狗一样对待；圣人也没有偏爱，把百姓当作草狗一样对待。'},{chapter:6,text:'谷神不死，是谓玄牝。玄牝之门，是谓天地根。',meaning:'虚空的神妙作用是永恒不灭的，这就是微妙的母性。微妙的母性之门，就是天地的根源。'},{chapter:7,text:'天长地久。天地所以能长且久者，以其不自生，故能长生。',meaning:'天长地久。天地之所以能长久存在，是因为它们不为自己而生。'},{chapter:8,text:'上善若水。水善利万物而不争，处众人之所恶，故几于道。',meaning:'最高的善像水一样。水善于滋润万物而不与万物相争，停留在众人都不愿去的低洼之处，所以最接近于道。'},{chapter:9,text:'持而盈之，不如其已；揣而锐之，不可长保。',meaning:'执持盈满，不如适时停止；锋芒毕露，难以长久保持。'},{chapter:10,text:'载营魄抱一，能无离乎？专气致柔，能如婴儿乎？',meaning:'身体和灵魂合而为一，能不分离吗？凝聚精气达到柔和的境界，能像婴儿一样吗？'},{chapter:11,text:'三十辐，共一毂，当其无，有车之用。',meaning:'三十根辐条汇集到一个车毂上，正是因为中间是空的，才有了车的作用。无用之用，方为大用。'},{chapter:12,text:'五色令人目盲；五音令人耳聋；五味令人口爽。',meaning:'缤纷的色彩会使人眼花缭乱；嘈杂的音乐会使人听觉迟钝；丰盛的美食会使人味觉麻木。'},{chapter:13,text:'宠辱若惊，贵大患若身。',meaning:'受到宠爱和受到侮辱都像受到惊吓一样，把大的祸患看得和自身一样重要。'},{chapter:14,text:'视之不见，名曰夷；听之不闻，名曰希；搏之不得，名曰微。',meaning:'看它看不见，叫做"夷"；听它听不到，叫做"希"；摸它摸不着，叫做"微"。道是无形无象、超越感官的。'},{chapter:15,text:'古之善为士者，微妙玄通，深不可识。',meaning:'古代善于修道的人，精微奥妙、深邃通达，深奥到无法被人认识了解。'},{chapter:16,text:'致虚极，守静笃。万物并作，吾以观复。',meaning:'尽力使心灵达到虚寂的极点，坚定地保持清静。万物都在蓬勃生长，从中观察它们的循环往复。'},{chapter:17,text:'太上，不知有之；其次，亲而誉之；其次，畏之；其次，侮之。',meaning:'最好的统治者，百姓感觉不到他的存在；其次的，百姓亲近他赞美他；再次的，百姓畏惧他；最次的，百姓轻蔑他。'},{chapter:18,text:'大道废，有仁义；智慧出，有大伪。',meaning:'大道废弃之后，才有了仁义之说；聪明智慧出现之后，才有了严重的虚伪。'},{chapter:19,text:'绝圣弃智，民利百倍；绝仁弃义，民复孝慈。',meaning:'抛弃聪明和智巧，百姓可以得到百倍的好处；抛弃仁和义，百姓可以恢复孝慈的本性。'},{chapter:20,text:'绝学无忧。唯之与阿，相去几何？善之与恶，相去若何？',meaning:'抛弃世俗学问，才能免于忧愁。应声与呵斥，相差有多少？美好与丑恶，又相差有多少？'},{chapter:21,text:'孔德之容，惟道是从。道之为物，惟恍惟惚。',meaning:'大德的容貌，只随从道。道这个东西，恍恍惚惚，没有固定的形体。'},{chapter:22,text:'曲则全，枉则直，洼则盈，敝则新，少则得，多则惑。',meaning:'委曲反而能保全，弯曲反而能伸直，低洼反而能充盈，破旧反而能更新。'},{chapter:23,text:'希言自然。故飘风不终朝，骤雨不终日。',meaning:'少说话才合乎自然。狂风刮不了一早晨，暴雨下不了一整天。'},{chapter:24,text:'企者不立；跨者不行；自见者不明；自是者不彰。',meaning:'踮起脚尖站不稳；大步跨走走不远；自我炫耀的人不能显明。'},{chapter:25,text:'有物混成，先天地生。寂兮寥兮，独立而不改，周行而不殆。',meaning:'有一个东西混然而成，在天地形成之前就已经存在。它寂寥无声，独立长存而不改变，循环运行而不停息。'},{chapter:26,text:'重为轻根，静为躁君。',meaning:'厚重是轻率的根本，静定是躁动的主宰。'},{chapter:27,text:'善行无辙迹，善言无瑕谪，善数不用筹策。',meaning:'善于行走的人不留痕迹，善于言谈的人不留过失，善于计算的人不用筹码。'},{chapter:28,text:'知其雄，守其雌，为天下溪。知其白，守其黑，为天下式。',meaning:'知道什么是雄强，却安于雌柔的地位，做天下的沟溪。知道什么是明亮，却安于暗昧的地位，做天下的楷模。'},{chapter:29,text:'将欲取天下而为之，吾见其不得已。天下神器，不可为也。',meaning:'想要夺取天下并加以治理，我看是办不到的。天下是神圣的器物，不能强为。'},{chapter:30,text:'以道佐人主者，不以兵强天下。其事好还。',meaning:'用道来辅佐君主的人，不靠兵力逞强于天下。用兵这件事必定会得到报应。'},{chapter:31,text:'夫佳兵者，不祥之器，物或恶之，故有道者不处。',meaning:'精良的武器是不祥之物，万物都厌恶它，所以有道的人不使用它。'},{chapter:32,text:'道常无名朴。虽小，天下莫能臣。',meaning:'道永远是无名而朴素的。虽然微小，天下却没有谁能使它臣服。'},{chapter:33,text:'知人者智，自知者明。胜人者有力，自胜者强。',meaning:'了解别人的人有智慧，了解自己的人才是高明。战胜别人的人有力量，战胜自己的人才是坚强。'},{chapter:34,text:'大道泛兮，其可左右。万物恃之以生而不辞。',meaning:'大道广泛流行，可以在左也可以在右。万物依靠它生长而它不推辞。'},{chapter:35,text:'执大象，天下往。往而不害，安平太。',meaning:'坚守大道的法象，天下人就会归附。归附而不互相伤害，于是天下太平。'},{chapter:36,text:'将欲歙之，必固张之；将欲弱之，必固强之。',meaning:'想要收敛它，必定先扩张它；想要削弱它，必定先加强它。物极必反是自然的规律。'},{chapter:37,text:'道常无为而无不为。侯王若能守之，万物将自化。',meaning:'道永远是顺应自然而不妄为的，却又没有什么事情是它所不能为的。'},{chapter:38,text:'上德不德，是以有德；下德不失德，是以无德。',meaning:'上德之人不刻意表现德行，所以才是真正有德；下德之人死守着德行不放，所以反而没有德。'},{chapter:39,text:'昔之得一者：天得一以清，地得一以宁。',meaning:'自古以来得到"一"的：天得到一而清明，地得到一而宁静。一就是道。'},{chapter:40,text:'反者道之动，弱者道之用。天下万物生于有，有生于无。',meaning:'向反面转化是道的运动，柔弱是道的作用。天下万物生于有形，有形生于无形。'},{chapter:41,text:'上士闻道，勤而行之；中士闻道，若存若亡；下士闻道，大笑之。',meaning:'上等士人听了道，努力去实行；中等士人听了道，将信将疑；下等士人听了道，大声嘲笑。'},{chapter:42,text:'道生一，一生二，二生三，三生万物。万物负阴而抱阳，冲气以为和。',meaning:'道产生统一，统一产生阴阳，阴阳产生和谐，和谐产生万物。万物背阴而向阳，在阴阳二气中达到和谐。'},{chapter:43,text:'天下之至柔，驰骋天下之至坚。无有入无间。',meaning:'天下最柔弱的东西，能驾驭天下最坚硬的东西。无形的力量能穿透没有间隙的东西。'},{chapter:44,text:'名与身孰亲？身与货孰多？得与亡孰病？',meaning:'名声和身体哪个更亲近？身体和财富哪个更重要？得到和失去哪个更有害？'},{chapter:45,text:'大成若缺，其用不弊。大盈若冲，其用不穷。',meaning:'最圆满的东西好像有欠缺，但它的作用不会衰竭。最充盈的东西好像空虚，但它的作用无穷无尽。'},{chapter:46,text:'天下有道，却走马以粪。天下无道，戎马生于郊。',meaning:'天下有道时，战马退还给农夫用来耕田。天下无道时，怀驹的母马也要在战场上生驹。'},{chapter:47,text:'不出户，知天下；不窥牖，见天道。',meaning:'不出门，就能知道天下大事；不望窗外，就能看见天道运行的规律。'},{chapter:48,text:'为学日益，为道日损。损之又损，以至于无为。',meaning:'求学在于每天增加知识，求道在于每天减少欲望。减少再减少，直到达到无为的境界。'},{chapter:49,text:'圣人无常心，以百姓心为心。',meaning:'圣人没有固定不变的心，以百姓的心为自己的心。'},{chapter:50,text:'出生入死。生之徒，十有三；死之徒，十有三。',meaning:'人出世为生，入土为死。属于长寿的人占十分之三，属于短命的人占十分之三。'},{chapter:51,text:'道生之，德畜之，物形之，势成之。',meaning:'道生成万物，德养育万物，物质赋予万物形体，环境使万物成熟。'},{chapter:52,text:'天下有始，以为天下母。既知其母，复知其子。',meaning:'天下万物都有本始，这个本始就是万物的母亲。既然知道了母亲，也就知道了她的孩子。'},{chapter:53,text:'使我介然有知，行于大道，唯施是畏。',meaning:'假如我稍微有些见识，走在大道上，唯一担心的就是走上邪路。'},{chapter:54,text:'善建者不拔，善抱者不脱，子孙以祭祀不辍。',meaning:'善于建树的人不会被拔除，善于抱持的人不会脱落，子孙后代绵延不绝地祭祀他。'},{chapter:55,text:'含德之厚，比于赤子。毒虫不螫，猛兽不据。',meaning:'含德深厚的人，好比初生的婴儿。毒虫不刺他，猛兽不抓他。'},{chapter:56,text:'知者不言，言者不知。挫其锐，解其纷，和其光，同其尘。',meaning:'懂得的人不说话，说话的人不懂得。收敛锋芒，化解纷扰，调和光辉，混同尘世。'},{chapter:57,text:'以正治国，以奇用兵，以无事取天下。',meaning:'用正道治理国家，用奇谋指挥战争，用无为来取得天下。'},{chapter:58,text:'其政闷闷，其民淳淳；其政察察，其民缺缺。',meaning:'政治宽厚，百姓就淳朴忠诚；政治严苛，百姓就狡诈抱怨。'},{chapter:59,text:'治人事天，莫若啬。',meaning:'治理百姓和侍奉天道，没有比吝啬（节俭蓄养）更好的了。'},{chapter:60,text:'治大国，若烹小鲜。',meaning:'治理大国，就像煎小鱼一样，不能频繁翻动，否则鱼就碎了。'},{chapter:61,text:'大国者下流，天下之交也。',meaning:'大国要像江河一样居于下游，处于天下交汇的地方。'},{chapter:62,text:'道者万物之奥。善人之宝，不善人之所保。',meaning:'道是万物的庇荫。是善人的珍宝，也是不善人的保护。'},{chapter:63,text:'为无为，事无事，味无味。',meaning:'以无为的态度去作为，以不搅扰的方式去做事，以无味当作有味。'},{chapter:64,text:'其安易持，其未兆易谋。其脆易泮，其微易散。',meaning:'局面安稳时容易持守，事变没有征兆时容易谋划。'},{chapter:65,text:'古之善为道者，非以明民，将以愚之。',meaning:'古代善于行道的人，不是用智巧来教导百姓，而是使百姓淳朴。'},{chapter:66,text:'江海所以能为百谷王者，以其善下之。',meaning:'江海之所以能成为百川之王，是因为它善于处在低下的位置。'},{chapter:67,text:'我有三宝，持而保之：一曰慈，二曰俭，三曰不敢为天下先。',meaning:'我有三件法宝：第一是慈爱，第二是节俭，第三是不敢居于天下人的前面。'},{chapter:68,text:'善为士者，不武；善战者，不怒；善胜敌者，不与。',meaning:'善于做将帅的人不逞勇武，善于作战的人不轻易发怒，善于战胜敌人的人不与对手正面交锋。'},{chapter:69,text:'用兵有言：吾不敢为主，而为客；不敢进寸，而退尺。',meaning:'用兵的人说过：我不敢主动进攻，而宁愿防守；不敢前进一寸，而宁可后退一尺。'},{chapter:70,text:'吾言甚易知，甚易行。天下莫能知，莫能行。',meaning:'我的话很容易理解，很容易实行。但天下没有人能理解，没有人能实行。'},{chapter:71,text:'知不知，尚矣；不知知，病也。',meaning:'知道自己还有不知道的，这是最好的；不知道却自以为知道，这就是毛病。'},{chapter:72,text:'民不畏威，则大威至。',meaning:'当百姓不再畏惧威压的时候，真正的巨大祸乱就要到来了。'},{chapter:73,text:'勇于敢则杀，勇于不敢则活。',meaning:'勇于逞强就会被杀，勇于不逞强就能存活。'},{chapter:74,text:'民不畏死，奈何以死惧之？',meaning:'百姓不怕死，为什么还要用死来威胁他们呢？'},{chapter:75,text:'民之饥，以其上食税之多，是以饥。',meaning:'百姓之所以饥饿，是因为统治者吞食的赋税太多。'},{chapter:76,text:'人之生也柔弱，其死也坚强。草木之生也柔脆，其死也枯槁。',meaning:'人活着的时候身体是柔软的，死了以后就僵硬了。草木活着的时候是柔韧的，死了以后就干枯了。'},{chapter:77,text:'天之道，其犹张弓与？高者抑之，下者举之。',meaning:'天道就像拉弓射箭一样。高了就压低一些，低了就抬高一些。'},{chapter:78,text:'天下莫柔弱于水，而攻坚强者莫之能胜。',meaning:'天下没有比水更柔弱的，而攻击坚强的东西没有什么能胜过水。'},{chapter:79,text:'和大怨，必有余怨；报怨以德，安可以为善？',meaning:'和解大怨，必定还有余怨；用德来报答怨恨，怎么可以算是妥善呢？'},{chapter:80,text:'小国寡民。使有什伯之器而不用。',meaning:'使国家变小，使百姓稀少。即使有各种器具也不使用。这是老子理想中的社会状态。'},{chapter:81,text:'信言不美，美言不信。善者不辩，辩者不善。知者不博，博者不知。',meaning:'真实的言语不华美，华美的言语不真实。善良的人不巧辩，巧辩的人不善良。'}];
@@ -792,14 +887,126 @@ if(gua.advice){descHtml+='<div class="advice-section"><div class="advice-title">
 function loadDailyFortuneToCoin(){if(!dailyFortuneData||!dailyFortuneData.yaoResults)return false;coinYaoResults=dailyFortuneData.yaoResults.slice();coinStep=6;coinShaking=false;renderCoinYao();initCoinProgress();for(var i=0;i<6;i++){var dot=document.getElementById('cdot'+i);if(dot)dot.className='progress-dot filled'}showCoinResult();var coinResultEl=document.getElementById('coinResult');if(coinResultEl){var banner=document.createElement('div');banner.style.cssText='text-align:center;padding:8px 14px;margin-bottom:8px;background:rgba(201,162,39,.08);border:1px solid rgba(201,162,39,.2);border-radius:8px;font-size:12px;color:var(--gold);font-family:var(--font-display);letter-spacing:2px';banner.innerHTML='✦ 此卦象来自今日运势 ✦';coinResultEl.insertBefore(banner,coinResultEl.firstChild)}document.getElementById('shakeBtn').disabled=false;document.getElementById('shakeBtn').textContent='重新摇卦';document.getElementById('shakeBtn').onclick=resetCoin;document.getElementById('coinHint').textContent='此卦来自今日运势 · 可重新摇卦';var coinAreaEl=document.getElementById('coinArea');if(coinAreaEl){var dailyTip=document.createElement('div');dailyTip.id='dailyFortuneCoinTip';dailyTip.style.cssText='text-align:center;font-size:12px;color:var(--gold);margin-top:8px;font-family:var(--font-display);letter-spacing:1px;text-shadow:0 0 6px var(--glow-gold)';dailyTip.textContent='已从今日运势加载卦象';coinAreaEl.appendChild(dailyTip)}return true}
 function initCoinPage(){if(coinYaoResults.length===0&&dailyFortuneData){loadDailyFortuneToCoin()}}
 
-// ========== 六爻 ==========
-var liuQinMap=['父母','兄弟','子孙','妻财','官鬼'];
-function updateLiuyaoPan(){if(coinYaoResults.length<6)return;var idx=getGuaIndex(coinYaoResults);var gua=gua64[idx];var now=new Date();var y=now.getFullYear(),m=now.getMonth()+1,d=now.getDate();var dayGZ=getDayGanZhi(y,m,d);var dayGanIdx=tianGan.indexOf(dayGZ[0]);var shiYingPos=[[0,3],[1,4],[2,5],[3,0],[4,1],[5,2],[0,3],[1,4]];var seIdx=idx%8;var sp=shiYingPos[seIdx][0],yp=shiYingPos[seIdx][1];var labels=['上','五','四','三','二','初'];var h='<div style="text-align:center;margin-bottom:10px"><span style="font-family:var(--font-display);font-weight:600;font-size:18px;background:linear-gradient(135deg,var(--cyan),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">'+gua.full+'</span><span style="margin-left:6px;font-size:13px;color:var(--text3)">'+gua.symbol+'</span></div><div class="liuyao-pan"><div class="liuyao-row ly-header"><span class="ly-pos">爻位</span><span class="ly-gan">天干</span><span class="ly-zhi">地支</span><span class="ly-qin">六亲</span><span class="ly-shi">世应</span><span class="ly-dong">动爻</span></div>';for(var i=5;i>=0;i--){var v=coinYaoResults[i];var isYang=(v===7||v===9);var isDong=(v===6||v===9);var gi=(dayGanIdx+i)%10;var zi=(i*2+2)%12;var gan=tianGan[gi];var zhi=diZhi[zi];var qin=liuQinMap[i%5];var sy=i===sp?'世':(i===yp?'应':'');var dg=isDong?'动':'';h+='<div class="liuyao-row" style="'+(isDong?'color:var(--rose)':'')+'"><span class="ly-pos">'+labels[i]+'</span><span class="ly-gan">'+gan+'</span><span class="ly-zhi">'+zhi+'</span><span class="ly-qin">'+qin+'</span><span class="ly-shi" style="'+(sy?'color:var(--cyan)':'')+'">'+sy+'</span><span class="ly-dong">'+dg+'</span></div>'}h+='</div>';h+='<div style="margin-top:12px">';if(gua.fortune){var fc='fortune-ping';if(gua.fortune.indexOf('大吉')>=0)fc='fortune-daji';else if(gua.fortune.indexOf('吉')>=0)fc='fortune-ji';else if(gua.fortune.indexOf('小吉')>=0)fc='fortune-xiaoji';else if(gua.fortune.indexOf('凶')>=0)fc='fortune-xiong';h+='<div style="text-align:center;margin:8px 0"><span class="fortune-badge '+fc+'">'+gua.fortune+'</span></div>'}if(gua.yuan){h+='<div style="font-size:12px;color:var(--gold);font-family:var(--font-display);letter-spacing:1px;margin-bottom:6px;text-shadow:0 0 6px var(--glow-gold)">◆ 原卦辞</div><div style="font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:12px;padding:10px;background:rgba(240,192,96,.04);border-radius:6px;border-left:2px solid var(--gold)">'+gua.yuan+'</div>'}h+='<div style="font-size:12px;color:var(--cyan);font-family:var(--font-display);letter-spacing:1px;margin-bottom:6px">◆ 白话解析</div><div class="gua-desc">'+(gua.desc?gua.desc.replace(/\n/g,'<br>'):'')+'</div>';if(gua.tuanCi){h+='<div class="citext-section"><div class="ci-label">◆ 彖辞</div>'+gua.tuanCi+'</div>'}if(gua.xiangCi){h+='<div class="citext-section"><div class="ci-label">◆ 象辞</div>'+gua.xiangCi+'</div>'}if(gua.yaoCi&&gua.yaoCi.length){h+='<div class="yaoci-section"><div class="yaoci-title">◆ 爻辞</div>';for(var _yi=0;_yi<gua.yaoCi.length;_yi++){h+='<div class="yaoci-item">'+gua.yaoCi[_yi]+'</div>'}h+='</div>'}if(gua.advice){h+='<div class="advice-section"><div class="advice-title">◆ 实用建议</div><div class="advice-item">'+gua.advice+'</div></div>'}h+='</div>';document.getElementById('liuyaoContent').innerHTML=h}
+// ========== 六爻（京房八宫纳甲法）==========
+var baGongMap={'乾为天':{gong:'乾',wx:'金',shi:5},'天风姤':{gong:'乾',wx:'金',shi:0},'天山遁':{gong:'乾',wx:'金',shi:1},'天地否':{gong:'乾',wx:'金',shi:2},'风地观':{gong:'乾',wx:'金',shi:3},'山地剥':{gong:'乾',wx:'金',shi:4},'火地晋':{gong:'乾',wx:'金',shi:3},'火天大有':{gong:'乾',wx:'金',shi:2},'坎为水':{gong:'坎',wx:'水',shi:5},'水泽节':{gong:'坎',wx:'水',shi:0},'水雷屯':{gong:'坎',wx:'水',shi:1},'水火既济':{gong:'坎',wx:'水',shi:2},'泽火革':{gong:'坎',wx:'水',shi:3},'雷火丰':{gong:'坎',wx:'水',shi:4},'地火明夷':{gong:'坎',wx:'水',shi:3},'地水师':{gong:'坎',wx:'水',shi:2},'艮为山':{gong:'艮',wx:'土',shi:5},'山火贲':{gong:'艮',wx:'土',shi:0},'山天大畜':{gong:'艮',wx:'土',shi:1},'山泽损':{gong:'艮',wx:'土',shi:2},'火泽睽':{gong:'艮',wx:'土',shi:3},'天泽履':{gong:'艮',wx:'土',shi:4},'风泽中孚':{gong:'艮',wx:'土',shi:3},'风山渐':{gong:'艮',wx:'土',shi:2},'震为雷':{gong:'震',wx:'木',shi:5},'雷地豫':{gong:'震',wx:'木',shi:0},'雷水解':{gong:'震',wx:'木',shi:1},'雷风恒':{gong:'震',wx:'木',shi:2},'地风升':{gong:'震',wx:'木',shi:3},'水风井':{gong:'震',wx:'木',shi:4},'泽风大过':{gong:'震',wx:'木',shi:3},'泽雷随':{gong:'震',wx:'木',shi:2},'巽为风':{gong:'巽',wx:'木',shi:5},'风天小畜':{gong:'巽',wx:'木',shi:0},'风火家人':{gong:'巽',wx:'木',shi:1},'风雷益':{gong:'巽',wx:'木',shi:2},'天雷无妄':{gong:'巽',wx:'木',shi:3},'火雷噬嗑':{gong:'巽',wx:'木',shi:4},'山雷颐':{gong:'巽',wx:'木',shi:3},'山风蛊':{gong:'巽',wx:'木',shi:2},'离为火':{gong:'离',wx:'火',shi:5},'火山旅':{gong:'离',wx:'火',shi:0},'火风鼎':{gong:'离',wx:'火',shi:1},'火水未济':{gong:'离',wx:'火',shi:2},'山水蒙':{gong:'离',wx:'火',shi:3},'风水涣':{gong:'离',wx:'火',shi:4},'天水讼':{gong:'离',wx:'火',shi:3},'天火同人':{gong:'离',wx:'火',shi:2},'坤为地':{gong:'坤',wx:'土',shi:5},'地雷复':{gong:'坤',wx:'土',shi:0},'地泽临':{gong:'坤',wx:'土',shi:1},'地天泰':{gong:'坤',wx:'土',shi:2},'雷天大壮':{gong:'坤',wx:'土',shi:3},'泽天夬':{gong:'坤',wx:'土',shi:4},'水天需':{gong:'坤',wx:'土',shi:3},'水地比':{gong:'坤',wx:'土',shi:2},'兑为泽':{gong:'兑',wx:'金',shi:5},'泽水困':{gong:'兑',wx:'金',shi:0},'泽地萃':{gong:'兑',wx:'金',shi:1},'泽山咸':{gong:'兑',wx:'金',shi:2},'水山蹇':{gong:'兑',wx:'金',shi:3},'地山谦':{gong:'兑',wx:'金',shi:4},'雷山小过':{gong:'兑',wx:'金',shi:3},'雷泽归妹':{gong:'兑',wx:'金',shi:2}};
+var naZhiMap={'☰':{lower:['子','寅','辰'],upper:['午','申','戌']},'☱':{lower:['巳','卯','丑'],upper:['亥','酉','未']},'☲':{lower:['卯','丑','亥'],upper:['酉','未','巳']},'☳':{lower:['子','寅','辰'],upper:['午','申','戌']},'☴':{lower:['丑','亥','酉'],upper:['未','巳','卯']},'☵':{lower:['寅','辰','午'],upper:['申','戌','子']},'☶':{lower:['辰','午','申'],upper:['戌','子','寅']},'☷':{lower:['未','巳','卯'],upper:['丑','亥','酉']}};
+var zhiWX={'子':'水','丑':'土','寅':'木','卯':'木','辰':'土','巳':'火','午':'火','未':'土','申':'金','酉':'金','戌':'土','亥':'水'};
+var wxShengObj={'金':'水','水':'木','木':'火','火':'土','土':'金'};
+var wxKeObj={'金':'木','木':'土','土':'水','水':'火','火':'金'};
+function getLiuQin(gongWX,zhi){
+ var zx=zhiWX[zhi]||'土';
+ if(gongWX===zx)return'兄弟';
+ if(wxShengObj[zx]===gongWX)return'父母';
+ if(wxShengObj[gongWX]===zx)return'子孙';
+ if(wxKeObj[zx]===gongWX)return'官鬼';
+ if(wxKeObj[gongWX]===zx)return'妻财';
+ return'兄弟';
+}
+function updateLiuyaoPan(){
+ if(coinYaoResults.length<6)return;
+ var idx=getGuaIndex(coinYaoResults);
+ var gua=gua64[idx];
+ var bg=baGongMap[gua.full];
+ if(!bg){document.getElementById('liuyaoContent').innerHTML='<div style="text-align:center;padding:24px;color:var(--text3)">此卦暂无六爻排盘数据</div>';return}
+ var gongWX=bg.wx,shiPos=bg.shi,yingPos=(shiPos+3)%6;
+ var naZhiU=naZhiMap[gua.symbol[0]],naZhiL=naZhiMap[gua.symbol[1]];
+ var zhiArr=[naZhiL.lower[0],naZhiL.lower[1],naZhiL.lower[2],naZhiU.upper[0],naZhiU.upper[1],naZhiU.upper[2]];
+ var labels=['上','五','四','三','二','初'];
+ var h='<div style="text-align:center;margin-bottom:12px"><span style="font-family:var(--font-display);font-weight:600;font-size:20px;background:linear-gradient(135deg,var(--cyan),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">'+gua.full+'</span><span style="margin-left:6px;font-size:13px;color:var(--text3)">'+gua.symbol+'</span><div style="font-size:12px;color:var(--gold);margin-top:4px;font-family:var(--font-display)">'+bg.gong+'宫 · 属'+gongWX+'</div></div>';
+ h+='<div class="liuyao-pan"><div class="liuyao-row ly-header"><span class="ly-pos">爻位</span><span class="ly-gan">地支</span><span class="ly-zhi">五行</span><span class="ly-qin">六亲</span><span class="ly-shi">世应</span><span class="ly-dong">动爻</span></div>';
+ var dongCount=0;
+ for(var i=5;i>=0;i--){
+  var v=coinYaoResults[i],isYang=(v===7||v===9),isDong=(v===6||v===9);
+  if(isDong)dongCount++;
+  var zhi=zhiArr[i],zwx=zhiWX[zhi]||'?',qin=getLiuQin(gongWX,zhi);
+  var sy=i===shiPos?'世':(i===yingPos?'应':''),dg=isDong?'⚡动':'';
+  h+='<div class="liuyao-row" style="'+(isDong?'color:var(--rose);font-weight:600':'')+'">';
+  h+='<span class="ly-pos">'+labels[i]+'</span><span class="ly-gan" style="color:var(--cyan)">'+zhi+'</span><span class="ly-zhi">'+zwx+'</span><span class="ly-qin">'+qin+'</span>';
+  h+='<span class="ly-shi" style="'+(sy?'color:var(--cyan);font-weight:600':'')+'">'+sy+'</span><span class="ly-dong">'+dg+'</span>';
+  h+='<div style="flex:1;display:flex;gap:5px;justify-content:center">';
+  if(isYang)h+='<div style="height:5px;border-radius:2px;width:100%;background:'+(isDong?'var(--rose)':'var(--cyan)')+';box-shadow:0 0 6px '+(isDong?'var(--glow-rose)':'var(--glow-cyan)')+'"></div>';
+  else{h+='<div style="height:5px;border-radius:2px;width:40%;background:'+(isDong?'var(--rose)':'var(--cyan)')+';box-shadow:0 0 6px '+(isDong?'var(--glow-rose)':'var(--glow-cyan)')+'"></div>';h+='<div style="height:5px;border-radius:2px;width:40%;background:'+(isDong?'var(--rose)':'var(--cyan)')+';box-shadow:0 0 6px '+(isDong?'var(--glow-rose)':'var(--glow-cyan)')+'"></div>';}
+  h+='</div></div>';
+ }
+ h+='</div>';
+ h+='<div style="margin-top:14px;padding:12px;background:rgba(0,0,0,.2);border-radius:8px;border-left:2px solid var(--cyan)">';
+ h+='<div style="font-size:12px;color:var(--cyan);margin-bottom:8px;font-family:var(--font-display)">◈ 六爻排盘分析</div><div style="font-size:12px;color:var(--text2);line-height:1.8">';
+ h+='<div>◆ 卦属<strong style="color:var(--gold)">'+bg.gong+'宫</strong>，五行属<strong style="color:var(--gold)">'+gongWX+'</strong></div>';
+ h+='<div>◆ 世爻在<strong style="color:var(--cyan)">第'+(shiPos+1)+'爻</strong>，代表<strong style="color:var(--cyan)">问卦者自身</strong></div>';
+ h+='<div>◆ 应爻在<strong style="color:var(--cyan)">第'+(yingPos+1)+'爻</strong>，代表<strong style="color:var(--cyan)">所问之事</strong></div>';
+ if(dongCount>0)h+='<div>◆ <strong style="color:var(--rose)">'+dongCount+'个动爻</strong>，事情正在变化</div>';
+ else h+='<div>◆ 无动爻（静卦），事情较为稳定</div>';
+ var shiZhi=zhiArr[shiPos],shiQin=getLiuQin(gongWX,shiZhi);
+ h+='<div>◆ 世爻临<strong style="color:var(--cyan)">'+shiZhi+'</strong>（'+zhiWX[shiZhi]+'），六亲为<strong style="color:var(--cyan)">'+shiQin+'</strong></div>';
+ if(shiQin==='妻财')h+='<div style="color:var(--green);margin-top:4px">→ 世临妻财，主问财利之事，求财有望</div>';
+ else if(shiQin==='官鬼')h+='<div style="color:var(--rose);margin-top:4px">→ 世临官鬼，主压力或职位变动，谨慎应对</div>';
+ else if(shiQin==='子孙')h+='<div style="color:var(--green);margin-top:4px">→ 世临子孙，无忧无虑，适合发挥创意</div>';
+ else if(shiQin==='父母')h+='<div style="color:var(--cyan);margin-top:4px">→ 世临父母，主文书、学业、合同，耐心处理</div>';
+ else if(shiQin==='兄弟')h+='<div style="color:var(--gold);margin-top:4px">→ 世临兄弟，主竞争或合伙，注意人际关系</div>';
+ h+='</div></div>';
+ document.getElementById('liuyaoContent').innerHTML=h;
+}
 
-// ========== 梅花 ==========
+// ========== 梅花易数 ==========
 var meihuaMode='number';
 function setMeihuaMode(mode,btn){meihuaMode=mode;document.querySelectorAll('#sub-meihua .btn-sm').forEach(function(b){b.classList.remove('active')});btn.classList.add('active');document.getElementById('mhNumberInput').style.display=mode==='number'?'flex':'none';document.getElementById('mhTimeInfo').style.display=mode==='time'?'block':'none';document.getElementById('mhWordInput').style.display=mode==='word'?'block':'none';if(mode==='time'){var now=new Date();var h=now.getHours();var sc=diZhi[Math.floor((h+1)/2)%12];document.getElementById('mhTimeInfo').innerHTML='当前时间：'+now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日 '+sc+'时<br>将以年月日时起卦'}}
-function doMeihua(){var upper,lower,dongYao;if(meihuaMode==='number'){var n1=parseInt(document.getElementById('mhNum1').value)||0;var n2=parseInt(document.getElementById('mhNum2').value)||0;if(n1<1||n2<1){showToast('请输入有效的数字');return}upper=n1%8;lower=n2%8;dongYao=(n1+n2)%6}else if(meihuaMode==='time'){var now=new Date();var y=now.getFullYear(),m=now.getMonth()+1,d=now.getDate();upper=(y+m+d)%8;lower=(y+m+d+now.getHours())%8;dongYao=(y+m+d+now.getHours())%6}else{var word=document.getElementById('mhWord').value.trim();if(!word){showToast('请输入汉字');return}var len=word.length;upper=len%8;lower=(len+1)%8;dongYao=(len+1)%6}if(upper===0)upper=8;if(lower===0)lower=8;var syms=['','☰','☱','☲','☳','☴','☵','☶','☷'];var names=['','乾','兑','离','震','巽','坎','艮','坤'];var uS=syms[upper],lS=syms[lower],uN=names[upper],lN=names[lower];var guaIdx=-1;for(var i=0;i<gua64.length;i++){if(gua64[i].symbol===uS+lS){guaIdx=i;break}}if(guaIdx===-1)guaIdx=0;var gua=gua64[guaIdx];var baGuaWX={'乾':'金','兑':'金','离':'火','震':'木','巽':'木','坎':'水','艮':'土','坤':'土'};var uWX=baGuaWX[uN],lWX=baGuaWX[lN];var wXS={'金':'水','水':'木','木':'火','火':'土','土':'金'};var wXK={'金':'木','木':'土','土':'水','水':'火','火':'金'};var tiYong='';if(wXS[uWX]===lWX)tiYong='上卦'+uN+'（'+uWX+'）生下卦'+lN+'（'+lWX+'），用生体，大吉';else if(wXS[lWX]===uWX)tiYong='下卦'+lN+'（'+lWX+'）生上卦'+uN+'（'+uWX+'），体生用，泄气';else if(wXK[uWX]===lWX)tiYong='上卦'+uN+'（'+uWX+'）克下卦'+lN+'（'+lWX+'），用克体，凶';else if(wXK[lWX]===uWX)tiYong='下卦'+lN+'（'+lWX+'）克上卦'+uN+'（'+uWX+'），体克用，吉';else if(uWX===lWX)tiYong='上下同属'+uWX+'，比和，吉';else tiYong='上卦'+uN+'（'+uWX+'）与下卦'+lN+'（'+lWX+'）无生克关系';var dongLabels=['初','二','三','四','五','上'];document.getElementById('meihuaResult').innerHTML='<div class="card gua-result"><div style="font-size:12px;color:var(--text3);margin-bottom:4px;font-family:var(--font-display);letter-spacing:2px">◈ 本卦</div><div class="gua-name">'+gua.full+'</div><div style="font-size:18px;margin:6px 0">'+gua.symbol+'</div><div style="font-size:13px;color:var(--text2);margin-bottom:6px">上卦：'+uS+uN+'（'+uWX+'）· 下卦：'+lS+lN+'（'+lWX+'）</div><div class="gua-desc">'+(gua.desc.replace(/\n/g,'<br>'))+'</div>'+(gua.fortune?(function(){var fc='fortune-ping';if(gua.fortune.indexOf('\u5927\u5409')>=0)fc='fortune-daji';else if(gua.fortune.indexOf('\u5409')>=0)fc='fortune-ji';else if(gua.fortune.indexOf('\u5C0F\u5409')>=0)fc='fortune-xiaoji';else if(gua.fortune.indexOf('\u51F6')>=0)fc='fortune-xiong';return '<div style="text-align:center;margin:10px 0"><span class="fortune-badge '+fc+'">'+gua.fortune+'</span></div>'})():'')+(gua.tuanCi?'<div class="citext-section"><div class="ci-label">\u25C6 \u5F56\u8F9E</div>'+gua.tuanCi+'</div>':'')+(gua.xiangCi?'<div class="citext-section"><div class="ci-label">\u25C6 \u8C61\u8F9E</div>'+gua.xiangCi+'</div>':'')+(gua.yaoCi&&gua.yaoCi.length?'<div class="yaoci-section"><div class="yaoci-title">\u25C6 \u723E\u8F9E</div>'+gua.yaoCi.map(function(y){return '<div class="yaoci-item">'+y+'</div>'}).join('')+'</div>':'')+(gua.advice?'<div class="advice-section"><div class="advice-title">\u25C6 \u5B9E\u7528\u5EFA\u8BAE</div><div class="advice-item">'+gua.advice+'</div></div>':'')+'<div style="margin-top:10px;padding:10px;background:rgba(0,0,0,.25);border-left:2px solid rgba(0,212,255,.3);border-radius:6px"><div style="font-size:12px;color:var(--cyan);margin-bottom:3px;font-family:var(--font-display);letter-spacing:1px">▣ 体用分析</div><div style="font-size:13px;line-height:1.7;color:var(--text2)">'+tiYong+'</div></div><div style="margin-top:6px;font-size:12px;color:var(--text3)">动爻：第'+dongLabels[dongYao]+'爻</div></div>'}
+function doMeihua(){var upper,lower,dongYao;if(meihuaMode==='number'){var n1=parseInt(document.getElementById('mhNum1').value)||0;var n2=parseInt(document.getElementById('mhNum2').value)||0;if(n1<1||n2<1){showToast('请输入有效的数字');return}upper=n1%8;lower=n2%8;dongYao=(n1+n2)%6}else if(meihuaMode==='time'){var now=new Date();var y=now.getFullYear(),m=now.getMonth()+1,d=now.getDate();upper=(y+m+d)%8;lower=(y+m+d+now.getHours())%8;dongYao=(y+m+d+now.getHours())%6}else{var word=document.getElementById('mhWord').value.trim();if(!word){showToast('请输入汉字');return}var len=word.length;upper=len%8;lower=(len+1)%8;dongYao=(len+1)%6}if(upper===0)upper=8;if(lower===0)lower=8;var syms=['','☰','☱','☲','☳','☴','☵','☶','☷'];var names=['','乾','兑','离','震','巽','坎','艮','坤'];var uS=syms[upper],lS=syms[lower],uN=names[upper],lN=names[lower];var guaIdx=-1;for(var i=0;i<gua64.length;i++){if(gua64[i].symbol===uS+lS){guaIdx=i;break}}if(guaIdx===-1)guaIdx=0;var gua=gua64[guaIdx];
+// 互卦：本卦234爻为下互，345爻为上互
+var baGuaWX={'乾':'金','兑':'金','离':'火','震':'木','巽':'木','坎':'水','艮':'土','坤':'土'};
+var uWX=baGuaWX[uN],lWX=baGuaWX[lN];
+var wXS={'金':'水','水':'木','木':'火','火':'土','土':'金'};
+var wXK={'金':'木','木':'土','土':'水','水':'火','火':'金'};
+var tiYong='';
+if(wXS[uWX]===lWX)tiYong='上卦<strong>'+uN+'</strong>（'+uWX+'）生下卦<strong>'+lN+'</strong>（'+lWX+'）<br><span style="color:var(--green);font-size:18px">用生体 · 大吉</span>';
+else if(wXS[lWX]===uWX)tiYong='下卦<strong>'+lN+'</strong>（'+lWX+'）生上卦<strong>'+uN+'</strong>（'+uWX+'）<br><span style="color:var(--rose)">体生用 · 泄气</span>';
+else if(wXK[uWX]===lWX)tiYong='上卦<strong>'+uN+'</strong>（'+uWX+'）克下卦<strong>'+lN+'</strong>（'+lWX+'）<br><span style="color:var(--red);font-size:18px">用克体 · 凶</span>';
+else if(wXK[lWX]===uWX)tiYong='下卦<strong>'+lN+'</strong>（'+lWX+'）克上卦<strong>'+uN+'</strong>（'+uWX+'）<br><span style="color:var(--cyan)">体克用 · 吉</span>';
+else if(uWX===lWX)tiYong='上下同属<strong>'+uWX+'</strong><br><span style="color:var(--cyan);font-size:18px">比和 · 吉</span>';
+else tiYong='上卦'+uN+'与下卦'+lN+'无直接生克<br><span style="color:var(--text3)">中和</span>';
+var dongLabel=dongYao===0?'上爻动':(['初','二','三','四','五','上'][dongYao-1]+'爻动');
+// 互卦计算（基于上下卦的数字）
+var upNum=syms.indexOf(uS),loNum=syms.indexOf(lS);
+// 互卦下卦: 本卦下卦上两爻 + 本卦上卦下一爻 = loNum的高2位+upNum的低1位
+var huLow={
+2:[[2,1,1],[2,1,2],[2,1,3],[2,1,4],[2,1,5],[2,1,6],[2,1,7],[2,1,8]],
+// We'll use the binary of trigrams to compute mutual hexagram
+};
+var huGua=null;
+// 简化互卦计算：上卦取本卦上卦中间爻+下两爻 → 这里用近似算法
+var guaBinary={1:[1,1,1],2:[1,1,0],3:[1,0,1],4:[1,0,0],5:[0,1,1],6:[0,1,0],7:[0,0,1],8:[0,0,0]};
+var ub=guaBinary[upper],lb=guaBinary[lower];
+var huLower=[lb[1],lb[2],ub[0]];  // 下卦中上两爻 + 上卦下一爻
+var huUpper=[lb[2],ub[0],ub[1]];  // 下卦上一爻 + 上卦下两爻
+function binToGuaNum(arr){var v=(arr[0]<<2)+(arr[1]<<1)+arr[2];var m=[8,7,6,5,4,3,2,1];return m[v];}
+var huLoNum=binToGuaNum(huLower),huHiNum=binToGuaNum(huUpper);
+var huS=syms[huHiNum]+syms[huLoNum];
+for(var i=0;i<gua64.length;i++){if(gua64[i].symbol===huS){huGua=gua64[i];break}}
+// 输出
+var h='<div class="card gua-result">';
+h+='<div style="font-size:12px;color:var(--text3);margin-bottom:4px;font-family:var(--font-display);letter-spacing:2px">◈ 本卦</div>';
+h+='<div class="gua-name">'+gua.full+'</div><div style="font-size:18px;margin:6px 0">'+gua.symbol+'</div>';
+h+='<div style="font-size:13px;color:var(--text2);margin-bottom:10px">上卦：'+uN+'（'+uWX+'） | 下卦：'+lN+'（'+lWX+'） | <strong>'+dongLabel+'</strong></div>';
+h+='<div style="padding:10px;background:rgba(0,0,0,.2);border-radius:6px;margin-bottom:10px;font-size:13px;line-height:2;color:var(--text2)">'+tiYong+'</div>';
+// 互卦
+if(huGua){
+ h+='<div style="margin-top:10px;padding:10px;background:rgba(240,192,96,.05);border-radius:6px;border-left:2px solid var(--gold)">';
+ h+='<div style="font-size:12px;color:var(--gold);margin-bottom:4px;font-family:var(--font-display)">◈ 互卦（事物发展过程）</div>';
+ h+='<div style="font-family:var(--font-display);font-weight:600;font-size:16px;color:var(--cyan)">'+huGua.full+'</div>';
+ h+='<div style="font-size:14px;margin-bottom:2px">'+huS+'</div>';
+ h+='<div style="font-size:12px;color:var(--text2);line-height:1.6;margin-top:4px">'+(huGua.desc?huGua.desc.substring(0,100)+'...':'')+'</div>';
+ h+='</div>';
+}
+if(gua.yuan){
+ h+='<div style="margin-top:10px;font-size:12px;color:var(--gold);font-family:var(--font-display);letter-spacing:1px;margin-bottom:6px;text-shadow:0 0 6px var(--glow-gold)">◈ 原卦辞</div>';
+ h+='<div style="font-size:12px;color:var(--text2);line-height:1.8;margin-bottom:12px;padding:10px;background:rgba(240,192,96,.04);border-radius:6px;border-left:2px solid var(--gold)">'+gua.yuan+'</div>';
+}
+h+='<div style="font-size:12px;color:var(--cyan);font-family:var(--font-display);letter-spacing:1px;margin-bottom:6px">◈ 白话解析</div>';
+h+='<div class="gua-desc">'+(gua.desc?gua.desc.replace(/\n/g,'<br>'):'')+'</div>';
+if(gua.fortune){var fc='fortune-ping';if(gua.fortune.indexOf('大吉')>=0)fc='fortune-daji';else if(gua.fortune.indexOf('吉')>=0)fc='fortune-ji';else if(gua.fortune.indexOf('小吉')>=0)fc='fortune-xiaoji';else if(gua.fortune.indexOf('凶')>=0)fc='fortune-xiong';h+='<div style="text-align:center;margin:10px 0"><span class="fortune-badge '+fc+'">'+gua.fortune+'</span></div>'}
+if(gua.advice){h+='<div class="advice-section"><div class="advice-title">◈ 实用建议</div><div class="advice-item">'+gua.advice+'</div></div>'}
+h+='</div>';
+document.getElementById('meihuaResult').innerHTML=h;
+}
 
 // ========== 今日运势 ==========
 var dailyFortuneData = null;
@@ -1343,7 +1550,9 @@ var now=new Date();
 var y=now.getFullYear(),m=now.getMonth()+1,d=now.getDate();
 var dayGZ=getDayGanZhi(y,m,d);
 var zhiIdx=diZhi.indexOf(dayGZ[1]);
-var seed=(y*366+m*31+d)%12;
+var ganIdx=tianGan.indexOf(dayGZ[0]);
+// 基于日干支推算，非随机：日干×7+日支×5 模12 定天将起始
+var seed=(ganIdx*7+zhiIdx*5)%12;
 
 var jiang=[];
 for(var i=0;i<12;i++)jiang.push(shiErTianJiang[(seed+i)%12]);
@@ -1486,31 +1695,321 @@ h+='</div>';
 document.getElementById('liurenContent').innerHTML=h;
 }
 
-// ========== 民俗 ==========
-var earPredict={left:{zi:'有人请客吃饭',chou:'有人思念你',yin:'有人请你赴宴',mao:'有喜事临门',chen:'有远客来访',si:'有财运到来',wu:'有人请饮酒',wei:'有好事发生',shen:'有争吵之事',you:'有人请你赴约',xu:'有虚惊之事',hai:'有人请你帮忙'},right:{zi:'有人暗算你',chou:'有人争吵',yin:'有女客来访',mao:'有纠纷之事',chen:'有损失之事',si:'有凶事发生',wu:'有人来借钱',wei:'有小人作祟',shen:'有朋友来访',you:'有人议是非',xu:'有女客相访',hai:'有人设宴款待'}};
-var eyePredict={left:{zi:'贵人到来',chou:'有人思念',yin:'有客来访',mao:'有喜事',chen:'有饮食之乐',si:'有贵客到',wu:'有饮食之喜',wei:'有喜事临门',shen:'有凶事',you:'有贵客到',xu:'有人请客',hai:'有人请饮酒'},right:{zi:'有烦恼事',chou:'有人争吵',yin:'有朋友到',mao:'有凶事',chen:'有远行',si:'有凶兆',wu:'有饮食之事',wei:'有喜事',shen:'有吉事',you:'有凶事',xu:'有人思念',hai:'有人请客'}};
-var facePredict={left_eyebrow:{zi:'贵人到',chou:'有口舌',yin:'有客至',mao:'有喜事',chen:'有财运',si:'有吉事',wu:'有酒食',wei:'有好事',shen:'有凶事',you:'有贵客',xu:'有烦恼',hai:'有人请'},right_eyebrow:{zi:'有凶事',chou:'有客至',yin:'有口舌',mao:'有财运',chen:'有吉事',si:'有烦恼',wu:'有贵人',wei:'有酒食',shen:'有好事',you:'有凶事',xu:'有贵客',hai:'有口舌'},nose:{zi:'有财运',chou:'有纠纷',yin:'有贵人',mao:'有口舌',chen:'有好事',si:'有忧事',wu:'有酒食',wei:'有财运',shen:'有凶事',you:'有贵人',xu:'有纠纷',hai:'有好事'},left_cheek:{zi:'有酒食',chou:'有凶事',yin:'有人至',mao:'有口舌',chen:'有贵人',si:'有忧事',wu:'有财运',wei:'有喜事',shen:'有吉事',you:'有酒食',xu:'有凶事',hai:'有贵人'},right_cheek:{zi:'有吉事',chou:'有贵人',yin:'有酒食',mao:'有凶事',chen:'有口舌',si:'有喜事',wu:'有忧事',wei:'有贵人',shen:'有酒食',you:'有吉事',xu:'有人至',hai:'有凶事'},mouth:{zi:'有酒食',chou:'有口舌',yin:'有贵人',mao:'有忧事',chen:'有喜事',si:'有酒食',wu:'有口舌',wei:'有吉事',shen:'有凶事',you:'有酒食',xu:'有忧事',hai:'有贵人'},chin:{zi:'有远行',chou:'有纠纷',yin:'有酒食',mao:'有贵人',chen:'有忧事',si:'有远行',wu:'有口舌',wei:'有喜事',shen:'有酒食',you:'有远行',xu:'有纠纷',hai:'有贵人'}};
-var partNames={left_eyebrow:'左眉',right_eyebrow:'右眉',left_eyelid:'左眼皮',right_eyelid:'右眼皮',nose:'鼻子',left_cheek:'左脸',right_cheek:'右脸',mouth:'嘴',chin:'下巴'};
-var sneezePredict={male:{zi:'有人请吃酒席',chou:'有人请赴宴',yin:'有客人来访',mao:'有喜事将近',chen:'有远客到来',si:'有财运将至',wu:'有人请吃饭',wei:'有好事发生',shen:'有朋友来访',you:'有人邀约',xu:'有虚惊之事',hai:'有人请你帮忙'},female:{zi:'有人思念你',chou:'有人背后说你',yin:'有人想念你',mao:'有好事临门',chen:'有人牵挂你',si:'有贵人相助',wu:'有人请你吃饭',wei:'有喜事将至',shen:'有人惦记你',you:'有人想念你',xu:'有人牵挂你',hai:'有人请你赴约'}};
-var heartPredict={male:{zi:'有人请客',chou:'有贵人相助',yin:'有喜事临门',mao:'有客来访',chen:'有财运到来',si:'有吉事发生',wu:'有酒食之喜',wei:'有远客将至',shen:'有朋友相邀',you:'有贵人到访',xu:'有好事将近',hai:'有人请你赴宴'},female:{zi:'有人思念',chou:'有忧愁事',yin:'有贵人相助',mao:'有客来访',chen:'有财运将至',si:'有喜事临门',wu:'有酒食之乐',wei:'有朋友想念',shen:'有亲人牵挂',you:'有吉事发生',xu:'有人惦记你',hai:'有人请你帮忙'}};
-var handPredict={left:{zi:'有财运到来',chou:'有人送礼',yin:'有贵人相助',mao:'有意外之财',chen:'有朋友相助',si:'有财运将至',wu:'有进财之喜',wei:'有贵人到访',shen:'有小人作祟',you:'有朋友请客',xu:'有意外收获',hai:'有人送礼上门'},right:{zi:'有破财之忧',chou:'有意外支出',yin:'有朋友借钱',mao:'有损失之事',chen:'有破财之兆',si:'有口舌是非',wu:'有破财之事',wei:'有意外花费',shen:'有财运到来',you:'有破财之忧',xu:'有朋友相助',hai:'有意外之财'}};
-var hiccupPredict={zi:'有人思念你',chou:'有忧愁之事',yin:'有贵人相助',mao:'有客人将至',chen:'有口舌是非',si:'有财运到来',wu:'有酒食之乐',wei:'有好事发生',shen:'有烦恼之事',you:'有朋友来访',xu:'有虚惊之事',hai:'有人请你吃饭'};
-var footPredict={left:{zi:'有远行之兆',chou:'有出行之喜',yin:'有贵人相助',mao:'有旅途平安',chen:'有远客到来',si:'有出行之利',wu:'有远行将至',wei:'有旅途顺利',shen:'有出行之忧',you:'有贵人迎接',xu:'有出行之兆',hai:'有远行平安'},right:{zi:'有出行之忧',chou:'有旅途不顺',yin:'有远行之兆',mao:'有贵人同行',chen:'有出行之喜',si:'有旅途平安',wu:'有远行将至',wei:'有出行顺利',shen:'有旅途之喜',you:'有贵人相助',xu:'有出行之忧',hai:'有远行平安'}};
-var lipPredict={upper:{zi:'有饮食之喜',chou:'有口舌是非',yin:'有贵人到访',mao:'有酒食之乐',chen:'有喜事临门',si:'有财运到来',wu:'有饮食之喜',wei:'有好事发生',shen:'有口舌之争',you:'有贵人相助',xu:'有忧愁之事',hai:'有酒食之乐'},lower:{zi:'有口舌是非',chou:'有饮食之喜',yin:'有忧愁之事',mao:'有贵人相助',chen:'有口舌之争',si:'有喜事临门',wu:'有口舌是非',wei:'有贵人到访',shen:'有饮食之乐',you:'有忧愁之事',xu:'有贵人相助',hai:'有口舌是非'}};
-var dreamPredict={water:{name:'梦见水/江河/大海',meaning:'水主财，梦见清水大吉，主财运亨通；江河奔流象征事业顺利。',type:'good'},fire:{name:'梦见火/火焰/火灾',meaning:'火主热情与事业。梦见旺火大吉，主事业兴旺、贵人相助。',type:'mixed'},snake:{name:'梦见蛇',meaning:'蛇主财运与暗中的贵人。梦见蛇缠身主有贵人暗中相助，转运之兆。',type:'good'},dragon:{name:'梦见龙',meaning:'龙为至贵之兆，大吉大利。梦见飞龙在天主事业腾飞。',type:'good'},fly:{name:'梦见飞行/飞翔',meaning:'飞行主志向高远。梦见自己飞翔主事业有成、心想事成。',type:'good'},fall:{name:'梦见跌落/坠落',meaning:'跌落主压力与不安。宜静心修养，不宜冒进。',type:'bad'},death:{name:'梦见死亡/丧事',meaning:'梦见死亡并非凶兆，象征旧事已去、新运将至。',type:'good'},marry:{name:'梦见结婚/婚礼',meaning:'梦见结婚主有喜事。未婚者主姻缘将近，已婚者主家庭和睦。',type:'good'},baby:{name:'梦见婴儿/小孩',meaning:'婴儿主新生与希望。梦见可爱的婴儿主有新机遇到来。',type:'good'},teeth:{name:'梦见掉牙/拔牙',meaning:'掉牙主亲人牵挂或自身健康。宜多关心家人，注意身体健康。',type:'bad'},chase:{name:'梦见被追赶',meaning:'被追赶主逃避与压力。暗示近期有不愿面对的事情，需要勇敢正视。',type:'bad'},money:{name:'梦见捡钱/发财',meaning:'梦见捡钱主偏财运。宜脚踏实地，不宜投机。',type:'mixed'},house:{name:'梦见房屋/搬家',meaning:'房屋主家业与根基。梦见新居大吉，主事业有新发展。',type:'good'},rain:{name:'梦见下雨/暴雨',meaning:'雨主滋润与变化。梦见雨过天晴主困难即将过去。',type:'mixed'},snow:{name:'梦见下雪/冰雪',meaning:'雪主纯洁与收获。梦见瑞雪大吉，主来年丰收。',type:'good'},flower:{name:'梦见花开/花落',meaning:'花开主好事将近、感情美满；花落主需珍惜当下。',type:'mixed'},bird:{name:'梦见鸟/凤凰',meaning:'鸟主消息与自由。梦见凤凰大吉，主贵运将至。',type:'good'},cat:{name:'梦见猫/狗',meaning:'猫主灵性与暗中的朋友。梦见狗主忠诚的朋友。',type:'mixed'},exam:{name:'梦见考试/考场',meaning:'考试主考验与能力。梦见考试顺利主能力得到认可。',type:'mixed'},hair:{name:'梦见头发/白发',meaning:'头发主智慧与寿命。梦见白发主长寿之兆。',type:'good'}};
+// ========== 诸葛神数 ==========
+var zhugePoems=[
+'天门一卦榜，预定夺标人。马嘶芳草地，秋高听鹿鸣。',
+'暗去又明来，忧心事可谐。终须逢贵人，云开见月来。',
+'意在闲中信未来，故人千里意徘徊。天边雁足传消息，一点梅花春色回。',
+'喜喜喜，终须得。否否否，终须失。一得一失，天道之常。',
+'风急浪高舟欲斜，惊心触目事如麻。忽然一橹风涛静，万里云开月正华。',
+'一片白云关外飞，故园回首意多违。阳关三叠休重唱，恐有离人泪满衣。',
+'碧玉池中开白莲，庄严色相自天然。生来骨格非凡俗，正是瑶台第一仙。',
+'平地起风烟，时势未能全。但看云中月，团圆在眼前。',
+'明月水中捞不得，从今休要强追求。不如守己安常分，自有芳名万古留。',
+'远远前途事可疑，君今着意莫迟疑。好将一着争先手，他日声名四海知。',
+'一舟行货水云乡，万里风平浪不扬。满载归来人竞羡，鹏程直上到仙乡。',
+'金乌出海照天门，万国衣冠拜至尊。身到玉墀承雨露，九重春色醉仙根。',
+'前生注定是姻缘，千里红丝一线牵。但得两心长似水，何愁鸾镜不团圆。',
+'青山隐隐水迢迢，秋尽江南草未凋。二十四桥明月夜，玉人何处教吹箫。',
+'乱丝无头不可理，凶事到头还自起。不如静坐待时机，自有高人相指引。',
+'风云会合日，龙虎际会时。若问前程事，今朝定可期。',
+'春花秋月两相宜，月竞光华花竞姿。自有一般清意味，不须惆怅怨芳时。',
+'君家何必苦忧煎，得意花开在眼前。一箭定将天山定，果然龙跃九重天。',
+'劝君切莫向他求，似鹤飞来暗箭投。若去采薪蛇在草，恐遭毒手也须忧。',
+'月到天心处，风来水面时。一般清意味，料得少人知。',
+'龙潜于渊，待时而起。一旦升天，云行雨施。',
+'火里栽莲，水中捞月。苦心劳力，终成虚设。',
+'事有可疑，谋有未便。静以待时，自有机变。',
+'一条大路通青天，何必崎岖苦问仙。但向此中行将去，吉凶祸福总由天。',
+'忠言逆耳利于行，良药苦口利于病。劝君莫厌忠言语，他日方知我有情。',
+'日落西山月又东，光阴似箭去无踪。劝君莫惜金缕衣，惜取少年时下功。',
+'求则得之，舍则失之。是求有益于得也，求在我者也。',
+'有意栽花花不发，无心插柳柳成荫。世间万事皆前定，一笑相逢酒满斟。',
+'阴云蔽日不分明，且向梅边问旧盟。一纸书来消息好，小窗风雨又天晴。',
+'春蚕到死丝方尽，蜡炬成灰泪始干。莫道桑榆晚景迫，红霞尚满半边天。',
+'蛟龙得云雨，终非池中物。他年若遂凌云志，敢笑黄巢不丈夫。',
+'白玉无瑕琢不成，天教留待圣明君。一朝得遇良工手，连城之价天下闻。'
+];
+var zhugeDianGu=[
+'取意"春风得意马蹄疾"，功名成就之象。',
+'先暗后明，贵人相助。凡事坚持必有转机。',
+'好消息即将到来，远方有贵人相助。宜耐心等待。',
+'得与失自有天定，强求反而不美。顺其自然最好。',
+'虽有波折但终得平安，宜镇定从容应对。',
+'游子思乡或分离之象。宜多联络感情，珍惜眼前人。',
+'品性高洁，超凡脱俗。宜保持本心，不随波逐流。',
+'暂时的纷扰不足为惧，团圆在即。宜沉住气。',
+'莫强求不可得之物。守己安分，自有后福。',
+'前途虽有疑虑，但宜果断前行。先发制人。',
+'事业顺利，满载而归。出行、经商大吉。',
+'贵人提携，位居高位。事业步步高升之兆。',
+'姻缘天定，莫失莫忘。珍惜眼前缘分。',
+'美好的事物就在身边，无需远求。',
+'琐事缠身如乱麻。宜以静制动，等待贵人指路。',
+'时机已到，龙虎风云。大事可成，当机立断。',
+'春月各有其美，无需羡慕他人。走好自己的路。',
+'莫要忧愁，好运马上就来。坚持就是胜利。',
+'切勿向他处寻求，恐遭暗算。谨慎行事为好。',
+'清静无为，自有天地。心境平和即是大吉。',
+'时机未到，暂且潜伏。时机一到，飞龙在天。',
+'费力不讨好之事。及时止损，另寻他路。',
+'事有蹊跷，宜谨慎。等待时机变化。',
+'大道至简，不必求神问卜。命运掌握在自己手中。',
+'忠言逆耳，宜听取他人建议。兼听则明。',
+'光阴似箭，莫负少年时。努力当下最重要。',
+'所求之事取决于自身努力。积极行动即可。',
+'有心栽花反不成，顺其自然反而好。不必强求。',
+'暂时的阴霾终将散去，好消息即将到来。',
+'坚持不懈终有回报。大器晚成亦无妨。',
+'胸怀大志者终非池中物。努力向上，必有所成。',
+'天生我材必有用。等待良机，终遇伯乐。'
+];
+var zhugeJieQian=[
+'上上签：所求之事大吉大利，宜积极行动，把握良机。事业上宜开拓进取，感情上宜主动表白，出行经商皆有收获。',
+'上签：先难后易，不必焦虑。保持耐心和信心，贵人即将出现。事业虽有波折但终得成功，感情上忠贞不渝必有善果。',
+'中上签：好消息在路上了，请保持期待。远方有贵人牵线，事业有新机遇。感情方面，异地或久未联系的人可能有消息。',
+'中签：得失无常，心平气和最重要。不要执着于一时的得失，把眼光放长远。得时不骄，失时不馁。',
+'中签：眼前虽有风浪，但不要慌乱。沉着应对，自能化险为夷。尤其注意情绪管理，不要因小事大动肝火。',
+'中签：离家在外或与亲友分离之象。游子思乡，或与旧友久未联系。宜主动联络，送个问候。珍惜身边人。',
+'上上签：品性如莲，出淤泥而不染。坚守本心，自有福报。不宜随波逐流，保持独立人格。',
+'中上签：暂时的风波很快会过去。乌云遮不住明月，坚持就是胜利。尤其是家庭或团队内部的矛盾，很快会化解。',
+'中下签：不要追求不切实际的东西。水中捞月一场空，不如脚踏实地做好眼前事。知足者常乐。',
+'中上签：前路虽有不确定性，但不宜犹豫。果断迈出第一步，抢先机者得天下。相信自己的判断。',
+'上上签：一帆风顺，满载而归。出差、旅行、投资项目均有利。事业处于上升期，宜把握机会大展拳脚。',
+'上上签：贵人相助，事业腾飞。近期可能有晋升或重要项目机会。宜主动表现，展示自己的能力。',
+'上上签：姻缘天定，千里姻缘一线牵。单身者近期有望遇到心仪对象；已有伴侣者感情甜蜜稳定。',
+'中上签：生活中的美好就在身边，不需要去遥远的地方寻找。珍惜眼前风景，感恩当下所有。',
+'中下签：近期事务繁杂如乱麻，不要试图一次性全部解决。宜一件一件来，或寻求专业帮助。',
+'上签：时机已到！无论事业还是感情，都是行动的好时机。犹豫就会错过，当断则断。',
+'中签：各有各的精彩，不要和别人比较。你的道路有独特的美，走好自己的路即可。',
+'上签：转机即将到来！之前的烦恼很快会烟消云散。事业上宜保持信心，感情上宜开心面对。',
+'下签：近期需谨慎行事，防人之心不可无。不宜做重大决定，不宜轻信他人许诺。低调行事为上。',
+'中上签：内心清净是最好的状态。凡事不可强求，顺其自然。享受当下，感恩拥有。',
+'中签：目前时机尚未成熟，宜积蓄力量、默默准备。时机一到，自会一飞冲天。宜充电学习。',
+'下签：此事投入与回报不成正比。宜及时止损，把精力放在更有价值的事情上。',
+'中下签：情况不明朗，先不要轻举妄动。静观其变，等局势明朗了再做决定。',
+'中签：命运在自己手中，勿过分依赖占卜。积极主动，开拓进取，才是根本之道。',
+'中签：身边有人在对你说不好听但有用的话。宜虚心听取批评建议，对你长远发展有利。',
+'中签：珍惜时间！不要把光阴浪费在无益的事情上。现在努力，将来才能收获。',
+'上签：所求之事取决于自己的努力。行动起来吧，积极的人生态度本身就是最好的运气。',
+'中上签：凡事不可强求。当你放松心态后，想要的反而不期而至。顺其自然。',
+'中上签：当前的烦恼是暂时的，很快会云开雾散。宜保持乐观，好消息正在来的路上。',
+'中上签：坚持就是胜利。虽然过程可能艰辛，但结果会是好的。尤其适合长期投入的事业。',
+'上上签：你注定不是平庸之辈！怀揣大志，努力向上，终有一天会出人头地。',
+'上上签：良才美玉，只待时机。耐心等待属于你的机会，遇到了赏识你的人就会大放光彩。'
+];
+function drawZhuge(){
+ var zhugeArea=document.getElementById('zhugeArea');
+ var zhugeBtn=document.getElementById('zhugeBtn');
+ var zhugeResult=document.getElementById('zhugeResult');
+ // Animation
+ zhugeBtn.disabled=true;
+ zhugeBtn.textContent='抽取中...';
+ var tube=document.getElementById('zhugeTube');
+ tube.style.animation='zhugeShake .3s ease-in-out 5';
+ // Generate sign number 1-384
+ var signNum=Math.floor(Math.random()*384)+1;
+ // Map to poem index (0-31)
+ var poemIdx=(signNum*7+signNum%64*13)%32;
+ var poem=zhugePoems[poemIdx];
+ var diangu=zhugeDianGu[poemIdx];
+ var jieqian=zhugeJieQian[poemIdx];
+ setTimeout(function(){
+  tube.style.animation='';
+  zhugeBtn.disabled=false;
+  zhugeBtn.textContent='重新抽签';
+  var fortuneLevel=jieqian.substring(0,jieqian.indexOf('：'));
+  var fortuneColor='var(--text2)';
+  if(fortuneLevel.indexOf('上上')>=0)fortuneColor='var(--green)';
+  else if(fortuneLevel.indexOf('上签')>=0||fortuneLevel.indexOf('上')>=0)fortuneColor='var(--cyan)';
+  else if(fortuneLevel.indexOf('下')>=0)fortuneColor='var(--red)';
+  else if(fortuneLevel.indexOf('中下')>=0)fortuneColor='var(--rose)';
+  else fortuneColor='var(--gold)';
+  var h='<div style="text-align:center;padding:20px 0">';
+  h+='<div style="font-size:14px;color:var(--text3);margin-bottom:6px;font-family:var(--font-display)">第 '+signNum+' 签</div>';
+  h+='<div style="display:inline-block;padding:4px 16px;background:'+fortuneColor+'20;border:1px solid '+fortuneColor+'60;border-radius:16px;color:'+fortuneColor+';font-size:14px;font-weight:600;margin-bottom:10px">'+fortuneLevel+'</div>';
+  h+='<div style="font-size:18px;color:var(--accent-gold-light);line-height:2;letter-spacing:1px;font-family:var(--font-display);margin-bottom:10px;padding:12px;background:rgba(0,0,0,.2);border-radius:6px">'+poem+'</div>';
+  h+='<div style="font-size:12px;color:var(--text3);margin-bottom:16px;line-height:1.6">典故：'+diangu+'</div>';
+  h+='<div style="font-size:13px;color:var(--text2);line-height:1.8;text-align:left;padding:12px;background:rgba(0,0,0,.15);border-radius:6px;border-left:2px solid '+fortuneColor+'">'+jieqian+'</div>';
+  h+='</div>';
+  zhugeResult.innerHTML=h;
+ },2000);
+}
+// CSS animation for sign tube
+(function(){
+ var style=document.createElement('style');
+ style.textContent='@keyframes zhugeShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px) rotate(-3deg)}50%{transform:translateX(8px) rotate(3deg)}75%{transform:translateX(-6px) rotate(-2deg)}}';
+ document.head.appendChild(style);
+})();
 
-function doFolkPredict(type){var data,partName,scN={zi:'子时',chou:'丑时',yin:'寅时',mao:'卯时',chen:'辰时',si:'巳时',wu:'午时',wei:'未时',shen:'申时',you:'酉时',xu:'戌时',hai:'亥时'};
-if(type==='dream'){var dt=document.getElementById('dreamType').value;var d=dreamPredict[dt];var typeClass=d.type==='good'?'fr-good':d.type==='bad'?'fr-bad':'';document.getElementById('dreamResult').innerHTML='<div class="folk-result"><div class="fr-type">'+d.name+'</div><div class="fr-detail '+typeClass+'">'+d.meaning+'</div><div style="margin-top:10px;font-size:18px;letter-spacing:3px">'+(d.type==='good'?'✦ 吉 ✦':d.type==='bad'?'✧ 凶 ✧':'✦ 半吉半凶 ✦')+'</div></div>';return}
-var time;if(type==='ear'){var side=document.getElementById('earSide').value;time=document.getElementById('earTime').value;data=earPredict[side][time];partName=side==='left'?'左耳':'右耳'}else if(type==='eye'){var side=document.getElementById('eyeSide').value;time=document.getElementById('eyeTime').value;data=eyePredict[side][time];partName=side==='left'?'左眼':'右眼'}else if(type==='face'){var part=document.getElementById('facePart').value;time=document.getElementById('faceTime').value;data=facePredict[part][time];partName=partNames[part]}else if(type==='sneeze'){var g=document.getElementById('sneezeGender').value;time=document.getElementById('sneezeTime').value;data=sneezePredict[g][time];partName=(g==='male'?'男':'女')+'性'}else if(type==='heart'){var g=document.getElementById('heartGender').value;time=document.getElementById('heartTime').value;data=heartPredict[g][time];partName=(g==='male'?'男':'女')+'性'}else if(type==='hand'){var side=document.getElementById('handSide').value;time=document.getElementById('handTime').value;data=handPredict[side][time];partName=side==='left'?'左手':'右手'}else if(type==='hiccup'){time=document.getElementById('hiccupTime').value;data=hiccupPredict[time];partName='打嗝'}else if(type==='foot'){var side=document.getElementById('footSide').value;time=document.getElementById('footTime').value;data=footPredict[side][time];partName=side==='left'?'左脚':'右脚'}else if(type==='lip'){var p=document.getElementById('lipPart').value;time=document.getElementById('lipTime').value;data=lipPredict[p][time];partName=p==='upper'?'上唇':'下唇'}
-var jw=['喜','财','吉','贵','好','宴','请','乐','利','顺','平安','祥'];var isGood=jw.some(function(w){return data.indexOf(w)>=0});document.getElementById(type+'Result').innerHTML='<div class="folk-result"><div class="fr-type">'+partName+' · '+scN[time]+'</div><div class="fr-detail '+(isGood?'fr-good':'fr-bad')+'">'+data+'</div><div style="margin-top:10px;font-size:18px;letter-spacing:3px">'+(isGood?'✦ 吉 ✦':'✧ 凶 ✧')+'</div></div>'}
+// ========== 民俗 ==========
+var earPredict={left:{zi:'【原文】主有饮食 【译文】将有酒宴饮食之喜',chou:'【原文】主有口舌 【译文】需防口舌是非，慎言慎行',yin:'【原文】主有远客至 【译文】将有远方的客人来访',mao:'【原文】主有财喜 【译文】将有财运或喜事临门',chen:'【原文】主有客至 【译文】将有客人到来',si:'【原文】主有财喜 【译文】将有财运或意外收获',wu:'【原文】主有饮食 【译文】将有宴请或美食之喜',wei:'【原文】主有客至 【译文】将有客人来访',shen:'【原文】主有口舌 【译文】需防口舌是非之事',you:'【原文】主有远信至 【译文】将有远方的书信或消息',xu:'【原文】主有虚惊 【译文】需防虚惊之事，不必过忧',hai:'【原文】主有官非口舌 【译文】需防官司口舌之扰'},right:{zi:'【原文】主有争讼 【译文】需防争执与官司之事',chou:'【原文】主有口舌 【译文】将有口舌是非，慎言',yin:'【原文】主有远信至 【译文】远方有书信或消息传来',mao:'【原文】主小人口舌 【译文】需防小人背后搬弄是非',chen:'【原文】主有破财 【译文】需防财物损失，谨慎理财',si:'【原文】主有争讼 【译文】需防争执纠纷之事',wu:'【原文】主有灾病 【译文】需注意身体健康，防疾病',wei:'【原文】主有口舌 【译文】将有口舌之争，宜忍让',shen:'【原文】主有客至 【译文】将有客人到访',you:'【原文】主有争讼 【译文】需防争执诉讼之事',xu:'【原文】主有虚惊 【译文】需防虚惊之事，心神不宁',hai:'【原文】主有官非口舌 【译文】需防官司纠纷之扰'}};
+var eyePredict={left:{zi:'【原文】主有贵人 【译文】将有贵人相助，诸事顺利',chou:'【原文】主有忧疑 【译文】将有忧愁疑虑之事扰心',yin:'【原文】主有远客至 【译文】将有远方客人到访',mao:'【原文】主有饮食 【译文】将有酒宴饮食之喜',chen:'【原文】主有喜事 【译文】将有喜事临门',si:'【原文】主有凶事 【译文】需防凶险不吉之事',wu:'【原文】主有口舌 【译文】需防口舌是非',wei:'【原文】主有财喜 【译文】将有财运或意外之喜',shen:'【原文】主有口舌 【译文】需防口舌之争',you:'【原文】主有远信至 【译文】将有远方书信或消息',xu:'【原文】主有酒食 【译文】将有宴请酒食之乐',hai:'【原文】主有贵客至 【译文】将有贵客临门'},right:{zi:'【原文】主有人情 【译文】将有人情往来之事',chou:'【原文】主有口舌 【译文】需防口舌是非',yin:'【原文】主有远信至 【译文】将有远方消息传来',mao:'【原文】主有贵人至 【译文】将有贵人到来相助',chen:'【原文】主有损财 【译文】需防破财损失之事',si:'【原文】主有凶事 【译文】需防不吉凶事发生',wu:'【原文】主有灾病 【译文】需注意身体健康防疾病',wei:'【原文】主有口舌 【译文】需防口舌争执',shen:'【原文】主有凶事 【译文】需防不吉之事发生',you:'【原文】主有争讼 【译文】需防争执诉讼之事',xu:'【原文】主有虚惊 【译文】需防虚惊不宁之事',hai:'【原文】主有官非 【译文】需防官司纠纷之扰'}};
+var facePredict={left_eyebrow:{zi:'【原文】主有喜事 【译文】将有喜事临门',chou:'【原文】主有口舌 【译文】需防口舌是非',yin:'【原文】主有客至 【译文】将有客人到来',mao:'【原文】主有饮食 【译文】将有酒宴美食之喜',chen:'【原文】主有远客至 【译文】将有远方客人来访',si:'【原文】主有喜事 【译文】将有喜事发生',wu:'【原文】主有酒食 【译文】将有宴请酒食之乐',wei:'【原文】主有吉事 【译文】将有吉利之事发生',shen:'【原文】主有客至 【译文】将有客人来访',you:'【原文】主有喜事 【译文】将有喜事临门',xu:'【原文】主有酒食 【译文】将有酒宴之乐',hai:'【原文】主有客至 【译文】将有客人到访'},right_eyebrow:{zi:'【原文】主有酒食 【译文】将有酒宴饮食',chou:'【原文】主有客至 【译文】将有客人到来',yin:'【原文】主有口舌 【译文】需防口舌是非',mao:'【原文】主有喜事 【译文】将有喜事发生',chen:'【原文】主有吉事 【译文】将有吉利之事',si:'【原文】主有口舌 【译文】需防口舌之争',wu:'【原文】主有贵人 【译文】将有贵人相助',wei:'【原文】主有酒食 【译文】将有酒宴之乐',shen:'【原文】主有喜事 【译文】将有喜事临门',you:'【原文】主有客至 【译文】将有客人到访',xu:'【原文】主有贵人 【译文】将有贵人相助',hai:'【原文】主有口舌 【译文】需防口舌是非'},nose:{zi:'【原文】主有财喜 【译文】将有财运喜事',chou:'【原文】主有口舌 【译文】需防口舌是非',yin:'【原文】主有贵人 【译文】将有贵人相助',mao:'【原文】主有酒食 【译文】将有酒宴饮食',chen:'【原文】主有喜事 【译文】将有喜事发生',si:'【原文】主有忧疑 【译文】将有忧愁疑虑',wu:'【原文】主有饮食 【译文】将有饮食宴请',wei:'【原文】主有财喜 【译文】将有财运之喜',shen:'【原文】主有口舌 【译文】需防口舌是非',you:'【原文】主有贵人 【译文】将有贵人相助',xu:'【原文】主有酒食 【译文】将有酒宴之乐',hai:'【原文】主有喜事 【译文】将有喜事临门'},left_cheek:{zi:'【原文】主有酒食 【译文】将有酒宴之乐',chou:'【原文】主有客至 【译文】将有客人来访',yin:'【原文】主有人至 【译文】将有人前来',mao:'【原文】主有口舌 【译文】需防口舌是非',chen:'【原文】主有贵人 【译文】将有贵人相助',si:'【原文】主有忧疑 【译文】将有忧虑之事',wu:'【原文】主有财喜 【译文】将有财运之喜',wei:'【原文】主有喜事 【译文】将有喜事临门',shen:'【原文】主有吉事 【译文】将有吉利之事',you:'【原文】主有酒食 【译文】将有酒宴之乐',xu:'【原文】主有客至 【译文】将有客人到访',hai:'【原文】主有贵人 【译文】将有贵人来临'},right_cheek:{zi:'【原文】主有吉事 【译文】将有吉利之事',chou:'【原文】主有贵人 【译文】将有贵人相助',yin:'【原文】主有酒食 【译文】将有酒宴之乐',mao:'【原文】主有口舌 【译文】需防口舌是非',chen:'【原文】主有远行 【译文】将有远行之事',si:'【原文】主有喜事 【译文】将有喜事临门',wu:'【原文】主有忧疑 【译文】将有忧愁疑虑',wei:'【原文】主有贵人 【译文】将有贵人到来',shen:'【原文】主有酒食 【译文】将有酒宴饮食',you:'【原文】主有吉事 【译文】将有吉利之事',xu:'【原文】主有人至 【译文】将有人到访',hai:'【原文】主有口舌 【译文】需防口舌是非'},mouth:{zi:'【原文】主有酒食 【译文】将有酒宴饮食',chou:'【原文】主有口舌 【译文】需防口舌是非',yin:'【原文】主有贵人 【译文】将有贵人相助',mao:'【原文】主有忧疑 【译文】将有忧愁疑虑',chen:'【原文】主有喜事 【译文】将有喜事发生',si:'【原文】主有酒食 【译文】将有酒宴之乐',wu:'【原文】主有口舌 【译文】需防口舌是非',wei:'【原文】主有吉事 【译文】将有吉利之事',shen:'【原文】主有客至 【译文】将有客人到来',you:'【原文】主有酒食 【译文】将有酒宴饮食',xu:'【原文】主有忧疑 【译文】将有忧愁疑虑',hai:'【原文】主有贵人 【译文】将有贵人相助'},chin:{zi:'【原文】主有远行 【译文】将有远行出门',chou:'【原文】主有口舌 【译文】需防口舌纠纷',yin:'【原文】主有酒食 【译文】将有酒宴之乐',mao:'【原文】主有贵人 【译文】将有贵人相助',chen:'【原文】主有忧疑 【译文】将有忧愁疑虑',si:'【原文】主有远行 【译文】将有远行之兆',wu:'【原文】主有口舌 【译文】需防口舌是非',wei:'【原文】主有喜事 【译文】将有喜事临门',shen:'【原文】主有酒食 【译文】将有酒宴饮食',you:'【原文】主有远行 【译文】将有远行出门',xu:'【原文】主有口舌 【译文】需防口舌纠纷',hai:'【原文】主有贵人 【译文】将有贵人相助'}};
+var partNames={left_eyebrow:'左眉',right_eyebrow:'右眉',left_eyelid:'左眼皮',right_eyelid:'右眼皮',nose:'鼻子',left_cheek:'左脸',right_cheek:'右脸',mouth:'嘴',chin:'下巴'};
+var sneezePredict={male:{zi:'【原文】主有酒食 【译文】将有宴请酒食',chou:'【原文】主有客至 【译文】将有客人来访',yin:'【原文】主有远客至 【译文】将有远方客人到来',mao:'【原文】主有财喜 【译文】将有财运喜事',chen:'【原文】主有远客 【译文】将有远客来访',si:'【原文】主有喜事 【译文】将有喜事临门',wu:'【原文】主有饮食 【译文】将有饮食宴请',wei:'【原文】主有吉事 【译文】将有吉利之事',shen:'【原文】主有客至 【译文】将有客人来访',you:'【原文】主有酒食 【译文】将有酒宴之喜',xu:'【原文】主有虚惊 【译文】需防虚惊之事',hai:'【原文】主有人思 【译文】有人在思念你'},female:{zi:'【原文】主有人思 【译文】有人在思念你',chou:'【原文】主有口舌 【译文】需防口舌是非',yin:'【原文】主有远信 【译文】将有远方消息',mao:'【原文】主有喜事 【译文】将有喜事临门',chen:'【原文】主有人思 【译文】有人在牵挂思念',si:'【原文】主有贵人 【译文】将有贵人相助',wu:'【原文】主有饮食 【译文】将有饮食宴请',wei:'【原文】主有喜事 【译文】将有喜事发生',shen:'【原文】主有人思 【译文】有人在惦记思念',you:'【原文】主有远信 【译文】将有远方音信',xu:'【原文】主有人思 【译文】有人在心中牵挂',hai:'【原文】主有客至 【译文】将有客人到访'}};
+var heartPredict={male:{zi:'【原文】主有饮食 【译文】将有酒宴饮食',chou:'【原文】主有喜事 【译文】将有喜事临门',yin:'【原文】主有口舌 【译文】需防口舌是非',mao:'【原文】主有客至 【译文】将有客人来访',chen:'【原文】主有喜事 【译文】将有喜事发生',si:'【原文】主有远信 【译文】将有远方音信',wu:'【原文】主有酒食 【译文】将有酒宴之喜',wei:'【原文】主有客至 【译文】将有客人到来',shen:'【原文】主有贵人 【译文】将有贵人相助',you:'【原文】主有财喜 【译文】将有财运之喜',xu:'【原文】主有喜事 【译文】将有喜事临门',hai:'【原文】主有饮食 【译文】将有宴请饮食'},female:{zi:'【原文】主有人思 【译文】有人在思念你',chou:'【原文】主有口舌 【译文】需防口舌是非',yin:'【原文】主有喜事 【译文】将有喜事临门',mao:'【原文】主有客至 【译文】将有客人来访',chen:'【原文】主有财喜 【译文】将有财运之喜',si:'【原文】主有远信 【译文】将有远方消息',wu:'【原文】主有酒食 【译文】将有酒宴之乐',wei:'【原文】主有喜事 【译文】将有喜事发生',shen:'【原文】主有人思 【译文】有人牵挂思念',you:'【原文】主有口舌 【译文】需防口舌是非',xu:'【原文】主有虚惊 【译文】需防虚惊之事',hai:'【原文】主有客至 【译文】将有客人拜访'}};
+var handPredict={left:{zi:'【原文】主有财喜 【译文】将有财运之喜',chou:'【原文】主有口舌 【译文】需防口舌是非',yin:'【原文】主有客至 【译文】将有客人来访',mao:'【原文】主有饮食 【译文】将有酒宴美食',chen:'【原文】主有远客 【译文】将有远方来客',si:'【原文】主有喜事 【译文】将有喜事临门',wu:'【原文】主有酒食 【译文】将有宴请之喜',wei:'【原文】主有财喜 【译文】将有财运收获',shen:'【原文】主有口舌 【译文】需防口舌是非',you:'【原文】主有远信 【译文】将有远方音信',xu:'【原文】主有客至 【译文】将有客人到访',hai:'【原文】主有饮食 【译文】将有酒宴饮食'},right:{zi:'【原文】主有口舌 【译文】需防口舌是非',chou:'【原文】主有财喜 【译文】将有财运之喜',yin:'【原文】主有远行 【译文】将有远行出门',mao:'【原文】主有客至 【译文】将有客人来访',chen:'【原文】主有酒食 【译文】将有宴请之乐',si:'【原文】主有虚惊 【译文】需防虚惊之事',wu:'【原文】主有口舌 【译文】需防口舌是非',wei:'【原文】主有贵人 【译文】将有贵人相助',shen:'【原文】主有喜事 【译文】将有喜事发生',you:'【原文】主有财喜 【译文】将有财运之喜',xu:'【原文】主有客至 【译文】将有客人到访',hai:'【原文】主有酒食 【译文】将有酒宴之乐'}};
+var hiccupPredict={zi:'【原文】主有人思 【译文】有人在思念你',chou:'【原文】主有口舌 【译文】需防口舌是非',yin:'【原文】主有贵人 【译文】将有贵人相助',mao:'【原文】主有酒食 【译文】将有酒宴美食',chen:'【原文】主有远客 【译文】将有远方来客',si:'【原文】主有喜事 【译文】将有喜事临门',wu:'【原文】主有饮食 【译文】将有饮食宴请',wei:'【原文】主有吉事 【译文】将有吉利之事',shen:'【原文】主有口舌 【译文】需防口舌是非',you:'【原文】主有客至 【译文】将有客人到访',xu:'【原文】主有虚惊 【译文】需防虚惊之事',hai:'【原文】主有酒食 【译文】将有酒宴饮食'};
+var footPredict={left:{zi:'【原文】主有远行 【译文】将有远行之兆',chou:'【原文】主有喜事 【译文】将有喜事发生',yin:'【原文】主有客至 【译文】将有客人来访',mao:'【原文】主有饮食 【译文】将有酒宴美食',chen:'【原文】主有远客 【译文】将有远方来客',si:'【原文】主有口舌 【译文】需防口舌是非',wu:'【原文】主有酒食 【译文】将有宴请之喜',wei:'【原文】主有贵人 【译文】将有贵人相助',shen:'【原文】主有远行 【译文】将有出门远行',you:'【原文】主有财喜 【译文】将有财运之喜',xu:'【原文】主有客至 【译文】将有客人来访',hai:'【原文】主有饮食 【译文】将有酒宴饮食'},right:{zi:'【原文】主有口舌 【译文】需防口舌是非',chou:'【原文】主有远行 【译文】将有远行之兆',yin:'【原文】主有客至 【译文】将有客人来访',mao:'【原文】主有饮食 【译文】将有酒宴之喜',chen:'【原文】主有口舌 【译文】需防口舌是非',si:'【原文】主有虚惊 【译文】需防虚惊之事',wu:'【原文】主有贵人 【译文】将有贵人相助',wei:'【原文】主有喜事 【译文】将有喜事临门',shen:'【原文】主有客至 【译文】将有客人到访',you:'【原文】主有财喜 【译文】将有财运之喜',xu:'【原文】主有远行 【译文】将有远行出门',hai:'【原文】主有酒食 【译文】将有酒宴之乐'}};
+var lipPredict={upper:{zi:'【原文】主有饮食 【译文】将有酒宴美食',chou:'【原文】主有口舌 【译文】需防口舌是非',yin:'【原文】主有贵人 【译文】将有贵人相助',mao:'【原文】主有酒食 【译文】将有酒宴之喜',chen:'【原文】主有喜事 【译文】将有喜事临门',si:'【原文】主有财喜 【译文】将有财运之喜',wu:'【原文】主有饮食 【译文】将有饮食宴请',wei:'【原文】主有吉事 【译文】将有吉利之事',shen:'【原文】主有口舌 【译文】需防口舌是非',you:'【原文】主有贵人 【译文】将有贵人相助',xu:'【原文】主有虚惊 【译文】需防虚惊之事',hai:'【原文】主有酒食 【译文】将有酒宴之乐'},lower:{zi:'【原文】主有口舌 【译文】需防口舌是非',chou:'【原文】主有饮食 【译文】将有饮食宴请',yin:'【原文】主有客至 【译文】将有客人来访',mao:'【原文】主有贵人 【译文】将有贵人相助',chen:'【原文】主有远行 【译文】将有出门远行',si:'【原文】主有喜事 【译文】将有喜事临门',wu:'【原文】主有口舌 【译文】需防口舌是非',wei:'【原文】主有贵人 【译文】将有贵人到来',shen:'【原文】主有饮食 【译文】将有酒宴美食',you:'【原文】主有客至 【译文】将有客人到访',xu:'【原文】主有贵人 【译文】将有贵人相助',hai:'【原文】主有口舌 【译文】需防口舌是非'}};
+// 犬吠法 《玉匣记》
+var dogPredict={zi:'【原文】主妇人争闹 【译文】需防家庭口角',chou:'【原文】主心中有忧 【译文】心中忧愁不安',yin:'【原文】主有客至 【译文】将有客人来访',mao:'【原文】主有财喜 【译文】将有财运之喜',chen:'【原文】主有酒食 【译文】将有宴请饮食',si:'【原文】主有喜事 【译文】将有喜事临门',wu:'【原文】主有酒食 【译文】将有酒宴之喜',wei:'【原文】主有口舌 【译文】需防口舌是非',shen:'【原文】主有客至 【译文】将有客人到访',you:'【原文】主有虚惊 【译文】需防虚惊之事',xu:'【原文】主有贼盗 【译文】需防盗贼之事',hai:'【原文】主有官非 【译文】需防官司纠纷'};
+// 鹊噪法 《玉匣记》
+var magpiePredict={zi:'【原文】主有远信 【译文】将有远方消息',chou:'【原文】主有喜事 【译文】将有喜事临门',yin:'【原文】主有客至 【译文】将有客人来访',mao:'【原文】主有财喜 【译文】将有财运之喜',chen:'【原文】主行人归 【译文】出门在外者将归',si:'【原文】主有酒食 【译文】将有宴请饮食',wu:'【原文】主有喜事 【译文】将有喜事发生',wei:'【原文】主有吉事 【译文】将有吉利之事',shen:'【原文】主有口舌 【译文】需防口舌是非',you:'【原文】主有远客 【译文】将有远客到来',xu:'【原文】主有财喜 【译文】将有财运之喜',hai:'【原文】主有客至 【译文】将有客人到访'};
+// 灯花法 《玉匣记》
+var sparkPredict={zi:'【原文】主有远客 【译文】将有远方客人',chou:'【原文】主有喜事 【译文】将有喜事临门',yin:'【原文】主有酒食 【译文】将有宴请饮食',mao:'【原文】主有财喜 【译文】将有财运之喜',chen:'【原文】主有客至 【译文】将有客人来访',si:'【原文】主有口舌 【译文】需防口舌是非',wu:'【原文】主有远信 【译文】将有远方消息',wei:'【原文】主有吉事 【译文】将有吉利之事',shen:'【原文】主有饮食 【译文】将有饮食之喜',you:'【原文】主有贵人 【译文】将有贵人相助',xu:'【原文】主有虚惊 【译文】需防虚惊之事',hai:'【原文】主有口舌 【译文】需防口舌是非'};
+// 周公解梦 100+条目
+var dreamDB=[
+{kw:'水 江河 大海 河 海 湖 游泳',name:'梦见水/江河/大海',meaning:'【周公解梦】水主财。梦见清水大吉，主财运亨通；梦见浑水需防破财。江河奔流主事业顺利，有贵人相助。梦见游泳主运势顺畅。',type:'mixed'},
+{kw:'火 火焰 火灾 烧',name:'梦见火/火焰',meaning:'【周公解梦】火主事业与功名。梦见旺火光明，主事业兴旺；梦见火灾需防口舌官非。火烧身主有大喜。',type:'mixed'},
+{kw:'蛇 长虫',name:'梦见蛇',meaning:'【周公解梦】蛇主阴私暗财。梦蛇入怀主得贵子；蛇缠身主有贵人暗中相助；蛇咬主进财；打死蛇主战胜困难。',type:'mixed'},
+{kw:'龙 蛟',name:'梦见龙',meaning:'【周公解梦】龙为至贵之兆。梦见飞龙在天，主事业腾达；孕妇梦龙主生贵子；乘龙入水主大贵。',type:'good'},
+{kw:'飞 飞行 飞翔 飞天 飞起来',name:'梦见飞行/飞翔',meaning:'【周公解梦】飞翔主志向。梦见自己飞翔主事业有成；飞得越高运势越旺；飞不起来主有心无力。',type:'good'},
+{kw:'跌落 坠落 掉下 摔',name:'梦见跌落/坠落',meaning:'【周公解梦】跌落主失势。梦见从高处坠落，须防破财失意；被推落主遭人暗算；落地无事主虚惊一场。',type:'bad'},
+{kw:'死 死亡 丧事 死人 去世',name:'梦见死亡/丧事',meaning:'【周公解梦】梦见死亡反主添寿。梦见自己死亡主增寿；梦见他人死亡主对方运势好转；梦见丧事主家中添喜。',type:'good'},
+{kw:'结婚 婚礼 嫁娶 娶亲',name:'梦见结婚/婚礼',meaning:'【周公解梦】婚姻主喜庆。梦见婚礼主喜事临门；未婚者主姻缘将近；已婚者主家宅和睦；新郎主事业有成。',type:'good'},
+{kw:'婴儿 小孩 孩子 宝宝 儿童',name:'梦见婴儿/小孩',meaning:'【周公解梦】婴儿主新生。梦见可爱婴儿主新计划顺利；抱婴儿主有贵人扶持；梦见小孩哭闹主有烦恼。',type:'good'},
+{kw:'牙 牙齿 掉牙 拔牙 牙掉',name:'梦见掉牙/拔牙',meaning:'【周公解梦】掉牙主家人牵挂。上牙掉主长辈有忧，下牙掉主晚辈有碍。梦见自己拔牙主解除烦恼。',type:'bad'},
+{kw:'追赶 被追 逃跑 逃命',name:'梦见被追赶',meaning:'【周公解梦】被追赶主逃避现实。被追上主失败受挫；逃脱主化解危机；追别人主主动解决问题。',type:'bad'},
+{kw:'钱 捡钱 发财 黄金 银子 钞票',name:'梦见钱/发财',meaning:'【周公解梦】钱财主得失。梦见捡钱主小利勿贪；梦中失财反主得财；梦见发大财主有大喜事。',type:'mixed'},
+{kw:'房子 房屋 搬家 新居 建筑',name:'梦见房屋/搬家',meaning:'【周公解梦】房屋主根基。梦见新居大吉，主家运兴旺；房屋倒塌主家中变故；搬家主新生活开始。',type:'mixed'},
+{kw:'雨 下雨 暴雨 雨水',name:'梦见下雨',meaning:'【周公解梦】雨主滋润与考验。细雨主好运将至；暴雨需防意外；雨后见晴主困难将过；雨中淋湿主有财运。',type:'mixed'},
+{kw:'雪 下雪 冰雪 冬天',name:'梦见下雪/冰雪',meaning:'【周公解梦】雪主丰收。瑞雪纷飞主来年丰收、事业顺利；大雪封路主暂有阻碍；雪中行走主好运。',type:'mixed'},
+{kw:'花 花开 花落 牡丹 桃花',name:'梦见花开/花落',meaning:'【周公解梦】花开主喜事将近；花落主缘分将尽，珍惜当下。梦牡丹主富贵，梦桃花主有艳遇。',type:'mixed'},
+{kw:'鸟 凤凰 喜鹊 燕子',name:'梦见鸟/凤凰',meaning:'【周公解梦】鸟主消息。凤凰主贵运将至；喜鹊报喜；乌鸦需防是非；鸟入怀主得贵子。',type:'mixed'},
+{kw:'猫 狗 犬 动物',name:'梦见猫/狗',meaning:'【周公解梦】猫主灵性与小人，梦猫需防身边小人暗算。狗主忠诚之友，梦见狗来访主朋友到来。',type:'mixed'},
+{kw:'考试 考场 考试不及格 考试通过',name:'梦见考试',meaning:'【周公解梦】考试主考验。梦见考试顺利主能力被认可；考试不利主需加倍努力；梦见补考主有转机。',type:'mixed'},
+{kw:'头发 白发 掉发 脱发 梳头',name:'梦见头发/白发',meaning:'【周公解梦】发主智慧与寿命。梦见白发主长寿；脱发主烦恼缠身；梳头主理顺思路；长发主好运。',type:'mixed'},
+{kw:'血 流血 出血 红色',name:'梦见血',meaning:'【周公解梦】血主财。梦见流血主有财运；梦中自己流血主破财；见别人流血主他人有难。',type:'mixed'},
+{kw:'鱼 钓鱼 捕鱼 金鱼',name:'梦见鱼',meaning:'【周公解梦】鱼主财。梦见大鱼主大财；钓鱼主耐心得利；死鱼主失财；金鱼主意外之喜。',type:'good'},
+{kw:'鬼 鬼怪 妖怪 幽灵',name:'梦见鬼/妖怪',meaning:'【周公解梦】鬼主心病。梦见鬼怪主心中有恐惧或愧疚；被鬼追主需面对心结；驱鬼主战胜困难。',type:'bad'},
+{kw:'山 爬山 登山 上山',name:'梦见山/爬山',meaning:'【周公解梦】山主阻碍与目标。梦见登山主事业向上；山顶远眺主目标将达；下山主运势回落。',type:'mixed'},
+{kw:'风 暴风 大风 台风',name:'梦见风/暴风',meaning:'【周公解梦】风主变动。微风主顺遂，暴风主突变。风中不稳主运势波动。',type:'mixed'},
+{kw:'月亮 月光 圆月 月食',name:'梦见月亮',meaning:'【周公解梦】月亮主团圆。梦见圆月主家庭和睦；月食主有变故；水中月主虚幻不实。',type:'mixed'},
+{kw:'太阳 日光 日出',name:'梦见太阳',meaning:'【周公解梦】太阳主光明与权威。梦见日出主新开始；烈日当空主事业辉煌；日落主运势衰退。',type:'good'},
+{kw:'星星 星辰 流星',name:'梦见星星',meaning:'【周公解梦】星主希望。梦见繁星主愿望将达；流星主短暂好运；坠星主希望落空。',type:'mixed'},
+{kw:'云 白云 乌云 彩云',name:'梦见云',meaning:'【周公解梦】白云主吉，乌云主凶。彩云主喜事将近；云遮月主暂时阻碍。',type:'mixed'},
+{kw:'雷 打雷 闪电 雷雨',name:'梦见雷/闪电',meaning:'【周公解梦】雷主震惊与变动。梦见打雷主有突然消息；闪电主灵感乍现；雷雨交加主大变动。',type:'mixed'},
+{kw:'桥 过桥 桥梁',name:'梦见桥',meaning:'【周公解梦】桥主过渡。梦见过桥主渡过难关；桥断主阻碍；建桥主主动解决困难。',type:'mixed'},
+{kw:'路 道路 迷路 大路',name:'梦见路',meaning:'【周公解梦】路主方向。大路坦途主顺利；迷路主困惑迷茫；岔路口主人生的选择。',type:'mixed'},
+{kw:'车 开车 坐车 车祸',name:'梦见车',meaning:'【周公解梦】车主动力与进度。开车主掌控人生；坐车主依赖他人；车祸主需防意外。',type:'mixed'},
+{kw:'船 坐船 沉船 舟',name:'梦见船',meaning:'【周公解梦】船主运势起伏。顺水行舟主顺利；逆水主艰难；沉船主事业危机。',type:'mixed'},
+{kw:'马 骑马 白马',name:'梦见马',meaning:'【周公解梦】马主行动力。梦见骑马主事业进取；白马主贵人；野马主冲动。',type:'good'},
+{kw:'牛 耕牛 斗牛',name:'梦见牛',meaning:'【周公解梦】牛主勤劳与财富。耕牛主勤劳致富；斗牛主竞争；牛群主财运亨通。',type:'good'},
+{kw:'老虎 虎 猛兽',name:'梦见老虎',meaning:'【周公解梦】虎主威严与危险。梦见老虎主遇强势之人；打虎主战胜困难；被虎追主有压力。',type:'mixed'},
+{kw:'狮子',name:'梦见狮子',meaning:'【周公解梦】狮子主权威。梦见狮子主有贵人提携；狮吼主有权威人士相助。',type:'good'},
+{kw:'大象',name:'梦见大象',meaning:'【周公解梦】大象主稳重与吉祥。梦见大象主事业稳固；骑象主大贵。',type:'good'},
+{kw:'鸡 公鸡 母鸡',name:'梦见鸡',meaning:'【周公解梦】鸡主吉祥。公鸡报晓主好消息；母鸡下蛋主收获；斗鸡主口舌。',type:'mixed'},
+{kw:'鸭 鹅',name:'梦见鸭/鹅',meaning:'【周公解梦】鸭鹅主财运与家庭。梦见鸭群主小财不断；鹅主家宅平安。',type:'good'},
+{kw:'猪',name:'梦见猪',meaning:'【周公解梦】猪主财富。梦见肥猪主财运亨通；杀猪主得财；梦见猪跑主破财。',type:'mixed'},
+{kw:'羊',name:'梦见羊',meaning:'【周公解梦】羊主吉祥。梦见羊群主平安顺利；白羊主贵人；黑羊主小烦恼。',type:'good'},
+{kw:'猴子',name:'梦见猴子',meaning:'【周公解梦】猴主机灵。梦见猴子主有聪明人相助；猴戏主小心被骗。',type:'mixed'},
+{kw:'兔子',name:'梦见兔子',meaning:'【周公解梦】兔主敏捷与生育。梦见白兔主好运；追兔主错失机会。',type:'good'},
+{kw:'老鼠',name:'梦见老鼠',meaning:'【周公解梦】鼠主小人。梦见老鼠主有小人在侧；捉鼠主防范成功；鼠咬物主财物损失。',type:'bad'},
+{kw:'虫子 昆虫 蚂蚁 蜘蛛',name:'梦见虫子',meaning:'【周公解梦】虫主小烦恼。梦见蚂蚁主勤劳有获；蜘蛛主有网罗之困；虫爬身主小病。',type:'mixed'},
+{kw:'树 森林 树木 大树',name:'梦见树/森林',meaning:'【周公解梦】树木主生机。梦见大树主根基稳固；森林主迷茫；枯树主运势衰退。',type:'mixed'},
+{kw:'草 草地 草原',name:'梦见草/草地',meaning:'【周公解梦】草主希望与生机。绿草地主好运；枯草主暂时困顿；草原主广阔前途。',type:'good'},
+{kw:'米 粮食 饭 吃饭',name:'梦见米/粮食',meaning:'【周公解梦】粮食主富足。梦见米仓主丰衣足食；吃饭主运势平稳；缺粮主有匮乏之虞。',type:'good'},
+{kw:'酒 喝酒 醉酒',name:'梦见酒',meaning:'【周公解梦】酒主交际。梦见饮酒主社交活跃；醉酒主失态需防；美酒主喜事。',type:'mixed'},
+{kw:'茶 喝茶',name:'梦见茶',meaning:'【周公解梦】茶主清净。梦见喝茶主心境平和；泡茶待客主有人到访。',type:'good'},
+{kw:'鞋 鞋子 穿鞋',name:'梦见鞋',meaning:'【周公解梦】鞋主行事。新鞋主有新计划；破鞋主阻碍；丢鞋主方向迷失。',type:'mixed'},
+{kw:'衣服 穿衣 换衣',name:'梦见衣服',meaning:'【周公解梦】衣服主身份。新衣主新形象新开始；破衣主困窘；穿错衣主行为不当。',type:'mixed'},
+{kw:'镜子 照镜',name:'梦见镜子',meaning:'【周公解梦】镜子主自省。照镜主审视自我；镜破主关系破裂；镜中不是自己主迷失。',type:'mixed'},
+{kw:'刀 剑 兵器 武器',name:'梦见刀/剑',meaning:'【周公解梦】刀剑主决断。持剑主有能力解决问题；被刀伤主有口舌或小人。',type:'mixed'},
+{kw:'枪',name:'梦见枪',meaning:'【周公解梦】枪主冲突。梦见枪声主有突发变故；中枪主被害或压力；持枪主有攻击性。',type:'bad'},
+{kw:'打架 打斗 打架斗殴',name:'梦见打架',meaning:'【周公解梦】打架主矛盾。梦见与人打架主现实有冲突；被打主受委屈；打赢主解决问题。',type:'mixed'},
+{kw:'哭 哭泣 流泪',name:'梦见哭/哭泣',meaning:'【周公解梦】哭反主喜。梦见痛哭主烦恼将消；梦中哭醒主好运将至。',type:'good'},
+{kw:'笑 大笑',name:'梦见大笑',meaning:'【周公解梦】笑主释放。开怀大笑主压力释放；狂笑不止主需注意情绪；梦中逗人笑主人际关系好。',type:'good'},
+{kw:'厕所 大便 屎 尿',name:'梦见厕所/排泄',meaning:'【周公解梦】屎尿主财。梦见大便主有意外之财；尿主小财；厕所脏乱主有烦恼需排解。',type:'good'},
+{kw:'洗澡 沐浴 游泳',name:'梦见洗澡/沐浴',meaning:'【周公解梦】洗澡主净化和新生。清水沐浴主运势更新；浑水洗澡主需防小人。',type:'mixed'},
+{kw:'裸体 裸身 没穿衣服',name:'梦见裸体',meaning:'【周公解梦】裸体主坦露。梦见自己裸体主有秘密将被发现；他人裸体主对方有求于你。',type:'mixed'},
+{kw:'老师 学校 教室 上课',name:'梦见老师/学校',meaning:'【周公解梦】老师主指引。梦见老师主有贵人指路；回学校主怀旧或需要学习新知识。',type:'good'},
+{kw:'医院 医生 病人 看病',name:'梦见医院/医生',meaning:'【周公解梦】医院主健康警示。梦见看病主需关注身体；当医生主有能力帮助他人。',type:'mixed'},
+{kw:'手机 电话 打电话',name:'梦见手机/电话',meaning:'【周公解梦】通讯工具主联系。电话响主有消息；打不通主沟通不畅。',type:'mixed'},
+{kw:'地震 天灾',name:'梦见地震/天灾',meaning:'【周公解梦】地震主大变。梦见地震主生活将有重大变化；天灾主无可抗力之事。',type:'bad'},
+{kw:'战争 打仗 战场',name:'梦见战争',meaning:'【周公解梦】战争主内心冲突。梦见打仗主内心挣扎；战胜主克服困难。',type:'mixed'},
+{kw:'怀孕 怀胎 大肚子',name:'梦见怀孕',meaning:'【周公解梦】怀孕主新生。梦见自己怀孕主有新计划或创意；他人怀孕主对方有喜。',type:'good'},
+{kw:'棺材 灵柩',name:'梦见棺材',meaning:'【周公解梦】棺材反主升官发财。梦见棺材主事业上升；空棺主虚惊一场。',type:'good'},
+{kw:'坟墓 上坟 祭祀',name:'梦见坟墓/上坟',meaning:'【周公解梦】坟墓主终结。梦见上坟主怀念过去；修坟主重整旧业。',type:'mixed'},
+{kw:'佛 菩萨 寺庙 烧香',name:'梦见佛/菩萨/寺庙',meaning:'【周公解梦】佛主庇佑。梦见拜佛主有贵人保佑；寺庙主心灵安宁；烧香主祈求如愿。',type:'good'},
+{kw:'神仙 道士',name:'梦见神仙/道士',meaning:'【周公解梦】神仙主好运。梦见仙人指路主有贵人点拨；与神仙交谈主有大吉。',type:'good'},
+{kw:'牙齿 刷牙',name:'梦见刷牙',meaning:'【周公解梦】刷牙主清除烦恼。梦见刷牙主将解决困扰；牙刷坏主小挫折。',type:'good'},
+{kw:'门 开门 关门',name:'梦见门',meaning:'【周公解梦】门主机会。开门主新机会到来；关门主放弃过去；门打不开主暂时受阻。',type:'mixed'},
+{kw:'窗 窗户',name:'梦见窗',meaning:'【周公解梦】窗户主视野。开窗主眼界开阔；关窗主自我封闭；破窗主意外变故。',type:'mixed'},
+{kw:'钟 表 时间',name:'梦见钟/表',meaning:'【周公解梦】钟表主时间。表停主人需珍惜时间；快转主人有紧迫感。',type:'mixed'},
+{kw:'戒指 项链 首饰 珠宝',name:'梦见戒指/首饰',meaning:'【周公解梦】首饰主情感与价值。梦戒指主姻缘或承诺；项链断主关系危机；珠宝主富贵。',type:'mixed'},
+{kw:'锁 钥匙',name:'梦见锁/钥匙',meaning:'【周公解梦】锁主阻碍。找到钥匙主将解开心结；锁坏了主可突破限制。',type:'mixed'},
+{kw:'书 读书 看书',name:'梦见书/读书',meaning:'【周公解梦】书主知识。梦见读书主好学上进；书写字主需要记录重要之事。',type:'good'},
+{kw:'唱歌 音乐',name:'梦见唱歌/音乐',meaning:'【周公解梦】音乐主心情。欢歌主心情愉快；悲歌主心中忧愁。',type:'mixed'},
+{kw:'跳舞 舞蹈',name:'梦见跳舞',meaning:'【周公解梦】跳舞主释放。梦跳舞主社交活跃；独舞主自得其乐；摔倒主尴尬之事。',type:'good'},
+{kw:'游泳 泳池',name:'梦见游泳',meaning:'【周公解梦】游泳主情绪。游得好主运势顺畅；挣扎主压力大；泳池主可控环境。',type:'mixed'},
+{kw:'跑步 奔跑',name:'梦见跑步',meaning:'【周公解梦】跑步主追赶。跑得快主效率高；跑不动主有心无力；跑步比赛主竞争。',type:'mixed'},
+{kw:'吃饭 聚餐 宴会',name:'梦见聚餐/宴会',meaning:'【周公解梦】聚餐主社交。盛宴主人际关系好；独自吃饭主孤单。',type:'good'},
+{kw:'睡觉 睡着 惊醒',name:'梦见睡觉',meaning:'【周公解梦】梦中睡觉主逃避现实。惊醒主有突发事情。',type:'mixed'},
+{kw:'雾 大雾',name:'梦见雾',meaning:'【周公解梦】雾主迷茫。大雾中行走主暂时看不清前路；雾散主豁然开朗。',type:'mixed'},
+{kw:'彩虹',name:'梦见彩虹',meaning:'【周公解梦】彩虹主希望与转机。梦见彩虹主困难将过，好运将至。',type:'good'},
+{kw:'日出 日出东方',name:'梦见日出',meaning:'【周公解梦】日出主新生。梦见日出东方主观想变为现实；霞光满天主喜事。',type:'good'},
+{kw:'星星 北斗 银河',name:'梦见北斗/银河',meaning:'【周公解梦】北斗主指引方向。银河主宏图大业。',type:'good'},
+{kw:'井 水井 古井',name:'梦见井',meaning:'【周公解梦】井主潜在资源。清泉满井主财运；枯井主资源耗尽。',type:'mixed'},
+{kw:'厕所 茅坑',name:'梦见茅坑',meaning:'【周公解梦】茅坑主财。梦见茅坑满主财运旺盛。',type:'good'},
+{kw:'葬礼 出殡 送葬',name:'梦见葬礼',meaning:'【周公解梦】葬礼反主喜。梦见他人葬礼主对方有喜；自己葬礼主长寿。',type:'good'},
+{kw:'打架受伤 受伤 流血受伤',name:'梦见受伤',meaning:'【周公解梦】受伤主损失。自伤主能力受损；看别人受伤主心有愧疚。',type:'bad'},
+{kw:'被绑架 绑架',name:'梦见被绑架',meaning:'【周公解梦】绑架主受制于人。被绑架主感到身不由己；逃脱主重获自由。',type:'bad'},
+{kw:'迷路 走失',name:'梦见迷路',meaning:'【周公解梦】迷路主方向迷失。找人问路主将得指引；找到出路主解决问题。',type:'mixed'},
+{kw:'泥 泥巴 泥潭',name:'梦见泥/泥潭',meaning:'【周公解梦】泥主困境。陷入泥潭主难以脱身；泥巴弄脏主声誉受损。',type:'bad'},
+{kw:'光 光明 亮光',name:'梦见光明',meaning:'【周公解梦】光明主希望。黑暗中出现亮光主转机；满室光明主大吉。',type:'good'},
+{kw:'黑暗 黑夜',name:'梦见黑暗',meaning:'【周公解梦】黑暗主未知。独自在黑暗中主迷茫；走出黑暗主克服困难。',type:'bad'},
+];
+// 解梦搜索
+var currentDreamResults=[];
+function searchDream(){
+ var q=document.getElementById('dreamSearch').value.trim().toLowerCase();
+ var r=document.getElementById('dreamResult');
+ if(!q){r.innerHTML='';return}
+ var matches=[];
+ for(var i=0;i<dreamDB.length;i++){
+  var d=dreamDB[i];
+  if(d.kw.toLowerCase().indexOf(q)>=0||d.name.indexOf(q)>=0||d.meaning.indexOf(q)>=0){
+   matches.push(d);
+   if(matches.length>=10)break;
+  }
+ }
+ currentDreamResults=matches;
+ if(matches.length===0){
+  r.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3)">未找到匹配的梦境条目<br><span style="font-size:11px">试试其他关键词：龙、蛇、鱼、飞、考试、鬼…</span></div>';
+  return;
+ }
+ var h='';
+ for(var i=0;i<matches.length;i++){
+  var d=matches[i];
+  var cls=d.type==='good'?'fr-good':d.type==='bad'?'fr-bad':'';
+  h+='<div style="background:rgba(0,0,0,.2);padding:12px;border-radius:8px;margin-bottom:8px;border-left:2px solid '+(d.type==='good'?'var(--green)':d.type==='bad'?'var(--red)':'var(--gold)')+'">';
+  h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">';
+  h+='<span style="font-family:var(--font-display);font-weight:600;color:var(--cyan)">'+d.name+'</span>';
+  h+='<span style="font-size:11px;padding:2px 8px;border-radius:4px;'+('color:'+(d.type==='good'?'var(--green)':d.type==='bad'?'var(--red)':'var(--gold)'))+';background:'+(d.type==='good'?'rgba(124,181,24,.1)':d.type==='bad'?'rgba(201,76,76,.1)':'rgba(201,162,39,.1)'))+'">'+(d.type==='good'?'吉':d.type==='bad'?'凶':'中')+'</span>';
+  h+='</div>';
+  h+='<div style="font-size:12px;color:var(--text2);line-height:1.8">'+d.meaning+'</div>';
+  h+='</div>';
+ }
+ if(matches.length===10)h+='<div style="text-align:center;font-size:11px;color:var(--text3);padding:8px">仅显示前10条，请输入更精确的关键词</div>';
+ r.innerHTML=h;
+}
+function quickDream(kw){document.getElementById('dreamSearch').value=kw;searchDream()}
+
+
+function doFolkPredict(type){if(type==='dream'){searchDream();return}var data,partName,scN={zi:'子时',chou:'丑时',yin:'寅时',mao:'卯时',chen:'辰时',si:'巳时',wu:'午时',wei:'未时',shen:'申时',you:'酉时',xu:'戌时',hai:'亥时'};
+if(type==='dream'){searchDream();return}
+var time;if(type==='dog'){time=document.getElementById('dogTime').value;data=dogPredict[time];partName='犬吠'}else if(type==='magpie'){time=document.getElementById('magpieTime').value;data=magpiePredict[time];partName='鹊噪'}else if(type==='spark'){time=document.getElementById('sparkTime').value;data=sparkPredict[time];partName='灯花'}else if(type==='ear'){var side=document.getElementById('earSide').value;time=document.getElementById('earTime').value;data=earPredict[side][time];partName=side==='left'?'左耳':'右耳'}else if(type==='eye'){var side=document.getElementById('eyeSide').value;time=document.getElementById('eyeTime').value;data=eyePredict[side][time];partName=side==='left'?'左眼':'右眼'}else if(type==='face'){var part=document.getElementById('facePart').value;time=document.getElementById('faceTime').value;data=facePredict[part][time];partName=partNames[part]}else if(type==='sneeze'){var g=document.getElementById('sneezeGender').value;time=document.getElementById('sneezeTime').value;data=sneezePredict[g][time];partName=(g==='male'?'男':'女')+'性'}else if(type==='heart'){var g=document.getElementById('heartGender').value;time=document.getElementById('heartTime').value;data=heartPredict[g][time];partName=(g==='male'?'男':'女')+'性'}else if(type==='hand'){var side=document.getElementById('handSide').value;time=document.getElementById('handTime').value;data=handPredict[side][time];partName=side==='left'?'左手':'右手'}else if(type==='hiccup'){time=document.getElementById('hiccupTime').value;data=hiccupPredict[time];partName='打嗝'}else if(type==='foot'){var side=document.getElementById('footSide').value;time=document.getElementById('footTime').value;data=footPredict[side][time];partName=side==='left'?'左脚':'右脚'}else if(type==='lip'){var p=document.getElementById('lipPart').value;time=document.getElementById('lipTime').value;data=lipPredict[p][time];partName=p==='upper'?'上唇':'下唇'}
+var yuan=data.indexOf('【原文】')>=0?data.split('【译文】')[0]:data;var jw=['喜','财','吉','贵','好','宴','请','乐','利','顺','平安','祥'];var isGood=jw.some(function(w){return yuan.indexOf(w)>=0});document.getElementById(type+'Result').innerHTML='<div class="folk-result"><div class="fr-type">'+partName+' · '+scN[time]+'</div><div class="fr-detail '+(isGood?'fr-good':'fr-bad')+'">'+data+'</div><div style="margin-top:10px;font-size:18px;letter-spacing:3px">'+(isGood?'✦ 吉 ✦':'✧ 凶 ✧')+'</div></div>'}
 
 // ========== 日历 ==========
 var calYear,calMonth;
 function initCalendar(){var now=new Date();calYear=now.getFullYear();calMonth=now.getMonth()+1;renderCalendar()}
 function calPrev(){calMonth--;if(calMonth<1){calMonth=12;calYear--}renderCalendar()}
 function calNext(){calMonth++;if(calMonth>12){calMonth=1;calYear++}renderCalendar()}
-function renderCalendar(){document.getElementById('calMonth').textContent=calYear+'年'+calMonth+'月';var firstDay=new Date(calYear,calMonth-1,1).getDay();var daysInMonth=new Date(calYear,calMonth,0).getDate();var today=new Date();var isCM=(calYear===today.getFullYear()&&calMonth===today.getMonth()+1);var headers=['日','一','二','三','四','五','六'];var h=headers.map(function(x){return'<div class="cal-header">'+x+'</div>'}).join('');for(var i=0;i<firstDay;i++)h+='<div class="cal-day empty"></div>';for(var d=1;d<=daysInMonth;d++){var isToday=isCM&&d===today.getDate();var seed=(calYear*10000+calMonth*100+d)%7;var isJiari=seed>=1&&seed<=3;var isXiong=seed>=5;var cls='cal-day';if(isToday)cls+=' today';if(isJiari)cls+=' jiari';else if(isXiong)cls+=' xiong';h+='<div class="'+cls+'" onclick="showCalDetail('+d+')">'+d+'</div>'}document.getElementById('calGrid').innerHTML=h;document.getElementById('calDetail').innerHTML=''}
-function showCalDetail(day){var lunar=solarToLunar(calYear,calMonth,day);var dayGZ=getDayGanZhi(calYear,calMonth,day);var yj=getDailyYiJi(calYear,calMonth,day);var zr=getZhiRi(calYear,calMonth,day);var xiu=getErShiBaXiu(calYear,calMonth,day);document.getElementById('calDetail').innerHTML='<div class="card" style="margin-top:10px"><div style="text-align:center;margin-bottom:10px"><div style="font-family:var(--font-display);font-weight:600;font-size:18px;color:var(--cyan);text-shadow:0 0 8px var(--glow-cyan);letter-spacing:2px">'+calMonth+'月'+day+'日</div><div style="font-size:13px;color:var(--text2)">农历'+lunarMonthNames[lunar.month-1]+'月'+lunarDayNames[lunar.day-1]+' · '+dayGZ+'</div></div><div class="yi-ji-container"><div class="yi-ji-box yi-box"><h4>宜</h4><div class="tags">'+yj.yi.join(' · ')+'</div></div><div class="yi-ji-box ji-box"><h4>忌</h4><div class="tags">'+yj.ji.join(' · ')+'</div></div></div><div class="info-row"><span class="ir-label">值日</span><span class="ir-value">'+zr+'</span></div><div class="info-row"><span class="ir-label">二十八宿</span><span class="ir-value">'+xiu+'宿</span></div></div>'}
+function renderCalendar(){document.getElementById('calMonth').textContent=calYear+'年'+calMonth+'月';var firstDay=new Date(calYear,calMonth-1,1).getDay();var daysInMonth=new Date(calYear,calMonth,0).getDate();var today=new Date();var isCM=(calYear===today.getFullYear()&&calMonth===today.getMonth()+1);var headers=['日','一','二','三','四','五','六'];var h=headers.map(function(x){return'<div class="cal-header">'+x+'</div>'}).join('');for(var i=0;i<firstDay;i++)h+='<div class="cal-day empty"></div>';for(var d=1;d<=daysInMonth;d++){var isToday=isCM&&d===today.getDate();var jc=getJianChu(calYear,calMonth,d);var jcd=jianChuDetails[jc];var isJiari=jcd.type==='黄道';var isXiong=jcd.type==='黑道';var cls='cal-day';if(isToday)cls+=' today';if(isJiari)cls+=' jiari';else if(isXiong)cls+=' xiong';h+='<div class="'+cls+'" onclick="showCalDetail('+d+')" title="'+jc+'（'+jcd.type+'）">'+d+'</div>'}document.getElementById('calGrid').innerHTML=h;document.getElementById('calDetail').innerHTML=''}
+function showCalDetail(day){var lunar=solarToLunar(calYear,calMonth,day);var dayGZ=getDayGanZhi(calYear,calMonth,day);var yj=getDailyYiJi(calYear,calMonth,day);var jc=getJianChu(calYear,calMonth,day);var jcd=getJianChuDetail(calYear,calMonth,day);var xiu=getErShiBaXiu(calYear,calMonth,day);var isHuangDao=jcd.type==='黄道';var hdColor=isHuangDao?'var(--green)':'var(--red)';var hdLabel=isHuangDao?'黄道吉日':'黑道日';var hdBg=isHuangDao?'rgba(124,181,24,.1)':'rgba(201,76,76,.1)';var hdBorder=isHuangDao?'rgba(124,181,24,.3)':'rgba(201,76,76,.3)';var hdGlow=isHuangDao?'var(--glow-success)':'var(--glow-error)';var whyText='';if(isHuangDao){var jcIdx=jianChuJi.indexOf(jc);var whyMap={'除':'此日值"除"神，属黄道吉日。除旧布新，万物更新，宜开创进取。','定':'此日值"定"神，属黄道吉日。万物稳定，宜定盟约、婚姻嫁娶，诸事可成。','执':'此日值"执"神，属黄道吉日。主动掌握，宜积极行动、修造嫁娶。','危':'此日值"危"神，属黄道吉日。虽名"危"实为化险为夷，安床修造皆吉。','成':'此日值"成"神，属黄道吉日。万事可成，百无禁忌，是本月最佳吉日之一。','开':'此日值"开"神，属黄道吉日。开通之象，宜开市出行，开创事业。'};whyText=whyMap[jc]||'';}else{var whyMap2={'建':'此日值"建"神，属黑道日。建为岁君，诸神之帅，不宜轻举妄动。','满':'此日值"满"神，属黑道日。满则招损，宜守不宜攻，祈福尚可。','平':'此日值"平"神，属黑道日。平常之日，无吉无凶，宜循序渐进。','破':'此日值"破"神，属黑道日。冲破之日，大事不宜，只宜破屋坏垣。','收':'此日值"收"神，属黑道日。收敛之象，宜守不宜攻，纳财尚可。','闭':'此日值"闭"神，属黑道日。闭塞不通，百事不宜，只宜安葬祭祀。'};whyText=whyMap2[jc]||'';}document.getElementById('calDetail').innerHTML='<div class="card" style="margin-top:10px"><div style="text-align:center;margin-bottom:10px"><div style="font-family:var(--font-display);font-weight:600;font-size:18px;color:var(--cyan);text-shadow:0 0 8px var(--glow-cyan);letter-spacing:2px">'+calMonth+'月'+day+'日</div><div style="font-size:13px;color:var(--text2)">农历'+lunarMonthNames[lunar.month-1]+'月'+lunarDayNames[lunar.day-1]+' · '+dayGZ+'</div></div><div style="text-align:center;margin-bottom:12px;padding:10px;background:'+hdBg+';border:1px solid '+hdBorder+';border-radius:8px"><div style="font-size:20px;font-weight:700;color:'+hdColor+';text-shadow:0 0 10px '+hdGlow+';margin-bottom:2px">'+jc+'</div><div style="font-size:12px;color:'+hdColor+'">'+hdLabel+'</div></div><div style="background:rgba(0,0,0,.15);padding:10px;border-radius:6px;margin-bottom:12px;font-size:12px;color:var(--text2);line-height:1.8;border-left:2px solid '+hdColor+'">'+whyText+'</div><div class="yi-ji-container"><div class="yi-ji-box yi-box"><h4>✦ 宜</h4><div class="tags">'+yj.yi.join(' · ')+'</div></div><div class="yi-ji-box ji-box"><h4>✧ 忌</h4><div class="tags">'+yj.ji.join(' · ')+'</div></div></div><div class="info-row"><span class="ir-label">值日神</span><span class="ir-value" style="color:'+hdColor+'">'+jc+'（'+hdLabel+'）</span></div><div class="info-row"><span class="ir-label">十二神释义</span><span class="ir-value" style="font-size:12px;color:var(--text2)">'+jcd.desc+'</span></div><div class="info-row"><span class="ir-label">二十八宿</span><span class="ir-value">'+xiu+'宿</span></div></div>'}
 
 // ========== 文化 ==========
 var cultureType='daodejing';var cultureIdx=-1;
@@ -1550,6 +2049,42 @@ btn.classList.add('active');
 }
 function showToast(msg){var t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(function(){t.remove()},2000)}
 initCoinProgress();initHome();initCalendar();renderCulture();initXiaoLiurenDefaults();initDailyFortune();initCoinPage();
+// ========== 今日锦囊 ==========
+function initDailyJinnang(){
+ var now=new Date();
+ var y=now.getFullYear(),m=now.getMonth()+1,d=now.getDate();
+ var dayGZ=getDayGanZhi(y,m,d);
+ var gan=dayGZ[0],zhi=dayGZ[1];
+ var ganIdx=tianGan.indexOf(gan);
+ var zhiIdx=diZhi.indexOf(zhi);
+ // 五行穿衣（日干→五行→吉色/忌色）
+ var ganWX={'甲':'木','乙':'木','丙':'火','丁':'火','戊':'土','己':'土','庚':'金','辛':'金','壬':'水','癸':'水'};
+ var riWX=ganWX[gan];
+ var wxColors={'木':{ji:['#4CAF50 绿色','#009688 青色','#8BC34A 浅绿'],jiName:'绿色系',color:'var(--green)'},'火':{ji:['#F44336 红色','#FF5722 橙色','#E91E63 粉色'],jiName:'红色系',color:'var(--red)'},'土':{ji:['#FF9800 橙色','#FFC107 黄色','#795548 棕色'],jiName:'黄色系',color:'var(--gold)'},'金':{ji:['#FFFFFF 白色','#FFD700 金色','#E0E0E0 银灰'],jiName:'白色系',color:'var(--text)'},'水':{ji:['#2196F3 蓝色','#000000 黑色','#3F51B5 深蓝'],jiName:'蓝色系',color:'var(--cyan)'}};
+ var wxKe={'木':'土','火':'金','土':'水','金':'木','水':'火'};
+ var jiWX=riWX;
+ var jiWX2=wxKe[wxKe[riWX]]; // 克克我 = 生我
+ var clothesHTML='<div style="color:var(--text2)">吉：<strong style="color:'+wxColors[jiWX].color+'">'+wxColors[jiWX].jiName+'</strong></div>';
+ clothesHTML+='<div style="font-size:10px;color:var(--text3);margin-top:2px">'+wxColors[jiWX].ji[0]+'</div>';
+ // 财神方位
+ var caishenDir={'甲':'东北','乙':'正东','丙':'正南','丁':'西南','戊':'正北','己':'正南','庚':'西南','辛':'正西','壬':'西北','癸':'正北'};
+ var dirArrows={'东北':'↗','正东':'→','正南':'↓','西南':'↙','正北':'↑','正西':'←','西北':'↖'};
+ var csDir=caishenDir[gan];
+ document.getElementById('jnCaishen').innerHTML='<div style="font-size:32px">'+dirArrows[csDir]+'</div><div style="font-size:13px;color:var(--gold)">'+csDir+'</div>';
+ // 幸运数字
+ var luckyBase=(ganIdx*3+zhiIdx*5+d)%9+1;
+ document.getElementById('jnLuckyNum').textContent=luckyBase+'、'+(luckyBase+3>9?luckyBase+3-9:luckyBase+3);
+ // 吉时
+ var jiShiGan=['甲','己']; // 甲己日
+ var jiShiList={'甲':['丑','寅','卯','午','未','酉'],'己':['子','寅','卯','巳','未','酉'],'乙':['子','丑','寅','卯','申','戌'],'庚':['子','丑','辰','巳','未','戌'],'丙':['子','寅','卯','午','申','酉'],'辛':['丑','辰','午','未','戌','亥'],'丁':['丑','辰','巳','午','未','亥'],'壬':['子','丑','寅','午','申','戌'],'戊':['丑','辰','巳','未','酉','亥'],'癸':['子','寅','卯','辰','巳','酉']};
+ var jishi=jiShiList[gan]||['子','卯','午','酉'];
+ var jishiNames=jishi.map(function(z){return z+'时'}).join(' · ');
+ document.getElementById('jnJishi').textContent=jishiNames;
+ // 穿衣
+ document.getElementById('jnClothes').innerHTML=clothesHTML;
+}
+initDailyJinnang();
+
 function initXiaoLiurenDefaults(){var now=new Date();var y=now.getFullYear(),m=now.getMonth()+1,d=now.getDate();var lunar=solarToLunar(y,m,d);document.getElementById('xlrMonth').value=lunar.month;document.getElementById('xlrDay').value=lunar.day;var shiChenIdx=(Math.floor((now.getHours()+1)/2)%12)+1;document.getElementById('xlrHour').value=shiChenIdx;var scNames=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];var scName=scNames[shiChenIdx-1];document.getElementById('xlrCurrentTime').innerHTML='当前：'+y+'年'+m+'月'+d+'日 农历'+lunarMonthNames[lunar.month-1]+'月'+lunarDayNames[lunar.day-1]+' '+scName+'时';}
 </script>
 </body>
