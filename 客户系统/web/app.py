@@ -22,6 +22,13 @@ def create_app():
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
 
+    # 静态文件缓存优化（30天）
+    @app.after_request
+    def add_cache_header(response):
+        if request.path.startswith('/static/'):
+            response.headers['Cache-Control'] = 'public, max-age=2592000'
+        return response
+
     from web.models import User, EnergyFactor, Project, PettyCash
 
     @login_manager.user_loader
