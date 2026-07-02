@@ -73,18 +73,19 @@ def create_app():
     with app.app_context():
         db.create_all()
 
-        db.session.execute(text('CREATE INDEX IF NOT EXISTS idx_projects_is_valid ON projects (is_valid)'))
-        db.session.execute(text('CREATE INDEX IF NOT EXISTS idx_projects_start_date ON projects (start_date)'))
-        db.session.execute(text('CREATE INDEX IF NOT EXISTS idx_projects_updated_at ON projects (updated_at)'))
-        db.session.execute(text('CREATE INDEX IF NOT EXISTS idx_projects_user_id ON projects (user_id)'))
-        db.session.execute(text('CREATE INDEX IF NOT EXISTS idx_projects_is_valid_deleted ON projects (is_valid, deleted_at)'))
-
         # 兼容已有数据库：添加 deleted_by / deleted_at 列
         cols = [r[1] for r in db.session.execute(text('PRAGMA table_info(projects)')).fetchall()]
         if 'deleted_by' not in cols:
             db.session.execute(text('ALTER TABLE projects ADD COLUMN deleted_by VARCHAR(80)'))
         if 'deleted_at' not in cols:
             db.session.execute(text('ALTER TABLE projects ADD COLUMN deleted_at DATETIME'))
+        db.session.commit()
+
+        db.session.execute(text('CREATE INDEX IF NOT EXISTS idx_projects_is_valid ON projects (is_valid)'))
+        db.session.execute(text('CREATE INDEX IF NOT EXISTS idx_projects_start_date ON projects (start_date)'))
+        db.session.execute(text('CREATE INDEX IF NOT EXISTS idx_projects_updated_at ON projects (updated_at)'))
+        db.session.execute(text('CREATE INDEX IF NOT EXISTS idx_projects_user_id ON projects (user_id)'))
+        db.session.execute(text('CREATE INDEX IF NOT EXISTS idx_projects_is_valid_deleted ON projects (is_valid, deleted_at)'))
         db.session.commit()
 
         if not User.query.filter_by(username='admin').first():
