@@ -98,7 +98,7 @@
                         <td>{{ p.contract_amount if p.contract_amount else '-' }}</td>
                         <td>
                             <a href="/project/edit/{{ p.id }}{% if show_duplicates %}?from_dup=1{% endif %}" class="btn btn-sm btn-outline-secondary" title="编辑"><i class="bi bi-pencil"></i></a>
-                            <form method="post" action="/project/delete" class="d-inline" onsubmit="return confirm('确定要删除项目【{{ p.name }}】吗？');">
+                            <form method="post" action="/project/delete" class="d-inline" onsubmit="return confirm('确定要删除项目【{{ p.name }}】吗？\n\n此操作可由管理员在回收站恢复，不会永久丢失数据。');">
                                 <input type="hidden" name="id" value="{{ p.id }}">
                                 {% if show_duplicates %}<input type="hidden" name="redirect_dup" value="1">{% endif %}
                                 <input type="hidden" name="year" value="{{ filter_year }}">
@@ -256,7 +256,7 @@
                                     <a href="/project/detail/{{ project.id }}" class="btn-action btn-view" title="查看详情"><i class="bi bi-eye"></i></a>
                                     {% if role != 'visitor' %}
                                     <a href="/project/edit/{{ project.id }}{% if show_duplicates %}?from_dup=1{% endif %}" class="btn-action btn-edit" title="编辑项目"><i class="bi bi-pencil"></i></a>
-                                    <form method="post" action="/project/delete" class="d-inline" onsubmit="return confirm('确定要删除项目【{{ project.name }}】吗？此操作不可撤销！');">
+                                    <form method="post" action="/project/delete" class="d-inline" onsubmit="return confirm('确定要删除项目【{{ project.name }}】吗？\n\n此操作可由管理员在回收站恢复，不会永久丢失数据。');">
                                         <input type="hidden" name="id" value="{{ project.id }}">
                                         {% if show_duplicates %}<input type="hidden" name="redirect_dup" value="1">{% endif %}
                                         <button type="submit" class="btn-action btn-delete" title="删除项目"><i class="bi bi-trash"></i></button>
@@ -414,7 +414,7 @@
                 '<a href="/project/detail/' + r.id + '" class="btn-action btn-view"><i class="bi bi-eye"></i></a>' +
                 {% if role != 'visitor' %}
                 '<a href="/project/edit/' + r.id + '" class="btn-action btn-edit"><i class="bi bi-pencil"></i></a>' +
-                '<form method="post" action="/project/delete" class="d-inline" onsubmit="return confirm(\'确定要删除吗？此操作不可撤销！\');"><input type="hidden" name="id" value="' + r.id + '"><button type="submit" class="btn-action btn-delete"><i class="bi bi-trash"></i></button></form>' +
+                '<form method="post" action="/project/delete" class="d-inline" onsubmit="return confirm(\'确定要删除吗？此操作可由管理员在回收站恢复。\');"><input type="hidden" name="id" value="' + r.id + '"><button type="submit" class="btn-action btn-delete"><i class="bi bi-trash"></i></button></form>' +
                 {% endif %}
                 '</div></td>' +
                 '<td><div class="toolbar-buttons d-flex gap-2 flex-nowrap">' +

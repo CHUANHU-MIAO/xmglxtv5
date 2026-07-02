@@ -43,6 +43,8 @@ class Project(db.Model):
     author = db.Column(db.String(80))
     progress = db.Column(db.String(50))
     is_valid = db.Column(db.Integer, default=1)
+    deleted_by = db.Column(db.String(80), nullable=True)
+    deleted_at = db.Column(db.DateTime, nullable=True)
 
     start_date = db.Column(db.Date, nullable=True)
     owner = db.Column(db.String(200), nullable=True)

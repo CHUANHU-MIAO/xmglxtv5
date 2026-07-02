@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}回收站 - 项目管理系统{% endblock %}
+
+{% block extra_head %}
+<style>
+    .trash-table th { white-space: nowrap; }
+    .trash-table td { vertical-align: middle; }
+    .deleted-info {
+        font-size: 0.8rem;
+        color: #dc3545;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5 py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4><i class="bi bi-recycle text-warning"></i> 回收站</h4>
+            <p class="text-muted mb-0" style="font-size:0.85rem;">查看被删除的项目，可恢复或彻底清除</p>
+        </div>
+        <a href="/admin/projects" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left"></i> 返回项目管理
+        </a>
+    </div>
+
+    {% if projects %}
+    <div class="card">
+        <div class="card-header d-flex align-items-center">
+            <h5 class="mb-0"><i class="bi bi-trash3 text-warning"></i> 已删除项目</h5>
+            <span class="stats-badge bg-warning text-dark">共 {{ projects|length }} 个已删除项目</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 trash-table">
+                    <thead>
+                        <tr>
+                            <th width="5%">ID</th>
+                            <th width="20%">项目名称</th>
+                            <th width="10%">编制人员</th>
+                            <th width="15%">业主单位</th>
+                            <th width="10%">合同金额(万元)</th>
+                            <th width="12%">删除人</th>
+                            <th width="15%">删除时间</th>
+                            <th width="13%">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in projects %}
+                        <tr>
+                            <td><span class="badge bg-secondary">{{ p.id }}</span></td>
+                            <td>{{ p.name|truncate(25) }}</td>
+                            <td>{{ p.author|default('-') }}</td>
+                            <td>{{ p.owner|default('-')|truncate(15) }}</td>
+                            <td>{{ p.contract_amount if p.contract_amount else '-' }}</td>
+                            <td>
+                                {% if p.deleted_by %}
+                                <span class="badge bg-danger">{{ p.deleted_by }}</span>
+                                {% else %}
+                                <span class="text-muted">未知</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if p.deleted_at %}
+                                <span class="deleted-info">
+                                    <i class="bi bi-clock"></i>
+                                    {{ p.deleted_at.strftime('%Y-%m-%d %H:%M') }}
+                                </span>
+                                {% else %}
+                                <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="/project/detail/{{ p.id }}" class="btn btn-outline-info" title="查看详情">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="/admin/projects/restore/{{ p.id }}" class="btn btn-outline-success" title="恢复项目"
+                                       onclick="return confirm('确定恢复项目【{{ p.name }}】吗？');">
+                                        <i class="bi bi-arrow-counterclockwise"></i> 恢复
+                                    </a>
+                                    <a href="/admin/project/delete/{{ p.id }}" class="btn btn-outline-danger" title="彻底删除（不可恢复）"
+                                       onclick="return confirm('⚠️ 确定彻底删除项目【{{ p.name }}】吗？\n\n此操作不可恢复，所有项目数据将被永久清除！');">
+                                        <i class="bi bi-x-octagon"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-warning mt-3" style="font-size:0.85rem;">
+        <i class="bi bi-info-circle"></i>
+        <strong>说明：</strong>
+        工程师删除项目时会移入回收站，管理员可随时恢复。点击"彻底删除"将永久清除项目及其所有关联数据（日志、资金记录、附件等），不可恢复。
+    </div>
+    {% else %}
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <i class="bi bi-trash3" style="font-size:3rem;color:var(--text-muted);"></i>
+            <h4 class="mt-3 text-muted">回收站为空</h4>
+            <p class="text-muted">当前没有被删除的项目</p>
+            <a href="/admin/projects" class="btn btn-outline-primary mt-2">
+                <i class="bi bi-arrow-left"></i> 返回项目管理
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

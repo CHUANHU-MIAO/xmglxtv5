@@ -344,12 +344,45 @@ def projects_export():
 @admin_required
 def project_delete(project_id):
     project = Project.query.get_or_404(project_id)
+    # 安全检查：只允许彻底删除已在回收站中的项目
+    if project.is_valid != 0:
+        flash('该项目尚未移入回收站，无法彻底删除。请先在项目列表中删除后再从回收站清理。')
+        return redirect(url_for('admin.projects'))
     Log.query.filter_by(project_id=project_id).delete()
     FundRecord.query.filter_by(project_id=project_id).delete()
     db.session.delete(project)
     db.session.commit()
-    flash('项目已彻底删除')
-    return redirect(url_for('admin.projects'))
+    flash('项目已彻底删除，不可恢复')
+    return redirect(url_for('admin.trash'))
+
+
+@admin_bp.route('/projects/trash')
+@login_required
+@admin_required
+def trash():
+    deleted_projects = Project.query.filter_by(is_valid=0).order_by(
+        Project.deleted_at.desc()
+    ).all()
+    return render_template('admin_trash.html', projects=deleted_projects, role=current_user.role)
+
+
+@admin_bp.route('/projects/restore/<int:project_id>')
+@login_required
+@admin_required
+def project_restore(project_id):
+    project = Project.query.get_or_404(project_id)
+    original_deleter = project.deleted_by or '未知'
+    project.is_valid = 1
+    project.deleted_by = None
+    project.deleted_at = None
+    project.updated_at = datetime.datetime.now()
+    db.session.commit()
+    log = Log(project_id=project.id, user=current_user.username,
+              content=f'恢复了项目（原删除人：{original_deleter}）')
+    db.session.add(log)
+    db.session.commit()
+    flash(f'项目【{project.name}】已恢复')
+    return redirect(url_for('admin.trash'))
 
 
 @admin_bp.route('/operations', methods=['GET', 'POST'])
@@ -627,7 +660,6 @@ def operations_export():
 
 @admin_bp.route('/database')
 @login_required
-@admin_required
 def database():
     file_type = request.args.get('file_type', '', type=str)
     upload_user = request.args.get('upload_user', '', type=str)
@@ -698,7 +730,6 @@ def database_upload():
 
 @admin_bp.route('/database/download/<int:file_id>')
 @login_required
-@admin_required
 def database_download(file_id):
     sf = StandardFile.query.get_or_404(file_id)
     sf.download_count = (sf.download_count or 0) + 1
@@ -724,7 +755,6 @@ def database_delete(file_id):
 
 @admin_bp.route('/database/view/<int:file_id>')
 @login_required
-@admin_required
 def database_view(file_id):
     sf = StandardFile.query.get_or_404(file_id)
     sf.download_count = (sf.download_count or 0) + 1

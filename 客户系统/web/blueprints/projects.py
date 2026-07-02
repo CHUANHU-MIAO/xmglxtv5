@@ -841,9 +841,15 @@ def project_delete_by_form():
         project = Project.query.get_or_404(int(project_id))
         if current_user.id == project.user_id or current_user.role == 'admin':
             project.is_valid = 0
+            project.deleted_by = current_user.username
+            project.deleted_at = datetime.datetime.now()
             project.updated_at = datetime.datetime.now()
             db.session.commit()
-            flash('项目已删除')
+            log = Log(project_id=project.id, user=current_user.username,
+                      content=f'删除了项目（可由管理员恢复）')
+            db.session.add(log)
+            db.session.commit()
+            flash('项目已删除（管理员可在回收站恢复）')
         else:
             flash('没有权限删除该项目')
     if redirect_dup:
@@ -857,9 +863,15 @@ def project_delete(project_id):
     project = Project.query.get_or_404(project_id)
     if current_user.id == project.user_id or current_user.role == 'admin':
         project.is_valid = 0
+        project.deleted_by = current_user.username
+        project.deleted_at = datetime.datetime.now()
         project.updated_at = datetime.datetime.now()
         db.session.commit()
-        flash('项目已删除')
+        log = Log(project_id=project.id, user=current_user.username,
+                  content=f'删除了项目（可由管理员恢复）')
+        db.session.add(log)
+        db.session.commit()
+        flash('项目已删除（管理员可在回收站恢复）')
     else:
         flash('没有权限删除该项目')
     return redirect(url_for('projects.my_projects'))
