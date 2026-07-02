@@ -145,46 +145,6 @@
             box-shadow: 0 6px 25px rgba(124, 181, 24, 0.4);
         }
 
-        .nav-download-btn {
-            position: relative;
-        }
-
-        .nav-download-tooltip {
-            position: absolute;
-            top: calc(100% + 10px);
-            left: 50%;
-            transform: translateX(-50%) translateY(5px);
-            background: var(--gray-900);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            pointer-events: none;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            z-index: 1001;
-        }
-
-        .nav-download-tooltip::before {
-            content: '';
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            border: 6px solid transparent;
-            border-bottom-color: var(--gray-900);
-        }
-
-        .nav-download-btn:hover .nav-download-tooltip {
-            opacity: 1;
-            visibility: visible;
-            transform: translateX(-50%) translateY(0);
-        }
-
         .nav-cta svg {
             width: 18px;
             height: 18px;
@@ -1700,306 +1660,6 @@
             opacity: 0.8;
         }
 
-        /* 个人桌面端板块 */
-        .desktop-section {
-            padding: 6rem 2rem;
-            background: linear-gradient(180deg, var(--gray-50) 0%, var(--white) 50%, var(--gray-100) 100%);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .desktop-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-            position: relative;
-            z-index: 1;
-        }
-
-        .desktop-visual {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .desktop-app-preview {
-            width: 100%;
-            max-width: 450px;
-            background: white;
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-            border: 1px solid var(--gray-200);
-        }
-
-        .app-header {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--gray-200);
-        }
-
-        .app-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, var(--primary-blue), var(--primary-light));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .app-icon svg {
-            width: 20px;
-            height: 20px;
-            color: white;
-        }
-
-        .app-title {
-            font-size: 1rem;
-            color: var(--gray-800);
-            font-weight: 600;
-        }
-
-        .app-subtitle {
-            font-size: 0.8rem;
-            color: var(--gray-500);
-        }
-
-        .app-sidebar {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .app-nav {
-            width: 140px;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .app-nav-item {
-            padding: 0.5rem 0.75rem;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            color: var(--gray-600);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .app-nav-item.active {
-            background: linear-gradient(135deg, rgba(30, 90, 150, 0.1), rgba(74, 144, 217, 0.1));
-            color: var(--primary-blue);
-            font-weight: 500;
-        }
-
-        .app-nav-item svg {
-            width: 14px;
-            height: 14px;
-        }
-
-        .app-content {
-            flex: 1;
-            background: var(--gray-50);
-            border-radius: 8px;
-            padding: 1rem;
-            min-height: 150px;
-        }
-
-        .app-content-title {
-            font-size: 0.85rem;
-            color: var(--gray-800);
-            font-weight: 600;
-            margin-bottom: 0.75rem;
-        }
-
-        .app-project-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .app-project-item {
-            padding: 0.5rem 0.75rem;
-            background: white;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            color: var(--gray-700);
-            border: 1px solid var(--gray-200);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .app-project-status {
-            padding: 0.15rem 0.5rem;
-            border-radius: 10px;
-            font-size: 0.65rem;
-            font-weight: 600;
-        }
-
-        .app-project-status.green { background: rgba(124, 181, 24, 0.15); color: var(--accent-green); }
-        .app-project-status.blue { background: rgba(30, 90, 150, 0.15); color: var(--primary-blue); }
-
-        .desktop-content {
-            color: var(--gray-800);
-        }
-
-        .desktop-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background: linear-gradient(135deg, rgba(124, 181, 24, 0.1), rgba(74, 144, 217, 0.1));
-            border: 1px solid rgba(124, 181, 24, 0.2);
-            border-radius: 50px;
-            font-size: 0.85rem;
-            color: var(--accent-green);
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-        }
-
-        .desktop-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            line-height: 1.3;
-            margin-bottom: 1rem;
-            color: var(--gray-900);
-        }
-
-        .desktop-subtitle {
-            font-size: 1.2rem;
-            color: var(--gray-600);
-            margin-bottom: 1.5rem;
-            font-weight: 500;
-        }
-
-        .desktop-desc {
-            font-size: 1rem;
-            color: var(--gray-600);
-            margin-bottom: 2rem;
-            line-height: 1.8;
-        }
-
-        .desktop-pricing {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-            padding: 1rem 1.5rem;
-            background: linear-gradient(135deg, rgba(124, 181, 24, 0.08), rgba(74, 144, 217, 0.08));
-            border-radius: 12px;
-            border: 1px solid rgba(124, 181, 24, 0.15);
-        }
-
-        .pricing-free {
-            text-align: center;
-        }
-
-        .pricing-free-label {
-            font-size: 0.85rem;
-            color: var(--gray-600);
-        }
-
-        .pricing-free-value {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--accent-green);
-        }
-
-        .pricing-divider {
-            width: 1px;
-            height: 50px;
-            background: var(--gray-300);
-        }
-
-        .pricing-features {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .pricing-feature-tag {
-            padding: 0.35rem 0.75rem;
-            background: white;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            color: var(--gray-700);
-            border: 1px solid var(--gray-200);
-        }
-
-        .desktop-features {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .desktop-feature {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            background: white;
-            border-radius: 10px;
-            border: 1px solid var(--gray-200);
-        }
-
-        .desktop-feature svg {
-            width: 20px;
-            height: 20px;
-            color: var(--accent-green);
-            flex-shrink: 0;
-        }
-
-        .desktop-feature span {
-            font-size: 0.9rem;
-            color: var(--gray-700);
-            font-weight: 500;
-        }
-
-        .desktop-download {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .btn-desktop-download {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 1rem 2rem;
-            background: linear-gradient(135deg, var(--accent-green), var(--accent-light));
-            color: white;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(124, 181, 24, 0.4);
-        }
-
-        .btn-desktop-download:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(124, 181, 24, 0.5);
-        }
-
-        .btn-desktop-download svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        .desktop-download-note {
-            font-size: 0.85rem;
-            color: var(--gray-500);
-        }
-
         /* 联系我们 */
         .contact {
             padding: 6rem 2rem;
@@ -2402,21 +2062,18 @@
             }
 
             .system-download-container,
-            .enterprise-container,
-            .desktop-container {
+            .enterprise-container {
                 grid-template-columns: 1fr;
                 gap: 2rem;
             }
 
             .system-download-title,
-            .enterprise-title,
-            .desktop-title {
+            .enterprise-title {
                 font-size: 1.8rem;
             }
 
             .system-download-subtitle,
-            .enterprise-subtitle,
-            .desktop-subtitle {
+            .enterprise-subtitle {
                 font-size: 1.1rem;
             }
 
@@ -2436,35 +2093,6 @@
             .enterprise-dashboard {
                 max-width: 380px;
                 margin: 0 auto;
-            }
-
-            .desktop-visual {
-                order: -1;
-            }
-
-            .desktop-app-preview {
-                max-width: 360px;
-                margin: 0 auto;
-            }
-
-            .desktop-pricing {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-
-            .pricing-divider {
-                width: 100%;
-                height: 1px;
-            }
-
-            .desktop-download {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .desktop-download-note {
-                font-size: 0.8rem;
             }
 
             .enterprise-features {
@@ -2616,20 +2244,17 @@
             }
 
             .system-download-title,
-            .enterprise-title,
-            .desktop-title {
+            .enterprise-title {
                 font-size: 1.5rem;
             }
 
             .system-download-subtitle,
-            .enterprise-subtitle,
-            .desktop-subtitle {
+            .enterprise-subtitle {
                 font-size: 1rem;
             }
 
             .system-download-desc,
-            .enterprise-desc,
-            .desktop-desc {
+            .enterprise-desc {
                 font-size: 0.9rem;
             }
 
@@ -2646,30 +2271,8 @@
                 padding: 1rem;
             }
 
-            .desktop-app-preview {
-                padding: 1rem;
-            }
-
-            .desktop-features {
-                grid-template-columns: 1fr;
-            }
-
-            .pricing-free-value {
-                font-size: 1.5rem;
-            }
-
-            .pricing-features {
-                gap: 0.35rem;
-            }
-
-            .pricing-feature-tag {
-                font-size: 0.7rem;
-                padding: 0.25rem 0.6rem;
-            }
-
             .btn-primary,
             .btn-secondary,
-            .btn-desktop-download,
             .btn-download,
             .btn-download-outline {
                 padding: 0.8rem 1.2rem;
@@ -2774,15 +2377,6 @@
                 <span></span>
             </button>
             <div class="nav-links" id="navLinks">
-                <a href="#download" class="nav-cta nav-download-btn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7 10 12 15 17 10"></polyline>
-                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
-                    下载项目管理系统桌面端
-                    <span class="nav-download-tooltip">咨询电话：17631020218</span>
-                </a>
                 <a href="#about" class="nav-link">关于我们</a>
                 <a href="#services" class="nav-link">服务范围</a>
                 <a href="#portfolio" class="nav-link">成功案例</a>
@@ -3640,158 +3234,6 @@
                     </svg>
                     演示系统体验入口
                 </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- 个人免费桌面端 -->
-    <section class="desktop-section" id="download">
-        <div class="desktop-container">
-            <div class="desktop-visual scroll-animate">
-                <div class="desktop-app-preview">
-                    <div class="app-header">
-                        <div class="app-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                                <line x1="8" y1="21" x2="16" y2="21"></line>
-                                <line x1="12" y1="17" x2="12" y2="21"></line>
-                            </svg>
-                        </div>
-                        <div>
-                            <div class="app-title">项目管理</div>
-                            <div class="app-subtitle">桌面端 v5.0.1</div>
-                        </div>
-                    </div>
-                    <div class="app-sidebar">
-                        <div class="app-nav">
-                            <div class="app-nav-item active">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                                </svg>
-                                我的项目
-                            </div>
-                            <div class="app-nav-item">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="11" cy="11" r="8"></circle>
-                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                </svg>
-                                搜索
-                            </div>
-                            <div class="app-nav-item">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                </svg>
-                                文件
-                            </div>
-                            <div class="app-nav-item">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="12" cy="12" r="3"></circle>
-                                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H12a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V12a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                                </svg>
-                                设置
-                            </div>
-                        </div>
-                        <div class="app-content">
-                            <div class="app-content-title">近期项目</div>
-                            <div class="app-project-list">
-                                <div class="app-project-item">
-                                    <span>某县水网综合治理工程</span>
-                                    <span class="app-project-status green">进行中</span>
-                                </div>
-                                <div class="app-project-item">
-                                    <span>开发区污水处理PPP项目</span>
-                                    <span class="app-project-status blue">已完成</span>
-                                </div>
-                                <div class="app-project-item">
-                                    <span>棚户区改造可行性研究</span>
-                                    <span class="app-project-status green">进行中</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="desktop-content scroll-animate">
-                <div class="desktop-badge">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
-                    个人工程师专属
-                </div>
-                <h2 class="desktop-title">个人免费桌面端</h2>
-                <p class="desktop-subtitle">本地运行 · 数据私有 · 开箱即用</p>
-                <p class="desktop-desc">
-                    安装在个人电脑上，无需服务器，所有数据存储在本地。
-                    内置投资估算、能耗计算、财务分析等专业工具，助力工程师高效完成项目测算工作。
-                </p>
-                <div class="desktop-pricing">
-                    <div class="pricing-free">
-                        <div class="pricing-free-label">标准版</div>
-                        <div class="pricing-free-value">免费</div>
-                    </div>
-                    <div class="pricing-divider"></div>
-                    <div class="pricing-features">
-                        <span class="pricing-feature-tag">10个项目</span>
-                        <span class="pricing-feature-tag">基础能耗计算</span>
-                        <span class="pricing-feature-tag">本地数据存储</span>
-                        <span class="pricing-feature-tag">可升级专业版</span>
-                    </div>
-                </div>
-                <div class="desktop-features">
-                    <div class="desktop-feature">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                        <span>投资估算表编制</span>
-                    </div>
-                    <div class="desktop-feature">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                        <span>能耗折标煤计算</span>
-                    </div>
-                    <div class="desktop-feature">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                        <span>用电负荷计算</span>
-                    </div>
-                    <div class="desktop-feature">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                        <span>NPV/IRR财务分析</span>
-                    </div>
-                    <div class="desktop-feature">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                        <span>专项债财务测算</span>
-                    </div>
-                    <div class="desktop-feature">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                        <span>Excel导出报表</span>
-                    </div>
-                </div>
-                <div class="desktop-download">
-                    <a href="/static/Zjxmgl_v5.0.1_Setup.exe" class="btn-desktop-download" download>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="7 10 12 15 17 10"></polyline>
-                            <line x1="12" y1="15" x2="12" y2="3"></line>
-                        </svg>
-                        下载项目管理系统桌面端
-                    </a>
-                </div>
             </div>
         </div>
     </section>

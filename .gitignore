@@ -37,23 +37,10 @@ config.json
 客户系统/上传的文件/
 客户系统/uploads/
 客户系统/instance/
-客户系统/desktop/config.json
-客户系统/desktop/desktop_data/
 客户系统/*.key
 客户系统/license.key
-
-# Database - 订阅管理系统
-订阅管理系统/database/
-desktop_data/
 
 # Keys (根目录)
 private_key.pem
 public_key.pem
 *.key
-
-# Desktop packaged exe
-客户系统/desktop/dist/
-客户系统/desktop/build/
-客户系统/desktop/installer/
-客户系统/desktop/*.spec
-客户系统/desktop/__pycache__/

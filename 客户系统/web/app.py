@@ -9,13 +9,7 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    if app.config.get('DESKTOP_MODE'):
-        os.makedirs(app.config['DESKTOP_DATA_DIR'], exist_ok=True)
-        desktop_templates = os.path.join(app.config['BASEDIR'], 'desktop', 'desktop_templates')
-        if os.path.isdir(desktop_templates):
-            app.jinja_loader.searchpath.insert(0, desktop_templates)
-    else:
-        os.makedirs(os.path.join(app.config['BASEDIR'], 'instance'), exist_ok=True)
+    os.makedirs(os.path.join(app.config['BASEDIR'], 'instance'), exist_ok=True)
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
     db.init_app(app)
@@ -58,12 +52,6 @@ def create_app():
     app.register_blueprint(files_bp)
     app.register_blueprint(estimation_bp)
 
-    if app.config.get('DESKTOP_MODE'):
-        @app.route('/shutdown')
-        def shutdown():
-            request.environ.get('werkzeug.server.shutdown')()
-            return 'shutting down'
-
     @app.context_processor
     def inject_version():
         from flask_login import current_user
@@ -93,9 +81,6 @@ def create_app():
             admin.set_password('admin123')
             db.session.add(admin)
             db.session.commit()
-
-        if app.config.get('DESKTOP_MODE'):
-            _ensure_desktop_default_project()
 
         if not EnergyFactor.query.first():
             energy_factors = [
@@ -137,20 +122,3 @@ def create_app():
             db.session.commit()
 
     return app
-
-
-def _ensure_desktop_default_project():
-    from web.models import User, Project
-    admin = User.query.filter_by(username='admin').first()
-    if not admin:
-        return
-    default = Project.query.filter_by(name='桌面测算项目').first()
-    if not default:
-        default = Project(
-            name='桌面测算项目',
-            description='桌面端默认测算项目',
-            user_id=admin.id,
-            author='admin',
-        )
-        db.session.add(default)
-        db.session.commit()
