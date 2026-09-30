@@ -62,11 +62,13 @@ def upload(project_id):
         file.save(save_path)
 
         _, ext = os.path.splitext(filename)
+        # 使用用户选择的文件类型（合同文件/成果文件），未选择时回退到扩展名
+        selected_file_type = request.form.get('file_type')
         attachment = Attachment(
             project_id=project_id,
             filename=filename,
             save_name=filename,
-            file_type=ext.lstrip('.') if ext else '',
+            file_type=selected_file_type if selected_file_type else (ext.lstrip('.') if ext else 'report'),
             upload_time=datetime.datetime.utcnow(),
             upload_user=current_user.username
         )

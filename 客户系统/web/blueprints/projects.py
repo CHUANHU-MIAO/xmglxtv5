@@ -246,6 +246,7 @@ def api_projects_search():
             'id': p.id,
             'name': p.name,
             'owner': p.owner or '-',
+            'service_content': p.service_content or '-',
             'total_investment': p.total_investment or '-',
             'contract_amount': p.contract_amount or '-',
             'contract_status': p.contract_status or '',
