@@ -34,6 +34,7 @@ def create_app():
     from web.blueprints.admin import admin_bp
     from web.blueprints.files import files_bp
     from web.blueprints.estimation import estimation_bp
+    from web.blueprints.seal import seal_bp
 
     @app.route('/')
     def landing():
@@ -51,6 +52,7 @@ def create_app():
     app.register_blueprint(admin_bp)
     app.register_blueprint(files_bp)
     app.register_blueprint(estimation_bp)
+    app.register_blueprint(seal_bp)
 
     @app.context_processor
     def inject_version():

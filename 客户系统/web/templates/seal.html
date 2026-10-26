@@ -1,0 +1,368 @@
+{% extends "base.html" %}
+
+{% block title %}项目管理系统 - 签章{% endblock %}
+
+{% block extra_head %}
+<style>
+    .seal-step {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: var(--accent-primary-dim);
+        color: var(--accent-primary);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: .82rem;
+        font-family: var(--font-display);
+        flex: 0 0 auto;
+    }
+
+    .seal-option {
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
+        padding: 14px 16px;
+        background: rgba(0, 0, 0, .02);
+        cursor: pointer;
+        height: 100%;
+        transition: all var(--transition-normal);
+    }
+
+    .seal-option:hover {
+        border-color: var(--accent-primary);
+        background: var(--accent-primary-dim);
+    }
+
+    .seal-option .seal-check {
+        opacity: 0;
+        color: var(--accent-primary);
+        transition: opacity var(--transition-fast);
+    }
+
+    .seal-option.active {
+        border-color: var(--accent-primary);
+        background: var(--accent-primary-dim);
+        box-shadow: 0 0 0 3px var(--accent-primary-dim);
+    }
+
+    .seal-option.active .seal-check {
+        opacity: 1;
+    }
+
+    .seal-option small {
+        display: block;
+        margin-top: 4px;
+        font-size: .72rem;
+        color: var(--text-secondary);
+    }
+
+    .seal-result {
+        background: var(--accent-primary-dim);
+        border: 1px solid var(--accent-primary);
+        border-radius: var(--radius-lg);
+    }
+
+    .seal-tips {
+        position: sticky;
+        top: 90px;
+    }
+
+    @media (max-width: 991.98px) {
+        .seal-tips {
+            position: static;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="mb-3"><i class="bi bi-patch-check text-primary"></i> 签章</h2>
+            <p class="text-muted">上传报告 → 识别封面 → 选择资质与印章 → 一键生成盖章成稿</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <span class="badge bg-primary">原报告格式零改动</span>
+        </div>
+    </div>
+
+    <div id="errBox" class="alert alert-danger d-none" role="alert"></div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header d-flex align-items-center gap-2">
+                    <span class="seal-step">1</span>
+                    <h6 class="mb-0">选择要盖章的报告</h6>
+                </div>
+                <div class="card-body">
+                    <div class="upload-area" id="drop">
+                        <i class="bi bi-cloud-arrow-up display-5 text-muted"></i>
+                        <h5 class="mt-2 mb-1">点击选择或拖入文件</h5>
+                        <p class="text-muted small mb-0">支持 .pdf / .docx，单个文件不超过 200MB</p>
+                    </div>
+                    <input type="file" id="file" accept=".pdf,.docx" hidden>
+                    <div id="fileInfo" class="mt-3 small text-muted">尚未选择文件</div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header d-flex align-items-center gap-2">
+                    <span class="seal-step">2</span>
+                    <h6 class="mb-0">核对封面信息</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label" for="projectName">项目名称</label>
+                            <input type="text" class="form-control" id="projectName" placeholder="系统自动识别，可手动修改">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="reportType">报告类型</label>
+                            <input type="text" class="form-control" id="reportType" placeholder="如：可行性研究报告">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="reviewer">校对人员</label>
+                            <select class="form-select" id="reviewer">
+                                {% for name in reviewer_options %}
+                                <option value="{{ name }}" {% if name == '马立亚' %}selected{% endif %}>{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-text">署名页自动插入该工程师的手写签名</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header d-flex align-items-center gap-2">
+                    <span class="seal-step">3</span>
+                    <h6 class="mb-0">选择资质与印章</h6>
+                </div>
+                <div class="card-body">
+                    <label class="form-label">资质等级</label>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <div class="seal-option" data-level="甲级" onclick="pickLevel('甲级')">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <strong>甲级</strong>
+                                    <i class="bi bi-check-circle-fill seal-check"></i>
+                                </div>
+                                <small>证书编号：甲032024011415</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="seal-option active" data-level="乙级" onclick="pickLevel('乙级')">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <strong>乙级</strong>
+                                    <i class="bi bi-check-circle-fill seal-check"></i>
+                                </div>
+                                <small>证书编号：乙032025010063</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <label class="form-label">印章类型</label>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="seal-option active" data-seal="公章" onclick="pickSeal('公章')">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <strong>单位公章</strong>
+                                    <i class="bi bi-check-circle-fill seal-check"></i>
+                                </div>
+                                <small>封面、署名页、资质页统一加盖</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="seal-option" data-seal="技术成果章" onclick="pickSeal('技术成果章')">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <strong>技术成果章</strong>
+                                    <i class="bi bi-check-circle-fill seal-check"></i>
+                                </div>
+                                <small>技术成果类报告使用</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center my-4">
+                <button type="button" class="btn btn-primary btn-lg px-5" id="goBtn" onclick="generate()">
+                    <i class="bi bi-patch-check"></i> 生成盖章成稿
+                </button>
+            </div>
+            <div id="busy" class="text-center d-none mb-4">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="text-muted mt-2 mb-0">正在生成：识别封面 → 生成三页 → 盖章 → 合并 PDF，请稍候…</p>
+            </div>
+
+            <div class="card border-0 mb-4 d-none" id="result">
+                <div class="card-body seal-result">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                        <h6 class="mb-0" id="okLine">生成成功</h6>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a id="pdfLink" class="btn btn-primary" href="#"><i class="bi bi-download"></i> 下载盖章成稿</a>
+                        <a id="threeLink" class="btn btn-outline-secondary" href="#"><i class="bi bi-file-earmark-text"></i> 下载三页文档（核对用）</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card seal-tips">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-info-circle"></i> 使用说明</h6>
+                </div>
+                <div class="card-body">
+                    <ol class="small text-muted ps-3 mb-0">
+                        <li class="mb-2">推荐上传 <strong>PDF</strong>：原报告正文按页原样拼接，格式零改动。</li>
+                        <li class="mb-2">Word 文件会先转 PDF 再拼接，请确认服务器已安装 LibreOffice。</li>
+                        <li class="mb-2">系统自动生成封面、署名页、资质页，并删除原报告封面。</li>
+                        <li class="mb-2">项目名称与报告类型识别有偏差时，可直接修改后再生成。</li>
+                        <li>生成的临时文件在下载后自动清理，请及时保存到本地。</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    const API_PARSE = "{{ url_for('seal.parse_cover') }}";
+    const API_GENERATE = "{{ url_for('seal.generate') }}";
+    let level = '乙级';
+    let sealType = '公章';
+
+    function el(id) { return document.getElementById(id); }
+
+    function showErr(message) {
+        const box = el('errBox');
+        box.textContent = message;
+        box.classList.remove('d-none');
+        box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function hideErr() {
+        el('errBox').classList.add('d-none');
+    }
+
+    function pickLevel(value) {
+        level = value;
+        document.querySelectorAll('[data-level]').forEach(function (node) {
+            node.classList.toggle('active', node.dataset.level === value);
+        });
+    }
+
+    function pickSeal(value) {
+        sealType = value;
+        document.querySelectorAll('[data-seal]').forEach(function (node) {
+            node.classList.toggle('active', node.dataset.seal === value);
+        });
+    }
+
+    const drop = el('drop');
+    drop.addEventListener('click', function () { el('file').click(); });
+    drop.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        drop.classList.add('dragover');
+    });
+    drop.addEventListener('dragleave', function () { drop.classList.remove('dragover'); });
+    drop.addEventListener('drop', function (e) {
+        e.preventDefault();
+        drop.classList.remove('dragover');
+        if (e.dataTransfer.files.length) {
+            el('file').files = e.dataTransfer.files;
+            onFileChange();
+        }
+    });
+    el('file').addEventListener('change', onFileChange);
+
+    function onFileChange() {
+        const file = el('file').files[0];
+        if (!file) { return; }
+        const info = el('fileInfo');
+        info.className = 'mt-3 small text-warning';
+        info.textContent = '已选择：' + file.name + '（' + (file.size / 1048576).toFixed(1) + 'MB），正在识别封面…';
+        el('projectName').value = '';
+        el('reportType').value = '';
+
+        const form = new FormData();
+        form.append('file', file);
+        fetch(API_PARSE, { method: 'POST', body: form })
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+                if (!data.ok) {
+                    info.className = 'mt-3 small text-danger';
+                    info.textContent = '识别失败：' + (data.error || '未知错误') + '，请手动填写';
+                    return;
+                }
+                if (data.project_name) { el('projectName').value = data.project_name; }
+                if (data.report_type) { el('reportType').value = data.report_type; }
+                const missing = [];
+                if (!data.project_name) { missing.push('项目名称'); }
+                if (!data.report_type) { missing.push('报告类型'); }
+                if (missing.length) {
+                    info.className = 'mt-3 small text-danger';
+                    info.textContent = '未能识别' + missing.join('、') + '，请手动填写';
+                } else {
+                    info.className = 'mt-3 small text-primary';
+                    info.textContent = '识别完成：已填入项目名称与报告类型，如有偏差请手动修改';
+                }
+            })
+            .catch(function (err) {
+                info.className = 'mt-3 small text-danger';
+                info.textContent = '识别请求失败：' + err.message + '，请手动填写';
+            });
+    }
+
+    async function generate() {
+        hideErr();
+        const file = el('file').files[0];
+        if (!file) { showErr('请先选择要盖章的报告文件（PDF 或 Word）'); return; }
+        const projectName = el('projectName').value.trim();
+        const reportType = el('reportType').value.trim();
+        if (!projectName || !reportType) {
+            showErr('请填写（或确认自动识别的）项目名称和报告类型');
+            return;
+        }
+
+        const form = new FormData();
+        form.append('file', file);
+        form.append('project_name', projectName);
+        form.append('report_type', reportType);
+        form.append('reviewer', el('reviewer').value);
+        form.append('level', level);
+        form.append('seal_type', sealType);
+
+        el('goBtn').disabled = true;
+        el('busy').classList.remove('d-none');
+        el('result').classList.add('d-none');
+
+        try {
+            const res = await fetch(API_GENERATE, { method: 'POST', body: form });
+            const data = await res.json();
+            if (!data.ok) {
+                showErr(data.error || '生成失败');
+                return;
+            }
+            el('okLine').textContent = '生成成功：' + data.project_name + ' ' + data.report_type +
+                '（' + data.seal_type + '，' + data.cert_no + '）';
+            el('pdfLink').href = data.pdf_url;
+            el('threeLink').href = data.three_url;
+            el('result').classList.remove('d-none');
+            el('result').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } catch (err) {
+            showErr('生成失败：' + err.message);
+        } finally {
+            el('goBtn').disabled = false;
+            el('busy').classList.add('d-none');
+        }
+    }
+</script>
+{% endblock %}
