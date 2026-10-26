@@ -143,7 +143,30 @@ def chinese_date(dt=None):
         return digits[n]
     return f"{cn_year(dt.year)}年{cn_month(dt.month)}月"
 
+if os.name == "nt":
+    CN_FONT_SONG = "宋体"
+    CN_FONT_HEI = "黑体"
+else:
+    CN_FONT_SONG = "Noto Serif CJK SC"
+    CN_FONT_HEI = "Noto Sans CJK SC"
+
+
+def _map_cn_font(name_cn):
+    """把中文习惯字体名映射为当前系统真实存在的字体名。
+
+    Windows 有“宋体/黑体”，Ubuntu 只有思源字体。
+    不映射的话 LibreOffice 转 PDF 时查不到该字体，
+    会回退到无中文字形的字体，中文显示为方块。
+    """
+    if name_cn in ("宋体", "SimSun"):
+        return CN_FONT_SONG
+    if name_cn in ("黑体", "SimHei"):
+        return CN_FONT_HEI
+    return name_cn
+
+
 def set_run_font(run, name_cn="宋体", size_pt=14, bold=False):
+    name_cn = _map_cn_font(name_cn)
     run.font.name = name_cn
     run.font.size = Pt(size_pt)
     run.font.bold = bold
@@ -156,6 +179,26 @@ def set_run_font(run, name_cn="宋体", size_pt=14, bold=False):
     rFonts.set(qn('w:eastAsia'), name_cn)
     rFonts.set(qn('w:ascii'), name_cn)
     rFonts.set(qn('w:hAnsi'), name_cn)
+
+def _fix_all_run_fonts(doc):
+    """强制修正文档内所有 rFonts（正文、段落标记、表格与样式表）。"""
+    roots = [doc.element.body]
+    try:
+        roots.append(doc.styles.element)
+    except Exception:
+        pass
+    for root in roots:
+        for rFonts in root.iter(qn('w:rFonts')):
+            old = rFonts.get(qn('w:eastAsia')) or rFonts.get(qn('w:ascii')) or "宋体"
+            fixed = _map_cn_font(old)
+            for attr in ('w:asciiTheme', 'w:hAnsiTheme', 'w:eastAsiaTheme', 'w:cstheme'):
+                key = qn(attr)
+                if key in rFonts.attrib:
+                    del rFonts.attrib[key]
+            rFonts.set(qn('w:eastAsia'), fixed)
+            rFonts.set(qn('w:ascii'), fixed)
+            rFonts.set(qn('w:hAnsi'), fixed)
+
 
 def add_para(doc, text="", font="宋体", size=14, bold=False, align=None,
              before=0, after=0, line=None):
@@ -418,6 +461,7 @@ def build_signature_page(project_name, report_type, level, out_path, reviewer="�
             continue
         else:
             break
+    _fix_all_run_fonts(doc)
     doc.save(out_path)
     return out_path
 
