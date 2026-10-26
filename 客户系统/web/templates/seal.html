@@ -101,6 +101,15 @@
         text-shadow: 0 1px 2px rgba(0, 0, 0, .35);
     }
 
+    .seal-error {
+        background: var(--bs-danger-bg-subtle, #f8d7da);
+        border: 1px solid var(--bs-danger-border-subtle, #f5c2c7);
+        color: var(--bs-danger-text-emphasis, #842029);
+        border-radius: var(--radius-md);
+        padding: 12px 16px;
+        margin-bottom: 16px;
+    }
+
     .seal-tips {
         position: sticky;
         top: 90px;
@@ -126,7 +135,7 @@
         </div>
     </div>
 
-    <div id="errBox" class="alert alert-danger d-none" role="alert"></div>
+    <div id="errBox" class="seal-error d-none" role="alert"></div>
 
     <div class="row g-4">
         <div class="col-lg-8">
@@ -289,13 +298,15 @@
 
     function showErr(message) {
         const box = el('errBox');
+        if (!box) { window.alert(message); return; }
         box.textContent = message;
         box.classList.remove('d-none');
         box.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
     function hideErr() {
-        el('errBox').classList.add('d-none');
+        const box = el('errBox');
+        if (box) { box.classList.add('d-none'); }
     }
 
     let progressTimer = null;
@@ -432,6 +443,10 @@
     }
 
     async function generate() {
+        if (!el('progressWrap') || !el('goBtn')) {
+            window.alert('页面加载不完整，请按 Ctrl+Shift+R 强制刷新后重试');
+            return;
+        }
         hideErr();
         const file = el('file').files[0];
         if (!file) { showErr('请先选择要盖章的报告文件（PDF 或 Word）'); return; }
