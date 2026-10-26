@@ -63,6 +63,44 @@
         border-radius: var(--radius-lg);
     }
 
+    .seal-action {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .seal-progress {
+        position: relative;
+        width: 320px;
+        max-width: 100%;
+        height: 48px;
+        border-radius: var(--radius-md);
+        background: var(--accent-primary-dim);
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+    }
+
+    .seal-progress-bar {
+        height: 100%;
+        width: 0;
+        background: var(--accent-primary);
+        transition: width .25s linear;
+    }
+
+    .seal-progress-text {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: .95rem;
+        color: #fff;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, .35);
+    }
+
     .seal-tips {
         position: sticky;
         top: 90px;
@@ -189,23 +227,31 @@
             </div>
 
             <div class="text-center my-4">
-                <button type="button" class="btn btn-primary btn-lg px-5" id="goBtn" onclick="generate()">
-                    <i class="bi bi-patch-check"></i> 生成盖章成稿
-                </button>
-            </div>
-            <div id="busy" class="text-center d-none mb-4">
-                <div class="spinner-border text-primary" role="status"></div>
-                <p class="text-muted mt-2 mb-0">正在生成：识别封面 → 生成三页 → 盖章 → 合并 PDF，请稍候…</p>
+                <div class="seal-action">
+                    <button type="button" class="btn btn-primary btn-lg px-5" id="goBtn" onclick="generate()">
+                        <i class="bi bi-patch-check"></i> 生成盖章成稿
+                    </button>
+                    <div class="seal-progress d-none" id="progressWrap">
+                        <div class="seal-progress-bar" id="progressBar"></div>
+                        <span class="seal-progress-text" id="progressText">0%</span>
+                    </div>
+                    <a id="pdfLink" class="btn btn-primary btn-lg px-4 d-none" href="#">
+                        <i class="bi bi-download"></i> 下载成稿
+                    </a>
+                </div>
+                <p class="text-muted small mt-2 mb-0 d-none" id="progressHint"></p>
             </div>
 
             <div class="card border-0 mb-4 d-none" id="result">
                 <div class="card-body seal-result">
-                    <div class="d-flex align-items-center gap-2 mb-3">
+                    <div class="d-flex align-items-center gap-2">
                         <i class="bi bi-check-circle-fill text-success fs-4"></i>
-                        <h6 class="mb-0" id="okLine">生成成功</h6>
+                        <div>
+                            <h6 class="mb-0" id="okLine">生成成功</h6>
+                            <p class="text-muted small mb-0 mt-1" id="savedName"></p>
+                        </div>
                     </div>
-                    <div class="d-flex flex-wrap gap-2">
-                        <a id="pdfLink" class="btn btn-primary" href="#"><i class="bi bi-download"></i> 下载盖章成稿</a>
+                    <div class="d-flex flex-wrap gap-2 mt-3">
                         <a id="threeLink" class="btn btn-outline-secondary" href="#"><i class="bi bi-file-earmark-text"></i> 下载三页文档（核对用）</a>
                     </div>
                 </div>
@@ -250,6 +296,70 @@
 
     function hideErr() {
         el('errBox').classList.add('d-none');
+    }
+
+    let progressTimer = null;
+    let progressValue = 0;
+
+    function setProgress(value) {
+        progressValue = value;
+        const pct = Math.min(100, Math.round(value));
+        el('progressBar').style.width = pct + '%';
+        el('progressText').textContent = pct + '%';
+        if (pct >= 100) {
+            el('progressHint').textContent = '生成完成';
+        } else if (pct < 20) {
+            el('progressHint').textContent = '正在识别封面与报告类型…';
+        } else if (pct < 50) {
+            el('progressHint').textContent = '正在生成封面页、署名页与资质页…';
+        } else if (pct < 85) {
+            el('progressHint').textContent = '正在盖章并合并 PDF…';
+        } else {
+            el('progressHint').textContent = '即将完成，正在整理文件…';
+        }
+    }
+
+    function startProgress() {
+        el('goBtn').classList.add('d-none');
+        el('pdfLink').classList.add('d-none');
+        el('result').classList.add('d-none');
+        el('progressWrap').classList.remove('d-none');
+        el('progressHint').classList.remove('d-none');
+        setProgress(0);
+        if (progressTimer) { clearInterval(progressTimer); }
+        progressTimer = setInterval(function () {
+            const cap = progressValue < 95 ? 95 : 99;
+            const remaining = cap - progressValue;
+            const step = Math.max(0.3, remaining * 0.04);
+            setProgress(Math.min(cap, progressValue + step));
+        }, 250);
+    }
+
+    function stopProgress() {
+        if (progressTimer) {
+            clearInterval(progressTimer);
+            progressTimer = null;
+        }
+    }
+
+    function finishProgress() {
+        stopProgress();
+        setProgress(100);
+        setTimeout(function () {
+            el('progressWrap').classList.add('d-none');
+            el('progressHint').classList.add('d-none');
+            el('goBtn').classList.remove('d-none');
+            el('goBtn').innerHTML = '<i class="bi bi-arrow-repeat"></i> 重新生成';
+            el('pdfLink').classList.remove('d-none');
+        }, 500);
+    }
+
+    function abortProgress() {
+        stopProgress();
+        el('progressWrap').classList.add('d-none');
+        el('progressHint').classList.add('d-none');
+        el('goBtn').classList.remove('d-none');
+        setProgress(0);
     }
 
     function pickLevel(value) {
@@ -334,34 +444,34 @@
 
         const form = new FormData();
         form.append('file', file);
+        form.append('original_name', file.name);
         form.append('project_name', projectName);
         form.append('report_type', reportType);
         form.append('reviewer', el('reviewer').value);
         form.append('level', level);
         form.append('seal_type', sealType);
 
-        el('goBtn').disabled = true;
-        el('busy').classList.remove('d-none');
-        el('result').classList.add('d-none');
+        startProgress();
 
         try {
             const res = await fetch(API_GENERATE, { method: 'POST', body: form });
             const data = await res.json();
             if (!data.ok) {
+                abortProgress();
                 showErr(data.error || '生成失败');
                 return;
             }
             el('okLine').textContent = '生成成功：' + data.project_name + ' ' + data.report_type +
                 '（' + data.seal_type + '，' + data.cert_no + '）';
+            el('savedName').textContent = '文件名：' + (data.download_name || '盖章成稿.pdf');
             el('pdfLink').href = data.pdf_url;
+            el('pdfLink').title = '将保存为 ' + (data.download_name || '盖章成稿.pdf');
             el('threeLink').href = data.three_url;
             el('result').classList.remove('d-none');
-            el('result').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            finishProgress();
         } catch (err) {
+            abortProgress();
             showErr('生成失败：' + err.message);
-        } finally {
-            el('goBtn').disabled = false;
-            el('busy').classList.add('d-none');
         }
     }
 </script>
