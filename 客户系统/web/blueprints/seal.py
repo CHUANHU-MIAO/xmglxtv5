@@ -21,6 +21,7 @@ seal_bp = Blueprint('seal', __name__, url_prefix='/seal')
 FALLBACK_REVIEWERS = ["马立亚", "杨亚杰", "吴梦莹", "张喆"]
 MAX_UPLOAD = 200 * 1024 * 1024
 ALLOWED_DOWNLOADS = {"盖章成稿.pdf", "三页.pdf"}
+KEEP_ON_CLEANUP = ALLOWED_DOWNLOADS | {"原始文件名.txt"}
 
 _seal_lock = threading.Lock()
 
@@ -52,6 +53,16 @@ def _purge_stale(root, max_age=7200):
 
 def _payload_error(message):
     return jsonify({"ok": False, "error": message})
+
+
+def _safe_pdf_name(raw):
+    """沿用上传文件名作为下载名，扩展名统一改为 .pdf。"""
+    name = os.path.basename(str(raw or '').replace('\\', '/')).strip()
+    name = ''.join(ch for ch in name if ch >= ' ' and ch not in '<>:"/\\|?*')
+    stem = os.path.splitext(name)[0].strip().strip('.')
+    if not stem:
+        return '盖章成稿.pdf'
+    return stem[:120] + '.pdf'
 
 
 def _validate_upload():
@@ -125,6 +136,7 @@ def generate():
     os.makedirs(workdir, exist_ok=True)
     is_pdf = f.filename.lower().endswith('.pdf')
     src = os.path.join(workdir, '原报告' + ('.pdf' if is_pdf else '.docx'))
+    download_name = _safe_pdf_name(request.form.get('original_name', '') or f.filename)
 
     try:
         f.save(src)
@@ -166,9 +178,13 @@ def generate():
                 body_pdf = se.docx_to_pdf(body_docx, workdir)
                 se.merge_pdfs([three_pdf, body_pdf], final_pdf)
 
+        with open(os.path.join(workdir, '原始文件名.txt'), 'w', encoding='utf-8') as fh:
+            fh.write(download_name)
+
         return jsonify({
             "ok": True,
             "token": token,
+            "download_name": download_name,
             "project_name": project_name,
             "report_type": report_type,
             "reviewer": reviewer,
@@ -207,8 +223,18 @@ def download(token, filename):
     if not os.path.isfile(file_path):
         abort(404)
 
+    download_name = filename
+    if filename == '盖章成稿.pdf':
+        try:
+            with open(os.path.join(workdir, '原始文件名.txt'), encoding='utf-8') as fh:
+                saved = fh.read().strip()
+            if saved:
+                download_name = saved
+        except OSError:
+            pass
+
     response = send_from_directory(workdir, filename, as_attachment=True,
-                                   download_name=filename)
+                                   download_name=download_name)
 
     def _cleanup():
         for attempt in range(4):
@@ -217,7 +243,7 @@ def download(token, filename):
                     path = os.path.join(workdir, name)
                     if os.path.isdir(path):
                         shutil.rmtree(path, ignore_errors=True)
-                    elif name not in ALLOWED_DOWNLOADS or name == filename:
+                    elif name not in KEEP_ON_CLEANUP or name == filename:
                         os.remove(path)
                 if not os.listdir(workdir):
                     os.rmdir(workdir)

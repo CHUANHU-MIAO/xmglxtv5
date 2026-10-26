@@ -3,6 +3,7 @@
 > 适用环境：Ubuntu 20.04 / 22.04 / 24.04 LTS
 > 部署用户：`xazx`（请替换为实际用户名）
 > 项目根目录：`/opt/xmglxtv5`
+> 虚拟环境：`/opt/xmglxtv5/venv`（Python 3.14.4）
 > Web 端口：`5005`（开发） / `80`（Nginx 生产）
 
 
@@ -57,15 +58,19 @@ ssh xazx@192.168.1.100
 
 ### 4.1 创建虚拟环境
 
+> 虚拟环境统一放在项目根目录 `/opt/xmglxtv5/venv`，不要建在 `客户系统` 下面。
+
 ```bash
-cd /opt/xmglxtv5/客户系统
+cd /opt/xmglxtv5
 python3 -m venv venv
 source venv/bin/activate
 pip install --upgrade pip
-pip install -r requirements.txt
+pip install -r 客户系统/requirements.txt
 pip install gunicorn
 deactivate
 ```
+
+> 当前服务器为 Python 3.14.4。若 `requirements.txt` 中锁定的旧版本（如 `cryptography==41.0.7`、`lxml==6.1.1`）无法安装，可去掉版本号重装。
 
 ### 4.2 创建必要目录
 
@@ -87,7 +92,7 @@ mkdir -p /data/上传的文件/standard_files
 
 ```bash
 cd /opt/xmglxtv5/客户系统
-source venv/bin/activate
+source /opt/xmglxtv5/venv/bin/activate
 python app.py
 ```
 
@@ -96,6 +101,21 @@ python app.py
 ### 4.5 默认账号
 
 管理员：`admin` / `admin123`
+
+### 4.6 签章功能依赖（LibreOffice + 中文字体）
+
+签章工具需要把 Word 转成 PDF，依赖 LibreOffice 和中文字体：
+
+```bash
+sudo apt update
+sudo apt install -y libreoffice-writer fonts-noto-cjk
+which soffice
+```
+
+`which soffice` 应输出 `/usr/bin/soffice`。
+
+> 签章用到的 Python 包（PyMuPDF、python-docx、pypdf、Pillow）已包含在 `requirements.txt` 中，随 4.1 一起安装。
+> `xmglxtv5.service` 的 `PATH` 必须包含 `/usr/bin`，否则签章调用 `soffice` 会失败。
 
 
 ## 五、一键数据迁移（从第三版系统）
@@ -114,16 +134,14 @@ python3 一键迁移数据.py -y
 
 ```bash
 cd /opt/xmglxtv5
-python3 license_generator.py --auto-deploy /opt/xmglxtv5/客户系统
+/opt/xmglxtv5/venv/bin/python license_generator.py --auto-deploy /opt/xmglxtv5/客户系统
 ```
 
 验证：
 
 ```bash
 cd /opt/xmglxtv5/客户系统
-source venv/bin/activate
-python3 -c "from license_manager import verify_license; v,m=verify_license(); print(m)"
-deactivate
+/opt/xmglxtv5/venv/bin/python -c "from license_manager import verify_license; v,m=verify_license(); print(m)"
 ```
 
 预期：`授权永久有效（买断制）`
@@ -177,9 +195,10 @@ After=network.target
 User=xazx
 Group=xazx
 WorkingDirectory=/opt/xmglxtv5/客户系统
-Environment="PATH=/opt/xmglxtv5/客户系统/venv/bin:/usr/local/bin:/usr/bin:/bin"
+Environment="PATH=/opt/xmglxtv5/venv/bin:/usr/local/bin:/usr/bin:/bin"
 Environment="UPLOAD_FOLDER=/data/上传的文件"
-ExecStart=/opt/xmglxtv5/客户系统/venv/bin/gunicorn --workers=3 --bind=127.0.0.1:8000 app:app
+ExecStartPre=/opt/xmglxtv5/venv/bin/python -c "from license_manager import check_license_or_exit; check_license_or_exit()"
+ExecStart=/opt/xmglxtv5/venv/bin/gunicorn --workers=3 --bind=127.0.0.1:8000 "app:create_app()"
 Restart=always
 RestartSec=5
 
@@ -268,6 +287,9 @@ sudo systemctl restart xmglxtv5
 # 日志
 sudo journalctl -u xmglxtv5 --no-pager -n 50
 
+# 更新代码并重启
+cd /opt/xmglxtv5 && git pull origin main && sudo systemctl restart xmglxtv5
+
 # 备份数据库
 cp /opt/xmglxtv5/客户系统/instance/system.db /opt/backup/system-$(date +%Y%m%d).db
 
@@ -280,16 +302,16 @@ rsync -av /data/上传的文件/ /opt/backup/上传的文件/
 
 ```bash
 # 首次部署一键命令
-cd /opt/xmglxtv5/客户系统 && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt gunicorn && deactivate && mkdir -p instance && sudo ln -sf /data/上传的文件 上传的文件
+cd /opt/xmglxtv5 && python3 -m venv venv && source venv/bin/activate && pip install -r 客户系统/requirements.txt gunicorn && deactivate && mkdir -p 客户系统/instance && sudo ln -sf /data/上传的文件 客户系统/上传的文件
 
 # 开发模式运行（调试）
-cd /opt/xmglxtv5/客户系统 && source venv/bin/activate && python app.py
+cd /opt/xmglxtv5/客户系统 && source /opt/xmglxtv5/venv/bin/activate && python app.py
 
 # 生产模式运行
 sudo systemctl start xmglxtv5
 
 # 迁移数据
-cd /opt/xmglxtv5 && python3 一键迁移数据.py -y
+cd /opt/xmglxtv5 && /opt/xmglxtv5/venv/bin/python 一键迁移数据.py -y
 ```
 
 
@@ -302,6 +324,8 @@ cd /opt/xmglxtv5 && python3 一键迁移数据.py -y
 | `unable to open database file` | `mkdir -p /opt/xmglxtv5/客户系统/instance && chown xazx:xazx /opt/xmglxtv5/客户系统/instance` |
 | 413 上传过大 | Nginx `client_max_body_size` 调大 |
 | 502 Bad Gateway | `sudo systemctl restart xmglxtv5` |
+| 签章提示"引擎未就绪" | `/opt/xmglxtv5/venv/bin/pip install PyMuPDF python-docx pypdf Pillow` |
+| 签章提示"未安装 LibreOffice" | `sudo apt install -y libreoffice-writer fonts-noto-cjk`，并确认 service 的 PATH 含 `/usr/bin` |
 | 授权失败 | 重新运行 `license_generator.py --auto-deploy` |
 | 静态文件 404 | Nginx `alias` 指向 `/opt/xmglxtv5/客户系统/web/static/` |
 
@@ -315,7 +339,6 @@ cd /opt/xmglxtv5 && python3 一键迁移数据.py -y
 │   ├── requirements.txt
 │   ├── license.key
 │   ├── 一键迁移数据.py
-│   ├── venv/
 │   ├── core/                  # 计算引擎
 │   ├── web/
 │   │   ├── app.py             # Flask create_app()
@@ -329,6 +352,7 @@ cd /opt/xmglxtv5 && python3 一键迁移数据.py -y
 │   ├── instance/
 │   │   └── system.db          # SQLite 数据库
 │   └── 上传的文件 -> /data/上传的文件
+├── venv/                      # 虚拟环境（Python 3.14.4）
 ├── 订阅管理系统/
 │   ├── server.py
 │   ├── config.py
