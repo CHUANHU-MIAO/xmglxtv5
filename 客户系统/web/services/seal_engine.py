@@ -694,7 +694,7 @@ def apply_stamps_to_pdf(pdf_path, seal_img, cert_no, level, reviewer="马立亚"
     if sig_src and os.path.exists(sig_src):
         from PIL import Image as _PIL
         _w, _h = _PIL.open(sig_src).size
-        sig_h = 30.0  # 签名高度（紧凑，避免撞到上一行总工程师签名）
+        sig_h = 38.0  # 签名高度，与模板内其他工程师签名（31.5~45.4pt）保持一致
         sig_w = sig_h * _w / _h
         sig_rect = None
         words = doc[1].get_text("words")
