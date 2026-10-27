@@ -430,7 +430,7 @@ def build_signature_page(project_name, report_type, level, out_path, reviewer="�
     # 避免 LibreOffice 渲染 docx 浮动图时签名位置与模板不一致（整体偏移/错位）。
     tpl_rid = None
     for rid, rel in doc.part.rels.items():
-        if rel.reltype.endswith("image") and rel.target_ref == "media/image3.jpeg":
+        if rel.reltype.endswith("image") and rel.target_ref.startswith("media/image3."):
             tpl_rid = rid
             break
     if tpl_rid:
@@ -694,7 +694,7 @@ def apply_stamps_to_pdf(pdf_path, seal_img, cert_no, level, reviewer="马立亚"
     if sig_src and os.path.exists(sig_src):
         from PIL import Image as _PIL
         _w, _h = _PIL.open(sig_src).size
-        sig_h = 38.0  # 签名高度，与模板内其他工程师签名（31.5~45.4pt）保持一致
+        sig_h = 41.5  # 签名高度，对齐模板中校对人员签字尺寸（76.2 x 41.5pt）
         sig_w = sig_h * _w / _h
         sig_rect = None
         words = doc[1].get_text("words")
