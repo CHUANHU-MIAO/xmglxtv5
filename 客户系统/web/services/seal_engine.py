@@ -5,7 +5,7 @@
 流程：上传docx → 识别封面项目名与报告类型 → 选择资质等级/印章 → 生成三页
       → 替换原封面 → LibreOffice 转 PDF → 三页PDF+正文PDF合并 → 下载
 """
-import os, re, shutil, subprocess, datetime
+import os, re, shutil, subprocess, datetime, zipfile
 from PIL import Image, ImageDraw, ImageFont
 from docx import Document
 from docx.shared import Pt, Mm, Emu, RGBColor
@@ -384,11 +384,49 @@ def build_cover_page(project_name, report_type, out_path, date_text=None):
     return out_path
 
 
+def _find_docx_media(docx_path, stem):
+    """返回 docx 包内 word/media/<stem>.* 的实际路径，找不到返回 None。"""
+    with zipfile.ZipFile(docx_path) as z:
+        for name in z.namelist():
+            if name.startswith("word/media/" + stem + "."):
+                return name
+    return None
+
+
+def _replace_docx_media(docx_path, media_name, new_image_path):
+    """替换 docx 包内指定媒体文件，保持原有显示尺寸与位置不变。"""
+    tmp = docx_path + ".media.tmp"
+    with zipfile.ZipFile(docx_path, "r") as zin, \
+            zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as zout:
+        for item in zin.infolist():
+            data = zin.read(item.filename)
+            if item.filename == media_name:
+                with open(new_image_path, "rb") as fh:
+                    data = fh.read()
+            zout.writestr(item, data)
+    os.replace(tmp, docx_path)
+
+
 def build_signature_page(project_name, report_type, level, out_path, reviewer="马立亚"):
     """第二页：署名页 —— 直接复制用户模板《署名页格式.docx》并替换文字，版式完全一致。
     reviewer：校对人员姓名（可在网页上修改，默认屠立亚）"""
     tpl = os.path.join(ASSETS_DIR, "署名页格式.docx")
     shutil.copy(tpl, out_path)
+
+    # 用所选校对人员的签名替换模板中的签字图，位置与尺寸完全沿用模板，
+    # 保证与上方“项目负责人/总工程师”人名的文字左边缘对齐。
+    sig_src = SIGNATURE_SOURCE.get(reviewer)
+    if not (sig_src and os.path.exists(sig_src)):
+        try:
+            sig_src = os.path.join(os.path.dirname(out_path), "_reviewer_sig.png")
+            make_signature_image(reviewer, sig_src)
+        except Exception:
+            sig_src = None
+    if sig_src and os.path.exists(sig_src):
+        media = _find_docx_media(out_path, "image3")
+        if media:
+            _replace_docx_media(out_path, media, sig_src)
+
     doc = Document(out_path)
     paras = doc.paragraphs
     cert_no = CERT_NO[level]
@@ -425,26 +463,7 @@ def build_signature_page(project_name, report_type, level, out_path, reviewer="�
         r = p.add_run(text)
         set_run_font(r, "宋体", 14)
 
-    # --- 删除模板中屠立亚签名浮动图（media/image3.jpeg，在校对位置）---
-    # 校对人员手写签名改由 PDF 层动态定位插入（紧跟"校对人员"行、垂直居中），
-    # 避免 LibreOffice 渲染 docx 浮动图时签名位置与模板不一致（整体偏移/错位）。
-    tpl_rid = None
-    for rid, rel in doc.part.rels.items():
-        if rel.reltype.endswith("image") and rel.target_ref.startswith("media/image3."):
-            tpl_rid = rid
-            break
-    if tpl_rid:
-        for p in paras:
-            for anc in p._element.findall('.//{http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing}anchor'):
-                blip = anc.find('.//{http://schemas.openxmlformats.org/drawingml/2006/main}blip')
-                if blip is None:
-                    continue
-                rid = blip.get("{http://schemas.openxmlformats.org/officeDocument/2006/relationships}embed")
-                if rid == tpl_rid:
-                    drawing = anc.getparent()      # w:drawing
-                    run_el = drawing.getparent()   # w:r
-                    run_el.remove(drawing)         # 只删签名图，保留段落文字/下划线
-                    break
+    # 校对人员签名图已在复制模板后直接替换图片内容，位置与尺寸沿用模板，无需删除或重插。
 
     # --- 删除文档末尾的多余空段落，防止内容被挤出到第 2 页 ---
     body_el = doc.element.body
@@ -670,7 +689,7 @@ def merge_report_pdf(report_pdf, three_pages_pdf, out_path):
 
 # ---------------- PDF 层盖章 ----------------
 def apply_stamps_to_pdf(pdf_path, seal_img, cert_no, level, reviewer="马立亚"):
-    """在三页 PDF 的封面/署名页按模板坐标盖章，并在署名页插入校对人员手写签名。
+    """在三页 PDF 的封面/署名页按模板坐标加盖单位公章。
     坐标基于 A4（595x842pt，原点左上角），取自模板 PDF 实测位置。"""
     import fitz
     doc = fitz.open(pdf_path)
@@ -681,41 +700,8 @@ def apply_stamps_to_pdf(pdf_path, seal_img, cert_no, level, reviewer="马立亚"
     # 第 2 页署名页：章盖右侧中部（模板 box 267-384 x 232-347，中心 325,289，直径 117pt）
     doc[1].insert_image(fitz.Rect(266.5, 230.5, 383.5, 347.5), filename=seal_img)
 
-    # 校对人员手写签名：PDF 层动态定位到"校对人员"文字行右侧、底部贴下划线。
-    # 模板中的屠立亚签名图已在 docx 内删除，此处插入所选工程师的签名图。
-    sig_src = SIGNATURE_SOURCE.get(reviewer)
-    if not (sig_src and os.path.exists(sig_src)):
-        # 无现成签名素材时自动生成（服务器无中文字体时安全跳过，不阻断流程）
-        try:
-            sig_src = os.path.join(os.path.dirname(pdf_path), "_reviewer_sig.png")
-            make_signature_image(reviewer, sig_src)
-        except Exception:
-            sig_src = None
-    if sig_src and os.path.exists(sig_src):
-        from PIL import Image as _PIL
-        _w, _h = _PIL.open(sig_src).size
-        sig_h = 41.5  # 签名高度，对齐模板中校对人员签字尺寸（76.2 x 41.5pt）
-        sig_w = sig_h * _w / _h
-        sig_rect = None
-        words = doc[1].get_text("words")
-        for w_ in words:
-            if w_[4].startswith("校对人员"):
-                x0, y0, x1, y1 = w_[:4]
-                txt = w_[4]
-                # 该词可能包含白色占位"啊啊啊啊啊"（同一 run 无空格被合并），
-                # 签名应紧贴"校对人员："文字右端、盖在占位/下划线区域上方
-                n_label = 6 if "：" in txt else 5  # "校对人员：" 或 "校对人员"
-                n_total = len(txt)
-                if n_total > n_label:
-                    x1 = x0 + (x1 - x0) * n_label / n_total
-                # 下划线位于文字行底部（y1 附近）；签名放在下划线上方、底部紧挨下划线
-                y_line = y1 + 1.5
-                sig_rect = fitz.Rect(x1 + 4, y_line + 1.0 - sig_h,
-                                     x1 + 4 + sig_w, y_line + 1.0)
-                break
-        if sig_rect is None:
-            sig_rect = fitz.Rect(289.6, 447.4, 362.6, 487.9)  # 兜底：模板实测位置
-        doc[1].insert_image(sig_rect, filename=sig_src)
+    # 校对人员手写签名已在 build_signature_page 中通过替换模板签字图完成，
+    # 位置与尺寸完全沿用模板，此处不再重复插入。
 
     # 第 3 页资质页：公章与斜向水印已在生成时合成进 PDF（build_cert_page_pdf），此处不再重复
 
