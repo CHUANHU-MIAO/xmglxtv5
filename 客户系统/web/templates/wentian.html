@@ -643,32 +643,15 @@ h1.hero-title span::after{
 .tarot-table::before{
   content:'';position:absolute;inset:8px;border:1px solid var(--line);pointer-events:none;
 }
-.tarot-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:24px 20px}
-.tarot-grid.tg-wirth{display:grid;grid-template-columns:repeat(3,1fr);max-width:660px;margin:0 auto;gap:20px 14px}
-.tarot-grid.tg-wirth .tcard:nth-child(1){grid-column:2;grid-row:2}
-.tarot-grid.tg-wirth .tcard:nth-child(2){grid-column:3;grid-row:2}
-.tarot-grid.tg-wirth .tcard:nth-child(3){grid-column:2;grid-row:3}
-.tarot-grid.tg-wirth .tcard:nth-child(4){grid-column:1;grid-row:2}
-.tarot-grid.tg-wirth .tcard:nth-child(5){grid-column:2;grid-row:1}
-.tarot-grid.tg-celtic{display:grid;grid-template-columns:repeat(4,1fr);max-width:720px;margin:0 auto;gap:18px 12px}
-.tarot-grid.tg-celtic .tcard:nth-child(1){grid-column:2;grid-row:2}
-.tarot-grid.tg-celtic .tcard:nth-child(2){grid-column:3;grid-row:2}
-.tarot-grid.tg-celtic .tcard:nth-child(3){grid-column:2;grid-row:3}
-.tarot-grid.tg-celtic .tcard:nth-child(4){grid-column:1;grid-row:2}
-.tarot-grid.tg-celtic .tcard:nth-child(5){grid-column:2;grid-row:1}
-.tarot-grid.tg-celtic .tcard:nth-child(6){grid-column:4;grid-row:2}
-.tarot-grid.tg-celtic .tcard:nth-child(7){grid-column:4;grid-row:3}
-.tarot-grid.tg-celtic .tcard:nth-child(8){grid-column:2;grid-row:4}
-.tarot-grid.tg-celtic .tcard:nth-child(9){grid-column:3;grid-row:4}
-.tarot-grid.tg-celtic .tcard:nth-child(10){grid-column:4;grid-row:4}
-@media(max-width:680px){
-  .tarot-grid.tg-wirth,.tarot-grid.tg-celtic{display:flex;max-width:none}
-  .tarot-grid.tg-wirth .tcard,.tarot-grid.tg-celtic .tcard{width:calc(50% - 10px)}
-}
+.tarot-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:20px 16px}
+/* 牌位编号：朱砂小圆，跟随位置名 */
+.tcard-no,.tread-no{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;margin-right:7px;
+  padding:0 5px;border-radius:999px;background:var(--cinnabar-soft);border:1px solid rgba(168,50,38,.3);
+  color:var(--cinnabar);font-family:var(--num);font-size:11px;font-weight:600;line-height:1;vertical-align:middle}
 
 /* —— 单张牌 —— */
 .tcard{
-  width:clamp(126px,17vw,178px);opacity:0;transform:translateY(16px);
+  width:clamp(104px,13.5vw,146px);opacity:0;transform:translateY(16px);
   animation:cardRise .6s var(--ease) forwards;
 }
 @keyframes cardRise{to{opacity:1;transform:none}}
@@ -699,7 +682,7 @@ h1.hero-title span::after{
 .tcard-front img{width:100%;height:100%;object-fit:cover;display:block;border-radius:2px}
 .tcard-front img.rev{transform:rotate(180deg)}
 .tcard-meta{text-align:center;margin-top:14px}
-.tcard-pos{font-family:var(--serif);font-size:11px;letter-spacing:.24em;color:var(--ochre);line-height:1.7}
+.tcard-pos{font-family:var(--serif);font-size:11px;letter-spacing:.1em;color:var(--ochre);line-height:1.7;display:flex;align-items:center;justify-content:center;flex-wrap:wrap}
 .tcard-name{font-family:var(--serif);font-size:19px;font-weight:600;letter-spacing:.08em;margin-top:6px}
 .tcard-en{font-family:var(--num);font-size:11.5px;font-style:italic;color:var(--ink-3);margin-top:2px}
 .tcard-state{display:inline-flex;margin-top:9px;font-family:var(--serif);font-size:11px;letter-spacing:.18em;padding:3px 12px;border-radius:999px}
@@ -1844,11 +1827,8 @@ function tRenderSpreadInfo(){
 /* —— 牌桌：背面 —— */
 function tRenderBacks(){
   var s = tSpread(T_STATE.spreadId);
-  var cls = 'tarot-grid';
-  if(s.id==='wirth-cross') cls += ' tg-wirth';
-  if(s.id==='celtic-cross' || s.id==='in-depth-analysis') cls += ' tg-celtic';
   var grid = $('tarotGrid');
-  grid.className = cls;
+  grid.className = 'tarot-grid';
   var h = '';
   for(var i=0;i<s.cards;i++){
     var p = s.positions[i] || {name:'第 '+(i+1)+' 张'};
@@ -1857,8 +1837,8 @@ function tRenderBacks(){
       + '<div class="tcard-side tcard-back"><span>問天</span></div>'
       + '<div class="tcard-side tcard-front"><img alt="" loading="lazy"></div>'
       + '</div></div>'
-      + '<div class="tcard-meta" style="opacity:0">'
-      + '<div class="tcard-pos">'+tEsc(p.name)+'</div>'
+      + '<div class="tcard-meta">'
+      + '<div class="tcard-pos"><span class="tcard-no">'+(i+1)+'</span>'+tEsc(p.name)+'</div>'
       + '<div class="tcard-name"></div><div class="tcard-en"></div>'
       + '<div class="tcard-state"></div><div class="tcard-kw"></div>'
       + '</div></div>';
@@ -1882,13 +1862,8 @@ function tFlip(i){
   st.className = 'tcard-state ' + (c.__rev ? 'rev' : 'up');
   st.textContent = c.__rev ? '逆位' : '正位';
   el.querySelector('.tcard-kw').textContent = c.__rev ? c.r : c.k;
-  el.classList.add('flipped');
-  var meta = el.querySelector('.tcard-meta');
-  setTimeout(function(){
-    meta.style.transition = 'opacity .55s ease';
-    meta.style.opacity = '1';
-  }, 380);
-}
+    el.classList.add('flipped');
+  }
 
 /* —— 抽牌 —— */
 function tDraw(){
@@ -1938,7 +1913,7 @@ function tRenderReading(){
     var pos = s.positions[i] || {name:'第 '+(i+1)+' 张', meaning:''};
     h += '<div class="tread-item">'
       + '<div class="tread-h">'
-      + '<span class="tread-pos">'+tEsc(pos.name)+'</span>'
+      + '<span class="tread-pos"><span class="tread-no">'+(i+1)+'</span>'+tEsc(pos.name)+'</span>'
       + '<span class="tread-n">'+tEsc(c.n)+'</span>'
       + '<span class="tread-st '+(c.__rev?'rev':'up')+'">'+(c.__rev?'逆位':'正位')+'</span>'
       + '</div>';
