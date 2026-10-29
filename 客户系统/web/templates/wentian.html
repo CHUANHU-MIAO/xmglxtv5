@@ -120,6 +120,8 @@ button:focus-visible{outline:2px solid var(--cinnabar);outline-offset:3px}
 .mini-brand .mb-t{font-size:20px;font-weight:600;letter-spacing:.3em;line-height:1;flex:none}
 .mini-brand .mb-sep{width:1px;height:22px;background:var(--line-strong);opacity:.7;flex:none}
 .mini-brand .mb-cur{font-size:14px;letter-spacing:.24em;color:var(--ochre);line-height:1;flex:none}
+/* 当前项统一由右侧朱砂丸高亮表示，左右两侧均不单独显示当前项名 */
+.mini-brand .mb-sep, .mini-brand .mb-cur{display:none}
 
 .topbar-nav{
   display:flex;align-items:center;gap:5px;flex:1;min-width:0;
@@ -137,8 +139,7 @@ button:focus-visible{outline:2px solid var(--cinnabar);outline-offset:3px}
   background:var(--cinnabar-soft);border-color:rgba(168,50,38,.3);color:var(--cinnabar);
   cursor:default;
 }
-/* 宽屏：当前项已在左侧点出，导航里不再重复 */
-@media(min-width:521px){.tb-link.on{display:none}}
+/* 各视口下当前项均以朱砂丸高亮显示，与窄屏统一 */
 
 .stage{padding:0;overflow:hidden;display:flex;justify-content:center;align-items:flex-start;width:100%;min-width:0}
 .app.panel-mode .stage{padding-top:36px}
@@ -164,8 +165,6 @@ button:focus-visible{outline:2px solid var(--cinnabar);outline-offset:3px}
   .tb-link{padding:7px 13px;font-size:12px;letter-spacing:.14em}
 }
 @media(max-width:520px){
-  .mini-brand .mb-sep{display:none}
-  .mini-brand .mb-cur{display:none}
   .topbar{gap:6px;padding:0 9px 0 11px}
   .mini-brand{gap:8px}
   .mini-brand i{width:30px;height:30px;font-size:14px}
@@ -1296,7 +1295,7 @@ function renderTopTabs(){
   var h = '';
   TOP_TABS.forEach(function(t){
     var on = (t.key === currentPanel);
-    /* 当前项标 .on：宽屏由 CSS 隐藏（左侧已点出），窄屏显示并高亮 */
+    /* 当前项标 .on：各视口均显示并以朱砂丸高亮（与窄屏统一） */
     h += '<button class="tb-link'+(on?' on':'')+'" data-top="'+t.key+'"'+(on?' aria-current="page"':'')+'>'
        + t.name + '</button>';
   });
