@@ -58,7 +58,8 @@ private_key.pem
 public_key.pem
 *.key
 
-# 注：客户系统/启动系统.bat 已改为相对路径、可跨机器使用，需随仓库提交
+# 本机 Windows 快捷启动脚本（写死本机习惯，仅作者本机使用，不入库；服务器是 Ubuntu 走 systemd/gunicorn）
+客户系统/启动系统.bat
 
 # 独立盖章小工具（引擎与素材已集成到 客户系统/web/services，无需随服务器部署）
 盖章小工具部署包/
