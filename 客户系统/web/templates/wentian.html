@@ -651,7 +651,7 @@ h1.hero-title span::after{
 
 /* —— 单张牌 —— */
 .tcard{
-  width:clamp(104px,13.5vw,146px);opacity:0;transform:translateY(16px);
+  width:clamp(84px,10.5vw,116px);opacity:0;transform:translateY(16px);
   animation:cardRise .6s var(--ease) forwards;
 }
 @keyframes cardRise{to{opacity:1;transform:none}}
@@ -681,14 +681,17 @@ h1.hero-title span::after{
 .tcard-front{transform:rotateY(180deg);background:#fdfaf1;border:1px solid var(--line-strong);padding:5px}
 .tcard-front img{width:100%;height:100%;object-fit:cover;display:block;border-radius:2px}
 .tcard-front img.rev{transform:rotate(180deg)}
-.tcard-meta{text-align:center;margin-top:14px}
-.tcard-pos{font-family:var(--serif);font-size:11px;letter-spacing:.1em;color:var(--ochre);line-height:1.7;display:flex;align-items:center;justify-content:center;flex-wrap:wrap}
-.tcard-name{font-family:var(--serif);font-size:19px;font-weight:600;letter-spacing:.08em;margin-top:6px}
-.tcard-en{font-family:var(--num);font-size:11.5px;font-style:italic;color:var(--ink-3);margin-top:2px}
-.tcard-state{display:inline-flex;margin-top:9px;font-family:var(--serif);font-size:11px;letter-spacing:.18em;padding:3px 12px;border-radius:999px}
+.tcard-meta{text-align:center;margin-top:10px}
+/* 位置名：贴在牌上的药丸标签（对齐素材 ftl-pos 的做法，强化「位置属于哪张牌」） */
+.tcard-pos{display:inline-flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:5px;
+  font-family:var(--serif);font-size:11px;letter-spacing:.04em;color:var(--ink-2);line-height:1.45;
+  background:var(--ochre-soft);border:1px solid var(--line-2);border-radius:999px;padding:3px 10px;margin:0 auto}
+.tcard-name{font-family:var(--serif);font-size:15px;font-weight:600;letter-spacing:.06em;margin-top:6px}
+.tcard-en{font-family:var(--num);font-size:10.5px;font-style:italic;color:var(--ink-3);margin-top:2px}
+.tcard-state{display:inline-flex;margin-top:7px;font-family:var(--serif);font-size:10.5px;letter-spacing:.16em;padding:2px 10px;border-radius:999px}
 .tcard-state.up{background:var(--indigo-soft);color:var(--indigo);border:1px solid rgba(44,82,87,.28)}
 .tcard-state.rev{background:var(--cinnabar-soft);color:var(--cinnabar);border:1px solid rgba(168,50,38,.28)}
-.tcard-kw{font-family:var(--serif);font-size:12px;font-weight:400;color:var(--ink-3);margin-top:8px;line-height:1.85}
+.tcard-kw{font-family:var(--serif);font-size:11px;font-weight:400;color:var(--ink-3);margin-top:6px;line-height:1.8}
 
 /* —— 连读 —— */
 .tread-item{padding:17px 19px;background:#fffdf7;border:1px solid var(--line);margin-bottom:12px}
@@ -719,6 +722,24 @@ h1.hero-title span::after{
 .tsum ol{margin:8px 0 0 19px;font-family:var(--serif);font-size:13.5px;color:var(--ink-2);line-height:2.1}
 .tsum li{margin-bottom:3px}
 .tsum .foot{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line-2);font-family:var(--serif);font-size:12.5px;color:var(--ink-3);line-height:1.95}
+
+/* —— 详细解读 · 发给 AI 提示词 —— */
+.tdeep{margin-top:20px;padding:18px 20px;background:linear-gradient(180deg,rgba(44,82,87,.06),rgba(168,50,38,.045));border:1px solid var(--line-2);border-radius:6px}
+.tdeep-h{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.tdeep-h h4{font-family:var(--serif);font-size:15px;font-weight:600;letter-spacing:.12em;color:var(--indigo);margin:0}
+.tdeep-copy{font-family:var(--serif);font-size:12.5px;letter-spacing:.06em;padding:6px 16px;border-radius:999px;border:1px solid var(--cinnabar);background:var(--cinnabar);color:#fff;cursor:pointer;transition:.2s}
+.tdeep-copy:hover{opacity:.9}
+.tdeep-copy.done{background:var(--indigo);border-color:var(--indigo)}
+.tdeep-tip{font-family:var(--serif);font-size:12.6px;color:var(--ink-3);line-height:1.9;margin:0 0 12px}
+.tdeep-box{width:100%;min-height:210px;resize:vertical;font-family:var(--num);font-size:12.5px;line-height:1.7;color:var(--ink-2);background:#fffdf7;border:1px solid var(--line);border-radius:5px;padding:12px 14px;box-sizing:border-box}
+
+/* —— 牌义通览：默认折叠 —— */
+.t-gal{display:block}
+.t-gal-sum{cursor:pointer;list-style:none}
+.t-gal-sum::-webkit-details-marker{display:none}
+.t-gal-sum::marker{content:''}
+.t-gal-mark{margin-left:auto;font-family:var(--serif);font-size:12px;color:var(--ochre);letter-spacing:.12em;transition:transform .2s}
+.t-gal[open] .t-gal-mark{transform:rotate(180deg)}
 
 /* —— 牌义通览 —— */
 .gal-tools{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:20px}
@@ -772,22 +793,60 @@ h1.hero-title span::after{
 .tmodal-sec p{font-family:var(--serif);font-size:13.5px;color:var(--ink-2);line-height:2.05}
 @media(max-width:620px){.tmodal-fig{flex:1 1 100%;max-width:210px;margin:0 auto}}
 
-/* ========== 圣杯 ========== */
-.jiao-stage{text-align:center;padding:18px 0 8px}
-.jiao-pair{display:flex;justify-content:center;gap:32px;margin-bottom:22px}
-.jiao{
-  width:80px;height:50px;border-radius:50% 50% 8px 8px;position:relative;
-  background:linear-gradient(165deg,#ecd198,#c99a4e 62%,#9d7233);
-  box-shadow:0 12px 24px rgba(120,90,40,.26),inset 0 2px 0 rgba(255,248,225,.55);
-  transition:transform .55s cubic-bezier(.3,.1,.3,1);
+/* ========== 圣杯（掷筊） ========== */
+.jiao-stage{text-align:center;padding:26px 0 8px}
+.jiao-pair{display:flex;justify-content:center;gap:48px;margin-bottom:26px}
+.jiao{position:relative;width:122px;height:118px}
+.jiao-lift{position:absolute;left:0;right:0;bottom:20px;transform-origin:50% 100%;will-change:transform}
+.jiao-piece{
+  position:relative;width:122px;height:72px;margin:0 auto;
+  transform:rotate(var(--rot-end,0deg));transform-origin:50% 100%;
+  filter:drop-shadow(0 12px 16px rgba(92,64,28,.34));
+  will-change:transform;
 }
-.jiao::after{
-  content:'';position:absolute;left:18%;right:18%;top:26%;height:10px;border-radius:50%;
-  background:rgba(255,248,225,.3);
+.jiao-piece.jup-flat{--rot-end:0deg}      /* 平面朝上（‿ 形） */
+.jiao-piece.jup-round{--rot-end:180deg}   /* 凸面朝上（⌒ 形） */
+.jiao-svg{width:100%;height:100%;display:block}
+.jiao-shadow{
+  position:absolute;left:50%;bottom:8px;width:108px;height:20px;transform:translateX(-50%);
+  background:radial-gradient(ellipse at center,rgba(70,48,20,.4),rgba(70,48,20,0) 70%);opacity:.34;
 }
-.jiao.flat{border-radius:12px;background:linear-gradient(165deg,#f2d9a5,#d5a758 62%,#a87c38)}
-.jiao.flip{animation:jiaoFlip .65s cubic-bezier(.3,.1,.3,1)}
-@keyframes jiaoFlip{0%{transform:rotateX(0)}50%{transform:rotateX(80deg) translateY(-9px)}100%{transform:rotateX(360deg)}}
+.jiao-ring{
+  position:absolute;left:50%;bottom:6px;width:34px;height:34px;transform:translate(-50%,50%) scale(.2);
+  border:2px solid rgba(120,86,40,.45);border-radius:50%;opacity:0;pointer-events:none;
+}
+/* —— 抛掷 + 落地 动效 —— */
+.jiao.throwing .jiao-lift{animation:jiaoLift 1.15s cubic-bezier(.34,.02,.4,1) both}
+.jiao.throwing .jiao-piece{animation:jiaoTumble 1.15s cubic-bezier(.34,.02,.4,1) both}
+.jiao.throwing .jiao-shadow{animation:jiaoShadow 1.15s cubic-bezier(.34,.02,.4,1) both}
+.jiao.throwing .jiao-ring{animation:jiaoRing 1.15s ease-out both}
+@keyframes jiaoLift{
+  0%{transform:translateY(0)}
+  10%{transform:translateY(-150px)}
+  52%{transform:translateY(-132px)}
+  80%{transform:translateY(0)}
+  90%{transform:translateY(-22px)}
+  100%{transform:translateY(0)}
+}
+@keyframes jiaoTumble{
+  0%{transform:rotate(0)}
+  10%{transform:rotate(150deg)}
+  52%{transform:rotate(430deg)}
+  80%{transform:rotate(642deg)}
+  100%{transform:rotate(calc(720deg + var(--rot-end,0deg)))}
+}
+@keyframes jiaoShadow{
+  0%{transform:translateX(-50%) scale(1);opacity:.34}
+  10%{transform:translateX(-50%) scale(.46);opacity:.12}
+  80%{transform:translateX(-50%) scale(1);opacity:.34}
+  90%{transform:translateX(-50%) scale(1.22);opacity:.5}
+  100%{transform:translateX(-50%) scale(1);opacity:.34}
+}
+@keyframes jiaoRing{
+  0%,78%{transform:translate(-50%,50%) scale(.2);opacity:0}
+  86%{opacity:.5}
+  100%{transform:translate(-50%,50%) scale(2.6);opacity:0}
+}
 .jiao-name{font-family:var(--serif);font-size:34px;font-weight:600;letter-spacing:.32em;margin:14px 0 12px}
 .jiao-name.sheng{color:var(--indigo)}
 .jiao-name.xiao{color:var(--ochre)}
@@ -859,16 +918,69 @@ h1.hero-title span::after{
   margin-top:16px;padding-top:13px;border-top:1px dashed var(--line-2);
 }
 
-/* ========== 民俗 ========== */
-.folk-list{display:grid;grid-template-columns:1fr 1fr;gap:0 30px;margin-top:8px}
-@media(max-width:700px){.folk-list{grid-template-columns:1fr}}
-.folk{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:12px 2px;border-bottom:1px solid var(--line)}
-.folk .t{font-family:var(--serif);font-size:14px;letter-spacing:.12em;color:var(--ochre);white-space:nowrap;position:relative}
-.folk .t::after{
-  content:'';position:absolute;left:0;right:0;bottom:-3px;height:1px;
-  background:repeating-linear-gradient(90deg,var(--line-2) 0 3px,transparent 3px 7px);
+/* 六壬 · 三传 */
+.liuren-san{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:6px}
+@media(max-width:620px){.liuren-san{grid-template-columns:1fr}}
+.liuren-san .ch{
+  background:var(--page);border:1px solid var(--line-2);border-radius:9px;padding:18px 12px;text-align:center;
+  box-shadow:0 10px 24px rgba(70,55,30,.08);transition:transform .25s;
 }
-.folk .d{font-family:var(--serif);font-size:14px;font-weight:400;color:var(--ink-2);text-align:right}
+.liuren-san .ch.hl{border-color:var(--cinnabar);background:var(--cinnabar-soft);transform:translateY(-3px)}
+.liuren-san .tk{font-family:var(--serif);font-size:11px;letter-spacing:.3em;color:var(--ochre)}
+.liuren-san .tv{font-family:var(--serif);font-size:30px;font-weight:700;margin-top:8px;color:var(--ink);line-height:1.1}
+.liuren-san .ch.hl .tv{color:var(--cinnabar)}
+.liuren-san .tj{font-family:var(--serif);font-size:11.5px;color:var(--ink-3);margin-top:6px;letter-spacing:.1em}
+.liuren-san .tq{
+  display:inline-block;margin-top:11px;font-family:var(--serif);font-size:12px;font-weight:600;
+  padding:3px 13px;border-radius:999px;border:1px solid var(--line-2);background:#fffdf7;color:var(--ochre);
+}
+.liuren-rand{font-family:var(--serif);font-size:11.5px;color:var(--ink-3);margin-left:12px;letter-spacing:.06em}
+
+/* 六壬 · 解读 */
+.liuren-read{margin-top:6px;background:var(--page);border:1px solid var(--line-2);border-radius:11px;padding:22px 24px}
+.liuren-read .badge{
+  display:inline-block;font-family:var(--serif);font-size:13px;font-weight:600;padding:4px 16px;
+  border-radius:999px;margin-bottom:14px;letter-spacing:.12em;
+}
+.liuren-read .badge.ji{background:var(--cinnabar-soft);color:var(--cinnabar);border:1px solid var(--cinnabar)}
+.liuren-read .badge.ping{background:#fff6e2;color:#9a6a16;border:1px solid var(--line-2)}
+.liuren-read .badge.xiong{background:#eef3ee;color:#3f6b45;border:1px solid var(--line-2)}
+.liuren-read .rh{font-family:var(--serif);font-size:12px;letter-spacing:.28em;color:var(--ochre);margin:0 0 5px}
+.liuren-read .rh:not(:first-of-type){margin-top:15px}
+.liuren-read p{font-family:var(--serif);font-size:13.5px;line-height:2.05;color:var(--ink-2);margin:0 0 4px}
+
+/* ========== 民俗 ========== */
+.folk-tip{font-family:var(--serif);font-size:12.5px;color:var(--ink-3);letter-spacing:.04em;margin:2px 0 13px}
+.folk-list{display:flex;flex-direction:column;gap:9px;margin-top:4px}
+.folk-item{
+  background:var(--page);border:1px solid var(--line-2);border-radius:9px;overflow:hidden;
+  box-shadow:0 6px 16px rgba(70,55,30,.05);transition:border-color .2s;
+}
+.folk-item[open]{border-color:var(--cinnabar)}
+.folk-head{
+  list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;
+  padding:14px 16px;user-select:none;-webkit-tap-highlight-color:transparent;
+}
+.folk-head::-webkit-details-marker{display:none}
+.folk-head::marker{content:''}
+.folk-head .fh-zhi{font-family:var(--serif);font-size:16px;font-weight:600;color:var(--ink);letter-spacing:.14em}
+.folk-head .fh-range{
+  font-family:var(--serif);font-size:12px;color:var(--ink-3);letter-spacing:.08em;
+  border:1px solid var(--line-2);border-radius:999px;padding:2px 10px;background:#fffdf7;white-space:nowrap;
+}
+.folk-head .fh-mark{margin-left:auto;font-family:var(--serif);font-size:12px;color:var(--ochre);letter-spacing:.1em;display:inline-flex;align-items:center}
+.folk-head .fh-arrow{display:inline-block;margin-left:5px;transition:transform .2s}
+.folk-item[open] .folk-head{background:var(--cinnabar-soft)}
+.folk-item[open] .folk-head .fh-zhi{color:var(--cinnabar)}
+.folk-item[open] .fh-arrow{transform:rotate(180deg)}
+.folk-body{padding:2px 18px 16px;border-top:1px dashed var(--line-2)}
+.folk-body ul{list-style:none;margin:10px 0 11px;padding:0}
+.folk-body li{
+  font-family:var(--serif);font-size:14px;line-height:1.95;color:var(--ink-2);
+  padding-left:16px;position:relative;
+}
+.folk-body li::before{content:'·';position:absolute;left:2px;color:var(--ochre);font-weight:700}
+.folk-note{font-family:var(--serif);font-size:12px;color:var(--ink-3);line-height:1.85;margin:0}
 
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -1060,15 +1172,18 @@ h1.hero-title span::after{
           <div class="verdict" id="tarotVerdict"></div>
         </div>
 
-        <div class="leaf" style="margin-top:26px">
-          <div class="chapter"><span class="num">肆</span><h2>牌义通览</h2><span class="rule"></span><span class="tail"></span></div>
-          <p class="cat-hint" style="margin:0 0 16px">七十八张牌的正逆位含义。点开任一张，可看完整解读。</p>
+        <details class="leaf t-gal" style="margin-top:26px">
+          <summary class="chapter t-gal-sum">
+            <span class="num">肆</span><h2>牌义通览</h2><span class="rule"></span><span class="tail"></span>
+            <span class="t-gal-mark">展开 ▾</span>
+          </summary>
+          <p class="cat-hint" style="margin:14px 0 16px">七十八张牌的正逆位含义。点开任一张，可看完整解读。</p>
           <div class="gal-tools">
             <div class="spread-cats" id="galCats" style="margin-bottom:0"></div>
             <input class="gal-search" id="galSearch" type="text" placeholder="搜牌名，如 愚者 / 星币十 / Tower">
           </div>
           <div class="gal-grid" id="galGrid"></div>
-        </div>
+        </details>
       </div>
     </section>
 
@@ -1095,8 +1210,58 @@ h1.hero-title span::after{
           <div class="chapter"><span class="num">贰</span><h2>筊象</h2><span class="rule"></span><span class="tail"></span></div>
           <div class="jiao-stage">
             <div class="jiao-pair">
-              <div class="jiao" id="jiao0"></div>
-              <div class="jiao" id="jiao1"></div>
+              <div class="jiao" id="jiao0">
+                <span class="jiao-ring"></span>
+                <div class="jiao-lift">
+                  <div class="jiao-piece">
+                    <svg class="jiao-svg" viewBox="0 0 140 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <defs>
+                        <linearGradient id="jw0" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0" stop-color="#f3d9a6"/><stop offset="0.45" stop-color="#d8a85e"/><stop offset="1" stop-color="#9c6f32"/>
+                        </linearGradient>
+                        <linearGradient id="jwTop0" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0" stop-color="#fbe9c4"/><stop offset="1" stop-color="#e6c486"/>
+                        </linearGradient>
+                        <radialGradient id="jg0" cx="0.5" cy="0.18" r="0.75">
+                          <stop offset="0" stop-color="#ffffff" stop-opacity="0.55"/><stop offset="0.5" stop-color="#ffffff" stop-opacity="0"/>
+                        </radialGradient>
+                      </defs>
+                      <path d="M16,26 L124,26 A54,48 0 0 1 16,26 Z" fill="url(#jw0)" stroke="#7c5524" stroke-width="1.4" stroke-opacity="0.5"/>
+                      <path d="M16,26 L124,26 L124,33 L16,33 Z" fill="url(#jwTop0)"/>
+                      <path d="M24,31 Q70,23 116,31 Q70,40 24,31 Z" fill="url(#jg0)"/>
+                      <path d="M70,33 Q70,60 70,72" stroke="#7c5524" stroke-width="1.2" stroke-opacity="0.35" fill="none"/>
+                      <circle cx="70" cy="44" r="4.2" fill="#a83226" fill-opacity="0.82"/>
+                    </svg>
+                  </div>
+                </div>
+                <span class="jiao-shadow"></span>
+              </div>
+              <div class="jiao" id="jiao1">
+                <span class="jiao-ring"></span>
+                <div class="jiao-lift">
+                  <div class="jiao-piece">
+                    <svg class="jiao-svg" viewBox="0 0 140 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <defs>
+                        <linearGradient id="jw1" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0" stop-color="#f3d9a6"/><stop offset="0.45" stop-color="#d8a85e"/><stop offset="1" stop-color="#9c6f32"/>
+                        </linearGradient>
+                        <linearGradient id="jwTop1" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0" stop-color="#fbe9c4"/><stop offset="1" stop-color="#e6c486"/>
+                        </linearGradient>
+                        <radialGradient id="jg1" cx="0.5" cy="0.18" r="0.75">
+                          <stop offset="0" stop-color="#ffffff" stop-opacity="0.55"/><stop offset="0.5" stop-color="#ffffff" stop-opacity="0"/>
+                        </radialGradient>
+                      </defs>
+                      <path d="M16,26 L124,26 A54,48 0 0 1 16,26 Z" fill="url(#jw1)" stroke="#7c5524" stroke-width="1.4" stroke-opacity="0.5"/>
+                      <path d="M16,26 L124,26 L124,33 L16,33 Z" fill="url(#jwTop1)"/>
+                      <path d="M24,31 Q70,23 116,31 Q70,40 24,31 Z" fill="url(#jg1)"/>
+                      <path d="M70,33 Q70,60 70,72" stroke="#7c5524" stroke-width="1.2" stroke-opacity="0.35" fill="none"/>
+                      <circle cx="70" cy="44" r="4.2" fill="#a83226" fill-opacity="0.82"/>
+                    </svg>
+                  </div>
+                </div>
+                <span class="jiao-shadow"></span>
+              </div>
             </div>
             <div class="jiao-name" id="jiaoName">—</div>
             <div class="jiao-desc" id="jiaoDesc">掷筊后此处显示筊象与释义。</div>
@@ -1122,9 +1287,17 @@ h1.hero-title span::after{
           <div class="shi-pan" id="shiPan"></div>
           <div class="pan12" id="liurenPan"></div>
           <div class="sike" id="liurenSike"></div>
-          <p class="note">天地盘依「月将加占时」顺布；四课取日干寄宫与日支之上神。三传须按九宗门（贼克、比用、涉害等）细排，此处从略，不作断言。</p>
-          <div class="btn-row" style="margin-top:20px">
+
+          <div class="chapter" style="margin-top:32px"><span class="num">贰</span><h2>三传</h2><span class="rule"></span><span class="tail"></span></div>
+          <div class="liuren-san" id="liurenSan"></div>
+          <p class="note">三传依九宗门·贼克法起用：先取四课中「下克上」为贼，无贼则取「上克下」为克，定初传（发用）；中、末传顺布天盘。属传统起例之简化演示。</p>
+
+          <div class="chapter" style="margin-top:30px"><span class="num">叁</span><h2>解读</h2><span class="rule"></span><span class="tail"></span></div>
+          <div class="liuren-read" id="liurenRead"></div>
+
+          <div class="btn-row" style="margin-top:26px">
             <button class="btn ghost" id="recastLiuren">重新起课</button>
+            <span class="liuren-rand" id="liurenRand"></span>
           </div>
         </div>
       </div>
@@ -1923,23 +2096,57 @@ function tRenderReading(){
       + '</div>';
   });
 
-  var names = picks.map(function(c){ return c.n + (c.__rev?'（逆位）':''); });
-  h += '<div class="tsum"><h4>合　观</h4>';
-  h += '<p>' + (q
-      ? '所问：「<em style="font-style:normal;color:var(--cinnabar);font-weight:500">'+tEsc(q)+'</em>」'
-      : '未写具体问题，以下按牌面本身连读。') + '</p>';
-  h += '<p>'+tEsc(s.name)+'抽出的是 '+tEsc(names.join('、'))+'。这几张牌不是各自独立的吉凶，而是同一条线索上的不同环节——看它们如何首尾相接，比单看某一张更有意义。</p>';
-  if(s.steps && s.steps.length){
-    h += '<h4 style="margin-top:16px">如何落地</h4><ol>';
-    s.steps.forEach(function(t){ h += '<li>'+tEsc(t)+'</li>'; });
-    h += '</ol>';
-  }
-  h += '<div class="foot">塔罗呈现的是当下动量，不是定论。逆位不等于坏，常指能量受阻、节奏未到或需要向内调整。牌面说的是倾向，最终的选择权始终在你手里。</div>';
-  h += '</div>';
+  h += '<div class="tdeep"><div class="tdeep-h"><h4>详细解读 · 发给 AI</h4>'
+    + '<button class="tdeep-copy" type="button" onclick="tCopyPrompt()">一键复制提示词</button></div>'
+    + '<p class="tdeep-tip">本页只给每牌一句话释义。想要更深入、结合你处境的连读与建议，复制下方提示词，发给任意免费 AI（如元宝、文心、通义、ChatGPT）即可。</p>'
+    + '<textarea class="tdeep-box" id="tarotPromptBox" readonly>' + tEsc(tBuildPrompt(s, picks, q)) + '</textarea>'
+    + '</div>';
 
   $('tarotVerdict').innerHTML = h;
   $('tarotReading').style.display = 'block';
   setTimeout(function(){ $('tarotReading').scrollIntoView({behavior:'smooth', block:'start'}); }, 240);
+}
+
+/* 生成「本次抽卡」的 AI 提示词（素材无详细解读，故现场拼装） */
+function tBuildPrompt(s, picks, q){
+  var L = [];
+  L.push('你是一位专业、坦诚的塔罗解读师。请基于下面的【' + s.name + '】牌阵抽牌结果，给出详细、结合现实处境的解读与可落地的建议。');
+  L.push('');
+  L.push('【我的问题】');
+  L.push(q ? q : '（未填写，请按牌面通用含义解读）');
+  L.push('');
+  L.push('【抽牌结果】位置顺序即抽牌顺序，编号从 1 开始：');
+  picks.forEach(function(c,i){
+    var pos = s.positions[i] || {name:'第 '+(i+1)+' 张'};
+    L.push((i+1) + '. 位置：' + pos.name + '｜牌：' + c.n + '（' + (c.__rev?'逆位':'正位') + '）｜关键词：' + (c.__rev?c.r:c.k));
+    L.push('   牌面含义：' + (c.__rev ? c.rev : c.up));
+  });
+  L.push('');
+  L.push('请按以下结构回答：');
+  L.push('① 逐张解读，并说明该牌在所在位置上的意义；');
+  L.push('② 牌与牌之间的连读主线（它们如何互相呼应或冲突）；');
+  L.push('③ 针对我的问题，给出 2–3 条具体、可落地的建议；');
+  L.push('④ 一句提醒：塔罗呈现的是当下动量而非定论，逆位不等于坏。');
+  return L.join('\n');
+}
+
+/* 一键复制提示词 */
+function tCopyPrompt(){
+  var box = $('tarotPromptBox');
+  if(!box) return;
+  var txt = box.value;
+  function flash(){
+    var b = document.querySelector('.tdeep-copy');
+    if(!b) return;
+    var old = b.textContent; b.textContent = '已复制 ✓';
+    b.classList.add('done');
+    setTimeout(function(){ b.textContent = old; b.classList.remove('done'); }, 1600);
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(flash, function(){ box.select(); document.execCommand('copy'); flash(); });
+  } else {
+    box.select(); document.execCommand('copy'); flash();
+  }
 }
 
 /* —— 牌义通览 —— */
@@ -2040,59 +2247,123 @@ function tInit(){
 var JIAO_LOG = [];
 
 $('tossJiao').onclick = function(){
-  var a = Math.random() < 0.5;  // true = 平面朝上
+  var q = ($('jiaoQ').value || '').trim();
+  var a = Math.random() < 0.5;  // a=true → 平面朝上
   var b = Math.random() < 0.5;
-  ['jiao0','jiao1'].forEach(function(id){
-    var el = $(id);
-    el.classList.remove('flip');
-    void el.offsetWidth;
-    el.classList.add('flip');
+  [['jiao0',a],['jiao1',b]].forEach(function(p){
+    var el = $(p[0]);
+    var piece = el.querySelector('.jiao-piece');
+    piece.classList.remove('jup-flat','jup-round');
+    piece.classList.add(p[1] ? 'jup-flat' : 'jup-round');
+    el.classList.remove('throwing');
+    void el.offsetWidth;            /* 重启动画 */
+    el.classList.add('throwing');
   });
-  setTimeout(function(){
-    $('jiao0').className = 'jiao' + (a ? ' flat' : '');
-    $('jiao1').className = 'jiao' + (b ? ' flat' : '');
-  }, 260);
 
   var name, desc, cls;
+  var tail = q ? ('（所问：' + q + '）') : '';
   if(a !== b){
     name = '圣杯'; cls = 'sheng';
-    desc = '一平一凸，为「圣杯（允筊）」。所请示之事，神明应允，可行。';
+    desc = '一平一凸，为「圣杯（允筊）」。所请示之事，神明应允，可行。' + tail;
   }else if(a && b){
     name = '笑杯'; cls = 'xiao';
-    desc = '两平为「笑杯（笑筊）」。多表示陈述未清、时机未明，或所问不必执着一时。可重新禀明后再掷。';
+    desc = '两平为「笑杯（笑筊）」。多表示陈述未清、时机未明，或所问不必执着一时。可重新禀明后再掷。' + tail;
   }else{
     name = '阴杯'; cls = 'yin';
-    desc = '两凸为「阴杯（怒筊／无筊）」。表示不允、不宜，或方向需要重新考虑。';
+    desc = '两凸为「阴杯（怒筊／无筊）」。表示不允、不宜，或方向需要重新考虑。' + tail;
   }
-  $('jiaoName').textContent = name;
-  $('jiaoName').className = 'jiao-name ' + cls;
-  $('jiaoDesc').textContent = desc;
 
-  JIAO_LOG.unshift(name);
-  if(JIAO_LOG.length > 6) JIAO_LOG.pop();
-  $('jiaoLog').innerHTML = JIAO_LOG.map(function(x){ return '<span>' + x + '</span>'; }).join('');
+  var jn = $('jiaoName'), jd = $('jiaoDesc');
+  jn.textContent = '—'; jn.className = 'jiao-name'; jd.textContent = '掷筊中…';
+  setTimeout(function(){            /* 等落地动效结束再揭晓 */
+    jn.textContent = name; jn.className = 'jiao-name ' + cls; jd.textContent = desc;
+    JIAO_LOG.unshift(name);
+    if(JIAO_LOG.length > 6) JIAO_LOG.pop();
+    $('jiaoLog').innerHTML = JIAO_LOG.map(function(x){ return '<span>' + x + '</span>'; }).join('');
+  }, 1150);
 };
 
 /* ================= 六壬 ================= */
 var JIANG_NAME = {子:'神后', 丑:'大吉', 寅:'功曹', 卯:'太冲', 辰:'天罡', 巳:'太乙',
   午:'胜光', 未:'小吉', 申:'传送', 酉:'从魁', 戌:'河魁', 亥:'登明'};
 var GAN_JI = {甲:'寅', 乙:'辰', 丙:'巳', 丁:'未', 戊:'巳', 己:'未', 庚:'申', 辛:'戌', 壬:'亥', 癸:'丑'};
-
+var GAN_ELEMENT = {甲:'木',乙:'木',丙:'火',丁:'火',戊:'土',己:'土',庚:'金',辛:'金',壬:'水',癸:'水'};
+// 十二月将：以「中气过宫」近似定太阳所在之宫（日期取各中气常值，误差≤1日）
+var ZHONG_QI = [
+  [1,20,'子'],[2,19,'亥'],[3,21,'戌'],[4,20,'酉'],[5,21,'申'],[6,21,'未'],
+  [7,23,'午'],[8,23,'巳'],[9,23,'辰'],[10,23,'卯'],[11,22,'寅'],[12,22,'丑']
+];
+function getJiangByQi(d){
+  var m = d.getMonth()+1, day = d.getDate(), jiang = '丑';
+  for(var i=0;i<ZHONG_QI.length;i++){
+    if(m>ZHONG_QI[i][0] || (m===ZHONG_QI[i][0] && day>=ZHONG_QI[i][1])) jiang = ZHONG_QI[i][2];
+  }
+  return jiang;
+}
 function zhiIdx(z){ return ZHI.indexOf(z); }
+// 六亲：selfEl=日干五行(我)，otherEl=神之五行
+function liuqinSelf(selfEl, otherEl){
+  if(SHENG[selfEl] === otherEl) return '父母';
+  if(SHENG[otherEl] === selfEl) return '子孙';
+  if(KE[otherEl] === selfEl) return '官鬼';
+  if(KE[selfEl] === otherEl) return '妻财';
+  return '兄弟';
+}
+function liurenRead(d){
+  var CAT_ADVICE = {
+    '今日运势':'今日动静以初传发用为凭，三传连贯处即是当日气运走向。',
+    '财运':'求财以妻财为用神，观初传妻财之旺衰与发动与否，可断财机。',
+    '感情':'感情以官鬼（男）／妻财（女）为用，初传所示即眼下缘分气场。',
+    '事业':'事业以官鬼、官星为凭，初传发用定其起手之势与成败先机。',
+    '健康':'健康以子孙为药神、以官鬼为病，初传所示可作调摄之参。',
+    '考试':'考试以父母为文书星，初传父母旺相则笔下有神。',
+    '出行':'出行看初传与占时之顺逆，顺则可行、逆则宜缓。',
+    '寻物':'寻物以妻财为失物类神，初传落方可作查找线索。',
+    '官讼':'官讼以官鬼为讼神，初传所示定胜负之先机。',
+    '其他':'所问以初传发用为准，中末传连贯看其始终结局。'
+  };
+  var qText = ($('question') && $('question').value.trim()) ? '所问：' + $('question').value.trim() : ('（' + (CAT||'今日运势') + '）');
+  var san = d.san;
+  var chuQin = san.chu.qin, zhongQin = san.zhong.qin, moQin = san.mo.qin;
+  var level = 'ping', reasons = [];
+  if(chuQin==='妻财'){ level='ji'; reasons.push('初传发用为<b>妻财</b>，所问多利求财、谋事，财气有根。'); }
+  else if(chuQin==='子孙'){ level='ji'; reasons.push('初传<b>子孙</b>发用，利消解忧患、求安稳顺遂，药神当令。'); }
+  else if(chuQin==='父母'){ level='ping'; reasons.push('初传<b>父母</b>发用，利文书、学习、倚靠，然耗我之精力。'); }
+  else if(chuQin==='官鬼'){ level='xiong'; reasons.push('初传<b>官鬼</b>发用，事有压力阻碍，宜谨慎守成、勿强进。'); }
+  else { level='ping'; reasons.push('初传<b>兄弟</b>发用，多主分争、耗费，合作须明算账、防口舌。'); }
+  if(moQin==='妻财' || moQin==='子孙'){ reasons.push('末传归于'+moQin+'，结局倾向有所得、可从容收尾。'); }
+  else if(moQin==='官鬼'){ reasons.push('末传见'+moQin+'，收局仍带压力，宜善始善终、留有余地。'); }
+  else { reasons.push('末传为'+moQin+'，结局平淡收束，以稳为先。'); }
+
+  var lvText = level==='ji'?'倾向可行':level==='xiong'?'宜慎守成':'宜静观待时';
+  var lvCls = level==='ji'?'ji':level==='xiong'?'xiong':'ping';
+
+  var h = '';
+  h += '<span class="badge '+lvCls+'">'+lvText+'</span>';
+  h += '<div class="rh">一 · 天地与日辰</div>';
+  h += '<p>'+d.dayGan+'日（日干属'+d.dayGanEl+'）寄'+d.ganJi+'宫，日支为'+d.dayZhi+'；占时取'+d.timeZhi+'时，月将'+d.jiang+'将（'+JIANG_NAME[d.jiang]+'）加于占时之上，顺布十二宫而成天地盘。'+qText+'</p>';
+  h += '<div class="rh">二 · 四课所显</div>';
+  h += '<p>第一课 干上神'+d.k1+'（'+liuqinSelf(d.dayGanEl, ZHI_ELEMENT[d.k1])+'），第二课 干阴'+d.k2+'（'+liuqinSelf(d.dayGanEl, ZHI_ELEMENT[d.k2])+'），第三课 支上'+d.k3+'（'+liuqinSelf(d.dayGanEl, ZHI_ELEMENT[d.k3])+'），第四课 支阴'+d.k4+'（'+liuqinSelf(d.dayGanEl, ZHI_ELEMENT[d.k4])+'）。干上、支上之加临，定自身与所处环境的基本气场。</p>';
+  h += '<div class="rh">三 · 三传走向</div>';
+  h += '<p>初传（发用）'+san.chu.shen+'（'+chuQin+'，落'+san.chu.land+'），主事之端；中传'+san.zhong.shen+'（'+zhongQin+'，落'+san.zhong.land+'），主事之过程；末传'+san.mo.shen+'（'+moQin+'，落'+san.mo.land+'），主事之结局趋向。</p>';
+  h += '<div class="rh">四 · 参断</div>';
+  h += '<p>'+reasons.join('')+'</p>';
+  h += '<p>'+(CAT_ADVICE[CAT]||CAT_ADVICE['其他'])+'六壬为古法演式，重在启思自省，吉凶以人事权衡为主，不必尽拘。</p>';
+  return h;
+}
 
 function recastLiuren(){
   if(!TODAY){ $('liurenMeta').innerHTML = '<div class="c"><div class="v">—</div></div>'; return; }
   var now = new Date();
-  var timeZhi = safe(function(){ return TODAY.lunar.getTimeZhi(); }, '子');
+  // 占时：随机地支，使每次「重新起课」皆出新盘
+  var timeZhi = ZHI[Math.floor(Math.random()*12)];
   var tIdx = zhiIdx(timeZhi);
   if(tIdx < 0) tIdx = 0;
 
-  var monthZhi = TODAY.monthZhi;
-  var mIdx = zhiIdx(monthZhi);
-  // 月将即太阳所在宫：月建与月将十二支相合，满足「月建 + 月将 = 13」
-  // 例：正月建寅 → 月将亥；九月建戌 → 月将卯
-  var jiangIdx = (13 - mIdx) % 12;
-  var jiang = ZHI[jiangIdx];
+  // 月将：以节气中气过宫近似（取代粗略的「13减月建」）
+  var jiang = safe(function(){ return getJiangByQi(now); }, '丑');
+  var jiangIdx = zhiIdx(jiang);
+  if(jiangIdx < 0) jiangIdx = 11;
 
   // 天地盘：月将加占时，顺布
   var tian = {};
@@ -2106,6 +2377,34 @@ function recastLiuren(){
   var k2 = tian[k1];
   var k3 = tian[TODAY.dayZhi];
   var k4 = tian[k3];
+
+  // 三传：九宗门·贼克法（先贼后克，定初传发用）
+  var dayGanEl = GAN_ELEMENT[TODAY.dayGan] || '木';
+  var keList = [
+    {up:k1, down:ganJi}, {up:k2, down:k1}, {up:k3, down:TODAY.dayZhi}, {up:k4, down:k3}
+  ];
+  var used = null, usedType = '';
+  for(var c=0;c<keList.length;c++){
+    var upEl = ZHI_ELEMENT[keList[c].up], dnEl = ZHI_ELEMENT[keList[c].down];
+    if(KE[dnEl] === upEl){ used = keList[c]; usedType = '贼（下克上）'; break; }
+  }
+  if(!used){
+    for(var c2=0;c2<keList.length;c2++){
+      var upEl2 = ZHI_ELEMENT[keList[c2].up], dnEl2 = ZHI_ELEMENT[keList[c2].down];
+      if(KE[upEl2] === dnEl2){ used = keList[c2]; usedType = '克（上克下）'; break; }
+    }
+  }
+  var chuShen, chuNote;
+  if(used){ chuShen = used.up; chuNote = '取' + usedType + '为初传发用'; }
+  else { chuShen = k1; chuNote = '四课无克，暂以干上神发用'; }
+  // 中末传：以初传/中传所落之支（神即地支）顺布天盘
+  var zhongShen = tian[chuShen];
+  var moShen = tian[zhongShen];
+  var san = {
+    chu:  {shen:chuShen, land:chuShen, qin:liuqinSelf(dayGanEl, ZHI_ELEMENT[chuShen])},
+    zhong:{shen:zhongShen, land:zhongShen, qin:liuqinSelf(dayGanEl, ZHI_ELEMENT[zhongShen])},
+    mo:   {shen:moShen, land:moShen, qin:liuqinSelf(dayGanEl, ZHI_ELEMENT[moShen])}
+  };
 
   $('liurenMeta').innerHTML = ''
     + '<div class="c"><div class="k">占时</div><div class="v">' + TODAY.d + '日　' + timeZhi + '时</div></div>'
@@ -2136,10 +2435,26 @@ function recastLiuren(){
   $('liurenPan').innerHTML = panHtml;
 
   $('liurenSike').innerHTML = ''
-    + '<div class="c"><div class="no">第一课</div><div class="v">' + k1 + '</div><div class="s">干上神</div></div>'
-    + '<div class="c"><div class="no">第二课</div><div class="v">' + k2 + '</div><div class="s">干阴神</div></div>'
-    + '<div class="c"><div class="no">第三课</div><div class="v">' + k3 + '</div><div class="s">支上神</div></div>'
-    + '<div class="c"><div class="no">第四课</div><div class="v">' + k4 + '</div><div class="s">支阴神</div></div>';
+    + '<div class="c"><div class="no">第一课</div><div class="v">' + k1 + '</div><div class="s">干上神 · ' + liuqinSelf(dayGanEl, ZHI_ELEMENT[k1]) + '</div></div>'
+    + '<div class="c"><div class="no">第二课</div><div class="v">' + k2 + '</div><div class="s">干阴神 · ' + liuqinSelf(dayGanEl, ZHI_ELEMENT[k2]) + '</div></div>'
+    + '<div class="c"><div class="no">第三课</div><div class="v">' + k3 + '</div><div class="s">支上神 · ' + liuqinSelf(dayGanEl, ZHI_ELEMENT[k3]) + '</div></div>'
+    + '<div class="c"><div class="no">第四课</div><div class="v">' + k4 + '</div><div class="s">支阴神 · ' + liuqinSelf(dayGanEl, ZHI_ELEMENT[k4]) + '</div></div>';
+
+  // 三传卡片
+  function sanCard(tk, data){
+    return '<div class="ch' + (tk==='初传'?' hl':'') + '">'
+      + '<div class="tk">' + tk + '</div>'
+      + '<div class="tv">' + data.shen + '</div>'
+      + '<div class="tj">' + (JIANG_NAME[data.shen] || '') + ' · 落' + data.land + '</div>'
+      + '<div class="tq">' + data.qin + '</div></div>';
+  }
+  $('liurenSan').innerHTML = sanCard('初传', san.chu) + sanCard('中传', san.zhong) + sanCard('末传', san.mo);
+
+  // 文字解读
+  var dd = {dayGan:TODAY.dayGan, dayGanEl:dayGanEl, ganJi:ganJi, dayZhi:TODAY.dayZhi,
+           timeZhi:timeZhi, jiang:jiang, k1:k1, k2:k2, k3:k3, k4:k4, san:san};
+  $('liurenRead').innerHTML = liurenRead(dd);
+  $('liurenRand').textContent = '占时 ' + timeZhi + ' · ' + chuNote;
 }
 $('recastLiuren').onclick = recastLiuren;
 
@@ -2153,9 +2468,22 @@ var FOLK = {
 };
 function renderFolk(t){
   var d = FOLK[t];
-  var html = '<div class="chapter"><span class="num">贰</span><h2>' + d.title + '预测</h2><span class="rule"></span><span class="tail"></span></div><div class="folk-list">';
+  var html = '<div class="chapter"><span class="num">贰</span><h2>' + d.title + '预测</h2><span class="rule"></span><span class="tail"></span></div>'
+    + '<div class="folk-tip">点击任一「时辰」展开详细解读，不点则收起。</div>'
+    + '<div class="folk-list">';
   d.data.forEach(function(x){
-    html += '<div class="folk"><span class="t">' + x[0] + '</span><span class="d">' + x[1] + '</span></div>';
+    var segs = x[0].split(' ');
+    var zhiName = segs[0] || x[0];
+    var range = segs[1] || '';
+    var parts = x[1].split(/[，,、]/).filter(function(s){ return s.trim(); });
+    var body = parts.map(function(p){ return '<li>' + p.trim() + '</li>'; }).join('');
+    html += '<details class="folk-item">'
+      + '<summary class="folk-head"><span class="fh-zhi">' + zhiName + '</span>'
+      + (range ? '<span class="fh-range">' + range + '</span>' : '')
+      + '<span class="fh-mark">详情<span class="fh-arrow">▾</span></span></summary>'
+      + '<div class="folk-body"><ul>' + body + '</ul>'
+      + '<p class="folk-note">以上为「' + d.title + '」于' + zhiName + '之俗信解读，供参详自省，不必尽信。</p></div>'
+      + '</details>';
   });
   html += '</div>';
   $('folkContent').innerHTML = html;
