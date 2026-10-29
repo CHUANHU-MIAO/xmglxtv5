@@ -1,0 +1,33 @@
+# 跨平台换行符规范：Windows 克隆 / Ubuntu 部署均能直接运行
+* text=auto
+
+# Windows 批处理必须 CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# 脚本与代码统一 LF（Linux 部署/CI 不会因 CRLF 报错）
+*.py  text eol=lf
+*.sh  text eol=lf
+*.js  text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.md  text eol=lf
+*.txt text eol=lf
+*.json text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+
+# 二进制资源，禁止任何换行转换
+*.webp binary
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.docx binary
+*.xlsx binary
+*.pptx binary
+*.pdf  binary
+*.zip  binary
+*.woff2 binary
+*.ttf  binary

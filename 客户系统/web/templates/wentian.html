@@ -11,6 +11,7 @@
 <script src="/static/js/gua-data.js"></script>
 <script src="/static/js/gua-baihua.js"></script>
 <script src="/static/js/tarot-data.js"></script>
+<script src="/static/js/tarot-spreads.js"></script>
 <style>
 :root{
   --paper:#f2ecdd;
@@ -583,42 +584,193 @@ h1.hero-title span::after{
 .ex-panel.open{display:block;animation:riseIn .5s var(--ease) both}
 
 /* ========== 塔罗 ========== */
-.tarot-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:24px}
-@media(max-width:680px){.tarot-grid{grid-template-columns:1fr}}
-.tarot-card{
-  position:relative;background:#fffdf7;border:1px solid var(--line-2);padding:22px 20px 24px;
-  min-height:250px;display:flex;flex-direction:column;overflow:hidden;
-  transition:transform .4s var(--ease),box-shadow .4s,border-color .4s;
+/* —— 牌阵选择 —— */
+.spread-cats{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:20px}
+.spread-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.spread-card{
+  position:relative;text-align:left;padding:19px 20px 17px;background:#fffdf7;
+  border:1px solid var(--line-2);cursor:pointer;overflow:hidden;font-family:inherit;
+  transition:transform .35s var(--ease),box-shadow .35s,border-color .35s;
 }
-.tarot-card::before{
-  content:'';position:absolute;inset:7px;border:1px solid var(--line);pointer-events:none;
+.spread-card::before{content:'';position:absolute;inset:6px;border:1px solid var(--line);pointer-events:none}
+.spread-card:hover{transform:translateY(-3px);box-shadow:0 18px 38px rgba(70,55,30,.13);border-color:var(--ochre)}
+.spread-card.on{border-color:var(--cinnabar);box-shadow:0 0 0 1px rgba(168,50,38,.2),0 18px 38px rgba(70,55,30,.13)}
+.spread-card.on::after{
+  content:'已择';position:absolute;top:0;right:0;padding:4px 11px;
+  font-family:var(--serif);font-size:10.5px;letter-spacing:.18em;color:#fff;background:var(--cinnabar);
 }
-.tarot-card::after{
-  content:'';position:absolute;right:-22px;bottom:-22px;width:78px;height:78px;transform:rotate(45deg);
-  border:1px solid var(--line-2);opacity:.5;
+.spread-card .sc-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:9px}
+.spread-card .sc-n{font-family:var(--serif);font-size:16px;font-weight:600;letter-spacing:.1em;line-height:1.5}
+.spread-card .sc-c{font-family:var(--serif);font-size:10.5px;letter-spacing:.16em;color:var(--ochre);white-space:nowrap}
+.spread-card .sc-d{font-family:var(--serif);font-size:12.5px;font-weight:400;color:var(--ink-3);line-height:1.92}
+.spread-card .sc-nb{font-family:var(--serif);font-size:11px;letter-spacing:.14em;color:var(--ink-3);margin-top:10px;padding-top:8px;border-top:1px dashed var(--line-2)}
+
+/* —— 牌阵说明 —— */
+.spread-info{margin:20px 0 0;padding:20px 22px;background:rgba(154,108,48,.055);border:1px solid var(--line-2)}
+.spread-info h4{font-family:var(--serif);font-size:15px;font-weight:600;letter-spacing:.16em;color:var(--ink);margin-bottom:10px}
+.spread-info .si-d{font-family:var(--serif);font-size:13.5px;color:var(--ink-2);line-height:2.02}
+.si-pos{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.si-pos span{
+  font-family:var(--serif);font-size:11.5px;letter-spacing:.14em;color:var(--indigo);
+  padding:4px 13px;border:1px solid rgba(44,82,87,.26);background:var(--indigo-soft);border-radius:999px;
 }
-.tarot-card:hover{transform:translateY(-6px);box-shadow:0 26px 52px rgba(70,55,30,.16);border-color:var(--ochre)}
-.tc-pos{font-family:var(--serif);font-size:11.5px;letter-spacing:.34em;color:var(--ochre);margin-bottom:12px}
-.tc-name{font-family:var(--serif);font-size:24px;font-weight:600;letter-spacing:.12em;line-height:1.5}
-.tc-en{font-family:var(--num);font-size:12.5px;font-style:italic;letter-spacing:.12em;color:var(--ink-3);margin-top:4px}
-.tc-state{
-  display:inline-flex;align-self:flex-start;margin-top:12px;font-family:var(--serif);
-  font-size:11.5px;letter-spacing:.22em;padding:4px 13px;border-radius:999px;
+.si-steps{margin:14px 0 0;padding-left:19px;font-family:var(--serif);font-size:13px;color:var(--ink-3);line-height:2}
+.si-steps li{margin-bottom:2px}
+
+/* —— 牌桌 —— */
+.tarot-table{
+  margin-top:26px;padding:28px 22px 30px;position:relative;
+  background:linear-gradient(180deg,rgba(255,253,247,.92),rgba(242,234,216,.72));
+  border:1px solid var(--line-2);
 }
-.tc-state.up{background:var(--indigo-soft);color:var(--indigo);border:1px solid rgba(44,82,87,.28)}
-.tc-state.rev{background:var(--cinnabar-soft);color:var(--cinnabar);border:1px solid rgba(168,50,38,.28)}
-.tc-kw{font-family:var(--serif);font-size:14px;font-weight:400;color:var(--ink-2);margin-top:14px;line-height:2}
-.tc-m{font-family:var(--serif);font-size:12.5px;font-weight:400;color:var(--ink-3);line-height:1.95;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line-2)}
-.tarot-card.reversed .tc-name{transform:rotate(180deg);display:inline-block}
-.tarot-back{
-  position:relative;min-height:250px;border:1px solid var(--line-2);
+.tarot-table::before{
+  content:'';position:absolute;inset:8px;border:1px solid var(--line);pointer-events:none;
+}
+.tarot-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:24px 20px}
+.tarot-grid.tg-wirth{display:grid;grid-template-columns:repeat(3,1fr);max-width:660px;margin:0 auto;gap:20px 14px}
+.tarot-grid.tg-wirth .tcard:nth-child(1){grid-column:2;grid-row:2}
+.tarot-grid.tg-wirth .tcard:nth-child(2){grid-column:3;grid-row:2}
+.tarot-grid.tg-wirth .tcard:nth-child(3){grid-column:2;grid-row:3}
+.tarot-grid.tg-wirth .tcard:nth-child(4){grid-column:1;grid-row:2}
+.tarot-grid.tg-wirth .tcard:nth-child(5){grid-column:2;grid-row:1}
+.tarot-grid.tg-celtic{display:grid;grid-template-columns:repeat(4,1fr);max-width:720px;margin:0 auto;gap:18px 12px}
+.tarot-grid.tg-celtic .tcard:nth-child(1){grid-column:2;grid-row:2}
+.tarot-grid.tg-celtic .tcard:nth-child(2){grid-column:3;grid-row:2}
+.tarot-grid.tg-celtic .tcard:nth-child(3){grid-column:2;grid-row:3}
+.tarot-grid.tg-celtic .tcard:nth-child(4){grid-column:1;grid-row:2}
+.tarot-grid.tg-celtic .tcard:nth-child(5){grid-column:2;grid-row:1}
+.tarot-grid.tg-celtic .tcard:nth-child(6){grid-column:4;grid-row:2}
+.tarot-grid.tg-celtic .tcard:nth-child(7){grid-column:4;grid-row:3}
+.tarot-grid.tg-celtic .tcard:nth-child(8){grid-column:2;grid-row:4}
+.tarot-grid.tg-celtic .tcard:nth-child(9){grid-column:3;grid-row:4}
+.tarot-grid.tg-celtic .tcard:nth-child(10){grid-column:4;grid-row:4}
+@media(max-width:680px){
+  .tarot-grid.tg-wirth,.tarot-grid.tg-celtic{display:flex;max-width:none}
+  .tarot-grid.tg-wirth .tcard,.tarot-grid.tg-celtic .tcard{width:calc(50% - 10px)}
+}
+
+/* —— 单张牌 —— */
+.tcard{
+  width:clamp(126px,17vw,178px);opacity:0;transform:translateY(16px);
+  animation:cardRise .6s var(--ease) forwards;
+}
+@keyframes cardRise{to{opacity:1;transform:none}}
+.tcard-scene{perspective:1200px}
+.tcard-3d{
+  position:relative;width:100%;aspect-ratio:3/5;transform-style:preserve-3d;
+  transition:transform .95s var(--ease);
+}
+.tcard.flipped .tcard-3d{transform:rotateY(180deg)}
+.tcard-side{
+  position:absolute;inset:0;border-radius:5px;overflow:hidden;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  box-shadow:0 10px 26px rgba(60,45,22,.24);
+}
+.tcard-back{
   background:
-    repeating-linear-gradient(45deg,rgba(168,50,38,.06) 0 10px,transparent 10px 20px),
-    linear-gradient(160deg,#efe6d0,#e4d7ba);
+    repeating-linear-gradient(45deg,rgba(168,50,38,.07) 0 9px,transparent 9px 18px),
+    linear-gradient(160deg,#f0e7d1,#ded0b0);
+  border:1px solid rgba(168,50,38,.32);
   display:flex;align-items:center;justify-content:center;
 }
-.tarot-back::before{content:'';position:absolute;inset:8px;border:1px solid rgba(168,50,38,.22)}
-.tarot-back span{font-family:var(--serif);font-size:12px;letter-spacing:.5em;color:rgba(168,50,38,.5);writing-mode:vertical-rl}
+.tcard-back::before{content:'';position:absolute;inset:7px;border:1px solid rgba(168,50,38,.24)}
+.tcard-back span{
+  font-family:var(--serif);font-size:13px;letter-spacing:.5em;color:rgba(168,50,38,.58);
+  writing-mode:vertical-rl;line-height:1.5;
+}
+.tcard-front{transform:rotateY(180deg);background:#fdfaf1;border:1px solid var(--line-strong);padding:5px}
+.tcard-front img{width:100%;height:100%;object-fit:cover;display:block;border-radius:2px}
+.tcard-front img.rev{transform:rotate(180deg)}
+.tcard-meta{text-align:center;margin-top:14px}
+.tcard-pos{font-family:var(--serif);font-size:11px;letter-spacing:.24em;color:var(--ochre);line-height:1.7}
+.tcard-name{font-family:var(--serif);font-size:19px;font-weight:600;letter-spacing:.08em;margin-top:6px}
+.tcard-en{font-family:var(--num);font-size:11.5px;font-style:italic;color:var(--ink-3);margin-top:2px}
+.tcard-state{display:inline-flex;margin-top:9px;font-family:var(--serif);font-size:11px;letter-spacing:.18em;padding:3px 12px;border-radius:999px}
+.tcard-state.up{background:var(--indigo-soft);color:var(--indigo);border:1px solid rgba(44,82,87,.28)}
+.tcard-state.rev{background:var(--cinnabar-soft);color:var(--cinnabar);border:1px solid rgba(168,50,38,.28)}
+.tcard-kw{font-family:var(--serif);font-size:12px;font-weight:400;color:var(--ink-3);margin-top:8px;line-height:1.85}
+
+/* —— 连读 —— */
+.tread-item{padding:17px 19px;background:#fffdf7;border:1px solid var(--line);margin-bottom:12px}
+.tread-h{display:flex;align-items:baseline;gap:11px;flex-wrap:wrap;margin-bottom:9px}
+.tread-pos{font-family:var(--serif);font-size:11.5px;letter-spacing:.22em;color:var(--ochre)}
+.tread-n{font-family:var(--serif);font-size:17px;font-weight:600;letter-spacing:.08em}
+.tread-st{font-family:var(--serif);font-size:11px;letter-spacing:.16em;padding:2px 10px;border-radius:999px}
+.tread-st.up{background:var(--indigo-soft);color:var(--indigo);border:1px solid rgba(44,82,87,.26)}
+.tread-st.rev{background:var(--cinnabar-soft);color:var(--cinnabar);border:1px solid rgba(168,50,38,.26)}
+.tread-pm{
+  font-family:var(--serif);font-size:12.5px;color:var(--ink-3);line-height:1.92;
+  padding:9px 13px;background:var(--ochre-soft);border-left:2px solid var(--line-2);margin-bottom:11px;
+}
+.tread-body{font-family:var(--serif);font-size:14px;font-weight:400;color:var(--ink-2);line-height:2.08}
+.tread-kw{margin-top:9px;font-family:var(--serif);font-size:12.5px;color:var(--ochre);letter-spacing:.06em;line-height:1.8}
+
+.tverdict{
+  display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+  padding:17px 21px;margin-bottom:16px;background:#fffdf7;border:1px solid var(--line-2);
+}
+.tverdict .big{font-family:var(--serif);font-size:30px;font-weight:600;letter-spacing:.16em;color:var(--cinnabar);line-height:1.3}
+.tverdict .big.no{color:var(--indigo)}
+.tverdict .vd-t{font-family:var(--serif);font-size:13.5px;color:var(--ink-2);line-height:1.95;flex:1;min-width:220px}
+
+.tsum{margin-top:20px;padding:19px 21px;background:rgba(44,82,87,.055);border:1px solid var(--line-2)}
+.tsum h4{font-family:var(--serif);font-size:15px;font-weight:600;letter-spacing:.16em;margin-bottom:11px;color:var(--indigo)}
+.tsum p{font-family:var(--serif);font-size:13.8px;color:var(--ink-2);line-height:2.08;margin-bottom:8px}
+.tsum ol{margin:8px 0 0 19px;font-family:var(--serif);font-size:13.5px;color:var(--ink-2);line-height:2.1}
+.tsum li{margin-bottom:3px}
+.tsum .foot{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line-2);font-family:var(--serif);font-size:12.5px;color:var(--ink-3);line-height:1.95}
+
+/* —— 牌义通览 —— */
+.gal-tools{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:20px}
+.gal-search{
+  flex:1;min-width:200px;font-family:var(--serif);font-size:13.5px;padding:9px 15px;
+  border:1px solid var(--line-2);background:#fffdf7;color:var(--ink);
+}
+.gal-search:focus{outline:none;border-color:var(--ochre)}
+.gal-search::placeholder{color:#a2957a}
+.gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(122px,1fr));gap:18px 16px}
+.gal-card{cursor:pointer;text-align:left;font-family:inherit;background:none;border:none;padding:0}
+.gal-card .gimg{
+  position:relative;aspect-ratio:3/5;overflow:hidden;border:1px solid var(--line-2);
+  background:#fffdf7;transition:transform .35s var(--ease),box-shadow .35s,border-color .35s;
+}
+.gal-card:hover .gimg{transform:translateY(-4px);box-shadow:0 14px 30px rgba(70,55,30,.17);border-color:var(--ochre)}
+.gal-card .gimg img{width:100%;height:100%;object-fit:cover;display:block}
+.gal-card .gname{font-family:var(--serif);font-size:13.5px;letter-spacing:.06em;margin-top:9px;line-height:1.6}
+.gal-card .gen{font-family:var(--num);font-size:10.5px;font-style:italic;color:var(--ink-3);margin-top:2px;line-height:1.5}
+.gal-empty{font-family:var(--serif);font-size:13.5px;color:var(--ink-3);padding:28px 0;text-align:center}
+
+/* —— 牌面详情 —— */
+.tmodal{
+  position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;
+  padding:26px 20px;background:rgba(32,26,15,.58);backdrop-filter:blur(3px);
+}
+.tmodal.open{display:flex}
+.tmodal-box{
+  position:relative;width:100%;max-width:780px;max-height:88vh;overflow:auto;
+  background:#fbf7ec;border:1px solid var(--line-strong);padding:28px 30px 30px;
+}
+.tmodal-box::before{content:'';position:absolute;inset:7px;border:1px solid var(--line);pointer-events:none}
+.tmodal-close{
+  position:absolute;top:16px;right:18px;z-index:2;width:32px;height:32px;
+  background:none;border:1px solid var(--line-2);color:var(--ink-3);cursor:pointer;
+  font-family:var(--serif);font-size:17px;line-height:1;transition:all .25s;
+}
+.tmodal-close:hover{border-color:var(--cinnabar);color:var(--cinnabar)}
+.tmodal-in{position:relative;z-index:1;display:flex;gap:24px;flex-wrap:wrap}
+.tmodal-fig{flex:0 0 190px}
+.tmodal-fig img{width:100%;border:1px solid var(--line-strong);display:block}
+.tmodal-fig .tg{font-family:var(--serif);font-size:12px;letter-spacing:.16em;color:var(--ochre);margin-top:10px}
+.tmodal-body{flex:1;min-width:260px}
+.tmodal-body h3{font-family:var(--serif);font-size:25px;font-weight:600;letter-spacing:.1em;line-height:1.4}
+.tmodal-body .en{font-family:var(--num);font-size:13px;font-style:italic;color:var(--ink-3);margin-top:3px}
+.tmodal-body .kws{font-family:var(--serif);font-size:13px;color:var(--ochre);margin-top:11px;letter-spacing:.05em;line-height:1.8}
+.tmodal-sec{margin-top:17px;padding-top:15px;border-top:1px dashed var(--line-2)}
+.tmodal-sec h4{font-family:var(--serif);font-size:13.5px;font-weight:600;letter-spacing:.16em;margin-bottom:8px}
+.tmodal-sec h4.up{color:var(--indigo)}
+.tmodal-sec h4.rev{color:var(--cinnabar)}
+.tmodal-sec p{font-family:var(--serif);font-size:13.5px;color:var(--ink-2);line-height:2.05}
+@media(max-width:620px){.tmodal-fig{flex:1 1 100%;max-width:210px;margin:0 auto}}
 
 /* ========== 圣杯 ========== */
 .jiao-stage{text-align:center;padding:18px 0 8px}
@@ -759,7 +911,7 @@ h1.hero-title span::after{
           <div class="chapter"><span class="num">目</span><h2>可占之门</h2><span class="rule"></span><span class="tail"></span></div>
           <div class="toc" id="tocList">
             <button class="toc-row" data-panel="coin"><span class="no">壹</span><span class="nm">金钱卦</span><span class="ds">三钱六爻 · 本卦变卦与用神断语</span></button>
-            <button class="toc-row" data-panel="tarot"><span class="no">贰</span><span class="nm">塔罗牌</span><span class="ds">韦特体系 · 过去现在未来三牌阵</span></button>
+            <button class="toc-row" data-panel="tarot"><span class="no">贰</span><span class="nm">塔罗牌</span><span class="ds">韦特体系 · 23 种牌阵与 78 张牌义</span></button>
             <button class="toc-row" data-panel="jiao"><span class="no">叁</span><span class="nm">圣杯</span><span class="ds">掷筊请示 · 允否与未明之象</span></button>
             <button class="toc-row" data-panel="liuren"><span class="no">肆</span><span class="nm">六壬</span><span class="ds">月将加时 · 天地盘与四课</span></button>
             <button class="toc-row" data-panel="folk"><span class="no">伍</span><span class="nm">民俗</span><span class="ds">耳鸣眼跳 · 身感时辰杂占</span></button>
@@ -872,25 +1024,47 @@ h1.hero-title span::after{
       <div class="wrap">
         <div class="kicker">塔罗 · 韦特体系</div>
         <div class="hero">
-          <h1 class="hero-title">过去 · 现在<span> · 未来</span></h1>
-          <div class="hero-seal">牌阵</div>
+          <h1 class="hero-title">观牌成象<br>以牌<span>问心</span></h1>
+          <div class="hero-seal">卜牌</div>
         </div>
-        <p class="lead">三张牌阵，是同一个故事的三幕。过去讲根源，现在讲正在发生的动态，未来只是当前动量延伸出的走向，而非定论。</p>
+        <p class="lead">韦特体系共七十八张牌，二十二张大阿卡纳讲人生的大课题，五十六张小阿卡纳讲日常的四种元素。牌阵决定了每张牌被放在哪个位置、承担什么角色——同一张牌在不同位置，指向的完全不同。</p>
 
         <div class="leaf" style="margin-top:30px">
-          <div class="chapter"><span class="num">壹</span><h2>静心抽牌</h2><span class="rule"></span><span class="tail"></span></div>
-          <div class="field">
-            <label>你希望看清的事</label>
-            <textarea id="tarotQ" placeholder="默念你的问题，再抽牌" maxlength="120"></textarea>
-          </div>
-          <button class="btn" id="drawTarot">抽 三 张</button>
+          <div class="chapter"><span class="num">壹</span><h2>择牌阵</h2><span class="rule"></span><span class="tail"></span></div>
+          <div class="spread-cats" id="spreadCats"></div>
+          <div class="spread-grid" id="spreadGrid"></div>
         </div>
 
-        <div class="tarot-grid" id="tarotGrid"></div>
+        <div class="leaf" style="margin-top:26px">
+          <div class="chapter"><span class="num">贰</span><h2>静心抽牌</h2><span class="rule"></span><span class="tail"></span></div>
+          <div class="field">
+            <label>你希望看清的事</label>
+            <textarea id="tarotQ" placeholder="默念你的问题，再抽牌。问得越具体，解读越能落地。" maxlength="120"></textarea>
+          </div>
+          <div class="spread-info" id="spreadInfo"></div>
+          <div class="btn-row" style="margin-top:22px">
+            <button class="btn" id="drawTarot">抽 牌</button>
+            <button class="btn ghost" id="resetTarot">重 抽</button>
+          </div>
+        </div>
+
+        <div class="tarot-table" id="tarotTable" style="display:none">
+          <div class="tarot-grid" id="tarotGrid"></div>
+        </div>
 
         <div class="leaf" id="tarotReading" style="display:none">
-          <div class="chapter"><span class="num">贰</span><h2>连读</h2><span class="rule"></span><span class="tail"></span></div>
+          <div class="chapter"><span class="num">叁</span><h2>连读</h2><span class="rule"></span><span class="tail"></span></div>
           <div class="verdict" id="tarotVerdict"></div>
+        </div>
+
+        <div class="leaf" style="margin-top:26px">
+          <div class="chapter"><span class="num">肆</span><h2>牌义通览</h2><span class="rule"></span><span class="tail"></span></div>
+          <p class="cat-hint" style="margin:0 0 16px">七十八张牌的正逆位含义。点开任一张，可看完整解读。</p>
+          <div class="gal-tools">
+            <div class="spread-cats" id="galCats" style="margin-bottom:0"></div>
+            <input class="gal-search" id="galSearch" type="text" placeholder="搜牌名，如 愚者 / 星币十 / Tower">
+          </div>
+          <div class="gal-grid" id="galGrid"></div>
         </div>
       </div>
     </section>
@@ -1114,6 +1288,16 @@ function pickPanel(name){
 
 tocRows.forEach(function(b){ b.onclick = function(){ pickPanel(b.dataset.panel); }; });
 $('miniBrand').onclick = goHome;
+
+/* 支持 #tarot 这类直达链接 */
+(function(){
+  var h = (location.hash || '').replace('#','');
+  if(PANEL_NAME[h]) openPanel(h);
+})();
+window.addEventListener('hashchange', function(){
+  var h = (location.hash || '').replace('#','');
+  if(PANEL_NAME[h]) openPanel(h);
+});
 /* ================= 金钱卦 ================= */
 var tosses = [];
 var SHENG = {火:'木', 土:'火', 金:'土', 水:'金', 木:'水'};
@@ -1524,50 +1708,311 @@ function resetCoin(){
   window.scrollTo({top:0, behavior:'smooth'});
 }
 /* ================= 塔罗 ================= */
-var TAROT_POS = ['过去 · 根源', '现在 · 核心', '未来 · 走向'];
+var T_STATE = {cat:'classic', spreadId:'past-present-future', picks:[], galCat:'all', galQ:''};
 
-function renderTarotBacks(){
-  $('tarotGrid').innerHTML = [0,1,2].map(function(){
-    return '<div class="tarot-back"><span>問天</span></div>';
-  }).join('');
+var T_GAL_CATS = [
+  {key:'all',        name:'全部'},
+  {key:'major',      name:'大阿卡纳'},
+  {key:'wands',      name:'权杖 · 火'},
+  {key:'cups',       name:'圣杯 · 水'},
+  {key:'swords',     name:'宝剑 · 风'},
+  {key:'pentacles',  name:'星币 · 土'}
+];
+
+function tEsc(s){
+  return String(s==null?'':s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function tSpread(id){
+  for(var i=0;i<TAROT_SPREADS.length;i++){ if(TAROT_SPREADS[i].id===id) return TAROT_SPREADS[i]; }
+  return TAROT_SPREADS[0];
+}
+function tSpreadList(cat){
+  var list = TAROT_SPREADS.filter(function(s){ return s.cat===cat; });
+  return list.length ? list : TAROT_SPREADS;
+}
+function tIsYesNo(s){
+  return /yes-or-no/.test(s.id);
 }
 
-$('drawTarot').onclick = function(){
+/* —— 分类标签 —— */
+function tRenderCats(){
+  var h = '';
+  TAROT_SPREAD_CATS.forEach(function(c){
+    h += '<button class="chip'+(T_STATE.cat===c.key?' active':'')+'" data-tcat="'+c.key+'">'+tEsc(c.name)+'</button>';
+  });
+  $('spreadCats').innerHTML = h;
+  $('spreadCats').querySelectorAll('button').forEach(function(b){
+    b.onclick = function(){
+      T_STATE.cat = b.dataset.tcat;
+      var list = tSpreadList(T_STATE.cat);
+      if(!list.some(function(s){ return s.id===T_STATE.spreadId; })) T_STATE.spreadId = list[0].id;
+      tRenderCats(); tRenderSpreadGrid(); tRenderSpreadInfo(); tRenderBacks();
+    };
+  });
+}
+
+/* —— 牌阵卡 —— */
+function tRenderSpreadGrid(){
+  var list = tSpreadList(T_STATE.cat);
+  var h = '';
+  list.forEach(function(s){
+    var nb = s.positions.length > 4
+      ? s.catCn + ' · 共 ' + s.positions.length + ' 个位置'
+      : s.catCn + ' · ' + s.positions.map(function(p){ return tEsc(p.name); }).join(' / ');
+    h += '<button class="spread-card'+(s.id===T_STATE.spreadId?' on':'')+'" data-spread="'+s.id+'">'
+      + '<div class="sc-top"><span class="sc-n">'+tEsc(s.name)+'</span><span class="sc-c">'+s.cards+' 张</span></div>'
+      + '<div class="sc-d">'+tEsc(s.desc)+'</div>'
+      + '<div class="sc-nb">'+nb+'</div>'
+      + '</button>';
+  });
+  $('spreadGrid').innerHTML = h;
+  $('spreadGrid').querySelectorAll('.spread-card').forEach(function(b){
+    b.onclick = function(){
+      T_STATE.spreadId = b.dataset.spread;
+      tRenderSpreadGrid(); tRenderSpreadInfo(); tRenderBacks();
+      $('tarotReading').style.display = 'none';
+      $('tarotVerdict').innerHTML = '';
+    };
+  });
+}
+
+/* —— 牌阵说明 —— */
+function tRenderSpreadInfo(){
+  var s = tSpread(T_STATE.spreadId);
+  var h = '<h4>'+tEsc(s.name)+' · '+s.cards+' 张</h4>'
+    + '<div class="si-d">'+tEsc(s.desc)+'</div><div class="si-pos">';
+  s.positions.forEach(function(p){ h += '<span>'+tEsc(p.name)+'</span>'; });
+  h += '</div>';
+  if(s.steps && s.steps.length){
+    h += '<ol class="si-steps">';
+    s.steps.forEach(function(t){ h += '<li>'+tEsc(t)+'</li>'; });
+    h += '</ol>';
+  }
+  $('spreadInfo').innerHTML = h;
+  $('drawTarot').textContent = '抽 ' + s.cards + ' 张';
+}
+
+/* —— 牌桌：背面 —— */
+function tRenderBacks(){
+  var s = tSpread(T_STATE.spreadId);
+  var cls = 'tarot-grid';
+  if(s.id==='wirth-cross') cls += ' tg-wirth';
+  if(s.id==='celtic-cross' || s.id==='in-depth-analysis') cls += ' tg-celtic';
+  var grid = $('tarotGrid');
+  grid.className = cls;
+  var h = '';
+  for(var i=0;i<s.cards;i++){
+    var p = s.positions[i] || {name:'第 '+(i+1)+' 张'};
+    h += '<div class="tcard" data-i="'+i+'" style="animation-delay:'+(i*0.06).toFixed(2)+'s">'
+      + '<div class="tcard-scene"><div class="tcard-3d">'
+      + '<div class="tcard-side tcard-back"><span>問天</span></div>'
+      + '<div class="tcard-side tcard-front"><img alt="" loading="lazy"></div>'
+      + '</div></div>'
+      + '<div class="tcard-meta" style="opacity:0">'
+      + '<div class="tcard-pos">'+tEsc(p.name)+'</div>'
+      + '<div class="tcard-name"></div><div class="tcard-en"></div>'
+      + '<div class="tcard-state"></div><div class="tcard-kw"></div>'
+      + '</div></div>';
+  }
+  grid.innerHTML = h;
+  $('tarotTable').style.display = '';
+}
+
+/* —— 翻牌 —— */
+function tFlip(i){
+  var el = $('tarotGrid').querySelector('.tcard[data-i="'+i+'"]');
+  if(!el) return;
+  var c = T_STATE.picks[i];
+  var img = el.querySelector('.tcard-front img');
+  img.src = c.img;
+  img.alt = c.n;
+  if(c.__rev) img.classList.add('rev');
+  el.querySelector('.tcard-name').textContent = c.n;
+  el.querySelector('.tcard-en').textContent = c.e;
+  var st = el.querySelector('.tcard-state');
+  st.className = 'tcard-state ' + (c.__rev ? 'rev' : 'up');
+  st.textContent = c.__rev ? '逆位' : '正位';
+  el.querySelector('.tcard-kw').textContent = c.__rev ? c.r : c.k;
+  el.classList.add('flipped');
+  var meta = el.querySelector('.tcard-meta');
+  setTimeout(function(){
+    meta.style.transition = 'opacity .55s ease';
+    meta.style.opacity = '1';
+  }, 380);
+}
+
+/* —— 抽牌 —— */
+function tDraw(){
+  var s = tSpread(T_STATE.spreadId);
   var pool = TAROT_ALL.slice();
   var picks = [];
-  for(var i=0;i<3;i++){
+  for(var i=0;i<s.cards;i++){
     var idx = Math.floor(Math.random() * pool.length);
-    picks.push(pool.splice(idx,1)[0]);
+    var c = pool.splice(idx,1)[0];
+    c.__rev = Math.random() < 0.38;
+    picks.push(c);
   }
-  var html = '';
-  picks.forEach(function(card, i){
-    var reversed = Math.random() < 0.38;
-    var kw = reversed ? card.r : card.k;
-    html += '<div class="tarot-card' + (reversed?' reversed':'') + '">'
-      + '<div class="tc-pos">' + TAROT_POS[i] + '</div>'
-      + '<div class="tc-name">' + card.n + '</div>'
-      + '<div class="tc-en">' + card.e + '</div>'
-      + '<span class="tc-state ' + (reversed?'rev':'up') + '">' + (reversed?'逆位':'正位') + '</span>'
-      + '<div class="tc-kw">' + kw + '</div>'
-      + '<div class="tc-m">' + card.m + '</div>'
+  T_STATE.picks = picks;
+  $('tarotReading').style.display = 'none';
+  $('tarotVerdict').innerHTML = '';
+  $('drawTarot').disabled = true;
+  tRenderBacks();
+  /* 大牌阵缩短翻牌间隔，避免等待过久 */
+  var gap = picks.length > 6 ? 150 : (picks.length > 3 ? 200 : 250);
+  picks.forEach(function(c, i){
+    setTimeout(function(){ tFlip(i); }, 380 + i*gap);
+  });
+  setTimeout(function(){
+    $('drawTarot').disabled = false;
+    tRenderReading();
+  }, 380 + picks.length*gap + 760);
+}
+
+/* —— 连读 —— */
+function tRenderReading(){
+  var s = tSpread(T_STATE.spreadId);
+  var picks = T_STATE.picks;
+  if(!picks.length) return;
+  var q = ($('tarotQ').value || '').trim();
+  var h = '';
+
+  if(tIsYesNo(s)){
+    var sc = 0;
+    picks.forEach(function(c,i){ sc += (c.__rev ? -1 : 1) * (i===1 ? 2 : 1); });
+    var yes = sc > 0;
+    h += '<div class="tverdict"><div class="big'+(yes?'':' no')+'">'+(yes?'是':'否')+'</div>'
+      + '<div class="vd-t">依本牌阵的加权规则（中间一张权重加倍，正位记一票、逆位记一票），三张牌合计偏向'
+      + (yes?'肯定':'否定')+'。这只是一个倾向，具体仍需对照下方逐张释义与牌阵步骤来看。</div></div>';
+  }
+
+  picks.forEach(function(c,i){
+    var pos = s.positions[i] || {name:'第 '+(i+1)+' 张', meaning:''};
+    h += '<div class="tread-item">'
+      + '<div class="tread-h">'
+      + '<span class="tread-pos">'+tEsc(pos.name)+'</span>'
+      + '<span class="tread-n">'+tEsc(c.n)+'</span>'
+      + '<span class="tread-st '+(c.__rev?'rev':'up')+'">'+(c.__rev?'逆位':'正位')+'</span>'
+      + '</div>';
+    if(pos.meaning) h += '<div class="tread-pm">'+tEsc(pos.meaning)+'</div>';
+    h += '<div class="tread-body">'+tEsc(c.__rev ? c.rev : c.up)+'</div>'
+      + '<div class="tread-kw">关键词 · '+tEsc(c.__rev ? c.r : c.k)+'</div>'
       + '</div>';
   });
-  $('tarotGrid').innerHTML = html;
 
-  var q = ($('tarotQ').value || '').trim();
-  var body = '';
-  body += '<p>' + (q ? '所问：「<em>' + q + '</em>」' : '未写具体问题，以下按牌面本身连读。') + '</p>';
-  body += '<p><em>过去</em> —— ' + picks[0].n + '：' + picks[0].m + '</p>';
-  body += '<p><em>现在</em> —— ' + picks[1].n + '：' + picks[1].m + '</p>';
-  body += '<p><em>未来</em> —— ' + picks[2].n + '：' + picks[2].m + '</p>';
-  body += '<p>三张牌是一个故事的三幕，重点不在单张吉凶，而在从过去到现在的转折，以及现在正把你带向哪里。</p>';
+  var names = picks.map(function(c){ return c.n + (c.__rev?'（逆位）':''); });
+  h += '<div class="tsum"><h4>合　观</h4>';
+  h += '<p>' + (q
+      ? '所问：「<em style="font-style:normal;color:var(--cinnabar);font-weight:500">'+tEsc(q)+'</em>」'
+      : '未写具体问题，以下按牌面本身连读。') + '</p>';
+  h += '<p>'+tEsc(s.name)+'抽出的是 '+tEsc(names.join('、'))+'。这几张牌不是各自独立的吉凶，而是同一条线索上的不同环节——看它们如何首尾相接，比单看某一张更有意义。</p>';
+  if(s.steps && s.steps.length){
+    h += '<h4 style="margin-top:16px">如何落地</h4><ol>';
+    s.steps.forEach(function(t){ h += '<li>'+tEsc(t)+'</li>'; });
+    h += '</ol>';
+  }
+  h += '<div class="foot">塔罗呈现的是当下动量，不是定论。逆位不等于坏，常指能量受阻、节奏未到或需要向内调整。牌面说的是倾向，最终的选择权始终在你手里。</div>';
+  h += '</div>';
 
-  $('tarotVerdict').innerHTML = ''
-    + '<div class="body">' + body + '</div>'
-    + '<div class="foot">塔罗呈现的是当下动量，不是定论。逆位不等于坏，常指能量受阻或需要向内调整。</div>';
+  $('tarotVerdict').innerHTML = h;
   $('tarotReading').style.display = 'block';
-  setTimeout(function(){ $('tarotReading').scrollIntoView({behavior:'smooth', block:'start'}); }, 220);
-};
+  setTimeout(function(){ $('tarotReading').scrollIntoView({behavior:'smooth', block:'start'}); }, 240);
+}
+
+/* —— 牌义通览 —— */
+function tRenderGalCats(){
+  var h = '';
+  T_GAL_CATS.forEach(function(c){
+    h += '<button class="chip'+(T_STATE.galCat===c.key?' active':'')+'" data-gcat="'+c.key+'">'+tEsc(c.name)+'</button>';
+  });
+  $('galCats').innerHTML = h;
+  $('galCats').querySelectorAll('button').forEach(function(b){
+    b.onclick = function(){
+      T_STATE.galCat = b.dataset.gcat;
+      tRenderGalCats(); tRenderGallery();
+    };
+  });
+}
+function tRenderGallery(){
+  var q = T_STATE.galQ.trim().toLowerCase();
+  var list = TAROT_ALL.filter(function(c){
+    if(T_STATE.galCat !== 'all' && c.s !== T_STATE.galCat) return false;
+    if(!q) return true;
+    return (c.n+' '+c.e+' '+c.k+' '+c.g).toLowerCase().indexOf(q) >= 0;
+  });
+  if(!list.length){
+    $('galGrid').innerHTML = '<div class="gal-empty">没有找到相符的牌，换个词试试。</div>';
+    return;
+  }
+  var h = '';
+  list.forEach(function(c){
+    h += '<button class="gal-card" data-card="'+tEsc(c.n)+'">'
+      + '<div class="gimg"><img src="'+c.img.replace('/tarot/','/tarot-thumb/')+'" alt="'+tEsc(c.n)+'" loading="lazy"></div>'
+      + '<div class="gname">'+tEsc(c.n)+'</div>'
+      + '<div class="gen">'+tEsc(c.e)+'</div>'
+      + '</button>';
+  });
+  $('galGrid').innerHTML = h;
+  $('galGrid').querySelectorAll('.gal-card').forEach(function(b){
+    b.onclick = function(){ tOpenCard(b.dataset.card); };
+  });
+}
+
+/* —— 牌面详情 —— */
+function tInitModal(){
+  var m = document.createElement('div');
+  m.className = 'tmodal';
+  m.id = 'tmodal';
+  m.innerHTML = '<div class="tmodal-box" id="tmodalBox"></div>';
+  document.body.appendChild(m);
+  m.addEventListener('click', function(e){ if(e.target === m) tCloseModal(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') tCloseModal(); });
+}
+function tOpenCard(name){
+  var c = TAROT_BY_NAME[name];
+  if(!c) return;
+  var h = '<button class="tmodal-close" id="tmodalClose" aria-label="关闭">×</button>'
+    + '<div class="tmodal-in">'
+    + '<div class="tmodal-fig"><img src="'+c.img+'" alt="'+tEsc(c.n)+'">'
+    + '<div class="tg">'+tEsc(c.g)+' · '+tEsc(c.el)+'元素</div></div>'
+    + '<div class="tmodal-body">'
+    + '<h3>'+tEsc(c.n)+'</h3>'
+    + '<div class="en">'+tEsc(c.e)+'</div>'
+    + '<div class="kws">正位 · '+tEsc(c.k)+'<br>逆位 · '+tEsc(c.r)+'</div>'
+    + '<div class="tmodal-sec"><h4 class="up">正位释义</h4><p>'+tEsc(c.up)+'</p></div>'
+    + '<div class="tmodal-sec"><h4 class="rev">逆位释义</h4><p>'+tEsc(c.rev)+'</p></div>'
+    + '</div></div>';
+  $('tmodalBox').innerHTML = h;
+  $('tmodal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  $('tmodalClose').onclick = tCloseModal;
+}
+function tCloseModal(){
+  $('tmodal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* —— 初始化 —— */
+function tInit(){
+  tInitModal();
+  tRenderCats();
+  tRenderSpreadGrid();
+  tRenderSpreadInfo();
+  tRenderBacks();
+  tRenderGalCats();
+  tRenderGallery();
+  $('drawTarot').onclick = tDraw;
+  $('resetTarot').onclick = function(){
+    T_STATE.picks = [];
+    $('tarotReading').style.display = 'none';
+    $('tarotVerdict').innerHTML = '';
+    $('drawTarot').disabled = false;
+    tRenderBacks();
+    $('tarotTable').scrollIntoView({behavior:'smooth', block:'center'});
+  };
+  $('galSearch').oninput = function(){ T_STATE.galQ = this.value; tRenderGallery(); };
+}
 
 /* ================= 圣杯（掷筊） ================= */
 var JIAO_LOG = [];
@@ -1705,7 +2150,7 @@ document.querySelectorAll('#folkChips .chip').forEach(function(c){
 initToday();
 renderPips();
 renderPreview();
-renderTarotBacks();
+tInit();
 renderFolk('ear');
 recastLiuren();
 fillQuestion(CAT);

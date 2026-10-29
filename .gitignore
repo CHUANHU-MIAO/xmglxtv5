@@ -23,6 +23,19 @@ env/
 .DS_Store
 Thumbs.db
 
+# 开发过程产物（截图/临时脚本/本地实验），不入库
+.screenshots/
+.scratch/
+*.tmp
+*.bak
+*.orig
+
+# 运行期上传目录（根目录留的临时落点，内容不入库）
+.uploads/
+
+# Node（若日后引入前端构建）
+node_modules/
+
 # Claude AI workspace
 .claude/
 
@@ -44,7 +57,8 @@ config.json
 private_key.pem
 public_key.pem
 *.key
-客户系统/启动系统.bat
+
+# 注：客户系统/启动系统.bat 已改为相对路径、可跨机器使用，需随仓库提交
 
 # 独立盖章小工具（引擎与素材已集成到 客户系统/web/services，无需随服务器部署）
 盖章小工具部署包/
