@@ -6,7 +6,7 @@ from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 from web.models import User, Project, FundRecord, StandardFile, Log, PettyCash
 from web.extensions import db
-from sqlalchemy import func, or_
+from sqlalchemy import func, or_, case
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -157,7 +157,14 @@ def projects():
     if payment_group == 'received':
         query = query.filter(Project.payment_status.in_(['已结款', '已结清', '部分结清']))
     elif payment_group == 'receivable':
-        query = query.filter(Project.payment_status.in_(['未结款', '未结', '未结算', '部分结清']))
+        actual_settled = case(
+            (Project.payment_status.in_(['已结款', '已结清']), Project.contract_amount),
+            else_=func.coalesce(Project.settled_amount, 0)
+        )
+        query = query.filter(
+            Project.contract_amount.isnot(None),
+            Project.contract_amount > actual_settled
+        )
     elif payment_status:
         query = query.filter(Project.payment_status == payment_status)
     if invoice_status:
@@ -194,7 +201,7 @@ def projects():
     if payment_group == 'received':
         payment_group_label = '已收账款（已结款 + 已结清 + 部分结清）'
     elif payment_group == 'receivable':
-        payment_group_label = '应收账款（未结款 + 未结算 + 部分结清）'
+        payment_group_label = '应收账款（与统计口径一致：仅含应收金额>0 的项目）'
 
     return render_template('admin_projects.html',
                            projects=projects_paginated,
@@ -254,7 +261,14 @@ def projects_export():
     if payment_group == 'received':
         query = query.filter(Project.payment_status.in_(['已结款', '已结清', '部分结清']))
     elif payment_group == 'receivable':
-        query = query.filter(Project.payment_status.in_(['未结款', '未结', '未结算', '部分结清']))
+        actual_settled = case(
+            (Project.payment_status.in_(['已结款', '已结清']), Project.contract_amount),
+            else_=func.coalesce(Project.settled_amount, 0)
+        )
+        query = query.filter(
+            Project.contract_amount.isnot(None),
+            Project.contract_amount > actual_settled
+        )
     elif payment_status:
         query = query.filter(Project.payment_status == payment_status)
     if invoice_status:

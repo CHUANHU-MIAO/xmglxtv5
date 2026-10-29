@@ -4,6 +4,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_login import login_required, current_user
 from web.models import Project, User, Log, Attachment
 from web.extensions import db
+from sqlalchemy import func, case
 from web.services.project_service import get_index_statistics
 
 projects_bp = Blueprint('projects', __name__)
@@ -194,7 +195,14 @@ def api_projects_search():
     if payment_group == 'received':
         query = query.filter(Project.payment_status.in_(['已结款', '已结清', '部分结清']))
     elif payment_group == 'receivable':
-        query = query.filter(Project.payment_status.in_(['未结款', '未结', '未结算', '部分结清']))
+        actual_settled = case(
+            (Project.payment_status.in_(['已结款', '已结清']), Project.contract_amount),
+            else_=func.coalesce(Project.settled_amount, 0)
+        )
+        query = query.filter(
+            Project.contract_amount.isnot(None),
+            Project.contract_amount > actual_settled
+        )
     elif payment_status:
         query = query.filter(Project.payment_status == payment_status)
 
