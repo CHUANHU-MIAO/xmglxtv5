@@ -89,37 +89,24 @@ button:focus-visible{outline:2px solid var(--cinnabar);outline-offset:3px}
 .spine-meta{writing-mode:vertical-rl;font-family:var(--serif);font-size:12px;letter-spacing:.32em;color:var(--ink-3);text-align:center}
 .spine-hint{writing-mode:vertical-rl;font-size:10.5px;letter-spacing:.32em;color:var(--line-strong);margin-top:14px}
 
-/* 书脊横条：进入工具页后钉在顶部左侧，向右渐隐融入页面 */
-.mini-brand{
-  position:fixed;left:0;top:0;z-index:80;
-  display:flex;align-items:center;gap:16px;
-  width:min(470px,66vw);height:74px;padding:0 26px 0 24px;
-  border:0;border-radius:0;
-  background:linear-gradient(90deg,
-    rgba(250,246,236,.99) 0%,
-    rgba(246,238,221,.96) 32%,
-    rgba(241,232,212,.82) 58%,
-    rgba(238,229,208,.42) 80%,
-    rgba(238,229,208,0) 100%);
-  cursor:pointer;color:var(--ink);font-family:var(--serif);
+/* 顶栏：进入工具页后钉在顶部，实底无渐变。左侧品牌与当前选项卡，右侧其余选项卡入口 */
+.topbar{
+  position:fixed;left:0;right:0;top:0;z-index:80;
+  display:flex;align-items:center;gap:18px;
+  height:74px;padding:0 22px 0 24px;
+  background:#faf6ec;
+  border-bottom:1px solid var(--line-strong);
   opacity:0;transform:translateY(-100%);pointer-events:none;
-  transition:transform .5s cubic-bezier(.4,0,.2,1),opacity .28s var(--ease),background .32s var(--ease);
+  transition:transform .5s cubic-bezier(.4,0,.2,1),opacity .28s var(--ease);
 }
-.mini-brand::after{
-  content:'';position:absolute;left:0;right:0;bottom:0;height:1px;pointer-events:none;
-  background:linear-gradient(90deg,var(--line-strong) 0%,rgba(182,161,121,.3) 46%,transparent 90%);
-}
-.mini-brand.show{
+.topbar.show{
   opacity:1;transform:none;pointer-events:auto;
-  transition:transform .72s cubic-bezier(.22,.68,.16,1) .14s,opacity .42s var(--ease) .14s,background .32s var(--ease);
+  transition:transform .72s cubic-bezier(.22,.68,.16,1) .14s,opacity .42s var(--ease) .14s;
 }
-.mini-brand:hover{
-  background:linear-gradient(90deg,
-    rgba(253,250,243,.99) 0%,
-    rgba(250,244,231,.97) 32%,
-    rgba(245,238,220,.88) 58%,
-    rgba(242,234,214,.48) 80%,
-    rgba(242,234,214,0) 100%);
+.mini-brand{
+  display:flex;align-items:center;gap:16px;flex:none;
+  height:100%;padding:0;border:0;border-radius:0;background:transparent;
+  cursor:pointer;color:var(--ink);font-family:var(--serif);
 }
 .mini-brand i{
   width:42px;height:42px;border-radius:3px;flex:none;
@@ -133,6 +120,25 @@ button:focus-visible{outline:2px solid var(--cinnabar);outline-offset:3px}
 .mini-brand .mb-t{font-size:20px;font-weight:600;letter-spacing:.3em;line-height:1;flex:none}
 .mini-brand .mb-sep{width:1px;height:22px;background:var(--line-strong);opacity:.7;flex:none}
 .mini-brand .mb-cur{font-size:14px;letter-spacing:.24em;color:var(--ochre);line-height:1;flex:none}
+
+.topbar-nav{
+  display:flex;align-items:center;gap:5px;flex:1;min-width:0;
+  justify-content:flex-end;overflow-x:auto;scrollbar-width:none;
+}
+.topbar-nav::-webkit-scrollbar{display:none}
+.tb-link{
+  flex:none;padding:9px 19px;border:1px solid transparent;border-radius:999px;
+  background:transparent;color:var(--ink-2);font-family:var(--serif);
+  font-size:13.5px;letter-spacing:.22em;cursor:pointer;white-space:nowrap;
+  transition:color .28s var(--ease),border-color .28s var(--ease),background .28s var(--ease);
+}
+.tb-link:hover{color:var(--ink);border-color:var(--ochre);background:var(--ochre-soft)}
+.tb-link.on{
+  background:var(--cinnabar-soft);border-color:rgba(168,50,38,.3);color:var(--cinnabar);
+  cursor:default;
+}
+/* 宽屏：当前项已在左侧点出，导航里不再重复 */
+@media(min-width:521px){.tb-link.on{display:none}}
 
 .stage{padding:0;overflow:hidden;display:flex;justify-content:center;align-items:flex-start;width:100%;min-width:0}
 .app.panel-mode .stage{padding-top:36px}
@@ -149,11 +155,23 @@ button:focus-visible{outline:2px solid var(--cinnabar);outline-offset:3px}
   .app.panel-mode{grid-template-columns:1fr}
   .app.panel-mode .spine{display:none}
   .stage{padding:0 0 92px}
-  .app.panel-mode .stage{padding-top:28px;padding-bottom:92px}
-  .mini-brand{width:min(340px,84vw);height:60px;gap:11px;padding:0 20px 0 14px}
+  .app.panel-mode .stage{padding-top:40px;padding-bottom:92px}
+  .topbar{height:58px;gap:11px;padding:0 12px 0 14px}
+  .mini-brand{gap:11px}
   .mini-brand i{width:34px;height:34px;font-size:16px}
   .mini-brand .mb-t{font-size:17px;letter-spacing:.22em}
+  .mini-brand .mb-cur{font-size:12px;letter-spacing:.16em}
+  .tb-link{padding:7px 13px;font-size:12px;letter-spacing:.14em}
+}
+@media(max-width:520px){
+  .mini-brand .mb-sep{display:none}
   .mini-brand .mb-cur{display:none}
+  .topbar{gap:6px;padding:0 9px 0 11px}
+  .mini-brand{gap:8px}
+  .mini-brand i{width:30px;height:30px;font-size:14px}
+  .mini-brand .mb-t{font-size:15px;letter-spacing:.16em}
+  .tb-link{padding:5px 8px;font-size:10.5px;letter-spacing:0}
+  .topbar-nav{gap:2px}
 }
 
 /* ========== 目录（首页入口） ========== */
@@ -889,10 +907,13 @@ h1.hero-title span::after{
     </div>
   </aside>
 
-  <button class="mini-brand" id="miniBrand" title="回到首页">
-    <i>問</i><span class="mb-t">問天</span><span class="mb-sep"></span>
-    <span class="mb-cur" id="miniCur">金钱卦</span>
-  </button>
+  <div class="topbar" id="topbar">
+    <button class="mini-brand" id="miniBrand" title="回到首页">
+      <i>問</i><span class="mb-t">問天</span><span class="mb-sep"></span>
+      <span class="mb-cur" id="miniCur">金钱卦</span>
+    </button>
+    <nav class="topbar-nav" id="topTabs" aria-label="其他选项卡"></nav>
+  </div>
 
   <main class="stage">
 
@@ -1262,13 +1283,40 @@ var tocRows = document.querySelectorAll('.toc-row');
 var currentPanel = null;
 var PANEL_NAME = {coin:'金钱卦', tarot:'塔罗牌', jiao:'圣杯', liuren:'六壬', folk:'民俗'};
 
+/* 顶部选项卡入口：左侧固定显示当前项，右侧列出其余项 */
+var TOP_TABS = [
+  {key:'coin',   name:'金钱卦'},
+  {key:'tarot',  name:'塔罗牌'},
+  {key:'jiao',   name:'圣杯'},
+  {key:'liuren', name:'六壬'},
+  {key:'folk',   name:'民俗'}
+];
+
+function renderTopTabs(){
+  var h = '';
+  TOP_TABS.forEach(function(t){
+    var on = (t.key === currentPanel);
+    /* 当前项标 .on：宽屏由 CSS 隐藏（左侧已点出），窄屏显示并高亮 */
+    h += '<button class="tb-link'+(on?' on':'')+'" data-top="'+t.key+'"'+(on?' aria-current="page"':'')+'>'
+       + t.name + '</button>';
+  });
+  $('topTabs').innerHTML = h;
+  $('topTabs').querySelectorAll('.tb-link').forEach(function(b){
+    b.onclick = function(){
+      if(b.classList.contains('on')) return;
+      openPanel(b.dataset.top);
+    };
+  });
+}
+
 function openPanel(name){
   currentPanel = name;
   app.classList.remove('home-mode');
   app.classList.add('panel-mode');
   $('miniCur').textContent = PANEL_NAME[name] || '';
-  $('miniBrand').classList.add('show');
+  $('topbar').classList.add('show');
   views.forEach(function(v){ v.classList.toggle('active', v.id === 'view-' + name); });
+  renderTopTabs();
   window.scrollTo({top:0, behavior:'auto'});
   if(name === 'liuren') recastLiuren();
 }
@@ -1277,7 +1325,7 @@ function goHome(){
   currentPanel = null;
   app.classList.add('home-mode');
   app.classList.remove('panel-mode');
-  $('miniBrand').classList.remove('show');
+  $('topbar').classList.remove('show');
   views.forEach(function(v){ v.classList.toggle('active', v.id === 'view-home'); });
   window.scrollTo({top:0, behavior:'smooth'});
 }

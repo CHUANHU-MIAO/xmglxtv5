@@ -32,23 +32,6 @@ def login():
     return render_template('login.html')
 
 
-@auth_bp.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        if User.query.filter_by(username=username).first():
-            flash('用户名已存在')
-            return redirect(url_for('auth.register'))
-        user = User(username=username)
-        user.set_password(password)
-        db.session.add(user)
-        db.session.commit()
-        flash('注册成功，请登录')
-        return redirect(url_for('auth.login'))
-    return render_template('register.html')
-
-
 @auth_bp.route('/logout')
 @login_required
 def logout():
