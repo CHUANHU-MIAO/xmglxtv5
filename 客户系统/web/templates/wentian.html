@@ -1397,7 +1397,7 @@ function renderAlmanac(lunar){
     +   '<div class="al-side"><div class="al-year">' + now.getFullYear() + ' / ' + String(now.getMonth()+1).padStart(2,'0') + '</div>'
     +   '<div class="al-week">' + WEEK[now.getDay()] + '</div></div></div>'
     + '<div class="al-lunar"><div class="big">' + safe(function(){ return lunar.getMonthInChinese(); }, '') + '月'
-    +   + safe(function(){ return lunar.getDayInChinese(); }, '') + '</div>'
+    +   safe(function(){ return lunar.getDayInChinese(); }, '') + '</div>'
     +   '<div class="gz">' + TODAY.y + '年 · ' + TODAY.m + '月 · ' + TODAY.d + '日</div>'
     +   '<div class="al-chips">' + chips + '</div></div>';
 
